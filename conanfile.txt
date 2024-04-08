@@ -1,0 +1,11 @@
+[requires]
+rapidjson/1.1.0
+fftw/3.3.10
+catch2/3.5.3
+
+[generators]
+CMakeDeps
+CMakeToolchain
+
+[layout]
+cmake_layout
