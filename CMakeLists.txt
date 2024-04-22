@@ -24,15 +24,21 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 include(setup-dependencies)
 
+# testing - make conditional of being top level project
+include(CTest)
+
+if (BUILD_TESTING)
+    include(CTest)
+    include(Catch)
+
+    enable_testing()
+
+    add_subdirectory(tests)
+endif()
+
 add_subdirectory(libs)
 add_subdirectory(samples)
 
 add_subdirectory(extras)
 
 
-# testing - make conditional of being top level project
-include(CTest)
-
-if (BUILD_TESTING)
-    add_subdirectory(tests)
-endif()
