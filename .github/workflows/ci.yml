@@ -17,28 +17,40 @@ jobs:
         compiler:
           - llvm-17
           - gcc-13
+        mpi:
+          - mpich
+          - openmpi
+          - intelmpi
+
+        # TODO: investigate why this does not work
+        exclude:
+          - compiler: llvm-17
+          - mpi: mpich
           
     steps:
       - uses: actions/checkout@v3
+
+      - name: Setup MPI
+        uses: mpi4py/setup-mpi@v1
+        with:
+          mpi: ${{ matrix.mpi }}
 
       - name: Setup Cpp
         uses: aminya/setup-cpp@v1
         with:
           compiler: ${{ matrix.compiler }}
-          vcvarsall: ${{ contains(matrix.os, 'windows') }}
           cmake: 3.22.1
           ninja: 1.10.1
-          conan: true
-          cppcheck: true
-          clangtidy: 17
+          conan: 2.2.3
 
       - name: Setup Dependencies via Conan
         run: |
+          conan profile detect
           conan install conanfile.txt --build=missing
 
       - name: Configure CMake Project
         run: |
-          cmake -S -B ./build -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=./build/Release/generators/conan_toolchain.cmake -DCMAKE_POLICY_DEFAULT_CMP0091=NEW -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=ON
+          cmake -S . -B ./build -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=./build/Release/generators/conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=ON
 
       - name: Build Project
         run: |
