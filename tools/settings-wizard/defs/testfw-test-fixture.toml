@@ -1,0 +1,38 @@
+[__metadata__]
+module = "test_fixture"
+namespace = ["..", "testfw", "config"]
+skip_static_generation = true
+
+
+[[__includes__]]
+from = "testfw-test-case"
+import.modules = [ "test_case" ]
+
+[[__includes__]]
+from = "testfw-test-stage"
+import.modules = [ "test_stage" ]
+
+[[__includes__]]
+from = "turb-legacy-settings"
+import.modules = [ "turb_settings" ]
+
+
+[name]
+type = "string"
+
+[root_path]
+type = "path"
+
+[default_settings]
+type = "module"
+module.name = "turb_settings"
+
+[test_cases]
+type = "module"
+is_array = true
+module.name = "test_case"
+
+[test_stages]
+type = "module"
+is_array = true
+module.name = "test_stage"

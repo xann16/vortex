@@ -1,0 +1,101 @@
+[__metadata__]
+module = "parameters"
+namespace = [ "legacy", "turb" ]
+
+
+[N]
+type = "i32"
+
+[N_subdomain]
+type = "i32"
+
+[Nt_max]
+type = "i32"
+
+[dt]
+type = "real"
+
+[rnu]
+type = "real"
+
+[t_init]
+type = "real"
+
+[is_flow_generated]
+type = "boolean"
+
+[deterministic_seed]
+type = "u64"
+
+[input_velo_index]
+type = "i32"
+
+[forcing_type]
+type = "enum"
+enum.name = "forcing_type"
+enum.values = ["deterministic", "stochastic"]
+
+[deterministic_forcing_k_1]
+type = "real"
+
+[deterministic_forcing_k_2]
+type = "real"
+
+[stochastic_seed]
+type = "u64"
+
+[stats_output_interval]
+type = "i32"
+
+[spectrum_output_interval]
+type = "i32"
+
+[is_stats_output_extended]
+type = "boolean"
+
+[rho_part]
+type = "real"
+
+[rho_fluid]
+type = "real"
+
+[eta_k_init]
+type = "real"
+
+[tau_k_init]
+type = "real"
+
+[shell_thickness]
+type = "real"
+
+[epsilon_env]
+type = "real"
+
+[nu_fluid]
+type = "real"
+
+[gravity]
+type = "real"
+
+[is_part_generated]
+type = "boolean"
+
+[is_part_overlapping]
+type = "boolean"
+
+[is_part_hdi_enabled]
+type = "boolean"
+
+[part_hdi_trunc_enabled]
+type = "real"
+
+[N_part]
+type = "i32"
+
+[drag_type]
+type = "enum"
+enum.name = "drag_type"
+enum.values = ["stokes", "nonlinear"]
+
+[a]
+type = "real"

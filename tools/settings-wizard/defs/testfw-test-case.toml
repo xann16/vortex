@@ -1,0 +1,32 @@
+[__metadata__]
+module = "test_case"
+namespace = ["..", "testfw", "config"]
+skip_static_generation = true
+
+
+[[__includes__]]
+from = "turb-legacy-settings"
+import.modules = [ "turb_settings" ]
+
+
+[name]
+type = "string"
+
+[template]
+type = "string"
+
+[settings]
+type = "module"
+module.name = "turb_settings"
+
+[parallel_strategy]
+type = "enum"
+enum.name = "parallel_strategy_type"
+enum.values = [ "MMX", "MXX", "XXX" ]
+
+[stages]
+type = "string"
+is_array = true
+
+[process_count]
+type = "i32"

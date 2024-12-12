@@ -1,0 +1,22 @@
+[__metadata__]
+module = "exec_settings"
+namespace = [ "legacy", "turb" ]
+
+
+[job_name]
+type = "string"
+
+[grant_no]
+type = "string"
+
+[cpu_node_count]
+type = "i32"
+
+[wct_limit]
+type = "f64"
+
+[process_count]
+type = "i32"
+
+[is_node_overcommit_enabled]
+type = "boolean"

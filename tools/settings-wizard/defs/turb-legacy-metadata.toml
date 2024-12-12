@@ -1,0 +1,63 @@
+[__metadata__]
+module = "metadata"
+namespace = [ "legacy", "turb" ]
+
+
+[sim_method]
+type = "enum"
+enum.name = "sim_method"
+enum.values = ["DNS", "LES", "FDNS"]
+
+[particle_mode]
+type = "enum"
+enum.name = "particle_mode"
+enum.values = ["None", "OWC", "TWC"]
+
+[gravity_type]
+type = "enum"
+enum.name = "gravity_mode"
+enum.values = ["None", "Vertical", "Horizontal"]
+
+[particle_kernel_type]
+type = "enum"
+enum.name = "particle_twc_kernel_type"
+enum.values = ["PNN", "PIC"]
+
+[k_filter]
+type = "i32"
+
+[C_K]
+type = "real"
+
+[target_Phi]
+type = "real"
+
+[superpart_factor]
+type = "real"
+
+[src_flow_path]
+type = "path"
+
+[src_part_path]
+type = "path"
+
+[part_output_delay]
+type = "i32"
+
+[is_perf_full_profile_enabled]
+type = "boolean"
+
+[is_perf_simple_enabled]
+type = "boolean"
+
+[is_perf_part_dist_enabled]
+type = "boolean"
+
+[perf_full_start]
+type = "i32"
+
+[perf_full_end]
+type = "i32"
+
+[part_perf_interval]
+type = "i32"

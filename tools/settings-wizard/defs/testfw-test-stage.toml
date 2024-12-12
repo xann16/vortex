@@ -1,0 +1,17 @@
+[__metadata__]
+module = "test_stage"
+namespace = ["..", "testfw", "config"]
+skip_static_generation = true
+
+
+[[__includes__]]
+from = "turb-legacy-settings"
+import.modules = [ "turb_settings" ]
+
+
+[name]
+type = "string"
+
+[settings]
+type = "module"
+module.name = "turb_settings"

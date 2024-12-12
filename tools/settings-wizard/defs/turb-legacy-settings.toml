@@ -1,0 +1,25 @@
+[__metadata__]
+module = "turb_settings"
+namespace = [ "legacy", "turb" ]
+
+[[__includes__]]
+from = "turb-legacy-metadata"
+import.modules = [ "metadata" ]
+
+[[__includes__]]
+from = "turb-legacy-parameters"
+import.modules = [ "parameters" ]
+
+[[__includes__]]
+from = "turb-legacy-exec"
+import.modules = [ "exec_settings" ]
+
+
+[metadata]
+type = "module"
+
+[parameters]
+type = "module"
+
+[exec_settings]
+type = "module"
