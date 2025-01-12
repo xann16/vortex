@@ -15,28 +15,16 @@ jobs:
         os:
           - ubuntu-22.04
         compiler:
-          - llvm-14
-          - llvm-15
-          - llvm-16
-          - llvm-17
           - llvm-18
           - llvm-19
-          - llvm-20
-          - gcc-10
           - gcc-11
           - gcc-12
           - gcc-13
-          - gcc-14
         mpi:
           - mpich
           - openmpi
           - intelmpi
 
-        # TODO: investigate why this does not work
-        #exclude:
-        #  - compiler: llvm-17
-        #    mpi: mpich
-          
     steps:
       - uses: actions/checkout@v4
 
@@ -60,7 +48,7 @@ jobs:
 
       - name: Configure CMake Project
         run: |
-          cmake -S . -B ./build -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=./build/Release/generators/conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=ON
+          cmake -S . -B ./build -G "Ninja"  --preset conan-release
 
       - name: Build Project
         run: |
