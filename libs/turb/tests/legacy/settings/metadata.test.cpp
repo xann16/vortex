@@ -9,7 +9,7 @@
 
 TEST_CASE("Metadata - Sample Test", "[sample]")
 {
-    auto x = vortex::turb::legacy::settings::Metadata();
+    vortex::turb::legacy::settings::Metadata();
 
     REQUIRE(true);
 }

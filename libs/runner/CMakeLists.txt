@@ -5,12 +5,30 @@ project(
 
 set(HEADERS
     include/runner/sample.hpp
+
+
+    # files added automatically using vxsw
+    include/runner/config/test_stage.hpp
+    include/runner/config/test_case.hpp
+    include/runner/config/test_fixture.hpp
 )
 set(SOURCES
     src/sample.cpp
+
+
+    # files added automatically using vxsw
+    src/config/test_stage.cpp
+    src/config/test_case.cpp
+    src/config/test_fixture.cpp
 )
 set(TESTS
     tests/sample.test.cpp
+
+
+    # files added automatically using vxsw
+    tests/config/test_stage.test.cpp
+    tests/config/test_case.test.cpp
+    tests/config/test_fixture.test.cpp
 )
 
 add_library(${PROJECT_NAME}

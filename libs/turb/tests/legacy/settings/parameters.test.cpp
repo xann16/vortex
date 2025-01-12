@@ -9,7 +9,7 @@
 
 TEST_CASE("Parameters - Sample Test", "[sample]")
 {
-    auto x = vortex::turb::legacy::settings::Parameters();
+    vortex::turb::legacy::settings::Parameters();
 
     REQUIRE(true);
 }

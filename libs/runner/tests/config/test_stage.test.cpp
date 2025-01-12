@@ -9,7 +9,7 @@
 
 TEST_CASE("TestStage - Sample Test", "[sample]")
 {
-    auto x = vortex::runner::config::TestStage();
+    vortex::runner::config::TestStage();
 
     REQUIRE(true);
 }

@@ -5,12 +5,33 @@ project(
 
 set(HEADERS
     include/turb/sample.hpp
+
+
+    # files added automatically using vxsw
+    include/turb/legacy/settings/exec_settings.hpp
+    include/turb/legacy/settings/turb_settings.hpp
+    include/turb/legacy/settings/parameters.hpp
+    include/turb/legacy/settings/metadata.hpp
 )
 set(SOURCES
     src/sample.cpp
+
+
+    # files added automatically using vxsw
+    src/legacy/settings/exec_settings.cpp
+    src/legacy/settings/turb_settings.cpp
+    src/legacy/settings/parameters.cpp
+    src/legacy/settings/metadata.cpp
 )
 set(TESTS
     tests/sample.test.cpp
+
+
+    # files added automatically using vxsw
+    tests/legacy/settings/exec_settings.test.cpp
+    tests/legacy/settings/turb_settings.test.cpp
+    tests/legacy/settings/parameters.test.cpp
+    tests/legacy/settings/metadata.test.cpp
 )
 
 add_library(${PROJECT_NAME}

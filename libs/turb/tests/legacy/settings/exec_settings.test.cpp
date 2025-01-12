@@ -9,7 +9,7 @@
 
 TEST_CASE("ExecSettings - Sample Test", "[sample]")
 {
-    auto x = vortex::turb::legacy::settings::ExecSettings();
+    vortex::turb::legacy::settings::ExecSettings();
 
     REQUIRE(true);
 }

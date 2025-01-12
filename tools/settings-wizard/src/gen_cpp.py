@@ -63,7 +63,25 @@ def get_unit_test_path(data: dict[str, Any], suffix: str = '', root_path: str | 
 
     raise RuntimeError(f"Unsupported context: '{ctx}'.")
 
-def generate_cpp(root_path: str, data: dict[str, Any], ctx: dict[str, dict[str, Any]]) -> None:
+def populate_cmake_data(data: dict[str, Any], ctx : dict[str, Any]):
+    package_name : str = data['__metadata__']['package'].lstrip('*')
+    if package_name not in ctx['cmake']:
+        ctx['cmake'][package_name] : dict[str, dict[str, Any]] = {}
+    pkg_data = ctx['cmake'][package_name]
+
+    if 'headers' not in pkg_data:
+        pkg_data['headers'] : dict[str, Any] = []
+    pkg_data['headers'].append(get_header_path(data, ctx='cmake'))
+
+    if 'sources' not in pkg_data:
+        pkg_data['sources'] : dict[str, Any] = []
+    pkg_data['sources'].append(get_source_path(data, ctx='cmake'))
+
+    if 'tests' not in pkg_data:
+        pkg_data['tests'] : dict[str, Any] = []
+    pkg_data['tests'].append(get_unit_test_path(data, ctx='cmake'))
+
+def generate_cpp(root_path: str, data: dict[str, Any], ctx: dict[str, Any]) -> None:
 
     dyn_hdr_path : str = generate_dynamic_header_file(root_path, data, ctx)
     dyn_src_path : str = generate_dynamic_source_file(root_path, data, ctx)
@@ -73,7 +91,9 @@ def generate_cpp(root_path: str, data: dict[str, Any], ctx: dict[str, dict[str, 
     print(dyn_src_path)
     print(dyn_tst_path)
 
-def generate_dynamic_header_file(root_path: str, data: dict[str, Any], ctx: dict[str, dict[str, Any]]) -> str:
+    populate_cmake_data(data, ctx)
+
+def generate_dynamic_header_file(root_path: str, data: dict[str, Any], ctx: dict[str, Any]) -> str:
     path : str = get_header_path(data, root_path=root_path)
     class_name : str = get_class_name(data)
     namespace : list[str] = get_namespace(data)
@@ -96,7 +116,7 @@ def generate_dynamic_header_file(root_path: str, data: dict[str, Any], ctx: dict
 
     return path
 
-def generate_dynamic_source_file(root_path: str, data: dict[str, Any], ctx: dict[str, dict[str, Any]]) -> str:
+def generate_dynamic_source_file(root_path: str, data: dict[str, Any], ctx: dict[str, Any]) -> str:
     path : str = get_source_path(data, root_path=root_path)
     class_name : str = get_class_name(data)
     namespace : str = get_namespace(data)
@@ -120,7 +140,7 @@ def generate_dynamic_source_file(root_path: str, data: dict[str, Any], ctx: dict
 
     return path
 
-def generate_dynamic_unit_test_file(root_path: str, data: dict[str, Any], ctx: dict[str, dict[str, Any]]) -> str:
+def generate_dynamic_unit_test_file(root_path: str, data: dict[str, Any], ctx: dict[str, Any]) -> str:
     path : str = get_unit_test_path(data, root_path=root_path)
     class_name : str = get_class_name(data)
     namespace : str = get_namespace(data)
@@ -136,7 +156,7 @@ def generate_dynamic_unit_test_file(root_path: str, data: dict[str, Any], ctx: d
     add_blank(ls)
 
     i = begin_test_case(ls, i, f'{class_name} - Sample Test', 'sample')
-    i = add_line(ls, i, 'auto x = ' + '::'.join(namespace) + '::' + class_name + '();')
+    i = add_line(ls, i, '::'.join(namespace) + '::' + class_name + '();')
     add_blank(ls)
     i = add_require(ls, i, 'true')
     i = end_test_case(ls, i)

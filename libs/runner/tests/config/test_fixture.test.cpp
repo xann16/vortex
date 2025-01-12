@@ -9,7 +9,7 @@
 
 TEST_CASE("TestFixture - Sample Test", "[sample]")
 {
-    auto x = vortex::runner::config::TestFixture();
+    vortex::runner::config::TestFixture();
 
     REQUIRE(true);
 }
