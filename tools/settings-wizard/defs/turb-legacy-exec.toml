@@ -1,6 +1,7 @@
 [__metadata__]
 module = "exec_settings"
-namespace = [ "legacy", "turb" ]
+package = "*turb"
+namespace = [ "legacy", "settings" ]
 
 
 [job_name]

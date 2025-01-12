@@ -1,6 +1,8 @@
 [__metadata__]
 module = "turb_settings"
-namespace = [ "legacy", "turb" ]
+package = "*turb"
+namespace = [ "legacy", "settings" ]
+
 
 [[__includes__]]
 from = "turb-legacy-metadata"

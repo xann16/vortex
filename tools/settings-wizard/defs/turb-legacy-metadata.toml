@@ -1,6 +1,7 @@
 [__metadata__]
 module = "metadata"
-namespace = [ "legacy", "turb" ]
+package = "*turb"
+namespace = [ "legacy", "settings" ]
 
 
 [sim_method]

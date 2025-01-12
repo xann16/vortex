@@ -1,7 +1,9 @@
 [__metadata__]
 module = "test_fixture"
-namespace = ["..", "testfw", "config"]
+package = "testfw"
+namespace = ["config"]
 skip_static_generation = true
+languages = ["cpp"]
 
 
 [[__includes__]]
