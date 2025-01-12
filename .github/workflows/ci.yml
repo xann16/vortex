@@ -44,15 +44,16 @@ jobs:
       - name: Setup Dependencies via Conan
         run: |
           conan profile detect
+          echo tools.cmake.cmaketoolchain:generator=Ninja >> $HOME/.conan2/global.conf
           conan install conanfile.txt --build=missing
 
       - name: Configure CMake Project
         run: |
-          cmake -S . -B ./build -G "Ninja"  --preset conan-release
+          cmake -S . -B ./build --preset conan-release
 
       - name: Build Project
         run: |
-          cmake --build ./build -v
+          cmake --build ./build -v --preset conan-release
 
       - name: Run Tests
         working-directory: ./build
