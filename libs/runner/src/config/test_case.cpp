@@ -4,4 +4,4 @@
 // TODO: Just testing
 //
 
-#include "testfw/config/test_stage.hpp"
+#include "runner/config/test_case.hpp"

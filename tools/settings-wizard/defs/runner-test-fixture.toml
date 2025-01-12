@@ -1,17 +1,17 @@
 [__metadata__]
 module = "test_fixture"
-package = "testfw"
+package = "runner"
 namespace = ["config"]
 skip_static_generation = true
 languages = ["cpp"]
 
 
 [[__includes__]]
-from = "testfw-test-case"
+from = "runner-test-case"
 import.modules = [ "test_case" ]
 
 [[__includes__]]
-from = "testfw-test-stage"
+from = "runner-test-stage"
 import.modules = [ "test_stage" ]
 
 [[__includes__]]
