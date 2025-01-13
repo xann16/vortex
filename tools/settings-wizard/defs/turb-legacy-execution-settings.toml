@@ -1,5 +1,5 @@
 [__metadata__]
-module = "exec_settings"
+module = "execution_settings"
 package = "*turb"
 namespace = [ "legacy", "settings" ]
 

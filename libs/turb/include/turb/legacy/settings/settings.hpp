@@ -7,9 +7,9 @@
 namespace vortex::turb::legacy::settings
 {
 
-class ExecSettings
+class Settings
 {
     // TODO
-}; // end of class ExecSettings
+}; // end of class Settings
 
 } // end of namespace vortex::turb::legacy::settings

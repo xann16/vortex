@@ -7,31 +7,37 @@ set(HEADERS
     include/turb/legacy/settings_provider.hpp
     include/turb/legacy/sim_id.hpp
 
+
+
     # files added automatically using vxsw
-    include/turb/legacy/settings/exec_settings.hpp
-    include/turb/legacy/settings/turb_settings.hpp
+    include/turb/legacy/settings/settings.hpp
     include/turb/legacy/settings/parameters.hpp
     include/turb/legacy/settings/metadata.hpp
+    include/turb/legacy/settings/execution_settings.hpp
 )
 set(SOURCES
     src/legacy/settings_provider.cpp
     src/legacy/sim_id.cpp
 
+
+
     # files added automatically using vxsw
-    src/legacy/settings/exec_settings.cpp
-    src/legacy/settings/turb_settings.cpp
+    src/legacy/settings/settings.cpp
     src/legacy/settings/parameters.cpp
     src/legacy/settings/metadata.cpp
+    src/legacy/settings/execution_settings.cpp
 )
 set(TESTS
     tests/legacy/settings_provider.test.cpp
     tests/legacy/sim_id.test.cpp
 
+
+
     # files added automatically using vxsw
-    tests/legacy/settings/exec_settings.test.cpp
-    tests/legacy/settings/turb_settings.test.cpp
+    tests/legacy/settings/settings.test.cpp
     tests/legacy/settings/parameters.test.cpp
     tests/legacy/settings/metadata.test.cpp
+    tests/legacy/settings/execution_settings.test.cpp
 )
 
 add_library(${PROJECT_NAME}

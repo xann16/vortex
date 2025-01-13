@@ -4,11 +4,12 @@
 // TODO: Just testing
 // 
 
-#include "turb/legacy/settings/exec_settings.hpp"
-
 namespace vortex::turb::legacy::settings
 {
 
-// TODO
+class ExecutionSettings
+{
+    // TODO
+}; // end of class ExecutionSettings
 
 } // end of namespace vortex::turb::legacy::settings

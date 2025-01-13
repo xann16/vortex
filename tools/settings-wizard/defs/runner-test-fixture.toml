@@ -16,7 +16,7 @@ import.modules = [ "test_stage" ]
 
 [[__includes__]]
 from = "turb-legacy-settings"
-import.modules = [ "turb_settings" ]
+import.modules = [ "settings" ]
 
 
 [name]
@@ -27,7 +27,7 @@ type = "path"
 
 [default_settings]
 type = "module"
-module.name = "turb_settings"
+module.name = "settings"
 
 [test_cases]
 type = "module"

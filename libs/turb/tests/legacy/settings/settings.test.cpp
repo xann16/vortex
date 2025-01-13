@@ -5,11 +5,11 @@
 // 
 
 #include <catch2/catch_test_macros.hpp>
-#include "turb/legacy/settings/exec_settings.hpp"
+#include "turb/legacy/settings/settings.hpp"
 
-TEST_CASE("ExecSettings - Sample Test", "[sample]")
+TEST_CASE("Settings - Sample Test", "[sample]")
 {
-    vortex::turb::legacy::settings::ExecSettings();
+    vortex::turb::legacy::settings::Settings();
 
     REQUIRE(true);
 }

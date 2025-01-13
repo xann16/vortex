@@ -8,7 +8,7 @@ languages = ["cpp"]
 
 [[__includes__]]
 from = "turb-legacy-settings"
-import.modules = [ "turb_settings" ]
+import.modules = [ "settings" ]
 
 
 [name]
@@ -16,4 +16,4 @@ type = "string"
 
 [settings]
 type = "module"
-module.name = "turb_settings"
+module.name = "settings"
