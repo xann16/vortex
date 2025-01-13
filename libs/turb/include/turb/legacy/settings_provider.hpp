@@ -1,6 +1,7 @@
+#pragma once
+
 /*
 
-#pragma once
 
 #include <filesystem>
 #include <istream>

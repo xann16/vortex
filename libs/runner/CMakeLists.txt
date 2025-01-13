@@ -6,35 +6,29 @@ project(
 set(HEADERS
     include/runner/sample.hpp
 
-
-
-
     # files added automatically using vxsw
     include/runner/config/test_stage.hpp
     include/runner/config/test_case.hpp
     include/runner/config/test_fixture.hpp
+    # end of vxsw managed section
 )
 set(SOURCES
     src/sample.cpp
-
-
-
 
     # files added automatically using vxsw
     src/config/test_stage.cpp
     src/config/test_case.cpp
     src/config/test_fixture.cpp
+    # end of vxsw managed section
 )
 set(TESTS
     tests/sample.test.cpp
-
-
-
 
     # files added automatically using vxsw
     tests/config/test_stage.test.cpp
     tests/config/test_case.test.cpp
     tests/config/test_fixture.test.cpp
+    # end of vxsw managed section
 )
 
 add_library(${PROJECT_NAME}

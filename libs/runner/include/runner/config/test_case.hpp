@@ -4,6 +4,8 @@
 // TODO: Just testing
 // 
 
+#pragma once
+
 namespace vortex::runner::config
 {
 
