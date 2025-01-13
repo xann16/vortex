@@ -4,8 +4,8 @@ project(
 )
 
 set(HEADERS
-    include/turb/sample.hpp
-
+    include/turb/legacy/settings_provider.hpp
+    include/turb/legacy/sim_id.hpp
 
     # files added automatically using vxsw
     include/turb/legacy/settings/exec_settings.hpp
@@ -14,8 +14,8 @@ set(HEADERS
     include/turb/legacy/settings/metadata.hpp
 )
 set(SOURCES
-    src/sample.cpp
-
+    src/legacy/settings_provider.cpp
+    src/legacy/sim_id.cpp
 
     # files added automatically using vxsw
     src/legacy/settings/exec_settings.cpp
@@ -24,8 +24,8 @@ set(SOURCES
     src/legacy/settings/metadata.cpp
 )
 set(TESTS
-    tests/sample.test.cpp
-
+    tests/legacy/settings_provider.test.cpp
+    tests/legacy/sim_id.test.cpp
 
     # files added automatically using vxsw
     tests/legacy/settings/exec_settings.test.cpp

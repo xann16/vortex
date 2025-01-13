@@ -4,13 +4,16 @@ project(
 )
 
 set(HEADERS
-    include/core/sample.hpp
+    include/core/settings/json/document_repository.hpp
+    include/core/settings/json/settings_provider.hpp
 )
 set(SOURCES
-    src/sample.cpp
+    src/settings/json/document_repository.cpp
+    src/settings/json/settings_provider.cpp
 )
 set(TESTS
-    tests/sample.test.cpp
+    tests/settings/json/document_repository.test.cpp
+    tests/settings/json/settings_provider.test.cpp
 )
 
 add_library(${PROJECT_NAME}
