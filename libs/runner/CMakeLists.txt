@@ -48,7 +48,7 @@ target_include_directories(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
     PUBLIC
-        rapidjson
+        nlohmann_json::nlohmann_json
         fftw::fftw
         MPI::MPI_CXX
 )
