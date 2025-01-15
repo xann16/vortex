@@ -1,7 +1,6 @@
 #pragma once
 
 #include <iosfwd>
-#include <memory>
 #include <string>
 #include <unordered_map>
 
@@ -37,6 +36,7 @@ public:
 
     [[nodiscard]] bool is_empty() const noexcept { return m_docs.empty(); }
     [[nodiscard]] operator bool() const noexcept { return is_empty(); }
+    [[nodiscard]] std::size_t count() const noexcept { return m_docs.size(); }
 
     [[nodiscard]] auto cbegin() const noexcept { return std::cbegin(m_docs); }
     [[nodiscard]] auto cend() const noexcept { return std::cend(m_docs); }
