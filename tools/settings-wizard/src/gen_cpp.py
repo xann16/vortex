@@ -1,27 +1,10 @@
-from cpp_utils import add_include, add_blank, add_line, add_block_comment, begin_test_case, end_test_case, add_require, begin_namespace, end_namespace, begin_class, end_class
+from cpp_utils import get_class_name, get_namespace, add_include, add_blank, add_line, add_block_comment, begin_test_case, end_test_case, add_require, begin_namespace, end_namespace, begin_class, end_class, add_access_qualifier, add_ctor_declaration, add_ctor_definition, add_data_field
+from gen_utils import create_file
 import os
 from typing import Any
 
-def _create_file(path: str, content: list[str]):
-    dir_path = os.path.dirname(path)
-    os.makedirs(dir_path, exist_ok=True)
-    with open(path, mode='w', encoding='utf-8') as fp:
-        fp.writelines(content)
 
-def _to_pascal_case(snake_name: str):
-    tokens = snake_name.lower().split('_')
-    return ''.join(t.title() for t in tokens)
-
-def get_class_name(data: dict[str, Any], suffix: str = ''):
-    snake_name = data['__metadata__']['module'] + (f'_{suffix}' if suffix else '')
-    return _to_pascal_case(snake_name)
-
-def get_namespace(data: dict[str, Any]):
-    package_name : str = data['__metadata__']['package'].lstrip('*')
-    namespace_path : list[str] = data['__metadata__']['namespace']
-    return ['vortex'] + [package_name] + namespace_path
-
-def get_header_path(data: dict[str, Any], suffix: str = '', root_path: str | None = None, ctx='cwd'):
+def get_header_path(data: dict[str, Any], suffix: str = '', root_path: str | None = None, ctx='cwd') -> str:
     package_name : str = data['__metadata__']['package'].lstrip('*')
     module_name : str = data['__metadata__']['module']
     namespace_path : list[str] = data['__metadata__']['namespace']
@@ -37,33 +20,36 @@ def get_header_path(data: dict[str, Any], suffix: str = '', root_path: str | Non
 
     raise RuntimeError(f"Unsupported context: '{ctx}'.")
 
-def get_source_path(data: dict[str, Any], suffix: str = '', root_path: str | None = None, ctx='cwd'):
+
+def get_source_path(data: dict[str, Any], suffix: str = '', root_path: str | None = None, ctx='cwd') -> str:
     package_name : str = data['__metadata__']['package'].lstrip('*')
     module_name : str = data['__metadata__']['module']
     namespace_path : list[str] = data['__metadata__']['namespace']
     path = os.path.join('src', *namespace_path, module_name + suffix + '.cpp')
     if ctx == 'cmake':
-        return os.path.normpath(path)    
+        return os.path.normpath(path)
     path = os.path.join(root_path, package_name, path)
     if ctx == 'cwd':
         return os.path.normpath(path)
 
     raise RuntimeError(f"Unsupported context: '{ctx}'.")
 
-def get_unit_test_path(data: dict[str, Any], suffix: str = '', root_path: str | None = None, ctx='cwd'):
+
+def get_unit_test_path(data: dict[str, Any], suffix: str = '', root_path: str | None = None, ctx='cwd') -> str:
     package_name : str = data['__metadata__']['package'].lstrip('*')
     module_name : str = data['__metadata__']['module']
     namespace_path : list[str] = data['__metadata__']['namespace']
     path = os.path.join('tests', *namespace_path, module_name + suffix + '.test.cpp')
     if ctx == 'cmake':
-        return os.path.normpath(path)    
+        return os.path.normpath(path)
     path = os.path.join(root_path, package_name, path)
     if ctx == 'cwd':
         return os.path.normpath(path)
 
     raise RuntimeError(f"Unsupported context: '{ctx}'.")
 
-def populate_cmake_data(data: dict[str, Any], ctx : dict[str, Any]):
+
+def populate_cmake_data(data: dict[str, Any], ctx : dict[str, Any]) -> None:
     package_name : str = data['__metadata__']['package'].lstrip('*')
     if package_name not in ctx['cmake']:
         ctx['cmake'][package_name] : dict[str, dict[str, Any]] = {}
@@ -81,23 +67,25 @@ def populate_cmake_data(data: dict[str, Any], ctx : dict[str, Any]):
         pkg_data['tests'] : dict[str, Any] = []
     pkg_data['tests'].append(get_unit_test_path(data, ctx='cmake'))
 
-def generate_cpp(root_path: str, data: dict[str, Any], ctx: dict[str, Any]) -> None:
 
-    dyn_hdr_path : str = generate_dynamic_header_file(root_path, data, ctx)
-    dyn_src_path : str = generate_dynamic_source_file(root_path, data, ctx)
-    dyn_tst_path : str = generate_dynamic_unit_test_file(root_path, data, ctx)
+def add_provider_data(data: dict[str, Any], ctx : dict[str, Any]) -> None:
+    if 'settings' not in data['__metadata__'] or 'providers' not in data['__metadata__']['settings']:
+        return
 
-    print(dyn_hdr_path)
-    print(dyn_src_path)
-    print(dyn_tst_path)
+    provider_types : list[str] = data['__metadata__']['settings']['providers']
+    package_name : str = data['__metadata__']['package'].lstrip('*')
+    if package_name not in ctx['providers']:
+        ctx['providers'][package_name] : dict[str, dict[str, Any]] = []
+    pkg_data = ctx['providers'][package_name]
 
-    populate_cmake_data(data, ctx)
+    pkg_data.extend(provider_types)
+
 
 def generate_dynamic_header_file(root_path: str, data: dict[str, Any], ctx: dict[str, Any]) -> str:
     path : str = get_header_path(data, root_path=root_path)
     class_name : str = get_class_name(data)
     namespace : list[str] = get_namespace(data)
-    
+
     ls : list[str] = []
     i = 0
 
@@ -107,17 +95,29 @@ def generate_dynamic_header_file(root_path: str, data: dict[str, Any], ctx: dict
     i = add_line(ls, i, '#pragma once')
     add_blank(ls)
 
+    i = add_include(ls, i, 'nlohmann/json_fwd.hpp', is_quoted=False)
+    add_blank(ls)
+
     i = begin_namespace(ls, i, *namespace)
     add_blank(ls)
     i = begin_class(ls, i, class_name)
-    i = add_block_comment(ls, i, 'TODO')
+
+    i = add_access_qualifier(ls, i, 'public')
+    i = add_ctor_declaration(ls, i, class_name, [('nlohmann::json *', 'data_p')], is_explicit=True)
+
+    add_blank(ls)
+
+    i = add_access_qualifier(ls, i, 'public')
+    i = add_data_field(ls, i, 'nlohmann::json *', 'data_p', 'nullptr')
+
     i = end_class(ls, i, class_name)
     add_blank(ls)
     i = end_namespace(ls, i, *namespace)
 
-    _create_file(path, ls)
+    create_file(path, ls)
 
     return path
+
 
 def generate_dynamic_source_file(root_path: str, data: dict[str, Any], ctx: dict[str, Any]) -> str:
     path : str = get_source_path(data, root_path=root_path)
@@ -127,7 +127,7 @@ def generate_dynamic_source_file(root_path: str, data: dict[str, Any], ctx: dict
     ls : list[str] = []
     i = 0
 
-    i = add_block_comment(ls, i,'', 'Header file auto-generated by VORTEX SETTINGS WIZARD', '', 'TODO: Just testing', '')
+    i = add_block_comment(ls, i,'', 'Source file auto-generated by VORTEX SETTINGS WIZARD', '', 'TODO: Just testing', '')
     add_blank(ls)
 
     i = add_include(ls, i, get_header_path(data, ctx='include'))
@@ -135,13 +135,14 @@ def generate_dynamic_source_file(root_path: str, data: dict[str, Any], ctx: dict
 
     i = begin_namespace(ls, i, *namespace)
     add_blank(ls)
-    i = add_block_comment(ls, i, 'TODO')
+    i = add_ctor_definition(ls, i, class_name, [('nohmann::json *', 'data_p')], is_explicit=True, body=[(0, '// add initial validation')])
     add_blank(ls)
     i = end_namespace(ls, i, *namespace)
 
-    _create_file(path, ls)
+    create_file(path, ls)
 
     return path
+
 
 def generate_dynamic_unit_test_file(root_path: str, data: dict[str, Any], ctx: dict[str, Any]) -> str:
     path : str = get_unit_test_path(data, root_path=root_path)
@@ -159,11 +160,25 @@ def generate_dynamic_unit_test_file(root_path: str, data: dict[str, Any], ctx: d
     add_blank(ls)
 
     i = begin_test_case(ls, i, f'{class_name} - Sample Test', 'sample')
-    i = add_line(ls, i, '::'.join(namespace) + '::' + class_name + '();')
+    i = add_line(ls, i, '::'.join(namespace) + '::' + class_name + '( nullptr );')
     add_blank(ls)
     i = add_require(ls, i, 'true')
     i = end_test_case(ls, i)
 
-    _create_file(path, ls)
+    create_file(path, ls)
 
     return path
+
+
+def generate_cpp(root_path: str, data: dict[str, Any], ctx: dict[str, Any]) -> None:
+
+    dyn_hdr_path : str = generate_dynamic_header_file(root_path, data, ctx)
+    dyn_src_path : str = generate_dynamic_source_file(root_path, data, ctx)
+    dyn_tst_path : str = generate_dynamic_unit_test_file(root_path, data, ctx)
+
+    print(dyn_hdr_path)
+    print(dyn_src_path)
+    print(dyn_tst_path)
+
+    add_provider_data(data, ctx)
+    populate_cmake_data(data, ctx)

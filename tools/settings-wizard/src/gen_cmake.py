@@ -15,8 +15,8 @@ def _insert_items(nls : list[str], items : list[str]) -> None:
     nls.append('    ' + AUTOGEN_END + '\n')
 
 def adjust_package_cmakelists(root_path: str, package_name: str, data: dict[str, list[str]]):
-    path : str = get_cmakelists_path(root_path, package_name)    
-    
+    path : str = get_cmakelists_path(root_path, package_name)
+
     with open(path, mode='r') as fp:
         ls = fp.readlines()
 

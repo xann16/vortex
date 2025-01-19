@@ -1,12 +1,25 @@
 #include <sstream>
+#include <string>
 
 #include <catch2/catch_test_macros.hpp>
-#include "core/settings/json/settings_provider.hpp"
+
 #include "nlohmann/json.hpp"
+
+#include "core/settings/json/settings_provider.hpp"
+
+struct SettingsProviderWrapper : public vortex::core::settings::json::SettingsProvider
+{
+    using vortex::core::settings::json::SettingsProvider::SettingsProvider;
+
+    [[nodiscard]] nlohmann::json * get(std::string const& key)
+    {
+        return get_object_pointer(key);
+    }
+};
 
 TEST_CASE("JSON Settings Provider - sample unit test", "[sample]")
 {
-    auto sp = vortex::core::settings::json::SettingsProvider{};
+    auto sp = SettingsProviderWrapper{};
 
     auto iss = std::istringstream{ "{\"x\":\"y\"}" };
 

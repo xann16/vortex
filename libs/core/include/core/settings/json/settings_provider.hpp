@@ -1,5 +1,6 @@
 #pragma once
 
+#include <exception>
 #include <iosfwd>
 #include <memory>
 #include <string>
@@ -39,14 +40,58 @@ public:
 
     [[nodiscard]] bool contains(std::string const& key) const;
 
-    [[nodiscard]] nlohmann::json * get(std::string const& key);
-    [[nodiscard]] nlohmann::json * operator[](std::string const& key)
-    {
-        return get(key);
-    }
-
     void release(std::string const& key);
     void release_all();
+
+protected:
+    [[nodiscard]] nlohmann::json * get_object_pointer(std::string const& key);
+
+    template <typename Settings>
+    [[nodiscard]] Settings get_impl(std::string const& key)
+    {
+        return Settings{get_object_pointer(key)};
+    }
+
+    template <typename Settings>
+    [[nodiscard]] Settings get(std::string const& key, std::istream& is)
+    {
+        if (!contains(key))
+        {
+            load(key, is);
+        }
+        return get_impl<Settings>(key);
+    }
+
+    template <typename Settings>
+    [[nodiscard]] Settings get(std::string const& key, std::filesystem::path const& path)
+    {
+        if (!contains(key))
+        {
+            load(key, path);
+        }
+        return get_impl<Settings>(key);
+    }
+
+    template <typename Settings>
+    [[nodiscard]] Settings get(std::filesystem::path const& path)
+    {
+        auto const& key = path.string();
+        if (!contains(key))
+        {
+            load(key, path);
+        }
+        return get_impl<Settings>(key);
+    }
+
+    template <typename Settings>
+    [[nodiscard]] Settings get(std::string const& key)
+    {
+        if (!contains(key))
+        {
+            throw std::out_of_range{"JSON Settings Provider: Key not found."};
+        }
+        return get_impl<Settings>(key);
+    }
 
 private:
     //std::unique_ptr<DocumentRepository> m_repo_p;

@@ -68,7 +68,7 @@ void SettingsProvider::save(std::filesystem::path const& path)
     return m_repo_p->contains(key);
 }
 
-[[nodiscard]] nlohmann::json * SettingsProvider::get(std::string const& key)
+[[nodiscard]] nlohmann::json * SettingsProvider::get_object_pointer(std::string const& key)
 {
     return &(m_repo_p->get(key));
 }
