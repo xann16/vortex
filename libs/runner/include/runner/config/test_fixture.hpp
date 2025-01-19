@@ -6,12 +6,18 @@
 
 #pragma once
 
+#include <nlohmann/json_fwd.hpp>
+
 namespace vortex::runner::config
 {
 
 class TestFixture
 {
-    // TODO
+public:
+    explicit TestFixture( nlohmann::json * data_p );
+
+private:
+    nlohmann::json * m_data_p = nullptr;
 }; // end of class TestFixture
 
 } // end of namespace vortex::runner::config

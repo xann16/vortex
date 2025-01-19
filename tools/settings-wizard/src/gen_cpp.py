@@ -78,7 +78,7 @@ def add_provider_data(data: dict[str, Any], ctx : dict[str, Any]) -> None:
         ctx['providers'][package_name] : dict[str, dict[str, Any]] = []
     pkg_data = ctx['providers'][package_name]
 
-    pkg_data.extend(provider_types)
+    pkg_data.append(data)
 
 
 def generate_dynamic_header_file(root_path: str, data: dict[str, Any], ctx: dict[str, Any]) -> str:
@@ -107,7 +107,7 @@ def generate_dynamic_header_file(root_path: str, data: dict[str, Any], ctx: dict
 
     add_blank(ls)
 
-    i = add_access_qualifier(ls, i, 'public')
+    i = add_access_qualifier(ls, i, 'private')
     i = add_data_field(ls, i, 'nlohmann::json *', 'data_p', 'nullptr')
 
     i = end_class(ls, i, class_name)
@@ -135,7 +135,7 @@ def generate_dynamic_source_file(root_path: str, data: dict[str, Any], ctx: dict
 
     i = begin_namespace(ls, i, *namespace)
     add_blank(ls)
-    i = add_ctor_definition(ls, i, class_name, [('nohmann::json *', 'data_p')], is_explicit=True, body=[(0, '// add initial validation')])
+    i = add_ctor_definition(ls, i, class_name, [('nlohmann::json *', 'data_p')], body=[(0, '// add initial validation')])
     add_blank(ls)
     i = end_namespace(ls, i, *namespace)
 

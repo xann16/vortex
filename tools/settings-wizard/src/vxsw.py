@@ -19,7 +19,7 @@ for key, data in defs.items():
     generate(root_path, data, ctx)
     print()
 
-for key in ctx['providers']:
+for package_name in ctx['providers']:
     generate_settings_provider(root_path, package_name, ctx)
 
 for package_name, data in ctx['cmake'].items():

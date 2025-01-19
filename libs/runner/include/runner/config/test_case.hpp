@@ -6,12 +6,18 @@
 
 #pragma once
 
+#include <nlohmann/json_fwd.hpp>
+
 namespace vortex::runner::config
 {
 
 class TestCase
 {
-    // TODO
+public:
+    explicit TestCase( nlohmann::json * data_p );
+
+private:
+    nlohmann::json * m_data_p = nullptr;
 }; // end of class TestCase
 
 } // end of namespace vortex::runner::config

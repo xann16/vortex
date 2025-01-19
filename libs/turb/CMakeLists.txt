@@ -12,6 +12,7 @@ set(HEADERS
     include/turb/legacy/settings/parameters.hpp
     include/turb/legacy/settings/metadata.hpp
     include/turb/legacy/settings/execution_settings.hpp
+    include/turb/legacy/settings/providers/json_settings_provider.hpp
     # end of vxsw managed section
 )
 set(SOURCES
@@ -23,6 +24,7 @@ set(SOURCES
     src/legacy/settings/parameters.cpp
     src/legacy/settings/metadata.cpp
     src/legacy/settings/execution_settings.cpp
+    src/legacy/settings/providers/json_settings_provider.hpp
     # end of vxsw managed section
 )
 set(TESTS
@@ -34,6 +36,7 @@ set(TESTS
     tests/legacy/settings/parameters.test.cpp
     tests/legacy/settings/metadata.test.cpp
     tests/legacy/settings/execution_settings.test.cpp
+    tests/legacy/settings/providers/json_settings_provider.hpp
     # end of vxsw managed section
 )
 

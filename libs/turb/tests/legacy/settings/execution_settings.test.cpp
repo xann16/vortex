@@ -9,7 +9,7 @@
 
 TEST_CASE("ExecutionSettings - Sample Test", "[sample]")
 {
-    vortex::turb::legacy::settings::ExecutionSettings();
+    vortex::turb::legacy::settings::ExecutionSettings( nullptr );
 
     REQUIRE(true);
 }

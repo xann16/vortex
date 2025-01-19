@@ -9,7 +9,7 @@
 
 TEST_CASE("TestStage - Sample Test", "[sample]")
 {
-    vortex::runner::config::TestStage();
+    vortex::runner::config::TestStage( nullptr );
 
     REQUIRE(true);
 }

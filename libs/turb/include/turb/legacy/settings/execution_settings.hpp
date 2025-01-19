@@ -6,12 +6,18 @@
 
 #pragma once
 
+#include <nlohmann/json_fwd.hpp>
+
 namespace vortex::turb::legacy::settings
 {
 
 class ExecutionSettings
 {
-    // TODO
+public:
+    explicit ExecutionSettings( nlohmann::json * data_p );
+
+private:
+    nlohmann::json * m_data_p = nullptr;
 }; // end of class ExecutionSettings
 
 } // end of namespace vortex::turb::legacy::settings

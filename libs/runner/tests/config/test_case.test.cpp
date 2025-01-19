@@ -9,7 +9,7 @@
 
 TEST_CASE("TestCase - Sample Test", "[sample]")
 {
-    vortex::runner::config::TestCase();
+    vortex::runner::config::TestCase( nullptr );
 
     REQUIRE(true);
 }

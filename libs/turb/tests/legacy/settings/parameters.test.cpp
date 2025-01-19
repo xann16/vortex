@@ -9,7 +9,7 @@
 
 TEST_CASE("Parameters - Sample Test", "[sample]")
 {
-    vortex::turb::legacy::settings::Parameters();
+    vortex::turb::legacy::settings::Parameters( nullptr );
 
     REQUIRE(true);
 }

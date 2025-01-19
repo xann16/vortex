@@ -9,7 +9,7 @@
 
 TEST_CASE("Metadata - Sample Test", "[sample]")
 {
-    vortex::turb::legacy::settings::Metadata();
+    vortex::turb::legacy::settings::Metadata( nullptr );
 
     REQUIRE(true);
 }

@@ -9,7 +9,7 @@
 
 TEST_CASE("TestFixture - Sample Test", "[sample]")
 {
-    vortex::runner::config::TestFixture();
+    vortex::runner::config::TestFixture( nullptr );
 
     REQUIRE(true);
 }
