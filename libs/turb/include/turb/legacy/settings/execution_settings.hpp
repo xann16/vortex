@@ -8,6 +8,8 @@
 
 #include <nlohmann/json_fwd.hpp>
 
+#include "core/common/types.hpp"
+
 namespace vortex::turb::legacy::settings
 {
 
@@ -15,6 +17,26 @@ class ExecutionSettings
 {
 public:
     explicit ExecutionSettings( nlohmann::json * data_p );
+
+public:
+    // "job_name" property
+    [[nodiscard]] std::string const& job_name() const;
+
+    // "grant_no" property
+    [[nodiscard]] std::string const& grant_no() const;
+
+    // "cpu_node_count" property
+    [[nodiscard]] i32 cpu_node_count() const;
+
+    // "wct_limit" property
+    [[nodiscard]] f64 wct_limit() const;
+
+    // "process_count" property
+    [[nodiscard]] i32 process_count() const;
+
+    // "is_node_overcommit_enabled" property
+    [[nodiscard]] bool is_node_overcommit_enabled() const;
+
 
 private:
     nlohmann::json * m_data_p = nullptr;

@@ -8,6 +8,8 @@
 
 #include <nlohmann/json_fwd.hpp>
 
+#include "core/common/types.hpp"
+
 namespace vortex::turb::legacy::settings
 {
 
@@ -15,6 +17,59 @@ class Metadata
 {
 public:
     explicit Metadata( nlohmann::json * data_p );
+
+public:
+    // "sim_method" property
+    [[nodiscard]] /* TODO: enum type */ i32 sim_method() const;
+
+    // "particle_mode" property
+    [[nodiscard]] /* TODO: enum type */ i32 particle_mode() const;
+
+    // "gravity_type" property
+    [[nodiscard]] /* TODO: enum type */ i32 gravity_type() const;
+
+    // "particle_kernel_type" property
+    [[nodiscard]] /* TODO: enum type */ i32 particle_kernel_type() const;
+
+    // "k_filter" property
+    [[nodiscard]] i32 k_filter() const;
+
+    // "C_K" property
+    [[nodiscard]] real C_K() const;
+
+    // "target_Phi" property
+    [[nodiscard]] real target_Phi() const;
+
+    // "superpart_factor" property
+    [[nodiscard]] real superpart_factor() const;
+
+    // "src_flow_path" property
+    [[nodiscard]] std::string const& src_flow_path() const;
+
+    // "src_part_path" property
+    [[nodiscard]] std::string const& src_part_path() const;
+
+    // "part_output_delay" property
+    [[nodiscard]] i32 part_output_delay() const;
+
+    // "is_perf_full_profile_enabled" property
+    [[nodiscard]] bool is_perf_full_profile_enabled() const;
+
+    // "is_perf_simple_enabled" property
+    [[nodiscard]] bool is_perf_simple_enabled() const;
+
+    // "is_perf_part_dist_enabled" property
+    [[nodiscard]] bool is_perf_part_dist_enabled() const;
+
+    // "perf_full_start" property
+    [[nodiscard]] i32 perf_full_start() const;
+
+    // "perf_full_end" property
+    [[nodiscard]] i32 perf_full_end() const;
+
+    // "part_perf_interval" property
+    [[nodiscard]] i32 part_perf_interval() const;
+
 
 private:
     nlohmann::json * m_data_p = nullptr;

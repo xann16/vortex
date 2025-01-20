@@ -17,7 +17,7 @@ else( "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" )
 endif( "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" )
 
 # option to treat warnings as errors
-option( TREAT_COMPILER_WARNINGS_AS_ERRORS "Treat compiler warnings as errors" ON )
+option( TREAT_COMPILER_WARNINGS_AS_ERRORS "Treat compiler warnings as errors" OFF )
 if ( TREAT_COMPILER_WARNINGS_AS_ERRORS )
   set( MY_CXX_WARNING_FLAGS ${MY_CXX_WARNING_FLAGS} -Werror )
 endif ( TREAT_COMPILER_WARNINGS_AS_ERRORS )

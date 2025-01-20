@@ -6,6 +6,8 @@
 
 #include "runner/config/test_case.hpp"
 
+#include <nlohmann/json.hpp>
+
 namespace vortex::runner::config
 {
 
@@ -14,5 +16,52 @@ TestCase::TestCase( nlohmann::json * data_p )
 {
     // add initial validation
 }
+
+// "name" property
+
+[[nodiscard]] std::string const& TestCase::name() const
+{
+    // TODO : Add handling of default values if property is not set.
+    return m_data_p->at( "name" ).template get_ref<std::string const&>();
+}
+
+// "template_name" property
+
+[[nodiscard]] std::string const& TestCase::template_name() const
+{
+    // TODO : Add handling of default values if property is not set.
+    return m_data_p->at( "template_name" ).template get_ref<std::string const&>();
+}
+
+// "settings" property
+
+[[nodiscard]] /* TODO: settings opaque interface */ void * TestCase::settings() const
+{
+    return nullptr;
+}
+
+// "parallel_strategy" property
+
+[[nodiscard]] /* TODO: enum type */ i32 TestCase::parallel_strategy() const
+{
+    return 0;
+}
+
+// "stages" property
+
+[[nodiscard]] std::string const& TestCase::stages() const
+{
+    // TODO : Add handling of default values if property is not set.
+    return m_data_p->at( "stages" ).template get_ref<std::string const&>();
+}
+
+// "process_count" property
+
+[[nodiscard]] i32 TestCase::process_count() const
+{
+    // TODO : Add handling of default values if property is not set.
+    return m_data_p->at( "process_count" ).template get<i32>();
+}
+
 
 } // end of namespace vortex::runner::config

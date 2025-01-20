@@ -6,6 +6,8 @@
 
 #include "turb/legacy/settings/execution_settings.hpp"
 
+#include <nlohmann/json.hpp>
+
 namespace vortex::turb::legacy::settings
 {
 
@@ -14,5 +16,54 @@ ExecutionSettings::ExecutionSettings( nlohmann::json * data_p )
 {
     // add initial validation
 }
+
+// "job_name" property
+
+[[nodiscard]] std::string const& ExecutionSettings::job_name() const
+{
+    // TODO : Add handling of default values if property is not set.
+    return m_data_p->at( "job_name" ).template get_ref<std::string const&>();
+}
+
+// "grant_no" property
+
+[[nodiscard]] std::string const& ExecutionSettings::grant_no() const
+{
+    // TODO : Add handling of default values if property is not set.
+    return m_data_p->at( "grant_no" ).template get_ref<std::string const&>();
+}
+
+// "cpu_node_count" property
+
+[[nodiscard]] i32 ExecutionSettings::cpu_node_count() const
+{
+    // TODO : Add handling of default values if property is not set.
+    return m_data_p->at( "cpu_node_count" ).template get<i32>();
+}
+
+// "wct_limit" property
+
+[[nodiscard]] f64 ExecutionSettings::wct_limit() const
+{
+    // TODO : Add handling of default values if property is not set.
+    return m_data_p->at( "wct_limit" ).template get<f64>();
+}
+
+// "process_count" property
+
+[[nodiscard]] i32 ExecutionSettings::process_count() const
+{
+    // TODO : Add handling of default values if property is not set.
+    return m_data_p->at( "process_count" ).template get<i32>();
+}
+
+// "is_node_overcommit_enabled" property
+
+[[nodiscard]] bool ExecutionSettings::is_node_overcommit_enabled() const
+{
+    // TODO : Add handling of default values if property is not set.
+    return m_data_p->at( "is_node_overcommit_enabled" ).template get<bool>();
+}
+
 
 } // end of namespace vortex::turb::legacy::settings

@@ -14,10 +14,6 @@ import.modules = [ "test_case" ]
 from = "runner-test-stage"
 import.modules = [ "test_stage" ]
 
-[[__includes__]]
-from = "turb-legacy-settings"
-import.modules = [ "settings" ]
-
 
 [name]
 type = "string"
@@ -26,8 +22,7 @@ type = "string"
 type = "path"
 
 [default_settings]
-type = "module"
-module.name = "settings"
+type = "settings"
 
 [test_cases]
 type = "module"

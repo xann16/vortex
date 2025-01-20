@@ -8,6 +8,10 @@
 
 #include <nlohmann/json_fwd.hpp>
 
+#include "core/common/types.hpp"
+#include "runner/config/test_case.hpp"
+#include "runner/config/test_stage.hpp"
+
 namespace vortex::runner::config
 {
 
@@ -15,6 +19,23 @@ class TestFixture
 {
 public:
     explicit TestFixture( nlohmann::json * data_p );
+
+public:
+    // "name" property
+    [[nodiscard]] std::string const& name() const;
+
+    // "root_path" property
+    [[nodiscard]] std::string const& root_path() const;
+
+    // "default_settings" property
+    [[nodiscard]] /* TODO: settings opaque interface */ void * default_settings() const;
+
+    // "test_cases" property
+    [[nodiscard]] /* TODO: settings dynamic class */ void * test_cases() const;
+
+    // "test_stages" property
+    [[nodiscard]] /* TODO: settings dynamic class */ void * test_stages() const;
+
 
 private:
     nlohmann::json * m_data_p = nullptr;

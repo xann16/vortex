@@ -127,14 +127,16 @@ def _add_method_body(ls: list[str], i: int, signature: str, body: list[(int, str
 
 def add_method_declaration(ls: list[str], i: int, method_name: str, return_type: str, args: list[(str, str)], body: list[(int, str)] | None = None, is_definition: bool = False, is_const: bool = False, is_noexcept: bool = False, is_nodiscard: bool = False) -> int:
     args_list : list[str] = [f'{data_type} {name}' for data_type, name in args]
-    signature : str = ('[[nodiscard]] ' if is_nodiscard else '') + f'{return_type} {method_name}( ' + ', '.join(args_list) + ' )' + (' const' if is_const else '') + (' noexcept' if is_noexcept else '')
+    args : str = ', '.join(args_list)
+    signature : str = ('[[nodiscard]] ' if is_nodiscard else '') + f'{return_type} {method_name}(' + (f' {args} ' if args else '') + ')' + (' const' if is_const else '') + (' noexcept' if is_noexcept else '')
     if not is_definition:
         return add_line(ls, i, signature + ';')
     return _add_method_body(ls, i, signature, body)
 
 def add_method_definition(ls: list[str], i: int, method_name: str, return_type: str, class_name: str, args: list[(str, str)], body: list[(int, str)], is_const: bool = False, is_noexcept: bool = False, is_nodiscard: bool = False) -> int:
     args_list : list[str] = [f'{data_type} {name}' for data_type, name in args]
-    signature : str = ('[[nodiscard]] ' if is_nodiscard else '') + f'{return_type} {class_name}::{method_name}( ' + ', '.join(args_list) + ' )' + (' const' if is_const else '') + (' noexcept' if is_noexcept else '')
+    args : str = ', '.join(args_list)
+    signature : str = ('[[nodiscard]] ' if is_nodiscard else '') + f'{return_type} {class_name}::{method_name}(' + (f' {args} ' if args else '') + ')' + (' const' if is_const else '') + (' noexcept' if is_noexcept else '')
     return _add_method_body(ls, i, signature, body)
 
 

@@ -8,6 +8,8 @@
 
 #include <nlohmann/json_fwd.hpp>
 
+#include "core/common/types.hpp"
+
 namespace vortex::runner::config
 {
 
@@ -15,6 +17,26 @@ class TestCase
 {
 public:
     explicit TestCase( nlohmann::json * data_p );
+
+public:
+    // "name" property
+    [[nodiscard]] std::string const& name() const;
+
+    // "template_name" property
+    [[nodiscard]] std::string const& template_name() const;
+
+    // "settings" property
+    [[nodiscard]] /* TODO: settings opaque interface */ void * settings() const;
+
+    // "parallel_strategy" property
+    [[nodiscard]] /* TODO: enum type */ i32 parallel_strategy() const;
+
+    // "stages" property
+    [[nodiscard]] std::string const& stages() const;
+
+    // "process_count" property
+    [[nodiscard]] i32 process_count() const;
+
 
 private:
     nlohmann::json * m_data_p = nullptr;

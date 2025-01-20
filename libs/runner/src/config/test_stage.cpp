@@ -6,6 +6,8 @@
 
 #include "runner/config/test_stage.hpp"
 
+#include <nlohmann/json.hpp>
+
 namespace vortex::runner::config
 {
 
@@ -14,5 +16,21 @@ TestStage::TestStage( nlohmann::json * data_p )
 {
     // add initial validation
 }
+
+// "name" property
+
+[[nodiscard]] std::string const& TestStage::name() const
+{
+    // TODO : Add handling of default values if property is not set.
+    return m_data_p->at( "name" ).template get_ref<std::string const&>();
+}
+
+// "settings" property
+
+[[nodiscard]] /* TODO: settings opaque interface */ void * TestStage::settings() const
+{
+    return nullptr;
+}
+
 
 } // end of namespace vortex::runner::config

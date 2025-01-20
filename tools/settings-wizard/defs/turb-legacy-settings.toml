@@ -20,9 +20,12 @@ import.modules = [ "execution_settings" ]
 
 [metadata]
 type = "module"
+module.name = "metadata"
 
 [parameters]
 type = "module"
+module.name = "parameters"
 
 [execution_settings]
 type = "module"
+module.name = "execution_settings"

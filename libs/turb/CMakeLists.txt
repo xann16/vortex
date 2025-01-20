@@ -57,9 +57,8 @@ target_include_directories(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
     PUBLIC
-        nlohmann_json::nlohmann_json
-        fftw::fftw
-        MPI::MPI_CXX
+        vortex::core
+        vortex::runner
 )
 
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_20)
@@ -73,7 +72,7 @@ if (BUILD_TESTING)
     target_link_libraries(${PROJECT_NAME}-unit-tests
         PRIVATE
             ${PROJECT_NAME}
-            Catch2::Catch2WithMain    
+            Catch2::Catch2WithMain
     )
 
     catch_discover_tests(${PROJECT_NAME}-unit-tests)

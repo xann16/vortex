@@ -5,6 +5,8 @@
 // 
 
 #include <catch2/catch_test_macros.hpp>
+#include <nlohmann/json.hpp>
+
 #include "runner/config/test_stage.hpp"
 
 TEST_CASE("TestStage - Sample Test", "[sample]")
@@ -13,3 +15,30 @@ TEST_CASE("TestStage - Sample Test", "[sample]")
 
     REQUIRE(true);
 }
+
+// "name" property
+
+TEST_CASE("TestStage - property: \"name\" - getter", "[settings]")
+{
+    auto obj = nlohmann::json{ { "name", "stest" } };
+    auto obj_p = &obj;
+    auto s = vortex::runner::config::TestStage{ obj_p };
+
+    auto value = s.name();
+
+    REQUIRE(value == "stest");
+}
+
+// "settings" property
+
+TEST_CASE("TestStage - property: \"settings\" - getter", "[settings]")
+{
+    nlohmann::json * obj_p = nullptr;
+    auto s = vortex::runner::config::TestStage{ obj_p };
+
+    auto value = s.settings();
+
+    REQUIRE(value == nullptr);
+}
+
+

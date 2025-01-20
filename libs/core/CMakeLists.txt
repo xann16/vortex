@@ -4,14 +4,17 @@ project(
 )
 
 set(HEADERS
+    include/core/common/types.hpp
     include/core/settings/json/document_repository.hpp
     include/core/settings/json/settings_provider.hpp
 )
 set(SOURCES
+    src/common/types.cpp
     src/settings/json/document_repository.cpp
     src/settings/json/settings_provider.cpp
 )
 set(TESTS
+    tests/common/types.test.cpp
     tests/settings/json/document_repository.test.cpp
     tests/settings/json/settings_provider.test.cpp
 )
@@ -49,7 +52,7 @@ if (BUILD_TESTING)
     target_link_libraries(${PROJECT_NAME}-unit-tests
         PRIVATE
             ${PROJECT_NAME}
-            Catch2::Catch2WithMain    
+            Catch2::Catch2WithMain
     )
 
     catch_discover_tests(${PROJECT_NAME}-unit-tests)

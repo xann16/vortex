@@ -8,6 +8,8 @@
 
 #include <nlohmann/json_fwd.hpp>
 
+#include "core/common/types.hpp"
+
 namespace vortex::runner::config
 {
 
@@ -15,6 +17,14 @@ class TestStage
 {
 public:
     explicit TestStage( nlohmann::json * data_p );
+
+public:
+    // "name" property
+    [[nodiscard]] std::string const& name() const;
+
+    // "settings" property
+    [[nodiscard]] /* TODO: settings opaque interface */ void * settings() const;
+
 
 private:
     nlohmann::json * m_data_p = nullptr;

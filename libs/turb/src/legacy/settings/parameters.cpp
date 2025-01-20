@@ -6,6 +6,8 @@
 
 #include "turb/legacy/settings/parameters.hpp"
 
+#include <nlohmann/json.hpp>
+
 namespace vortex::turb::legacy::settings
 {
 
@@ -14,5 +16,252 @@ Parameters::Parameters( nlohmann::json * data_p )
 {
     // add initial validation
 }
+
+// "N" property
+
+[[nodiscard]] i32 Parameters::N() const
+{
+    // TODO : Add handling of default values if property is not set.
+    return m_data_p->at( "N" ).template get<i32>();
+}
+
+// "N_subdomain" property
+
+[[nodiscard]] i32 Parameters::N_subdomain() const
+{
+    // TODO : Add handling of default values if property is not set.
+    return m_data_p->at( "N_subdomain" ).template get<i32>();
+}
+
+// "Nt_max" property
+
+[[nodiscard]] i32 Parameters::Nt_max() const
+{
+    // TODO : Add handling of default values if property is not set.
+    return m_data_p->at( "Nt_max" ).template get<i32>();
+}
+
+// "dt" property
+
+[[nodiscard]] real Parameters::dt() const
+{
+    // TODO : Add handling of default values if property is not set.
+    return m_data_p->at( "dt" ).template get<real>();
+}
+
+// "rnu" property
+
+[[nodiscard]] real Parameters::rnu() const
+{
+    // TODO : Add handling of default values if property is not set.
+    return m_data_p->at( "rnu" ).template get<real>();
+}
+
+// "t_init" property
+
+[[nodiscard]] real Parameters::t_init() const
+{
+    // TODO : Add handling of default values if property is not set.
+    return m_data_p->at( "t_init" ).template get<real>();
+}
+
+// "is_flow_generated" property
+
+[[nodiscard]] bool Parameters::is_flow_generated() const
+{
+    // TODO : Add handling of default values if property is not set.
+    return m_data_p->at( "is_flow_generated" ).template get<bool>();
+}
+
+// "deterministic_seed" property
+
+[[nodiscard]] u64 Parameters::deterministic_seed() const
+{
+    // TODO : Add handling of default values if property is not set.
+    return m_data_p->at( "deterministic_seed" ).template get<u64>();
+}
+
+// "input_velo_index" property
+
+[[nodiscard]] i32 Parameters::input_velo_index() const
+{
+    // TODO : Add handling of default values if property is not set.
+    return m_data_p->at( "input_velo_index" ).template get<i32>();
+}
+
+// "forcing_type" property
+
+[[nodiscard]] /* TODO: enum type */ i32 Parameters::forcing_type() const
+{
+    return 0;
+}
+
+// "deterministic_forcing_k_1" property
+
+[[nodiscard]] real Parameters::deterministic_forcing_k_1() const
+{
+    // TODO : Add handling of default values if property is not set.
+    return m_data_p->at( "deterministic_forcing_k_1" ).template get<real>();
+}
+
+// "deterministic_forcing_k_2" property
+
+[[nodiscard]] real Parameters::deterministic_forcing_k_2() const
+{
+    // TODO : Add handling of default values if property is not set.
+    return m_data_p->at( "deterministic_forcing_k_2" ).template get<real>();
+}
+
+// "stochastic_seed" property
+
+[[nodiscard]] u64 Parameters::stochastic_seed() const
+{
+    // TODO : Add handling of default values if property is not set.
+    return m_data_p->at( "stochastic_seed" ).template get<u64>();
+}
+
+// "stats_output_interval" property
+
+[[nodiscard]] i32 Parameters::stats_output_interval() const
+{
+    // TODO : Add handling of default values if property is not set.
+    return m_data_p->at( "stats_output_interval" ).template get<i32>();
+}
+
+// "spectrum_output_interval" property
+
+[[nodiscard]] i32 Parameters::spectrum_output_interval() const
+{
+    // TODO : Add handling of default values if property is not set.
+    return m_data_p->at( "spectrum_output_interval" ).template get<i32>();
+}
+
+// "is_stats_output_extended" property
+
+[[nodiscard]] bool Parameters::is_stats_output_extended() const
+{
+    // TODO : Add handling of default values if property is not set.
+    return m_data_p->at( "is_stats_output_extended" ).template get<bool>();
+}
+
+// "rho_part" property
+
+[[nodiscard]] real Parameters::rho_part() const
+{
+    // TODO : Add handling of default values if property is not set.
+    return m_data_p->at( "rho_part" ).template get<real>();
+}
+
+// "rho_fluid" property
+
+[[nodiscard]] real Parameters::rho_fluid() const
+{
+    // TODO : Add handling of default values if property is not set.
+    return m_data_p->at( "rho_fluid" ).template get<real>();
+}
+
+// "eta_k_init" property
+
+[[nodiscard]] real Parameters::eta_k_init() const
+{
+    // TODO : Add handling of default values if property is not set.
+    return m_data_p->at( "eta_k_init" ).template get<real>();
+}
+
+// "tau_k_init" property
+
+[[nodiscard]] real Parameters::tau_k_init() const
+{
+    // TODO : Add handling of default values if property is not set.
+    return m_data_p->at( "tau_k_init" ).template get<real>();
+}
+
+// "shell_thickness" property
+
+[[nodiscard]] real Parameters::shell_thickness() const
+{
+    // TODO : Add handling of default values if property is not set.
+    return m_data_p->at( "shell_thickness" ).template get<real>();
+}
+
+// "epsilon_env" property
+
+[[nodiscard]] real Parameters::epsilon_env() const
+{
+    // TODO : Add handling of default values if property is not set.
+    return m_data_p->at( "epsilon_env" ).template get<real>();
+}
+
+// "nu_fluid" property
+
+[[nodiscard]] real Parameters::nu_fluid() const
+{
+    // TODO : Add handling of default values if property is not set.
+    return m_data_p->at( "nu_fluid" ).template get<real>();
+}
+
+// "gravity" property
+
+[[nodiscard]] real Parameters::gravity() const
+{
+    // TODO : Add handling of default values if property is not set.
+    return m_data_p->at( "gravity" ).template get<real>();
+}
+
+// "is_part_generated" property
+
+[[nodiscard]] bool Parameters::is_part_generated() const
+{
+    // TODO : Add handling of default values if property is not set.
+    return m_data_p->at( "is_part_generated" ).template get<bool>();
+}
+
+// "is_part_overlapping" property
+
+[[nodiscard]] bool Parameters::is_part_overlapping() const
+{
+    // TODO : Add handling of default values if property is not set.
+    return m_data_p->at( "is_part_overlapping" ).template get<bool>();
+}
+
+// "is_part_hdi_enabled" property
+
+[[nodiscard]] bool Parameters::is_part_hdi_enabled() const
+{
+    // TODO : Add handling of default values if property is not set.
+    return m_data_p->at( "is_part_hdi_enabled" ).template get<bool>();
+}
+
+// "part_hdi_trunc_enabled" property
+
+[[nodiscard]] real Parameters::part_hdi_trunc_enabled() const
+{
+    // TODO : Add handling of default values if property is not set.
+    return m_data_p->at( "part_hdi_trunc_enabled" ).template get<real>();
+}
+
+// "N_part" property
+
+[[nodiscard]] i32 Parameters::N_part() const
+{
+    // TODO : Add handling of default values if property is not set.
+    return m_data_p->at( "N_part" ).template get<i32>();
+}
+
+// "drag_type" property
+
+[[nodiscard]] /* TODO: enum type */ i32 Parameters::drag_type() const
+{
+    return 0;
+}
+
+// "a" property
+
+[[nodiscard]] real Parameters::a() const
+{
+    // TODO : Add handling of default values if property is not set.
+    return m_data_p->at( "a" ).template get<real>();
+}
+
 
 } // end of namespace vortex::turb::legacy::settings

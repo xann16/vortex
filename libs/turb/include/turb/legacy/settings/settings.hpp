@@ -8,6 +8,11 @@
 
 #include <nlohmann/json_fwd.hpp>
 
+#include "core/common/types.hpp"
+#include "turb/legacy/settings/metadata.hpp"
+#include "turb/legacy/settings/parameters.hpp"
+#include "turb/legacy/settings/execution_settings.hpp"
+
 namespace vortex::turb::legacy::settings
 {
 
@@ -15,6 +20,17 @@ class Settings
 {
 public:
     explicit Settings( nlohmann::json * data_p );
+
+public:
+    // "metadata" property
+    [[nodiscard]] /* TODO: settings dynamic class */ void * metadata() const;
+
+    // "parameters" property
+    [[nodiscard]] /* TODO: settings dynamic class */ void * parameters() const;
+
+    // "execution_settings" property
+    [[nodiscard]] /* TODO: settings dynamic class */ void * execution_settings() const;
+
 
 private:
     nlohmann::json * m_data_p = nullptr;

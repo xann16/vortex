@@ -6,6 +6,8 @@
 
 #include "runner/config/test_fixture.hpp"
 
+#include <nlohmann/json.hpp>
+
 namespace vortex::runner::config
 {
 
@@ -14,5 +16,43 @@ TestFixture::TestFixture( nlohmann::json * data_p )
 {
     // add initial validation
 }
+
+// "name" property
+
+[[nodiscard]] std::string const& TestFixture::name() const
+{
+    // TODO : Add handling of default values if property is not set.
+    return m_data_p->at( "name" ).template get_ref<std::string const&>();
+}
+
+// "root_path" property
+
+[[nodiscard]] std::string const& TestFixture::root_path() const
+{
+    // TODO : Add handling of default values if property is not set.
+    return m_data_p->at( "root_path" ).template get_ref<std::string const&>();
+}
+
+// "default_settings" property
+
+[[nodiscard]] /* TODO: settings opaque interface */ void * TestFixture::default_settings() const
+{
+    return nullptr;
+}
+
+// "test_cases" property
+
+[[nodiscard]] /* TODO: settings dynamic class */ void * TestFixture::test_cases() const
+{
+    return nullptr;
+}
+
+// "test_stages" property
+
+[[nodiscard]] /* TODO: settings dynamic class */ void * TestFixture::test_stages() const
+{
+    return nullptr;
+}
+
 
 } // end of namespace vortex::runner::config

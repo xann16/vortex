@@ -6,6 +6,8 @@
 
 #include "turb/legacy/settings/settings.hpp"
 
+#include <nlohmann/json.hpp>
+
 namespace vortex::turb::legacy::settings
 {
 
@@ -14,5 +16,27 @@ Settings::Settings( nlohmann::json * data_p )
 {
     // add initial validation
 }
+
+// "metadata" property
+
+[[nodiscard]] /* TODO: settings dynamic class */ void * Settings::metadata() const
+{
+    return nullptr;
+}
+
+// "parameters" property
+
+[[nodiscard]] /* TODO: settings dynamic class */ void * Settings::parameters() const
+{
+    return nullptr;
+}
+
+// "execution_settings" property
+
+[[nodiscard]] /* TODO: settings dynamic class */ void * Settings::execution_settings() const
+{
+    return nullptr;
+}
+
 
 } // end of namespace vortex::turb::legacy::settings

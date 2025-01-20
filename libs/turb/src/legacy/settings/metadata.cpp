@@ -6,6 +6,8 @@
 
 #include "turb/legacy/settings/metadata.hpp"
 
+#include <nlohmann/json.hpp>
+
 namespace vortex::turb::legacy::settings
 {
 
@@ -14,5 +16,138 @@ Metadata::Metadata( nlohmann::json * data_p )
 {
     // add initial validation
 }
+
+// "sim_method" property
+
+[[nodiscard]] /* TODO: enum type */ i32 Metadata::sim_method() const
+{
+    return 0;
+}
+
+// "particle_mode" property
+
+[[nodiscard]] /* TODO: enum type */ i32 Metadata::particle_mode() const
+{
+    return 0;
+}
+
+// "gravity_type" property
+
+[[nodiscard]] /* TODO: enum type */ i32 Metadata::gravity_type() const
+{
+    return 0;
+}
+
+// "particle_kernel_type" property
+
+[[nodiscard]] /* TODO: enum type */ i32 Metadata::particle_kernel_type() const
+{
+    return 0;
+}
+
+// "k_filter" property
+
+[[nodiscard]] i32 Metadata::k_filter() const
+{
+    // TODO : Add handling of default values if property is not set.
+    return m_data_p->at( "k_filter" ).template get<i32>();
+}
+
+// "C_K" property
+
+[[nodiscard]] real Metadata::C_K() const
+{
+    // TODO : Add handling of default values if property is not set.
+    return m_data_p->at( "C_K" ).template get<real>();
+}
+
+// "target_Phi" property
+
+[[nodiscard]] real Metadata::target_Phi() const
+{
+    // TODO : Add handling of default values if property is not set.
+    return m_data_p->at( "target_Phi" ).template get<real>();
+}
+
+// "superpart_factor" property
+
+[[nodiscard]] real Metadata::superpart_factor() const
+{
+    // TODO : Add handling of default values if property is not set.
+    return m_data_p->at( "superpart_factor" ).template get<real>();
+}
+
+// "src_flow_path" property
+
+[[nodiscard]] std::string const& Metadata::src_flow_path() const
+{
+    // TODO : Add handling of default values if property is not set.
+    return m_data_p->at( "src_flow_path" ).template get_ref<std::string const&>();
+}
+
+// "src_part_path" property
+
+[[nodiscard]] std::string const& Metadata::src_part_path() const
+{
+    // TODO : Add handling of default values if property is not set.
+    return m_data_p->at( "src_part_path" ).template get_ref<std::string const&>();
+}
+
+// "part_output_delay" property
+
+[[nodiscard]] i32 Metadata::part_output_delay() const
+{
+    // TODO : Add handling of default values if property is not set.
+    return m_data_p->at( "part_output_delay" ).template get<i32>();
+}
+
+// "is_perf_full_profile_enabled" property
+
+[[nodiscard]] bool Metadata::is_perf_full_profile_enabled() const
+{
+    // TODO : Add handling of default values if property is not set.
+    return m_data_p->at( "is_perf_full_profile_enabled" ).template get<bool>();
+}
+
+// "is_perf_simple_enabled" property
+
+[[nodiscard]] bool Metadata::is_perf_simple_enabled() const
+{
+    // TODO : Add handling of default values if property is not set.
+    return m_data_p->at( "is_perf_simple_enabled" ).template get<bool>();
+}
+
+// "is_perf_part_dist_enabled" property
+
+[[nodiscard]] bool Metadata::is_perf_part_dist_enabled() const
+{
+    // TODO : Add handling of default values if property is not set.
+    return m_data_p->at( "is_perf_part_dist_enabled" ).template get<bool>();
+}
+
+// "perf_full_start" property
+
+[[nodiscard]] i32 Metadata::perf_full_start() const
+{
+    // TODO : Add handling of default values if property is not set.
+    return m_data_p->at( "perf_full_start" ).template get<i32>();
+}
+
+// "perf_full_end" property
+
+[[nodiscard]] i32 Metadata::perf_full_end() const
+{
+    // TODO : Add handling of default values if property is not set.
+    return m_data_p->at( "perf_full_end" ).template get<i32>();
+}
+
+// "part_perf_interval" property
+
+[[nodiscard]] i32 Metadata::part_perf_interval() const
+{
+    // TODO : Add handling of default values if property is not set.
+    return m_data_p->at( "part_perf_interval" ).template get<i32>();
+}
+
 
 } // end of namespace vortex::turb::legacy::settings

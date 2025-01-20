@@ -8,6 +8,8 @@
 
 #include <nlohmann/json_fwd.hpp>
 
+#include "core/common/types.hpp"
+
 namespace vortex::turb::legacy::settings
 {
 
@@ -15,6 +17,101 @@ class Parameters
 {
 public:
     explicit Parameters( nlohmann::json * data_p );
+
+public:
+    // "N" property
+    [[nodiscard]] i32 N() const;
+
+    // "N_subdomain" property
+    [[nodiscard]] i32 N_subdomain() const;
+
+    // "Nt_max" property
+    [[nodiscard]] i32 Nt_max() const;
+
+    // "dt" property
+    [[nodiscard]] real dt() const;
+
+    // "rnu" property
+    [[nodiscard]] real rnu() const;
+
+    // "t_init" property
+    [[nodiscard]] real t_init() const;
+
+    // "is_flow_generated" property
+    [[nodiscard]] bool is_flow_generated() const;
+
+    // "deterministic_seed" property
+    [[nodiscard]] u64 deterministic_seed() const;
+
+    // "input_velo_index" property
+    [[nodiscard]] i32 input_velo_index() const;
+
+    // "forcing_type" property
+    [[nodiscard]] /* TODO: enum type */ i32 forcing_type() const;
+
+    // "deterministic_forcing_k_1" property
+    [[nodiscard]] real deterministic_forcing_k_1() const;
+
+    // "deterministic_forcing_k_2" property
+    [[nodiscard]] real deterministic_forcing_k_2() const;
+
+    // "stochastic_seed" property
+    [[nodiscard]] u64 stochastic_seed() const;
+
+    // "stats_output_interval" property
+    [[nodiscard]] i32 stats_output_interval() const;
+
+    // "spectrum_output_interval" property
+    [[nodiscard]] i32 spectrum_output_interval() const;
+
+    // "is_stats_output_extended" property
+    [[nodiscard]] bool is_stats_output_extended() const;
+
+    // "rho_part" property
+    [[nodiscard]] real rho_part() const;
+
+    // "rho_fluid" property
+    [[nodiscard]] real rho_fluid() const;
+
+    // "eta_k_init" property
+    [[nodiscard]] real eta_k_init() const;
+
+    // "tau_k_init" property
+    [[nodiscard]] real tau_k_init() const;
+
+    // "shell_thickness" property
+    [[nodiscard]] real shell_thickness() const;
+
+    // "epsilon_env" property
+    [[nodiscard]] real epsilon_env() const;
+
+    // "nu_fluid" property
+    [[nodiscard]] real nu_fluid() const;
+
+    // "gravity" property
+    [[nodiscard]] real gravity() const;
+
+    // "is_part_generated" property
+    [[nodiscard]] bool is_part_generated() const;
+
+    // "is_part_overlapping" property
+    [[nodiscard]] bool is_part_overlapping() const;
+
+    // "is_part_hdi_enabled" property
+    [[nodiscard]] bool is_part_hdi_enabled() const;
+
+    // "part_hdi_trunc_enabled" property
+    [[nodiscard]] real part_hdi_trunc_enabled() const;
+
+    // "N_part" property
+    [[nodiscard]] i32 N_part() const;
+
+    // "drag_type" property
+    [[nodiscard]] /* TODO: enum type */ i32 drag_type() const;
+
+    // "a" property
+    [[nodiscard]] real a() const;
+
 
 private:
     nlohmann::json * m_data_p = nullptr;

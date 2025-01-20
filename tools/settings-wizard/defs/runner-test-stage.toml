@@ -6,14 +6,8 @@ skip_static_generation = true
 languages = ["cpp"]
 
 
-[[__includes__]]
-from = "turb-legacy-settings"
-import.modules = [ "settings" ]
-
-
 [name]
 type = "string"
 
 [settings]
-type = "module"
-module.name = "settings"
+type = "settings"
