@@ -5,20 +5,21 @@
 // 
 
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/matchers/catch_matchers_floating_point.hpp>
 #include <nlohmann/json.hpp>
 
 #include "runner/config/test_fixture.hpp"
 
-TEST_CASE("TestFixture - Sample Test", "[sample]")
+TEST_CASE( "TestFixture - Sample Test", "[sample]" )
 {
     vortex::runner::config::TestFixture( nullptr );
 
-    REQUIRE(true);
+    REQUIRE( true );
 }
 
 // "name" property
 
-TEST_CASE("TestFixture - property: \"name\" - getter", "[settings]")
+TEST_CASE( "TestFixture - property: \"name\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "name", "stest" } };
     auto obj_p = &obj;
@@ -26,12 +27,12 @@ TEST_CASE("TestFixture - property: \"name\" - getter", "[settings]")
 
     auto value = s.name();
 
-    REQUIRE(value == "stest");
+    REQUIRE( value == "stest" );
 }
 
 // "root_path" property
 
-TEST_CASE("TestFixture - property: \"root_path\" - getter", "[settings]")
+TEST_CASE( "TestFixture - property: \"root_path\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "root_path", "ptest" } };
     auto obj_p = &obj;
@@ -39,43 +40,43 @@ TEST_CASE("TestFixture - property: \"root_path\" - getter", "[settings]")
 
     auto value = s.root_path();
 
-    REQUIRE(value == "ptest");
+    REQUIRE( value == "ptest" );
 }
 
 // "default_settings" property
 
-TEST_CASE("TestFixture - property: \"default_settings\" - getter", "[settings]")
+TEST_CASE( "TestFixture - property: \"default_settings\" - getter", "[settings]" )
 {
     nlohmann::json * obj_p = nullptr;
     auto s = vortex::runner::config::TestFixture{ obj_p };
 
     auto value = s.default_settings();
 
-    REQUIRE(value == nullptr);
+    REQUIRE( value == nullptr );
 }
 
 // "test_cases" property
 
-TEST_CASE("TestFixture - property: \"test_cases\" - getter", "[settings]")
+TEST_CASE( "TestFixture - property: \"test_cases\" - getter", "[settings]" )
 {
     nlohmann::json * obj_p = nullptr;
     auto s = vortex::runner::config::TestFixture{ obj_p };
 
     auto value = s.test_cases();
 
-    REQUIRE(value == nullptr);
+    REQUIRE( value == nullptr );
 }
 
 // "test_stages" property
 
-TEST_CASE("TestFixture - property: \"test_stages\" - getter", "[settings]")
+TEST_CASE( "TestFixture - property: \"test_stages\" - getter", "[settings]" )
 {
     nlohmann::json * obj_p = nullptr;
     auto s = vortex::runner::config::TestFixture{ obj_p };
 
     auto value = s.test_stages();
 
-    REQUIRE(value == nullptr);
+    REQUIRE( value == nullptr );
 }
 
 

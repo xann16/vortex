@@ -5,20 +5,21 @@
 // 
 
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/matchers/catch_matchers_floating_point.hpp>
 #include <nlohmann/json.hpp>
 
 #include "runner/config/test_stage.hpp"
 
-TEST_CASE("TestStage - Sample Test", "[sample]")
+TEST_CASE( "TestStage - Sample Test", "[sample]" )
 {
     vortex::runner::config::TestStage( nullptr );
 
-    REQUIRE(true);
+    REQUIRE( true );
 }
 
 // "name" property
 
-TEST_CASE("TestStage - property: \"name\" - getter", "[settings]")
+TEST_CASE( "TestStage - property: \"name\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "name", "stest" } };
     auto obj_p = &obj;
@@ -26,19 +27,19 @@ TEST_CASE("TestStage - property: \"name\" - getter", "[settings]")
 
     auto value = s.name();
 
-    REQUIRE(value == "stest");
+    REQUIRE( value == "stest" );
 }
 
 // "settings" property
 
-TEST_CASE("TestStage - property: \"settings\" - getter", "[settings]")
+TEST_CASE( "TestStage - property: \"settings\" - getter", "[settings]" )
 {
     nlohmann::json * obj_p = nullptr;
     auto s = vortex::runner::config::TestStage{ obj_p };
 
     auto value = s.settings();
 
-    REQUIRE(value == nullptr);
+    REQUIRE( value == nullptr );
 }
 
 

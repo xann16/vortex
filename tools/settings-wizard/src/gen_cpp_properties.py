@@ -1,6 +1,7 @@
 from cpp_utils import get_class_name, get_namespace, add_blank, add_line, add_block_comment, add_method_declaration, add_method_definition, begin_test_case, end_test_case, add_require
 from typing import Any
 
+FP_CMP_EPS = 0.00001
 BASE_TYPES = {
     'boolean': ('bool',        True,  'true'),
     'i8':      ('i8',          True,  '-4'),
@@ -81,9 +82,12 @@ def _add_getter_test(ls: list[str], i: int, class_name: str, name: str, p: dict[
     elif property_type == 'enum':
         i = add_require(ls, i, 'value == 0')
     elif property_type in BASE_TYPES:
+        is_fp : bool = property_type in ['f32', 'f64', 'real']
         val_str : str = 'value' if property_type in ['boolean', 'string', 'path'] else f'static_cast< vortex::{BASE_TYPES[property_type][0]} >( value )'
-
-        i = add_require(ls, i, f'{val_str} == {BASE_TYPES[property_type][2]}')
+        if is_fp:
+            i = add_require(ls, i, f'{val_str}, Catch::Matchers::WithinAbs( {BASE_TYPES[property_type][2]}, {FP_CMP_EPS} )', suffix='that')
+        else:
+            i = add_require(ls, i, f'{val_str} == {BASE_TYPES[property_type][2]}')
     else:
         raise RuntimeError(f'Unexpected property type: {property_type}.')
 

@@ -5,20 +5,21 @@
 // 
 
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/matchers/catch_matchers_floating_point.hpp>
 #include <nlohmann/json.hpp>
 
 #include "turb/legacy/settings/parameters.hpp"
 
-TEST_CASE("Parameters - Sample Test", "[sample]")
+TEST_CASE( "Parameters - Sample Test", "[sample]" )
 {
     vortex::turb::legacy::settings::Parameters( nullptr );
 
-    REQUIRE(true);
+    REQUIRE( true );
 }
 
 // "N" property
 
-TEST_CASE("Parameters - property: \"N\" - getter", "[settings]")
+TEST_CASE( "Parameters - property: \"N\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "N", -2l } };
     auto obj_p = &obj;
@@ -26,12 +27,12 @@ TEST_CASE("Parameters - property: \"N\" - getter", "[settings]")
 
     auto value = s.N();
 
-    REQUIRE(static_cast< vortex::i32 >( value ) == -2l);
+    REQUIRE( static_cast< vortex::i32 >( value ) == -2l );
 }
 
 // "N_subdomain" property
 
-TEST_CASE("Parameters - property: \"N_subdomain\" - getter", "[settings]")
+TEST_CASE( "Parameters - property: \"N_subdomain\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "N_subdomain", -2l } };
     auto obj_p = &obj;
@@ -39,12 +40,12 @@ TEST_CASE("Parameters - property: \"N_subdomain\" - getter", "[settings]")
 
     auto value = s.N_subdomain();
 
-    REQUIRE(static_cast< vortex::i32 >( value ) == -2l);
+    REQUIRE( static_cast< vortex::i32 >( value ) == -2l );
 }
 
 // "Nt_max" property
 
-TEST_CASE("Parameters - property: \"Nt_max\" - getter", "[settings]")
+TEST_CASE( "Parameters - property: \"Nt_max\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "Nt_max", -2l } };
     auto obj_p = &obj;
@@ -52,12 +53,12 @@ TEST_CASE("Parameters - property: \"Nt_max\" - getter", "[settings]")
 
     auto value = s.Nt_max();
 
-    REQUIRE(static_cast< vortex::i32 >( value ) == -2l);
+    REQUIRE( static_cast< vortex::i32 >( value ) == -2l );
 }
 
 // "dt" property
 
-TEST_CASE("Parameters - property: \"dt\" - getter", "[settings]")
+TEST_CASE( "Parameters - property: \"dt\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "dt", 0.3 } };
     auto obj_p = &obj;
@@ -65,12 +66,12 @@ TEST_CASE("Parameters - property: \"dt\" - getter", "[settings]")
 
     auto value = s.dt();
 
-    REQUIRE(static_cast< vortex::real >( value ) == 0.3);
+    REQUIRE_THAT( static_cast< vortex::real >( value ), Catch::Matchers::WithinAbs( 0.3, 1e-05 ) );
 }
 
 // "rnu" property
 
-TEST_CASE("Parameters - property: \"rnu\" - getter", "[settings]")
+TEST_CASE( "Parameters - property: \"rnu\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "rnu", 0.3 } };
     auto obj_p = &obj;
@@ -78,12 +79,12 @@ TEST_CASE("Parameters - property: \"rnu\" - getter", "[settings]")
 
     auto value = s.rnu();
 
-    REQUIRE(static_cast< vortex::real >( value ) == 0.3);
+    REQUIRE_THAT( static_cast< vortex::real >( value ), Catch::Matchers::WithinAbs( 0.3, 1e-05 ) );
 }
 
 // "t_init" property
 
-TEST_CASE("Parameters - property: \"t_init\" - getter", "[settings]")
+TEST_CASE( "Parameters - property: \"t_init\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "t_init", 0.3 } };
     auto obj_p = &obj;
@@ -91,12 +92,12 @@ TEST_CASE("Parameters - property: \"t_init\" - getter", "[settings]")
 
     auto value = s.t_init();
 
-    REQUIRE(static_cast< vortex::real >( value ) == 0.3);
+    REQUIRE_THAT( static_cast< vortex::real >( value ), Catch::Matchers::WithinAbs( 0.3, 1e-05 ) );
 }
 
 // "is_flow_generated" property
 
-TEST_CASE("Parameters - property: \"is_flow_generated\" - getter", "[settings]")
+TEST_CASE( "Parameters - property: \"is_flow_generated\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "is_flow_generated", true } };
     auto obj_p = &obj;
@@ -104,12 +105,12 @@ TEST_CASE("Parameters - property: \"is_flow_generated\" - getter", "[settings]")
 
     auto value = s.is_flow_generated();
 
-    REQUIRE(value == true);
+    REQUIRE( value == true );
 }
 
 // "deterministic_seed" property
 
-TEST_CASE("Parameters - property: \"deterministic_seed\" - getter", "[settings]")
+TEST_CASE( "Parameters - property: \"deterministic_seed\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "deterministic_seed", 4ull } };
     auto obj_p = &obj;
@@ -117,12 +118,12 @@ TEST_CASE("Parameters - property: \"deterministic_seed\" - getter", "[settings]"
 
     auto value = s.deterministic_seed();
 
-    REQUIRE(static_cast< vortex::u64 >( value ) == 4ull);
+    REQUIRE( static_cast< vortex::u64 >( value ) == 4ull );
 }
 
 // "input_velo_index" property
 
-TEST_CASE("Parameters - property: \"input_velo_index\" - getter", "[settings]")
+TEST_CASE( "Parameters - property: \"input_velo_index\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "input_velo_index", -2l } };
     auto obj_p = &obj;
@@ -130,24 +131,24 @@ TEST_CASE("Parameters - property: \"input_velo_index\" - getter", "[settings]")
 
     auto value = s.input_velo_index();
 
-    REQUIRE(static_cast< vortex::i32 >( value ) == -2l);
+    REQUIRE( static_cast< vortex::i32 >( value ) == -2l );
 }
 
 // "forcing_type" property
 
-TEST_CASE("Parameters - property: \"forcing_type\" - getter", "[settings]")
+TEST_CASE( "Parameters - property: \"forcing_type\" - getter", "[settings]" )
 {
     nlohmann::json * obj_p = nullptr;
     auto s = vortex::turb::legacy::settings::Parameters{ obj_p };
 
     auto value = s.forcing_type();
 
-    REQUIRE(value == 0);
+    REQUIRE( value == 0 );
 }
 
 // "deterministic_forcing_k_1" property
 
-TEST_CASE("Parameters - property: \"deterministic_forcing_k_1\" - getter", "[settings]")
+TEST_CASE( "Parameters - property: \"deterministic_forcing_k_1\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "deterministic_forcing_k_1", 0.3 } };
     auto obj_p = &obj;
@@ -155,12 +156,12 @@ TEST_CASE("Parameters - property: \"deterministic_forcing_k_1\" - getter", "[set
 
     auto value = s.deterministic_forcing_k_1();
 
-    REQUIRE(static_cast< vortex::real >( value ) == 0.3);
+    REQUIRE_THAT( static_cast< vortex::real >( value ), Catch::Matchers::WithinAbs( 0.3, 1e-05 ) );
 }
 
 // "deterministic_forcing_k_2" property
 
-TEST_CASE("Parameters - property: \"deterministic_forcing_k_2\" - getter", "[settings]")
+TEST_CASE( "Parameters - property: \"deterministic_forcing_k_2\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "deterministic_forcing_k_2", 0.3 } };
     auto obj_p = &obj;
@@ -168,12 +169,12 @@ TEST_CASE("Parameters - property: \"deterministic_forcing_k_2\" - getter", "[set
 
     auto value = s.deterministic_forcing_k_2();
 
-    REQUIRE(static_cast< vortex::real >( value ) == 0.3);
+    REQUIRE_THAT( static_cast< vortex::real >( value ), Catch::Matchers::WithinAbs( 0.3, 1e-05 ) );
 }
 
 // "stochastic_seed" property
 
-TEST_CASE("Parameters - property: \"stochastic_seed\" - getter", "[settings]")
+TEST_CASE( "Parameters - property: \"stochastic_seed\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "stochastic_seed", 4ull } };
     auto obj_p = &obj;
@@ -181,12 +182,12 @@ TEST_CASE("Parameters - property: \"stochastic_seed\" - getter", "[settings]")
 
     auto value = s.stochastic_seed();
 
-    REQUIRE(static_cast< vortex::u64 >( value ) == 4ull);
+    REQUIRE( static_cast< vortex::u64 >( value ) == 4ull );
 }
 
 // "stats_output_interval" property
 
-TEST_CASE("Parameters - property: \"stats_output_interval\" - getter", "[settings]")
+TEST_CASE( "Parameters - property: \"stats_output_interval\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "stats_output_interval", -2l } };
     auto obj_p = &obj;
@@ -194,12 +195,12 @@ TEST_CASE("Parameters - property: \"stats_output_interval\" - getter", "[setting
 
     auto value = s.stats_output_interval();
 
-    REQUIRE(static_cast< vortex::i32 >( value ) == -2l);
+    REQUIRE( static_cast< vortex::i32 >( value ) == -2l );
 }
 
 // "spectrum_output_interval" property
 
-TEST_CASE("Parameters - property: \"spectrum_output_interval\" - getter", "[settings]")
+TEST_CASE( "Parameters - property: \"spectrum_output_interval\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "spectrum_output_interval", -2l } };
     auto obj_p = &obj;
@@ -207,12 +208,12 @@ TEST_CASE("Parameters - property: \"spectrum_output_interval\" - getter", "[sett
 
     auto value = s.spectrum_output_interval();
 
-    REQUIRE(static_cast< vortex::i32 >( value ) == -2l);
+    REQUIRE( static_cast< vortex::i32 >( value ) == -2l );
 }
 
 // "is_stats_output_extended" property
 
-TEST_CASE("Parameters - property: \"is_stats_output_extended\" - getter", "[settings]")
+TEST_CASE( "Parameters - property: \"is_stats_output_extended\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "is_stats_output_extended", true } };
     auto obj_p = &obj;
@@ -220,12 +221,12 @@ TEST_CASE("Parameters - property: \"is_stats_output_extended\" - getter", "[sett
 
     auto value = s.is_stats_output_extended();
 
-    REQUIRE(value == true);
+    REQUIRE( value == true );
 }
 
 // "rho_part" property
 
-TEST_CASE("Parameters - property: \"rho_part\" - getter", "[settings]")
+TEST_CASE( "Parameters - property: \"rho_part\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "rho_part", 0.3 } };
     auto obj_p = &obj;
@@ -233,12 +234,12 @@ TEST_CASE("Parameters - property: \"rho_part\" - getter", "[settings]")
 
     auto value = s.rho_part();
 
-    REQUIRE(static_cast< vortex::real >( value ) == 0.3);
+    REQUIRE_THAT( static_cast< vortex::real >( value ), Catch::Matchers::WithinAbs( 0.3, 1e-05 ) );
 }
 
 // "rho_fluid" property
 
-TEST_CASE("Parameters - property: \"rho_fluid\" - getter", "[settings]")
+TEST_CASE( "Parameters - property: \"rho_fluid\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "rho_fluid", 0.3 } };
     auto obj_p = &obj;
@@ -246,12 +247,12 @@ TEST_CASE("Parameters - property: \"rho_fluid\" - getter", "[settings]")
 
     auto value = s.rho_fluid();
 
-    REQUIRE(static_cast< vortex::real >( value ) == 0.3);
+    REQUIRE_THAT( static_cast< vortex::real >( value ), Catch::Matchers::WithinAbs( 0.3, 1e-05 ) );
 }
 
 // "eta_k_init" property
 
-TEST_CASE("Parameters - property: \"eta_k_init\" - getter", "[settings]")
+TEST_CASE( "Parameters - property: \"eta_k_init\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "eta_k_init", 0.3 } };
     auto obj_p = &obj;
@@ -259,12 +260,12 @@ TEST_CASE("Parameters - property: \"eta_k_init\" - getter", "[settings]")
 
     auto value = s.eta_k_init();
 
-    REQUIRE(static_cast< vortex::real >( value ) == 0.3);
+    REQUIRE_THAT( static_cast< vortex::real >( value ), Catch::Matchers::WithinAbs( 0.3, 1e-05 ) );
 }
 
 // "tau_k_init" property
 
-TEST_CASE("Parameters - property: \"tau_k_init\" - getter", "[settings]")
+TEST_CASE( "Parameters - property: \"tau_k_init\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "tau_k_init", 0.3 } };
     auto obj_p = &obj;
@@ -272,12 +273,12 @@ TEST_CASE("Parameters - property: \"tau_k_init\" - getter", "[settings]")
 
     auto value = s.tau_k_init();
 
-    REQUIRE(static_cast< vortex::real >( value ) == 0.3);
+    REQUIRE_THAT( static_cast< vortex::real >( value ), Catch::Matchers::WithinAbs( 0.3, 1e-05 ) );
 }
 
 // "shell_thickness" property
 
-TEST_CASE("Parameters - property: \"shell_thickness\" - getter", "[settings]")
+TEST_CASE( "Parameters - property: \"shell_thickness\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "shell_thickness", 0.3 } };
     auto obj_p = &obj;
@@ -285,12 +286,12 @@ TEST_CASE("Parameters - property: \"shell_thickness\" - getter", "[settings]")
 
     auto value = s.shell_thickness();
 
-    REQUIRE(static_cast< vortex::real >( value ) == 0.3);
+    REQUIRE_THAT( static_cast< vortex::real >( value ), Catch::Matchers::WithinAbs( 0.3, 1e-05 ) );
 }
 
 // "epsilon_env" property
 
-TEST_CASE("Parameters - property: \"epsilon_env\" - getter", "[settings]")
+TEST_CASE( "Parameters - property: \"epsilon_env\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "epsilon_env", 0.3 } };
     auto obj_p = &obj;
@@ -298,12 +299,12 @@ TEST_CASE("Parameters - property: \"epsilon_env\" - getter", "[settings]")
 
     auto value = s.epsilon_env();
 
-    REQUIRE(static_cast< vortex::real >( value ) == 0.3);
+    REQUIRE_THAT( static_cast< vortex::real >( value ), Catch::Matchers::WithinAbs( 0.3, 1e-05 ) );
 }
 
 // "nu_fluid" property
 
-TEST_CASE("Parameters - property: \"nu_fluid\" - getter", "[settings]")
+TEST_CASE( "Parameters - property: \"nu_fluid\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "nu_fluid", 0.3 } };
     auto obj_p = &obj;
@@ -311,12 +312,12 @@ TEST_CASE("Parameters - property: \"nu_fluid\" - getter", "[settings]")
 
     auto value = s.nu_fluid();
 
-    REQUIRE(static_cast< vortex::real >( value ) == 0.3);
+    REQUIRE_THAT( static_cast< vortex::real >( value ), Catch::Matchers::WithinAbs( 0.3, 1e-05 ) );
 }
 
 // "gravity" property
 
-TEST_CASE("Parameters - property: \"gravity\" - getter", "[settings]")
+TEST_CASE( "Parameters - property: \"gravity\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "gravity", 0.3 } };
     auto obj_p = &obj;
@@ -324,12 +325,12 @@ TEST_CASE("Parameters - property: \"gravity\" - getter", "[settings]")
 
     auto value = s.gravity();
 
-    REQUIRE(static_cast< vortex::real >( value ) == 0.3);
+    REQUIRE_THAT( static_cast< vortex::real >( value ), Catch::Matchers::WithinAbs( 0.3, 1e-05 ) );
 }
 
 // "is_part_generated" property
 
-TEST_CASE("Parameters - property: \"is_part_generated\" - getter", "[settings]")
+TEST_CASE( "Parameters - property: \"is_part_generated\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "is_part_generated", true } };
     auto obj_p = &obj;
@@ -337,12 +338,12 @@ TEST_CASE("Parameters - property: \"is_part_generated\" - getter", "[settings]")
 
     auto value = s.is_part_generated();
 
-    REQUIRE(value == true);
+    REQUIRE( value == true );
 }
 
 // "is_part_overlapping" property
 
-TEST_CASE("Parameters - property: \"is_part_overlapping\" - getter", "[settings]")
+TEST_CASE( "Parameters - property: \"is_part_overlapping\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "is_part_overlapping", true } };
     auto obj_p = &obj;
@@ -350,12 +351,12 @@ TEST_CASE("Parameters - property: \"is_part_overlapping\" - getter", "[settings]
 
     auto value = s.is_part_overlapping();
 
-    REQUIRE(value == true);
+    REQUIRE( value == true );
 }
 
 // "is_part_hdi_enabled" property
 
-TEST_CASE("Parameters - property: \"is_part_hdi_enabled\" - getter", "[settings]")
+TEST_CASE( "Parameters - property: \"is_part_hdi_enabled\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "is_part_hdi_enabled", true } };
     auto obj_p = &obj;
@@ -363,12 +364,12 @@ TEST_CASE("Parameters - property: \"is_part_hdi_enabled\" - getter", "[settings]
 
     auto value = s.is_part_hdi_enabled();
 
-    REQUIRE(value == true);
+    REQUIRE( value == true );
 }
 
 // "part_hdi_trunc_enabled" property
 
-TEST_CASE("Parameters - property: \"part_hdi_trunc_enabled\" - getter", "[settings]")
+TEST_CASE( "Parameters - property: \"part_hdi_trunc_enabled\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "part_hdi_trunc_enabled", 0.3 } };
     auto obj_p = &obj;
@@ -376,12 +377,12 @@ TEST_CASE("Parameters - property: \"part_hdi_trunc_enabled\" - getter", "[settin
 
     auto value = s.part_hdi_trunc_enabled();
 
-    REQUIRE(static_cast< vortex::real >( value ) == 0.3);
+    REQUIRE_THAT( static_cast< vortex::real >( value ), Catch::Matchers::WithinAbs( 0.3, 1e-05 ) );
 }
 
 // "N_part" property
 
-TEST_CASE("Parameters - property: \"N_part\" - getter", "[settings]")
+TEST_CASE( "Parameters - property: \"N_part\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "N_part", -2l } };
     auto obj_p = &obj;
@@ -389,24 +390,24 @@ TEST_CASE("Parameters - property: \"N_part\" - getter", "[settings]")
 
     auto value = s.N_part();
 
-    REQUIRE(static_cast< vortex::i32 >( value ) == -2l);
+    REQUIRE( static_cast< vortex::i32 >( value ) == -2l );
 }
 
 // "drag_type" property
 
-TEST_CASE("Parameters - property: \"drag_type\" - getter", "[settings]")
+TEST_CASE( "Parameters - property: \"drag_type\" - getter", "[settings]" )
 {
     nlohmann::json * obj_p = nullptr;
     auto s = vortex::turb::legacy::settings::Parameters{ obj_p };
 
     auto value = s.drag_type();
 
-    REQUIRE(value == 0);
+    REQUIRE( value == 0 );
 }
 
 // "a" property
 
-TEST_CASE("Parameters - property: \"a\" - getter", "[settings]")
+TEST_CASE( "Parameters - property: \"a\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "a", 0.3 } };
     auto obj_p = &obj;
@@ -414,7 +415,7 @@ TEST_CASE("Parameters - property: \"a\" - getter", "[settings]")
 
     auto value = s.a();
 
-    REQUIRE(static_cast< vortex::real >( value ) == 0.3);
+    REQUIRE_THAT( static_cast< vortex::real >( value ), Catch::Matchers::WithinAbs( 0.3, 1e-05 ) );
 }
 
 

@@ -7,9 +7,9 @@
 #include <catch2/catch_test_macros.hpp>
 #include "turb/legacy/settings/providers/json_settings_provider.hpp"
 
-TEST_CASE("JsonSettingsProvider - Sample Test", "[sample]")
+TEST_CASE( "JsonSettingsProvider - Sample Test", "[sample]" )
 {
     vortex::turb::legacy::settings::providers::JsonSettingsProvider();
 
-    REQUIRE(true);
+    REQUIRE( true );
 }

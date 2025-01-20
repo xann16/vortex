@@ -143,11 +143,13 @@ def add_method_definition(ls: list[str], i: int, method_name: str, return_type: 
 # TESTING
 
 def begin_test_case(ls: list[str], i: int, case_name: str, case_tags: str = '') -> None:
-    i = add_line(ls, i, f'TEST_CASE("{case_name}", "[{case_tags}]")')
+    i = add_line(ls, i, f'TEST_CASE( "{case_name}", "[{case_tags}]" )')
     return open_brace(ls, i)
 
 def end_test_case(ls: list[str], i: int) -> None:
     return close_brace(ls, i)
 
-def add_require(ls: list[str], i: int, condition: str) -> None:
-    return add_line(ls, i, f'REQUIRE({condition});')
+def add_require(ls: list[str], i: int, condition: str, suffix: str = '') -> None:
+    if suffix:
+        suffix = '_' + suffix.upper()
+    return add_line(ls, i, f'REQUIRE{suffix}( {condition} );')

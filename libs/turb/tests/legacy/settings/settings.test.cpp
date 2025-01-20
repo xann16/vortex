@@ -5,51 +5,52 @@
 // 
 
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/matchers/catch_matchers_floating_point.hpp>
 #include <nlohmann/json.hpp>
 
 #include "turb/legacy/settings/settings.hpp"
 
-TEST_CASE("Settings - Sample Test", "[sample]")
+TEST_CASE( "Settings - Sample Test", "[sample]" )
 {
     vortex::turb::legacy::settings::Settings( nullptr );
 
-    REQUIRE(true);
+    REQUIRE( true );
 }
 
 // "metadata" property
 
-TEST_CASE("Settings - property: \"metadata\" - getter", "[settings]")
+TEST_CASE( "Settings - property: \"metadata\" - getter", "[settings]" )
 {
     nlohmann::json * obj_p = nullptr;
     auto s = vortex::turb::legacy::settings::Settings{ obj_p };
 
     auto value = s.metadata();
 
-    REQUIRE(value == nullptr);
+    REQUIRE( value == nullptr );
 }
 
 // "parameters" property
 
-TEST_CASE("Settings - property: \"parameters\" - getter", "[settings]")
+TEST_CASE( "Settings - property: \"parameters\" - getter", "[settings]" )
 {
     nlohmann::json * obj_p = nullptr;
     auto s = vortex::turb::legacy::settings::Settings{ obj_p };
 
     auto value = s.parameters();
 
-    REQUIRE(value == nullptr);
+    REQUIRE( value == nullptr );
 }
 
 // "execution_settings" property
 
-TEST_CASE("Settings - property: \"execution_settings\" - getter", "[settings]")
+TEST_CASE( "Settings - property: \"execution_settings\" - getter", "[settings]" )
 {
     nlohmann::json * obj_p = nullptr;
     auto s = vortex::turb::legacy::settings::Settings{ obj_p };
 
     auto value = s.execution_settings();
 
-    REQUIRE(value == nullptr);
+    REQUIRE( value == nullptr );
 }
 
 
