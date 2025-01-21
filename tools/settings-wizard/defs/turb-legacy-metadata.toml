@@ -29,12 +29,14 @@ type = "i32"
 
 [C_K]
 type = "real"
+default = 2.5
 
 [target_Phi]
 type = "real"
 
 [superpart_factor]
 type = "real"
+default = 1
 
 [src_flow_path]
 type = "path"

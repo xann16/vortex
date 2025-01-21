@@ -24,12 +24,24 @@ public:
 public:
     // "metadata" property
     [[nodiscard]] /* TODO: settings dynamic class */ void * metadata() const;
+    [[nodiscard]] constexpr /* TODO: settings dynamic class */ void * default_metadata() const noexcept
+    {
+        return /* TODO: settings dynamic class constructor from nullptr */ nullptr;
+    }
 
     // "parameters" property
     [[nodiscard]] /* TODO: settings dynamic class */ void * parameters() const;
+    [[nodiscard]] constexpr /* TODO: settings dynamic class */ void * default_parameters() const noexcept
+    {
+        return /* TODO: settings dynamic class constructor from nullptr */ nullptr;
+    }
 
     // "execution_settings" property
     [[nodiscard]] /* TODO: settings dynamic class */ void * execution_settings() const;
+    [[nodiscard]] constexpr /* TODO: settings dynamic class */ void * default_execution_settings() const noexcept
+    {
+        return /* TODO: settings dynamic class constructor from nullptr */ nullptr;
+    }
 
 
 private:

@@ -21,36 +21,33 @@ TEST_CASE( "Settings - Sample Test", "[sample]" )
 
 TEST_CASE( "Settings - property: \"metadata\" - getter", "[settings]" )
 {
-    nlohmann::json * obj_p = nullptr;
-    auto s = vortex::turb::legacy::settings::Settings{ obj_p };
+    auto s_null = vortex::turb::legacy::settings::Settings{ nullptr };
 
-    auto value = s.metadata();
+    auto default_value = s_null.metadata();
 
-    REQUIRE( value == nullptr );
+    REQUIRE( default_value == nullptr );
 }
 
 // "parameters" property
 
 TEST_CASE( "Settings - property: \"parameters\" - getter", "[settings]" )
 {
-    nlohmann::json * obj_p = nullptr;
-    auto s = vortex::turb::legacy::settings::Settings{ obj_p };
+    auto s_null = vortex::turb::legacy::settings::Settings{ nullptr };
 
-    auto value = s.parameters();
+    auto default_value = s_null.parameters();
 
-    REQUIRE( value == nullptr );
+    REQUIRE( default_value == nullptr );
 }
 
 // "execution_settings" property
 
 TEST_CASE( "Settings - property: \"execution_settings\" - getter", "[settings]" )
 {
-    nlohmann::json * obj_p = nullptr;
-    auto s = vortex::turb::legacy::settings::Settings{ obj_p };
+    auto s_null = vortex::turb::legacy::settings::Settings{ nullptr };
 
-    auto value = s.execution_settings();
+    auto default_value = s_null.execution_settings();
 
-    REQUIRE( value == nullptr );
+    REQUIRE( default_value == nullptr );
 }
 
 

@@ -12,12 +12,15 @@ type = "string"
 
 [cpu_node_count]
 type = "i32"
+default = 1
 
 [wct_limit]
 type = "f64"
+default = "60.0"
 
 [process_count]
 type = "i32"
+default = 1
 
 [is_node_overcommit_enabled]
 type = "boolean"

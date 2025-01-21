@@ -19,24 +19,29 @@ TestFixture::TestFixture( nlohmann::json * data_p )
 
 // "name" property
 
-[[nodiscard]] std::string const& TestFixture::name() const
+[[nodiscard]] std::string_view TestFixture::name() const
 {
-    // TODO : Add handling of default values if property is not set.
-    return m_data_p->at( "name" ).template get_ref<std::string const&>();
+    if ( m_data_p == nullptr ) return default_name();
+    auto it = m_data_p->find( "name" );
+    if ( it == m_data_p->end() || it->is_null() ) return default_name();
+    return std::string_view{ it->template get_ref<std::string const&>() };
 }
 
 // "root_path" property
 
-[[nodiscard]] std::string const& TestFixture::root_path() const
+[[nodiscard]] std::string_view TestFixture::root_path() const
 {
-    // TODO : Add handling of default values if property is not set.
-    return m_data_p->at( "root_path" ).template get_ref<std::string const&>();
+    if ( m_data_p == nullptr ) return default_root_path();
+    auto it = m_data_p->find( "root_path" );
+    if ( it == m_data_p->end() || it->is_null() ) return default_root_path();
+    return std::string_view{ it->template get_ref<std::string const&>() };
 }
 
 // "default_settings" property
 
 [[nodiscard]] /* TODO: settings opaque interface */ void * TestFixture::default_settings() const
 {
+    if ( m_data_p == nullptr ) throw std::runtime_error( "TestFixture: cannot get default value of unset property with settings type." );
     return nullptr;
 }
 
@@ -44,6 +49,7 @@ TestFixture::TestFixture( nlohmann::json * data_p )
 
 [[nodiscard]] /* TODO: settings dynamic class */ void * TestFixture::test_cases() const
 {
+    if ( m_data_p == nullptr ) return default_test_cases();
     return nullptr;
 }
 
@@ -51,6 +57,7 @@ TestFixture::TestFixture( nlohmann::json * data_p )
 
 [[nodiscard]] /* TODO: settings dynamic class */ void * TestFixture::test_stages() const
 {
+    if ( m_data_p == nullptr ) return default_test_stages();
     return nullptr;
 }
 

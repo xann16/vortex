@@ -22,19 +22,35 @@ public:
 
 public:
     // "name" property
-    [[nodiscard]] std::string const& name() const;
+    [[nodiscard]] std::string_view name() const;
+    [[nodiscard]] constexpr std::string_view default_name() const noexcept
+    {
+        return std::string_view{};
+    }
 
     // "root_path" property
-    [[nodiscard]] std::string const& root_path() const;
+    [[nodiscard]] std::string_view root_path() const;
+    [[nodiscard]] constexpr std::string_view default_root_path() const noexcept
+    {
+        return ".";
+    }
 
     // "default_settings" property
     [[nodiscard]] /* TODO: settings opaque interface */ void * default_settings() const;
 
     // "test_cases" property
     [[nodiscard]] /* TODO: settings dynamic class */ void * test_cases() const;
+    [[nodiscard]] constexpr /* TODO: settings dynamic class */ void * default_test_cases() const noexcept
+    {
+        return /* TODO: settings dynamic class constructor from nullptr */ nullptr;
+    }
 
     // "test_stages" property
     [[nodiscard]] /* TODO: settings dynamic class */ void * test_stages() const;
+    [[nodiscard]] constexpr /* TODO: settings dynamic class */ void * default_test_stages() const noexcept
+    {
+        return /* TODO: settings dynamic class constructor from nullptr */ nullptr;
+    }
 
 
 private:

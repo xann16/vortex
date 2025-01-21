@@ -24,10 +24,13 @@ TEST_CASE( "TestFixture - property: \"name\" - getter", "[settings]" )
     auto obj = nlohmann::json{ { "name", "stest" } };
     auto obj_p = &obj;
     auto s = vortex::runner::config::TestFixture{ obj_p };
+    auto s_null = vortex::runner::config::TestFixture{ nullptr };
 
     auto value = s.name();
+    auto default_value = s_null.name();
 
     REQUIRE( value == "stest" );
+    REQUIRE( default_value == std::string_view{} );
 }
 
 // "root_path" property
@@ -37,46 +40,45 @@ TEST_CASE( "TestFixture - property: \"root_path\" - getter", "[settings]" )
     auto obj = nlohmann::json{ { "root_path", "ptest" } };
     auto obj_p = &obj;
     auto s = vortex::runner::config::TestFixture{ obj_p };
+    auto s_null = vortex::runner::config::TestFixture{ nullptr };
 
     auto value = s.root_path();
+    auto default_value = s_null.root_path();
 
     REQUIRE( value == "ptest" );
+    REQUIRE( default_value == "." );
 }
 
 // "default_settings" property
 
 TEST_CASE( "TestFixture - property: \"default_settings\" - getter", "[settings]" )
 {
-    nlohmann::json * obj_p = nullptr;
-    auto s = vortex::runner::config::TestFixture{ obj_p };
+    auto s_null = vortex::runner::config::TestFixture{ nullptr };
 
-    auto value = s.default_settings();
 
-    REQUIRE( value == nullptr );
+    REQUIRE_THROWS_AS( s_null.default_settings(), std::runtime_error );
 }
 
 // "test_cases" property
 
 TEST_CASE( "TestFixture - property: \"test_cases\" - getter", "[settings]" )
 {
-    nlohmann::json * obj_p = nullptr;
-    auto s = vortex::runner::config::TestFixture{ obj_p };
+    auto s_null = vortex::runner::config::TestFixture{ nullptr };
 
-    auto value = s.test_cases();
+    auto default_value = s_null.test_cases();
 
-    REQUIRE( value == nullptr );
+    REQUIRE( default_value == nullptr );
 }
 
 // "test_stages" property
 
 TEST_CASE( "TestFixture - property: \"test_stages\" - getter", "[settings]" )
 {
-    nlohmann::json * obj_p = nullptr;
-    auto s = vortex::runner::config::TestFixture{ obj_p };
+    auto s_null = vortex::runner::config::TestFixture{ nullptr };
 
-    auto value = s.test_stages();
+    auto default_value = s_null.test_stages();
 
-    REQUIRE( value == nullptr );
+    REQUIRE( default_value == nullptr );
 }
 
 

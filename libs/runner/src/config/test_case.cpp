@@ -19,24 +19,29 @@ TestCase::TestCase( nlohmann::json * data_p )
 
 // "name" property
 
-[[nodiscard]] std::string const& TestCase::name() const
+[[nodiscard]] std::string_view TestCase::name() const
 {
-    // TODO : Add handling of default values if property is not set.
-    return m_data_p->at( "name" ).template get_ref<std::string const&>();
+    if ( m_data_p == nullptr ) return default_name();
+    auto it = m_data_p->find( "name" );
+    if ( it == m_data_p->end() || it->is_null() ) return default_name();
+    return std::string_view{ it->template get_ref<std::string const&>() };
 }
 
 // "template_name" property
 
-[[nodiscard]] std::string const& TestCase::template_name() const
+[[nodiscard]] std::string_view TestCase::template_name() const
 {
-    // TODO : Add handling of default values if property is not set.
-    return m_data_p->at( "template_name" ).template get_ref<std::string const&>();
+    if ( m_data_p == nullptr ) return default_template_name();
+    auto it = m_data_p->find( "template_name" );
+    if ( it == m_data_p->end() || it->is_null() ) return default_template_name();
+    return std::string_view{ it->template get_ref<std::string const&>() };
 }
 
 // "settings" property
 
 [[nodiscard]] /* TODO: settings opaque interface */ void * TestCase::settings() const
 {
+    if ( m_data_p == nullptr ) throw std::runtime_error( "TestCase: cannot get default value of unset property with settings type." );
     return nullptr;
 }
 
@@ -44,23 +49,28 @@ TestCase::TestCase( nlohmann::json * data_p )
 
 [[nodiscard]] /* TODO: enum type */ i32 TestCase::parallel_strategy() const
 {
+    if ( m_data_p == nullptr ) return default_parallel_strategy();
     return 0;
 }
 
 // "stages" property
 
-[[nodiscard]] std::string const& TestCase::stages() const
+[[nodiscard]] std::string_view TestCase::stages() const
 {
-    // TODO : Add handling of default values if property is not set.
-    return m_data_p->at( "stages" ).template get_ref<std::string const&>();
+    if ( m_data_p == nullptr ) return default_stages();
+    auto it = m_data_p->find( "stages" );
+    if ( it == m_data_p->end() || it->is_null() ) return default_stages();
+    return std::string_view{ it->template get_ref<std::string const&>() };
 }
 
 // "process_count" property
 
 [[nodiscard]] i32 TestCase::process_count() const
 {
-    // TODO : Add handling of default values if property is not set.
-    return m_data_p->at( "process_count" ).template get<i32>();
+    if ( m_data_p == nullptr ) return default_process_count();
+    auto it = m_data_p->find( "process_count" );
+    if ( it == m_data_p->end() || it->is_null() ) return default_process_count();
+    return it->template get<i32>();
 }
 
 

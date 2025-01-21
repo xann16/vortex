@@ -9,6 +9,7 @@ type = "i32"
 
 [N_subdomain]
 type = "i32"
+default = "@N"
 
 [Nt_max]
 type = "i32"

@@ -24,10 +24,13 @@ TEST_CASE( "TestCase - property: \"name\" - getter", "[settings]" )
     auto obj = nlohmann::json{ { "name", "stest" } };
     auto obj_p = &obj;
     auto s = vortex::runner::config::TestCase{ obj_p };
+    auto s_null = vortex::runner::config::TestCase{ nullptr };
 
     auto value = s.name();
+    auto default_value = s_null.name();
 
     REQUIRE( value == "stest" );
+    REQUIRE( default_value == std::string_view{} );
 }
 
 // "template_name" property
@@ -37,34 +40,34 @@ TEST_CASE( "TestCase - property: \"template_name\" - getter", "[settings]" )
     auto obj = nlohmann::json{ { "template_name", "stest" } };
     auto obj_p = &obj;
     auto s = vortex::runner::config::TestCase{ obj_p };
+    auto s_null = vortex::runner::config::TestCase{ nullptr };
 
     auto value = s.template_name();
+    auto default_value = s_null.template_name();
 
     REQUIRE( value == "stest" );
+    REQUIRE( default_value == std::string_view{} );
 }
 
 // "settings" property
 
 TEST_CASE( "TestCase - property: \"settings\" - getter", "[settings]" )
 {
-    nlohmann::json * obj_p = nullptr;
-    auto s = vortex::runner::config::TestCase{ obj_p };
+    auto s_null = vortex::runner::config::TestCase{ nullptr };
 
-    auto value = s.settings();
 
-    REQUIRE( value == nullptr );
+    REQUIRE_THROWS_AS( s_null.settings(), std::runtime_error );
 }
 
 // "parallel_strategy" property
 
 TEST_CASE( "TestCase - property: \"parallel_strategy\" - getter", "[settings]" )
 {
-    nlohmann::json * obj_p = nullptr;
-    auto s = vortex::runner::config::TestCase{ obj_p };
+    auto s_null = vortex::runner::config::TestCase{ nullptr };
 
-    auto value = s.parallel_strategy();
+    auto default_value = s_null.parallel_strategy();
 
-    REQUIRE( value == 0 );
+    REQUIRE( default_value == 0 );
 }
 
 // "stages" property
@@ -74,10 +77,13 @@ TEST_CASE( "TestCase - property: \"stages\" - getter", "[settings]" )
     auto obj = nlohmann::json{ { "stages", "stest" } };
     auto obj_p = &obj;
     auto s = vortex::runner::config::TestCase{ obj_p };
+    auto s_null = vortex::runner::config::TestCase{ nullptr };
 
     auto value = s.stages();
+    auto default_value = s_null.stages();
 
     REQUIRE( value == "stest" );
+    REQUIRE( default_value == std::string_view{} );
 }
 
 // "process_count" property
@@ -87,10 +93,13 @@ TEST_CASE( "TestCase - property: \"process_count\" - getter", "[settings]" )
     auto obj = nlohmann::json{ { "process_count", -2l } };
     auto obj_p = &obj;
     auto s = vortex::runner::config::TestCase{ obj_p };
+    auto s_null = vortex::runner::config::TestCase{ nullptr };
 
     auto value = s.process_count();
+    auto default_value = s_null.process_count();
 
     REQUIRE( static_cast< vortex::i32 >( value ) == -2l );
+    REQUIRE( static_cast< vortex::i32 >( default_value ) == 1 );
 }
 
 

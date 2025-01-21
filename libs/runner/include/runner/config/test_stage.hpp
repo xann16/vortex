@@ -20,7 +20,11 @@ public:
 
 public:
     // "name" property
-    [[nodiscard]] std::string const& name() const;
+    [[nodiscard]] std::string_view name() const;
+    [[nodiscard]] constexpr std::string_view default_name() const noexcept
+    {
+        return std::string_view{};
+    }
 
     // "settings" property
     [[nodiscard]] /* TODO: settings opaque interface */ void * settings() const;

@@ -26,3 +26,4 @@ is_array = true
 
 [process_count]
 type = "i32"
+default = 1

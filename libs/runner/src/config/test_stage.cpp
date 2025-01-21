@@ -19,16 +19,19 @@ TestStage::TestStage( nlohmann::json * data_p )
 
 // "name" property
 
-[[nodiscard]] std::string const& TestStage::name() const
+[[nodiscard]] std::string_view TestStage::name() const
 {
-    // TODO : Add handling of default values if property is not set.
-    return m_data_p->at( "name" ).template get_ref<std::string const&>();
+    if ( m_data_p == nullptr ) return default_name();
+    auto it = m_data_p->find( "name" );
+    if ( it == m_data_p->end() || it->is_null() ) return default_name();
+    return std::string_view{ it->template get_ref<std::string const&>() };
 }
 
 // "settings" property
 
 [[nodiscard]] /* TODO: settings opaque interface */ void * TestStage::settings() const
 {
+    if ( m_data_p == nullptr ) throw std::runtime_error( "TestStage: cannot get default value of unset property with settings type." );
     return nullptr;
 }
 

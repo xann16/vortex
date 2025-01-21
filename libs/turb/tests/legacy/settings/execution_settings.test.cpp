@@ -24,10 +24,13 @@ TEST_CASE( "ExecutionSettings - property: \"job_name\" - getter", "[settings]" )
     auto obj = nlohmann::json{ { "job_name", "stest" } };
     auto obj_p = &obj;
     auto s = vortex::turb::legacy::settings::ExecutionSettings{ obj_p };
+    auto s_null = vortex::turb::legacy::settings::ExecutionSettings{ nullptr };
 
     auto value = s.job_name();
+    auto default_value = s_null.job_name();
 
     REQUIRE( value == "stest" );
+    REQUIRE( default_value == std::string_view{} );
 }
 
 // "grant_no" property
@@ -37,10 +40,13 @@ TEST_CASE( "ExecutionSettings - property: \"grant_no\" - getter", "[settings]" )
     auto obj = nlohmann::json{ { "grant_no", "stest" } };
     auto obj_p = &obj;
     auto s = vortex::turb::legacy::settings::ExecutionSettings{ obj_p };
+    auto s_null = vortex::turb::legacy::settings::ExecutionSettings{ nullptr };
 
     auto value = s.grant_no();
+    auto default_value = s_null.grant_no();
 
     REQUIRE( value == "stest" );
+    REQUIRE( default_value == std::string_view{} );
 }
 
 // "cpu_node_count" property
@@ -50,10 +56,13 @@ TEST_CASE( "ExecutionSettings - property: \"cpu_node_count\" - getter", "[settin
     auto obj = nlohmann::json{ { "cpu_node_count", -2l } };
     auto obj_p = &obj;
     auto s = vortex::turb::legacy::settings::ExecutionSettings{ obj_p };
+    auto s_null = vortex::turb::legacy::settings::ExecutionSettings{ nullptr };
 
     auto value = s.cpu_node_count();
+    auto default_value = s_null.cpu_node_count();
 
     REQUIRE( static_cast< vortex::i32 >( value ) == -2l );
+    REQUIRE( static_cast< vortex::i32 >( default_value ) == 1 );
 }
 
 // "wct_limit" property
@@ -63,10 +72,13 @@ TEST_CASE( "ExecutionSettings - property: \"wct_limit\" - getter", "[settings]" 
     auto obj = nlohmann::json{ { "wct_limit", 0.2 } };
     auto obj_p = &obj;
     auto s = vortex::turb::legacy::settings::ExecutionSettings{ obj_p };
+    auto s_null = vortex::turb::legacy::settings::ExecutionSettings{ nullptr };
 
     auto value = s.wct_limit();
+    auto default_value = s_null.wct_limit();
 
     REQUIRE_THAT( static_cast< vortex::f64 >( value ), Catch::Matchers::WithinAbs( 0.2, 1e-05 ) );
+    REQUIRE_THAT( static_cast< vortex::f64 >( default_value ), Catch::Matchers::WithinAbs( 60.0, 1e-05 ) );
 }
 
 // "process_count" property
@@ -76,10 +88,13 @@ TEST_CASE( "ExecutionSettings - property: \"process_count\" - getter", "[setting
     auto obj = nlohmann::json{ { "process_count", -2l } };
     auto obj_p = &obj;
     auto s = vortex::turb::legacy::settings::ExecutionSettings{ obj_p };
+    auto s_null = vortex::turb::legacy::settings::ExecutionSettings{ nullptr };
 
     auto value = s.process_count();
+    auto default_value = s_null.process_count();
 
     REQUIRE( static_cast< vortex::i32 >( value ) == -2l );
+    REQUIRE( static_cast< vortex::i32 >( default_value ) == 1 );
 }
 
 // "is_node_overcommit_enabled" property
@@ -89,10 +104,13 @@ TEST_CASE( "ExecutionSettings - property: \"is_node_overcommit_enabled\" - gette
     auto obj = nlohmann::json{ { "is_node_overcommit_enabled", true } };
     auto obj_p = &obj;
     auto s = vortex::turb::legacy::settings::ExecutionSettings{ obj_p };
+    auto s_null = vortex::turb::legacy::settings::ExecutionSettings{ nullptr };
 
     auto value = s.is_node_overcommit_enabled();
+    auto default_value = s_null.is_node_overcommit_enabled();
 
     REQUIRE( value == true );
+    REQUIRE( default_value == bool{} );
 }
 
 

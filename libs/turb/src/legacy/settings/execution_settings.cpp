@@ -19,50 +19,62 @@ ExecutionSettings::ExecutionSettings( nlohmann::json * data_p )
 
 // "job_name" property
 
-[[nodiscard]] std::string const& ExecutionSettings::job_name() const
+[[nodiscard]] std::string_view ExecutionSettings::job_name() const
 {
-    // TODO : Add handling of default values if property is not set.
-    return m_data_p->at( "job_name" ).template get_ref<std::string const&>();
+    if ( m_data_p == nullptr ) return default_job_name();
+    auto it = m_data_p->find( "job_name" );
+    if ( it == m_data_p->end() || it->is_null() ) return default_job_name();
+    return std::string_view{ it->template get_ref<std::string const&>() };
 }
 
 // "grant_no" property
 
-[[nodiscard]] std::string const& ExecutionSettings::grant_no() const
+[[nodiscard]] std::string_view ExecutionSettings::grant_no() const
 {
-    // TODO : Add handling of default values if property is not set.
-    return m_data_p->at( "grant_no" ).template get_ref<std::string const&>();
+    if ( m_data_p == nullptr ) return default_grant_no();
+    auto it = m_data_p->find( "grant_no" );
+    if ( it == m_data_p->end() || it->is_null() ) return default_grant_no();
+    return std::string_view{ it->template get_ref<std::string const&>() };
 }
 
 // "cpu_node_count" property
 
 [[nodiscard]] i32 ExecutionSettings::cpu_node_count() const
 {
-    // TODO : Add handling of default values if property is not set.
-    return m_data_p->at( "cpu_node_count" ).template get<i32>();
+    if ( m_data_p == nullptr ) return default_cpu_node_count();
+    auto it = m_data_p->find( "cpu_node_count" );
+    if ( it == m_data_p->end() || it->is_null() ) return default_cpu_node_count();
+    return it->template get<i32>();
 }
 
 // "wct_limit" property
 
 [[nodiscard]] f64 ExecutionSettings::wct_limit() const
 {
-    // TODO : Add handling of default values if property is not set.
-    return m_data_p->at( "wct_limit" ).template get<f64>();
+    if ( m_data_p == nullptr ) return default_wct_limit();
+    auto it = m_data_p->find( "wct_limit" );
+    if ( it == m_data_p->end() || it->is_null() ) return default_wct_limit();
+    return it->template get<f64>();
 }
 
 // "process_count" property
 
 [[nodiscard]] i32 ExecutionSettings::process_count() const
 {
-    // TODO : Add handling of default values if property is not set.
-    return m_data_p->at( "process_count" ).template get<i32>();
+    if ( m_data_p == nullptr ) return default_process_count();
+    auto it = m_data_p->find( "process_count" );
+    if ( it == m_data_p->end() || it->is_null() ) return default_process_count();
+    return it->template get<i32>();
 }
 
 // "is_node_overcommit_enabled" property
 
 [[nodiscard]] bool ExecutionSettings::is_node_overcommit_enabled() const
 {
-    // TODO : Add handling of default values if property is not set.
-    return m_data_p->at( "is_node_overcommit_enabled" ).template get<bool>();
+    if ( m_data_p == nullptr ) return default_is_node_overcommit_enabled();
+    auto it = m_data_p->find( "is_node_overcommit_enabled" );
+    if ( it == m_data_p->end() || it->is_null() ) return default_is_node_overcommit_enabled();
+    return it->template get<bool>();
 }
 
 

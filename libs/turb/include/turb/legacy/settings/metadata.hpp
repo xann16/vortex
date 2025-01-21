@@ -21,54 +21,122 @@ public:
 public:
     // "sim_method" property
     [[nodiscard]] /* TODO: enum type */ i32 sim_method() const;
+    [[nodiscard]] constexpr /* TODO: enum type */ i32 default_sim_method() const noexcept
+    {
+        return /* TODO: enum type first value or predefined - extra processing ??? */ 0;
+    }
 
     // "particle_mode" property
     [[nodiscard]] /* TODO: enum type */ i32 particle_mode() const;
+    [[nodiscard]] constexpr /* TODO: enum type */ i32 default_particle_mode() const noexcept
+    {
+        return /* TODO: enum type first value or predefined - extra processing ??? */ 0;
+    }
 
     // "gravity_type" property
     [[nodiscard]] /* TODO: enum type */ i32 gravity_type() const;
+    [[nodiscard]] constexpr /* TODO: enum type */ i32 default_gravity_type() const noexcept
+    {
+        return /* TODO: enum type first value or predefined - extra processing ??? */ 0;
+    }
 
     // "particle_kernel_type" property
     [[nodiscard]] /* TODO: enum type */ i32 particle_kernel_type() const;
+    [[nodiscard]] constexpr /* TODO: enum type */ i32 default_particle_kernel_type() const noexcept
+    {
+        return /* TODO: enum type first value or predefined - extra processing ??? */ 0;
+    }
 
     // "k_filter" property
     [[nodiscard]] i32 k_filter() const;
+    [[nodiscard]] constexpr i32 default_k_filter() const noexcept
+    {
+        return i32{};
+    }
 
     // "C_K" property
     [[nodiscard]] real C_K() const;
+    [[nodiscard]] constexpr real default_C_K() const noexcept
+    {
+        return 2.5;
+    }
 
     // "target_Phi" property
     [[nodiscard]] real target_Phi() const;
+    [[nodiscard]] constexpr real default_target_Phi() const noexcept
+    {
+        return real{};
+    }
 
     // "superpart_factor" property
     [[nodiscard]] real superpart_factor() const;
+    [[nodiscard]] constexpr real default_superpart_factor() const noexcept
+    {
+        return 1;
+    }
 
     // "src_flow_path" property
-    [[nodiscard]] std::string const& src_flow_path() const;
+    [[nodiscard]] std::string_view src_flow_path() const;
+    [[nodiscard]] constexpr std::string_view default_src_flow_path() const noexcept
+    {
+        return std::string_view{};
+    }
 
     // "src_part_path" property
-    [[nodiscard]] std::string const& src_part_path() const;
+    [[nodiscard]] std::string_view src_part_path() const;
+    [[nodiscard]] constexpr std::string_view default_src_part_path() const noexcept
+    {
+        return std::string_view{};
+    }
 
     // "part_output_delay" property
     [[nodiscard]] i32 part_output_delay() const;
+    [[nodiscard]] constexpr i32 default_part_output_delay() const noexcept
+    {
+        return i32{};
+    }
 
     // "is_perf_full_profile_enabled" property
     [[nodiscard]] bool is_perf_full_profile_enabled() const;
+    [[nodiscard]] constexpr bool default_is_perf_full_profile_enabled() const noexcept
+    {
+        return bool{};
+    }
 
     // "is_perf_simple_enabled" property
     [[nodiscard]] bool is_perf_simple_enabled() const;
+    [[nodiscard]] constexpr bool default_is_perf_simple_enabled() const noexcept
+    {
+        return bool{};
+    }
 
     // "is_perf_part_dist_enabled" property
     [[nodiscard]] bool is_perf_part_dist_enabled() const;
+    [[nodiscard]] constexpr bool default_is_perf_part_dist_enabled() const noexcept
+    {
+        return bool{};
+    }
 
     // "perf_full_start" property
     [[nodiscard]] i32 perf_full_start() const;
+    [[nodiscard]] constexpr i32 default_perf_full_start() const noexcept
+    {
+        return i32{};
+    }
 
     // "perf_full_end" property
     [[nodiscard]] i32 perf_full_end() const;
+    [[nodiscard]] constexpr i32 default_perf_full_end() const noexcept
+    {
+        return i32{};
+    }
 
     // "part_perf_interval" property
     [[nodiscard]] i32 part_perf_interval() const;
+    [[nodiscard]] constexpr i32 default_part_perf_interval() const noexcept
+    {
+        return i32{};
+    }
 
 
 private:

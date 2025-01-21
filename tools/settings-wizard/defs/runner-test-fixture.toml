@@ -20,6 +20,7 @@ type = "string"
 
 [root_path]
 type = "path"
+default = '.'
 
 [default_settings]
 type = "settings"

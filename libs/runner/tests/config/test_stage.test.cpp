@@ -24,22 +24,23 @@ TEST_CASE( "TestStage - property: \"name\" - getter", "[settings]" )
     auto obj = nlohmann::json{ { "name", "stest" } };
     auto obj_p = &obj;
     auto s = vortex::runner::config::TestStage{ obj_p };
+    auto s_null = vortex::runner::config::TestStage{ nullptr };
 
     auto value = s.name();
+    auto default_value = s_null.name();
 
     REQUIRE( value == "stest" );
+    REQUIRE( default_value == std::string_view{} );
 }
 
 // "settings" property
 
 TEST_CASE( "TestStage - property: \"settings\" - getter", "[settings]" )
 {
-    nlohmann::json * obj_p = nullptr;
-    auto s = vortex::runner::config::TestStage{ obj_p };
+    auto s_null = vortex::runner::config::TestStage{ nullptr };
 
-    auto value = s.settings();
 
-    REQUIRE( value == nullptr );
+    REQUIRE_THROWS_AS( s_null.settings(), std::runtime_error );
 }
 
 

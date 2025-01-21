@@ -21,6 +21,7 @@ Metadata::Metadata( nlohmann::json * data_p )
 
 [[nodiscard]] /* TODO: enum type */ i32 Metadata::sim_method() const
 {
+    if ( m_data_p == nullptr ) return default_sim_method();
     return 0;
 }
 
@@ -28,6 +29,7 @@ Metadata::Metadata( nlohmann::json * data_p )
 
 [[nodiscard]] /* TODO: enum type */ i32 Metadata::particle_mode() const
 {
+    if ( m_data_p == nullptr ) return default_particle_mode();
     return 0;
 }
 
@@ -35,6 +37,7 @@ Metadata::Metadata( nlohmann::json * data_p )
 
 [[nodiscard]] /* TODO: enum type */ i32 Metadata::gravity_type() const
 {
+    if ( m_data_p == nullptr ) return default_gravity_type();
     return 0;
 }
 
@@ -42,6 +45,7 @@ Metadata::Metadata( nlohmann::json * data_p )
 
 [[nodiscard]] /* TODO: enum type */ i32 Metadata::particle_kernel_type() const
 {
+    if ( m_data_p == nullptr ) return default_particle_kernel_type();
     return 0;
 }
 
@@ -49,104 +53,130 @@ Metadata::Metadata( nlohmann::json * data_p )
 
 [[nodiscard]] i32 Metadata::k_filter() const
 {
-    // TODO : Add handling of default values if property is not set.
-    return m_data_p->at( "k_filter" ).template get<i32>();
+    if ( m_data_p == nullptr ) return default_k_filter();
+    auto it = m_data_p->find( "k_filter" );
+    if ( it == m_data_p->end() || it->is_null() ) return default_k_filter();
+    return it->template get<i32>();
 }
 
 // "C_K" property
 
 [[nodiscard]] real Metadata::C_K() const
 {
-    // TODO : Add handling of default values if property is not set.
-    return m_data_p->at( "C_K" ).template get<real>();
+    if ( m_data_p == nullptr ) return default_C_K();
+    auto it = m_data_p->find( "C_K" );
+    if ( it == m_data_p->end() || it->is_null() ) return default_C_K();
+    return it->template get<real>();
 }
 
 // "target_Phi" property
 
 [[nodiscard]] real Metadata::target_Phi() const
 {
-    // TODO : Add handling of default values if property is not set.
-    return m_data_p->at( "target_Phi" ).template get<real>();
+    if ( m_data_p == nullptr ) return default_target_Phi();
+    auto it = m_data_p->find( "target_Phi" );
+    if ( it == m_data_p->end() || it->is_null() ) return default_target_Phi();
+    return it->template get<real>();
 }
 
 // "superpart_factor" property
 
 [[nodiscard]] real Metadata::superpart_factor() const
 {
-    // TODO : Add handling of default values if property is not set.
-    return m_data_p->at( "superpart_factor" ).template get<real>();
+    if ( m_data_p == nullptr ) return default_superpart_factor();
+    auto it = m_data_p->find( "superpart_factor" );
+    if ( it == m_data_p->end() || it->is_null() ) return default_superpart_factor();
+    return it->template get<real>();
 }
 
 // "src_flow_path" property
 
-[[nodiscard]] std::string const& Metadata::src_flow_path() const
+[[nodiscard]] std::string_view Metadata::src_flow_path() const
 {
-    // TODO : Add handling of default values if property is not set.
-    return m_data_p->at( "src_flow_path" ).template get_ref<std::string const&>();
+    if ( m_data_p == nullptr ) return default_src_flow_path();
+    auto it = m_data_p->find( "src_flow_path" );
+    if ( it == m_data_p->end() || it->is_null() ) return default_src_flow_path();
+    return std::string_view{ it->template get_ref<std::string const&>() };
 }
 
 // "src_part_path" property
 
-[[nodiscard]] std::string const& Metadata::src_part_path() const
+[[nodiscard]] std::string_view Metadata::src_part_path() const
 {
-    // TODO : Add handling of default values if property is not set.
-    return m_data_p->at( "src_part_path" ).template get_ref<std::string const&>();
+    if ( m_data_p == nullptr ) return default_src_part_path();
+    auto it = m_data_p->find( "src_part_path" );
+    if ( it == m_data_p->end() || it->is_null() ) return default_src_part_path();
+    return std::string_view{ it->template get_ref<std::string const&>() };
 }
 
 // "part_output_delay" property
 
 [[nodiscard]] i32 Metadata::part_output_delay() const
 {
-    // TODO : Add handling of default values if property is not set.
-    return m_data_p->at( "part_output_delay" ).template get<i32>();
+    if ( m_data_p == nullptr ) return default_part_output_delay();
+    auto it = m_data_p->find( "part_output_delay" );
+    if ( it == m_data_p->end() || it->is_null() ) return default_part_output_delay();
+    return it->template get<i32>();
 }
 
 // "is_perf_full_profile_enabled" property
 
 [[nodiscard]] bool Metadata::is_perf_full_profile_enabled() const
 {
-    // TODO : Add handling of default values if property is not set.
-    return m_data_p->at( "is_perf_full_profile_enabled" ).template get<bool>();
+    if ( m_data_p == nullptr ) return default_is_perf_full_profile_enabled();
+    auto it = m_data_p->find( "is_perf_full_profile_enabled" );
+    if ( it == m_data_p->end() || it->is_null() ) return default_is_perf_full_profile_enabled();
+    return it->template get<bool>();
 }
 
 // "is_perf_simple_enabled" property
 
 [[nodiscard]] bool Metadata::is_perf_simple_enabled() const
 {
-    // TODO : Add handling of default values if property is not set.
-    return m_data_p->at( "is_perf_simple_enabled" ).template get<bool>();
+    if ( m_data_p == nullptr ) return default_is_perf_simple_enabled();
+    auto it = m_data_p->find( "is_perf_simple_enabled" );
+    if ( it == m_data_p->end() || it->is_null() ) return default_is_perf_simple_enabled();
+    return it->template get<bool>();
 }
 
 // "is_perf_part_dist_enabled" property
 
 [[nodiscard]] bool Metadata::is_perf_part_dist_enabled() const
 {
-    // TODO : Add handling of default values if property is not set.
-    return m_data_p->at( "is_perf_part_dist_enabled" ).template get<bool>();
+    if ( m_data_p == nullptr ) return default_is_perf_part_dist_enabled();
+    auto it = m_data_p->find( "is_perf_part_dist_enabled" );
+    if ( it == m_data_p->end() || it->is_null() ) return default_is_perf_part_dist_enabled();
+    return it->template get<bool>();
 }
 
 // "perf_full_start" property
 
 [[nodiscard]] i32 Metadata::perf_full_start() const
 {
-    // TODO : Add handling of default values if property is not set.
-    return m_data_p->at( "perf_full_start" ).template get<i32>();
+    if ( m_data_p == nullptr ) return default_perf_full_start();
+    auto it = m_data_p->find( "perf_full_start" );
+    if ( it == m_data_p->end() || it->is_null() ) return default_perf_full_start();
+    return it->template get<i32>();
 }
 
 // "perf_full_end" property
 
 [[nodiscard]] i32 Metadata::perf_full_end() const
 {
-    // TODO : Add handling of default values if property is not set.
-    return m_data_p->at( "perf_full_end" ).template get<i32>();
+    if ( m_data_p == nullptr ) return default_perf_full_end();
+    auto it = m_data_p->find( "perf_full_end" );
+    if ( it == m_data_p->end() || it->is_null() ) return default_perf_full_end();
+    return it->template get<i32>();
 }
 
 // "part_perf_interval" property
 
 [[nodiscard]] i32 Metadata::part_perf_interval() const
 {
-    // TODO : Add handling of default values if property is not set.
-    return m_data_p->at( "part_perf_interval" ).template get<i32>();
+    if ( m_data_p == nullptr ) return default_part_perf_interval();
+    auto it = m_data_p->find( "part_perf_interval" );
+    if ( it == m_data_p->end() || it->is_null() ) return default_part_perf_interval();
+    return it->template get<i32>();
 }
 
 

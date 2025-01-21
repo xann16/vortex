@@ -20,22 +20,46 @@ public:
 
 public:
     // "job_name" property
-    [[nodiscard]] std::string const& job_name() const;
+    [[nodiscard]] std::string_view job_name() const;
+    [[nodiscard]] constexpr std::string_view default_job_name() const noexcept
+    {
+        return std::string_view{};
+    }
 
     // "grant_no" property
-    [[nodiscard]] std::string const& grant_no() const;
+    [[nodiscard]] std::string_view grant_no() const;
+    [[nodiscard]] constexpr std::string_view default_grant_no() const noexcept
+    {
+        return std::string_view{};
+    }
 
     // "cpu_node_count" property
     [[nodiscard]] i32 cpu_node_count() const;
+    [[nodiscard]] constexpr i32 default_cpu_node_count() const noexcept
+    {
+        return 1;
+    }
 
     // "wct_limit" property
     [[nodiscard]] f64 wct_limit() const;
+    [[nodiscard]] constexpr f64 default_wct_limit() const noexcept
+    {
+        return 60.0;
+    }
 
     // "process_count" property
     [[nodiscard]] i32 process_count() const;
+    [[nodiscard]] constexpr i32 default_process_count() const noexcept
+    {
+        return 1;
+    }
 
     // "is_node_overcommit_enabled" property
     [[nodiscard]] bool is_node_overcommit_enabled() const;
+    [[nodiscard]] constexpr bool default_is_node_overcommit_enabled() const noexcept
+    {
+        return bool{};
+    }
 
 
 private:

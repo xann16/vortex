@@ -20,22 +20,42 @@ public:
 
 public:
     // "name" property
-    [[nodiscard]] std::string const& name() const;
+    [[nodiscard]] std::string_view name() const;
+    [[nodiscard]] constexpr std::string_view default_name() const noexcept
+    {
+        return std::string_view{};
+    }
 
     // "template_name" property
-    [[nodiscard]] std::string const& template_name() const;
+    [[nodiscard]] std::string_view template_name() const;
+    [[nodiscard]] constexpr std::string_view default_template_name() const noexcept
+    {
+        return std::string_view{};
+    }
 
     // "settings" property
     [[nodiscard]] /* TODO: settings opaque interface */ void * settings() const;
 
     // "parallel_strategy" property
     [[nodiscard]] /* TODO: enum type */ i32 parallel_strategy() const;
+    [[nodiscard]] constexpr /* TODO: enum type */ i32 default_parallel_strategy() const noexcept
+    {
+        return /* TODO: enum type first value or predefined - extra processing ??? */ 0;
+    }
 
     // "stages" property
-    [[nodiscard]] std::string const& stages() const;
+    [[nodiscard]] std::string_view stages() const;
+    [[nodiscard]] constexpr std::string_view default_stages() const noexcept
+    {
+        return std::string_view{};
+    }
 
     // "process_count" property
     [[nodiscard]] i32 process_count() const;
+    [[nodiscard]] constexpr i32 default_process_count() const noexcept
+    {
+        return 1;
+    }
 
 
 private:

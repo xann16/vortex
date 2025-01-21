@@ -21,6 +21,7 @@ Settings::Settings( nlohmann::json * data_p )
 
 [[nodiscard]] /* TODO: settings dynamic class */ void * Settings::metadata() const
 {
+    if ( m_data_p == nullptr ) return default_metadata();
     return nullptr;
 }
 
@@ -28,6 +29,7 @@ Settings::Settings( nlohmann::json * data_p )
 
 [[nodiscard]] /* TODO: settings dynamic class */ void * Settings::parameters() const
 {
+    if ( m_data_p == nullptr ) return default_parameters();
     return nullptr;
 }
 
@@ -35,6 +37,7 @@ Settings::Settings( nlohmann::json * data_p )
 
 [[nodiscard]] /* TODO: settings dynamic class */ void * Settings::execution_settings() const
 {
+    if ( m_data_p == nullptr ) return default_execution_settings();
     return nullptr;
 }
 
