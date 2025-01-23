@@ -5,6 +5,8 @@
 // 
 
 #pragma once
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wcovered-switch-default"
 
 #include <cstring>
 #include <string>
@@ -29,8 +31,9 @@ enum class ParallelStrategyType
         return "mxx";
     case ParallelStrategyType::Xxx:
         return "xxx";
-    }
+    default:
         return "unknown";
+    }
 }
 
 [[nodiscard]] inline std::string to_string( ParallelStrategyType value ) noexcept
@@ -57,3 +60,5 @@ enum class ParallelStrategyType
 }
 
 } // end of namespace vortex::runner::config
+
+#pragma clang diagnostic pop

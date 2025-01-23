@@ -5,6 +5,8 @@
 // 
 
 #pragma once
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wcovered-switch-default"
 
 #include <cstring>
 #include <string>
@@ -26,8 +28,9 @@ enum class ForcingType
         return "deterministic";
     case ForcingType::Stochastic:
         return "stochastic";
-    }
+    default:
         return "unknown";
+    }
 }
 
 [[nodiscard]] inline std::string to_string( ForcingType value ) noexcept
@@ -50,3 +53,5 @@ enum class ForcingType
 }
 
 } // end of namespace vortex::turb::legacy::settings
+
+#pragma clang diagnostic pop

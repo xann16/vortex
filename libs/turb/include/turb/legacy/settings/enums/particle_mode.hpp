@@ -5,6 +5,8 @@
 // 
 
 #pragma once
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wcovered-switch-default"
 
 #include <cstring>
 #include <string>
@@ -29,8 +31,9 @@ enum class ParticleMode
         return "owc";
     case ParticleMode::Twc:
         return "twc";
-    }
+    default:
         return "unknown";
+    }
 }
 
 [[nodiscard]] inline std::string to_string( ParticleMode value ) noexcept
@@ -57,3 +60,5 @@ enum class ParticleMode
 }
 
 } // end of namespace vortex::turb::legacy::settings
+
+#pragma clang diagnostic pop

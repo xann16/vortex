@@ -5,6 +5,8 @@
 // 
 
 #pragma once
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wcovered-switch-default"
 
 #include <cstring>
 #include <string>
@@ -29,8 +31,9 @@ enum class SimMethod
         return "les";
     case SimMethod::Fdns:
         return "fdns";
-    }
+    default:
         return "unknown";
+    }
 }
 
 [[nodiscard]] inline std::string to_string( SimMethod value ) noexcept
@@ -57,3 +60,5 @@ enum class SimMethod
 }
 
 } // end of namespace vortex::turb::legacy::settings
+
+#pragma clang diagnostic pop

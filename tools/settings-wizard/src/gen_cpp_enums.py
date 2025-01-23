@@ -67,6 +67,8 @@ def generate_enum_header_file(root_path: str, data: dict[str, Any], enum_data: d
     add_blank(ls)
 
     i = add_line(ls, i, '#pragma once')
+    i = add_line(ls, i, '#pragma clang diagnostic push')
+    i = add_line(ls, i, '#pragma clang diagnostic ignored "-Wcovered-switch-default"')
     add_blank(ls)
 
     i = add_include(ls, i, 'cstring', is_quoted=False)
@@ -85,8 +87,9 @@ def generate_enum_header_file(root_path: str, data: dict[str, Any], enum_data: d
     for enum_value in enum_data['values']:
         body_to_str.append((0, f'case {enum_class_name}::{to_pascal_case(enum_value)}:'))
         body_to_str.append((1, f'return "{enum_value}";'))
-    body_to_str.append((0, '}'))
+    body_to_str.append((0, 'default:'))
     body_to_str.append((1, 'return "unknown";'))
+    body_to_str.append((0, '}'))
 
     body_to_enum : list[(int, str)] = []
 
@@ -109,6 +112,10 @@ def generate_enum_header_file(root_path: str, data: dict[str, Any], enum_data: d
     add_blank(ls)
 
     i = end_namespace(ls, i, *(['vortex', package_name] + namespace))
+
+    add_blank(ls)
+    i = add_line(ls, i, '#pragma clang diagnostic pop')
+
 
     create_file(path, ls)
 
