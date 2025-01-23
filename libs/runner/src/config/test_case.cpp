@@ -8,6 +8,8 @@
 
 #include <nlohmann/json.hpp>
 
+#include "runner/config/enums/parallel_strategy_type_json_integration.hpp"
+
 namespace vortex::runner::config
 {
 
@@ -47,10 +49,12 @@ TestCase::TestCase( nlohmann::json * data_p )
 
 // "parallel_strategy" property
 
-[[nodiscard]] /* TODO: enum type */ i32 TestCase::parallel_strategy() const
+[[nodiscard]] ParallelStrategyType TestCase::parallel_strategy() const
 {
     if ( m_data_p == nullptr ) return default_parallel_strategy();
-    return 0;
+    auto it = m_data_p->find( "parallel_strategy" );
+    if ( it == m_data_p->end() || it->is_null() ) return default_parallel_strategy();
+    return it->template get<ParallelStrategyType>();
 }
 
 // "stages" property

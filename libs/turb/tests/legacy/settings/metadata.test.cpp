@@ -21,44 +21,60 @@ TEST_CASE( "Metadata - Sample Test", "[sample]" )
 
 TEST_CASE( "Metadata - property: \"sim_method\" - getter", "[settings]" )
 {
+    auto obj = nlohmann::json{ { "sim_method", "fdns" } };
+    auto s = vortex::turb::legacy::settings::Metadata{ &obj };
     auto s_null = vortex::turb::legacy::settings::Metadata{ nullptr };
 
+    auto value = s.sim_method();
     auto default_value = s_null.sim_method();
 
-    REQUIRE( default_value == 0 );
+    REQUIRE( value == vortex::turb::legacy::settings::SimMethod::Fdns );
+    REQUIRE( default_value == vortex::turb::legacy::settings::SimMethod::Dns );
 }
 
 // "particle_mode" property
 
 TEST_CASE( "Metadata - property: \"particle_mode\" - getter", "[settings]" )
 {
+    auto obj = nlohmann::json{ { "particle_mode", "twc" } };
+    auto s = vortex::turb::legacy::settings::Metadata{ &obj };
     auto s_null = vortex::turb::legacy::settings::Metadata{ nullptr };
 
+    auto value = s.particle_mode();
     auto default_value = s_null.particle_mode();
 
-    REQUIRE( default_value == 0 );
+    REQUIRE( value == vortex::turb::legacy::settings::ParticleMode::Twc );
+    REQUIRE( default_value == vortex::turb::legacy::settings::ParticleMode::None );
 }
 
 // "gravity_type" property
 
 TEST_CASE( "Metadata - property: \"gravity_type\" - getter", "[settings]" )
 {
+    auto obj = nlohmann::json{ { "gravity_type", "horizontal" } };
+    auto s = vortex::turb::legacy::settings::Metadata{ &obj };
     auto s_null = vortex::turb::legacy::settings::Metadata{ nullptr };
 
+    auto value = s.gravity_type();
     auto default_value = s_null.gravity_type();
 
-    REQUIRE( default_value == 0 );
+    REQUIRE( value == vortex::turb::legacy::settings::GravityMode::Horizontal );
+    REQUIRE( default_value == vortex::turb::legacy::settings::GravityMode::None );
 }
 
 // "particle_kernel_type" property
 
 TEST_CASE( "Metadata - property: \"particle_kernel_type\" - getter", "[settings]" )
 {
+    auto obj = nlohmann::json{ { "particle_kernel_type", "pic" } };
+    auto s = vortex::turb::legacy::settings::Metadata{ &obj };
     auto s_null = vortex::turb::legacy::settings::Metadata{ nullptr };
 
+    auto value = s.particle_kernel_type();
     auto default_value = s_null.particle_kernel_type();
 
-    REQUIRE( default_value == 0 );
+    REQUIRE( value == vortex::turb::legacy::settings::ParticleTwcKernelType::Pic );
+    REQUIRE( default_value == vortex::turb::legacy::settings::ParticleTwcKernelType::Pnn );
 }
 
 // "k_filter" property
@@ -66,8 +82,7 @@ TEST_CASE( "Metadata - property: \"particle_kernel_type\" - getter", "[settings]
 TEST_CASE( "Metadata - property: \"k_filter\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "k_filter", -2l } };
-    auto obj_p = &obj;
-    auto s = vortex::turb::legacy::settings::Metadata{ obj_p };
+    auto s = vortex::turb::legacy::settings::Metadata{ &obj };
     auto s_null = vortex::turb::legacy::settings::Metadata{ nullptr };
 
     auto value = s.k_filter();
@@ -82,8 +97,7 @@ TEST_CASE( "Metadata - property: \"k_filter\" - getter", "[settings]" )
 TEST_CASE( "Metadata - property: \"C_K\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "C_K", 0.3 } };
-    auto obj_p = &obj;
-    auto s = vortex::turb::legacy::settings::Metadata{ obj_p };
+    auto s = vortex::turb::legacy::settings::Metadata{ &obj };
     auto s_null = vortex::turb::legacy::settings::Metadata{ nullptr };
 
     auto value = s.C_K();
@@ -98,8 +112,7 @@ TEST_CASE( "Metadata - property: \"C_K\" - getter", "[settings]" )
 TEST_CASE( "Metadata - property: \"target_Phi\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "target_Phi", 0.3 } };
-    auto obj_p = &obj;
-    auto s = vortex::turb::legacy::settings::Metadata{ obj_p };
+    auto s = vortex::turb::legacy::settings::Metadata{ &obj };
     auto s_null = vortex::turb::legacy::settings::Metadata{ nullptr };
 
     auto value = s.target_Phi();
@@ -114,8 +127,7 @@ TEST_CASE( "Metadata - property: \"target_Phi\" - getter", "[settings]" )
 TEST_CASE( "Metadata - property: \"superpart_factor\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "superpart_factor", 0.3 } };
-    auto obj_p = &obj;
-    auto s = vortex::turb::legacy::settings::Metadata{ obj_p };
+    auto s = vortex::turb::legacy::settings::Metadata{ &obj };
     auto s_null = vortex::turb::legacy::settings::Metadata{ nullptr };
 
     auto value = s.superpart_factor();
@@ -130,8 +142,7 @@ TEST_CASE( "Metadata - property: \"superpart_factor\" - getter", "[settings]" )
 TEST_CASE( "Metadata - property: \"src_flow_path\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "src_flow_path", "ptest" } };
-    auto obj_p = &obj;
-    auto s = vortex::turb::legacy::settings::Metadata{ obj_p };
+    auto s = vortex::turb::legacy::settings::Metadata{ &obj };
     auto s_null = vortex::turb::legacy::settings::Metadata{ nullptr };
 
     auto value = s.src_flow_path();
@@ -146,8 +157,7 @@ TEST_CASE( "Metadata - property: \"src_flow_path\" - getter", "[settings]" )
 TEST_CASE( "Metadata - property: \"src_part_path\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "src_part_path", "ptest" } };
-    auto obj_p = &obj;
-    auto s = vortex::turb::legacy::settings::Metadata{ obj_p };
+    auto s = vortex::turb::legacy::settings::Metadata{ &obj };
     auto s_null = vortex::turb::legacy::settings::Metadata{ nullptr };
 
     auto value = s.src_part_path();
@@ -162,8 +172,7 @@ TEST_CASE( "Metadata - property: \"src_part_path\" - getter", "[settings]" )
 TEST_CASE( "Metadata - property: \"part_output_delay\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "part_output_delay", -2l } };
-    auto obj_p = &obj;
-    auto s = vortex::turb::legacy::settings::Metadata{ obj_p };
+    auto s = vortex::turb::legacy::settings::Metadata{ &obj };
     auto s_null = vortex::turb::legacy::settings::Metadata{ nullptr };
 
     auto value = s.part_output_delay();
@@ -178,8 +187,7 @@ TEST_CASE( "Metadata - property: \"part_output_delay\" - getter", "[settings]" )
 TEST_CASE( "Metadata - property: \"is_perf_full_profile_enabled\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "is_perf_full_profile_enabled", true } };
-    auto obj_p = &obj;
-    auto s = vortex::turb::legacy::settings::Metadata{ obj_p };
+    auto s = vortex::turb::legacy::settings::Metadata{ &obj };
     auto s_null = vortex::turb::legacy::settings::Metadata{ nullptr };
 
     auto value = s.is_perf_full_profile_enabled();
@@ -194,8 +202,7 @@ TEST_CASE( "Metadata - property: \"is_perf_full_profile_enabled\" - getter", "[s
 TEST_CASE( "Metadata - property: \"is_perf_simple_enabled\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "is_perf_simple_enabled", true } };
-    auto obj_p = &obj;
-    auto s = vortex::turb::legacy::settings::Metadata{ obj_p };
+    auto s = vortex::turb::legacy::settings::Metadata{ &obj };
     auto s_null = vortex::turb::legacy::settings::Metadata{ nullptr };
 
     auto value = s.is_perf_simple_enabled();
@@ -210,8 +217,7 @@ TEST_CASE( "Metadata - property: \"is_perf_simple_enabled\" - getter", "[setting
 TEST_CASE( "Metadata - property: \"is_perf_part_dist_enabled\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "is_perf_part_dist_enabled", true } };
-    auto obj_p = &obj;
-    auto s = vortex::turb::legacy::settings::Metadata{ obj_p };
+    auto s = vortex::turb::legacy::settings::Metadata{ &obj };
     auto s_null = vortex::turb::legacy::settings::Metadata{ nullptr };
 
     auto value = s.is_perf_part_dist_enabled();
@@ -226,8 +232,7 @@ TEST_CASE( "Metadata - property: \"is_perf_part_dist_enabled\" - getter", "[sett
 TEST_CASE( "Metadata - property: \"perf_full_start\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "perf_full_start", -2l } };
-    auto obj_p = &obj;
-    auto s = vortex::turb::legacy::settings::Metadata{ obj_p };
+    auto s = vortex::turb::legacy::settings::Metadata{ &obj };
     auto s_null = vortex::turb::legacy::settings::Metadata{ nullptr };
 
     auto value = s.perf_full_start();
@@ -242,8 +247,7 @@ TEST_CASE( "Metadata - property: \"perf_full_start\" - getter", "[settings]" )
 TEST_CASE( "Metadata - property: \"perf_full_end\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "perf_full_end", -2l } };
-    auto obj_p = &obj;
-    auto s = vortex::turb::legacy::settings::Metadata{ obj_p };
+    auto s = vortex::turb::legacy::settings::Metadata{ &obj };
     auto s_null = vortex::turb::legacy::settings::Metadata{ nullptr };
 
     auto value = s.perf_full_end();
@@ -258,8 +262,7 @@ TEST_CASE( "Metadata - property: \"perf_full_end\" - getter", "[settings]" )
 TEST_CASE( "Metadata - property: \"part_perf_interval\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "part_perf_interval", -2l } };
-    auto obj_p = &obj;
-    auto s = vortex::turb::legacy::settings::Metadata{ obj_p };
+    auto s = vortex::turb::legacy::settings::Metadata{ &obj };
     auto s_null = vortex::turb::legacy::settings::Metadata{ nullptr };
 
     auto value = s.part_perf_interval();

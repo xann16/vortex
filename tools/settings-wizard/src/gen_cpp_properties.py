@@ -1,4 +1,5 @@
 from cpp_utils import get_class_name, get_namespace, begin_namespace, end_namespace, add_blank, add_line, add_block_comment, add_method_declaration, add_method_definition, begin_test_case, end_test_case, add_require
+from gen_utils import to_pascal_case
 from typing import Any
 
 FP_CMP_EPS = 0.00001
@@ -26,7 +27,7 @@ def _get_return_type(p: dict[str, Any]) -> str:
     elif property_type == 'settings':
         return '/* TODO: settings opaque interface */ void *'
     elif property_type == 'enum':
-        return '/* TODO: enum type */ i32'
+        return to_pascal_case(p['enum']['name'])
     elif property_type in BASE_TYPES:
         return BASE_TYPES[property_type][0]
     else:
@@ -34,7 +35,7 @@ def _get_return_type(p: dict[str, Any]) -> str:
 
 def _get_default_value(name: str, p: dict[str, Any]) -> str:
     property_type : str = p['type']
-    default_value : str = p['default'] if 'default' in p else None
+    default_value : str | None = p['default'] if 'default' in p else None
 
     if isinstance(default_value, str) and default_value.startswith('@'):
         return f'{default_value.lstrip('@')}()'
@@ -42,7 +43,11 @@ def _get_default_value(name: str, p: dict[str, Any]) -> str:
     if property_type == 'module':
         return '/* TODO: settings dynamic class constructor from nullptr */ nullptr'
     elif property_type == 'enum':
-        return '/* TODO: enum type first value or predefined - extra processing ??? */ 0'
+        enum_values : list[str] = p['enum']['values']
+        if default_value and default_value not in enum_values:
+            print(f"WARNING: Invalid default value '{default_value}' for enum '{name}'. Valid values include: {', '.join(enum_values)}. Using first value '{enum_values[0]}' instead.")
+            default_value = None
+        return to_pascal_case(p['enum']['name']) + '::' + to_pascal_case(enum_values[0] if not default_value else default_value)
     elif property_type in BASE_TYPES:
         default_str : str = f'"{default_value}"' if (property_type == 'string' or property_type == 'path') else str(default_value)
 
@@ -80,7 +85,7 @@ def _add_getter_definition(ls: list[str], i: int, class_name: str, name: str, p:
         body.append((0, f'if ( m_data_p == nullptr ) return default_{name}();'))
 
     # TEMP IF
-    if property_type in BASE_TYPES:
+    if property_type in BASE_TYPES or property_type == 'enum':
         body.append((0, f'auto it = m_data_p->find( "{name}" );'))
         body.append((0, f'if ( it == m_data_p->end() || it->is_null() ) return default_{name}();'))
 
@@ -89,7 +94,7 @@ def _add_getter_definition(ls: list[str], i: int, class_name: str, name: str, p:
     elif property_type == 'settings':
         body.append((0, 'return nullptr;'))
     elif property_type == 'enum':
-        body.append((0, 'return 0;'))
+        body.append((0, f'return it->template get<{return_type}>();'))
     elif property_type in BASE_TYPES:
         if property_type == 'string' or property_type == 'path':
             body.append((0, 'return std::string_view{' + f' it->template get_ref<std::string const&>() ' + '};'))
@@ -108,12 +113,14 @@ def _add_getter_test(ls: list[str], i: int, class_name: str, name: str, p: dict[
 
     if property_type in BASE_TYPES:
         i = add_line(ls, i, 'auto obj = nlohmann::json{ { "' + name + f'", {BASE_TYPES[property_type][1]}' + ' } };' )
-        i = add_line(ls, i, 'auto obj_p = &obj;')
-        i = add_line(ls, i, 'auto s = ' + '::'.join(namespace) + '::' + class_name + '{ obj_p };')
+        i = add_line(ls, i, 'auto s = ' + '::'.join(namespace) + '::' + class_name + '{ &obj };')
+    elif property_type == 'enum':
+        i = add_line(ls, i, 'auto obj = nlohmann::json{ { "' + name + f'", "{p['enum']['values'][-1]}"' + ' } };' )
+        i = add_line(ls, i, 'auto s = ' + '::'.join(namespace) + '::' + class_name + '{ &obj };')
     i = add_line(ls, i, 'auto s_null = ' + '::'.join(namespace) + '::' + class_name + '{ nullptr };')
     add_blank(ls)
 
-    if property_type in BASE_TYPES:
+    if property_type in BASE_TYPES or property_type == 'enum':
         i = add_line(ls, i, f'auto value = s.{name}();')
     if property_type == 'settings':
         add_blank(ls)
@@ -127,7 +134,8 @@ def _add_getter_test(ls: list[str], i: int, class_name: str, name: str, p: dict[
     elif property_type == 'settings':
         pass
     elif property_type == 'enum':
-        i = add_require(ls, i, 'default_value == 0')
+        i = add_require(ls, i, f'value == {'::'.join(namespace)}::{to_pascal_case(p['enum']['name'])}::{to_pascal_case(p['enum']['values'][-1])}')
+        i = add_require(ls, i, f'default_value == {'::'.join(namespace)}::{_get_default_value(name, p)}')
     elif property_type in BASE_TYPES:
         is_fp : bool = property_type in ['f32', 'f64', 'real']
         val_str : str = 'value' if property_type in ['boolean', 'string', 'path'] else f'static_cast< vortex::{BASE_TYPES[property_type][0]} >( value )'

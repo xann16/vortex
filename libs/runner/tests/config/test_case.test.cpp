@@ -22,8 +22,7 @@ TEST_CASE( "TestCase - Sample Test", "[sample]" )
 TEST_CASE( "TestCase - property: \"name\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "name", "stest" } };
-    auto obj_p = &obj;
-    auto s = vortex::runner::config::TestCase{ obj_p };
+    auto s = vortex::runner::config::TestCase{ &obj };
     auto s_null = vortex::runner::config::TestCase{ nullptr };
 
     auto value = s.name();
@@ -38,8 +37,7 @@ TEST_CASE( "TestCase - property: \"name\" - getter", "[settings]" )
 TEST_CASE( "TestCase - property: \"template_name\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "template_name", "stest" } };
-    auto obj_p = &obj;
-    auto s = vortex::runner::config::TestCase{ obj_p };
+    auto s = vortex::runner::config::TestCase{ &obj };
     auto s_null = vortex::runner::config::TestCase{ nullptr };
 
     auto value = s.template_name();
@@ -63,11 +61,15 @@ TEST_CASE( "TestCase - property: \"settings\" - getter", "[settings]" )
 
 TEST_CASE( "TestCase - property: \"parallel_strategy\" - getter", "[settings]" )
 {
+    auto obj = nlohmann::json{ { "parallel_strategy", "xxx" } };
+    auto s = vortex::runner::config::TestCase{ &obj };
     auto s_null = vortex::runner::config::TestCase{ nullptr };
 
+    auto value = s.parallel_strategy();
     auto default_value = s_null.parallel_strategy();
 
-    REQUIRE( default_value == 0 );
+    REQUIRE( value == vortex::runner::config::ParallelStrategyType::Xxx );
+    REQUIRE( default_value == vortex::runner::config::ParallelStrategyType::Mmx );
 }
 
 // "stages" property
@@ -75,8 +77,7 @@ TEST_CASE( "TestCase - property: \"parallel_strategy\" - getter", "[settings]" )
 TEST_CASE( "TestCase - property: \"stages\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "stages", "stest" } };
-    auto obj_p = &obj;
-    auto s = vortex::runner::config::TestCase{ obj_p };
+    auto s = vortex::runner::config::TestCase{ &obj };
     auto s_null = vortex::runner::config::TestCase{ nullptr };
 
     auto value = s.stages();
@@ -91,8 +92,7 @@ TEST_CASE( "TestCase - property: \"stages\" - getter", "[settings]" )
 TEST_CASE( "TestCase - property: \"process_count\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "process_count", -2l } };
-    auto obj_p = &obj;
-    auto s = vortex::runner::config::TestCase{ obj_p };
+    auto s = vortex::runner::config::TestCase{ &obj };
     auto s_null = vortex::runner::config::TestCase{ nullptr };
 
     auto value = s.process_count();

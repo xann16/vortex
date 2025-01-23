@@ -17,7 +17,6 @@ root_path : str = '../../../libs'
 
 for key, data in defs.items():
     generate(root_path, data, ctx)
-    print()
 
 for package_name in ctx['providers']:
     generate_settings_provider(root_path, package_name, ctx)

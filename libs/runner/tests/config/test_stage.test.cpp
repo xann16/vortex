@@ -22,8 +22,7 @@ TEST_CASE( "TestStage - Sample Test", "[sample]" )
 TEST_CASE( "TestStage - property: \"name\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "name", "stest" } };
-    auto obj_p = &obj;
-    auto s = vortex::runner::config::TestStage{ obj_p };
+    auto s = vortex::runner::config::TestStage{ &obj };
     auto s_null = vortex::runner::config::TestStage{ nullptr };
 
     auto value = s.name();

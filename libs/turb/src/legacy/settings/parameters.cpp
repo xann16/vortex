@@ -8,6 +8,9 @@
 
 #include <nlohmann/json.hpp>
 
+#include "turb/legacy/settings/enums/forcing_type_json_integration.hpp"
+#include "turb/legacy/settings/enums/drag_type_json_integration.hpp"
+
 namespace vortex::turb::legacy::settings
 {
 
@@ -109,10 +112,12 @@ Parameters::Parameters( nlohmann::json * data_p )
 
 // "forcing_type" property
 
-[[nodiscard]] /* TODO: enum type */ i32 Parameters::forcing_type() const
+[[nodiscard]] ForcingType Parameters::forcing_type() const
 {
     if ( m_data_p == nullptr ) return default_forcing_type();
-    return 0;
+    auto it = m_data_p->find( "forcing_type" );
+    if ( it == m_data_p->end() || it->is_null() ) return default_forcing_type();
+    return it->template get<ForcingType>();
 }
 
 // "deterministic_forcing_k_1" property
@@ -307,10 +312,12 @@ Parameters::Parameters( nlohmann::json * data_p )
 
 // "drag_type" property
 
-[[nodiscard]] /* TODO: enum type */ i32 Parameters::drag_type() const
+[[nodiscard]] DragType Parameters::drag_type() const
 {
     if ( m_data_p == nullptr ) return default_drag_type();
-    return 0;
+    auto it = m_data_p->find( "drag_type" );
+    if ( it == m_data_p->end() || it->is_null() ) return default_drag_type();
+    return it->template get<DragType>();
 }
 
 // "a" property

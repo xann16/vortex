@@ -8,6 +8,11 @@
 
 #include <nlohmann/json.hpp>
 
+#include "turb/legacy/settings/enums/sim_method_json_integration.hpp"
+#include "turb/legacy/settings/enums/particle_mode_json_integration.hpp"
+#include "turb/legacy/settings/enums/gravity_mode_json_integration.hpp"
+#include "turb/legacy/settings/enums/particle_twc_kernel_type_json_integration.hpp"
+
 namespace vortex::turb::legacy::settings
 {
 
@@ -19,34 +24,42 @@ Metadata::Metadata( nlohmann::json * data_p )
 
 // "sim_method" property
 
-[[nodiscard]] /* TODO: enum type */ i32 Metadata::sim_method() const
+[[nodiscard]] SimMethod Metadata::sim_method() const
 {
     if ( m_data_p == nullptr ) return default_sim_method();
-    return 0;
+    auto it = m_data_p->find( "sim_method" );
+    if ( it == m_data_p->end() || it->is_null() ) return default_sim_method();
+    return it->template get<SimMethod>();
 }
 
 // "particle_mode" property
 
-[[nodiscard]] /* TODO: enum type */ i32 Metadata::particle_mode() const
+[[nodiscard]] ParticleMode Metadata::particle_mode() const
 {
     if ( m_data_p == nullptr ) return default_particle_mode();
-    return 0;
+    auto it = m_data_p->find( "particle_mode" );
+    if ( it == m_data_p->end() || it->is_null() ) return default_particle_mode();
+    return it->template get<ParticleMode>();
 }
 
 // "gravity_type" property
 
-[[nodiscard]] /* TODO: enum type */ i32 Metadata::gravity_type() const
+[[nodiscard]] GravityMode Metadata::gravity_type() const
 {
     if ( m_data_p == nullptr ) return default_gravity_type();
-    return 0;
+    auto it = m_data_p->find( "gravity_type" );
+    if ( it == m_data_p->end() || it->is_null() ) return default_gravity_type();
+    return it->template get<GravityMode>();
 }
 
 // "particle_kernel_type" property
 
-[[nodiscard]] /* TODO: enum type */ i32 Metadata::particle_kernel_type() const
+[[nodiscard]] ParticleTwcKernelType Metadata::particle_kernel_type() const
 {
     if ( m_data_p == nullptr ) return default_particle_kernel_type();
-    return 0;
+    auto it = m_data_p->find( "particle_kernel_type" );
+    if ( it == m_data_p->end() || it->is_null() ) return default_particle_kernel_type();
+    return it->template get<ParticleTwcKernelType>();
 }
 
 // "k_filter" property

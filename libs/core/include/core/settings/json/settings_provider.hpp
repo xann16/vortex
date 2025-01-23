@@ -46,51 +46,51 @@ public:
 protected:
     [[nodiscard]] nlohmann::json * get_object_pointer(std::string const& key);
 
-    template <typename Settings>
-    [[nodiscard]] Settings get_impl(std::string const& key)
+    template <typename T>
+    [[nodiscard]] T get_impl(std::string const& key)
     {
-        return Settings{get_object_pointer(key)};
+        return T{get_object_pointer(key)};
     }
 
-    template <typename Settings>
-    [[nodiscard]] Settings get(std::string const& key, std::istream& is)
+    template <typename T>
+    [[nodiscard]] T get(std::string const& key, std::istream& is)
     {
         if (!contains(key))
         {
             load(key, is);
         }
-        return get_impl<Settings>(key);
+        return get_impl<T>(key);
     }
 
-    template <typename Settings>
-    [[nodiscard]] Settings get(std::string const& key, std::filesystem::path const& path)
+    template <typename T>
+    [[nodiscard]] T get(std::string const& key, std::filesystem::path const& path)
     {
         if (!contains(key))
         {
             load(key, path);
         }
-        return get_impl<Settings>(key);
+        return get_impl<T>(key);
     }
 
-    template <typename Settings>
-    [[nodiscard]] Settings get(std::filesystem::path const& path)
+    template <typename T>
+    [[nodiscard]] T get(std::filesystem::path const& path)
     {
         auto const& key = path.string();
         if (!contains(key))
         {
             load(key, path);
         }
-        return get_impl<Settings>(key);
+        return get_impl<T>(key);
     }
 
-    template <typename Settings>
-    [[nodiscard]] Settings get(std::string const& key)
+    template <typename T>
+    [[nodiscard]] T get(std::string const& key)
     {
         if (!contains(key))
         {
             throw std::out_of_range{"JSON Settings Provider: Key not found."};
         }
-        return get_impl<Settings>(key);
+        return get_impl<T>(key);
     }
 
 private:

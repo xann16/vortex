@@ -55,6 +55,13 @@ def end_class(ls: list[str], i: int, class_name: str) -> None:
     comment = f' // end of class {class_name}' if class_name else ''
     return close_brace(ls, i, suffix=';' + comment)
 
+def add_enum_class(ls: list[str], i: int, enum_class_name: str, enum_values: list[str], skip_class: bool = False, explicit_underlying_type: str | None = None) -> int:
+    i = add_line(ls, i, 'enum ' + ('class ' if not skip_class else '') + to_pascal_case(enum_class_name) + (f' : {explicit_underlying_type}' if explicit_underlying_type else ''))
+    i = open_brace(ls, i)
+    for j, enum_value in enumerate(enum_values):
+        i = add_line(ls, i, to_pascal_case(enum_value) + (',' if j != (len(enum_values) - 1) else ''))
+    return close_brace(ls, i, suffix=';')
+
 def add_access_qualifier(ls: list[str], i: int, qualifier: str) -> int:
     return add_line(ls, i - 1, f'{qualifier}:') + 1
 
@@ -136,8 +143,14 @@ def add_method_declaration(ls: list[str], i: int, method_name: str, return_type:
 def add_method_definition(ls: list[str], i: int, method_name: str, return_type: str, class_name: str, args: list[(str, str)], body: list[(int, str)], is_const: bool = False, is_noexcept: bool = False, is_nodiscard: bool = False) -> int:
     args_list : list[str] = [f'{data_type} {name}' for data_type, name in args]
     args : str = ', '.join(args_list)
-    signature : str = ('[[nodiscard]] ' if is_nodiscard else '') + f'{return_type} {class_name}::{method_name}(' + (f' {args} ' if args else '') + ')' + (' const' if is_const else '') + (' noexcept' if is_noexcept else '')
+    signature : str = ('[[nodiscard]] ' if is_nodiscard else '') + f'{return_type} {(class_name + "::") if class_name else ""}{method_name}(' + (f' {args} ' if args else '') + ')' + (' const' if is_const else '') + (' noexcept' if is_noexcept else '')
     return _add_method_body(ls, i, signature, body)
+
+def add_function_declaration(ls: list[str], i: int, function_name: str, return_type: str, args: list[(str, str)], body: list[(int, str)] | None = None, is_definition: bool = False, is_noexcept: bool = False, is_nodiscard: bool = False, pre_qualifiers: str = '') -> int:
+    return add_method_declaration(ls, i, function_name, return_type, args, body, is_definition=is_definition, is_noexcept=is_noexcept, is_nodiscard=is_nodiscard, pre_qualifiers=pre_qualifiers, is_const=False)
+
+def add_function_definition(ls: list[str], i: int, function_name: str, return_type: str, args: list[(str, str)], body: list[(int, str)], is_noexcept: bool = False, is_nodiscard: bool = False) -> int:
+    return add_method_definition(ls, i, function_name, '', args, body, is_definition=is_definition, is_noexcept=is_noexcept, is_nodiscard=is_nodiscard, pre_qualifiers=pre_qualifiers, is_const=False)
 
 
 # TESTING

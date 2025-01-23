@@ -30,7 +30,7 @@ def get_header_path(package_name: str, namespace_path: list[str], root_path: str
 
 def get_source_path(package_name: str, namespace_path: list[str], root_path: str | None = None, ctx='cwd') -> str:
     module_name : str = _get_provider_module_name()
-    path : str = os.path.join('src', *namespace_path, module_name + '.hpp')
+    path : str = os.path.join('src', *namespace_path, module_name + '.cpp')
     if ctx == 'cmake':
         return os.path.normpath(path)
     path = os.path.join(root_path, package_name, path)
@@ -42,7 +42,7 @@ def get_source_path(package_name: str, namespace_path: list[str], root_path: str
 
 def get_unit_test_path(package_name: str, namespace_path: list[str], root_path: str | None = None, ctx='cwd') -> str:
     module_name : str = _get_provider_module_name()
-    path : str = os.path.join('tests', *namespace_path, module_name + '.hpp')
+    path : str = os.path.join('tests', *namespace_path, module_name + '.test.cpp')
     if ctx == 'cmake':
         return os.path.normpath(path)
     path = os.path.join(root_path, package_name, path)
@@ -60,9 +60,9 @@ def _add_getter_declarations(ls: list[str], i: int, modules: list[Any]) -> int:
     for module_data in modules:
         module_name : str = module_data['__metadata__']['module']
         i = add_method_declaration(ls, i, f'get_{module_name}', to_pascal_case(module_name), [('std::string const&', 'key')], is_nodiscard=True)
-        i = add_method_declaration(ls, i, f'get_{module_name}', to_pascal_case(module_name), [('std::string const&', 'key'), ('std::ifstream&', 'is')], is_nodiscard=True)
-        i = add_method_declaration(ls, i, f'get_{module_name}', to_pascal_case(module_name), [('std::string const&', 'key'), ('std::filestream::path const&', 'path')], is_nodiscard=True)
-        i = add_method_declaration(ls, i, f'get_{module_name}', to_pascal_case(module_name), [('std::filestream::path const&', 'path')], is_nodiscard=True)
+        i = add_method_declaration(ls, i, f'get_{module_name}', to_pascal_case(module_name), [('std::string const&', 'key'), ('std::istream&', 'is')], is_nodiscard=True)
+        i = add_method_declaration(ls, i, f'get_{module_name}', to_pascal_case(module_name), [('std::string const&', 'key'), ('std::filesystem::path const&', 'path')], is_nodiscard=True)
+        i = add_method_declaration(ls, i, f'get_{module_name}', to_pascal_case(module_name), [('std::filesystem::path const&', 'path')], is_nodiscard=True)
         add_blank(ls)
     return i
 
@@ -74,15 +74,15 @@ def _add_getter_definitions(ls: list[str], i: int, modules: list[Any], package_n
 
         i = add_method_definition(ls, i, f'get_{module_name}', class_name, provider_class_name, [('std::string const&', 'key')], [(0, f'return get<{class_name}>(key);')], is_nodiscard=True)
         add_blank(ls)
-        i = add_method_definition(ls, i, f'get_{module_name}', class_name, provider_class_name, [('std::string const&', 'key'), ('std::ifstream&', 'is')], [(0, f'return get<{class_name}>(key, is);')], is_nodiscard=True)
+        i = add_method_definition(ls, i, f'get_{module_name}', class_name, provider_class_name, [('std::string const&', 'key'), ('std::istream&', 'is')], [(0, f'return get<{class_name}>(key, is);')], is_nodiscard=True)
         add_blank(ls)
-        i = add_method_definition(ls, i, f'get_{module_name}', class_name, provider_class_name, [('std::string const&', 'key'), ('std::filestream::path const&', 'path')], [(0, f'return get<{class_name}>(key, path);')], is_nodiscard=True)
+        i = add_method_definition(ls, i, f'get_{module_name}', class_name, provider_class_name, [('std::string const&', 'key'), ('std::filesystem::path const&', 'path')], [(0, f'return get<{class_name}>(key, path);')], is_nodiscard=True)
         add_blank(ls)
-        i = add_method_definition(ls, i, f'get_{module_name}', class_name, provider_class_name, [('std::filestream::path const&', 'path')], [(0, f'return get<{class_name}>(path);')], is_nodiscard=True)
+        i = add_method_definition(ls, i, f'get_{module_name}', class_name, provider_class_name, [('std::filesystem::path const&', 'path')], [(0, f'return get<{class_name}>(path);')], is_nodiscard=True)
         add_blank(ls)
     return i
 
-def generate_provider_header_file(root_path: str, package_name: str, ctx: dict[str, Any]) -> str:
+def generate_provider_header_file(root_path: str, package_name: str, ctx: dict[str, Any]) -> None:
     namespace : list[str] = _get_provider_namespace(package_name, ctx)
     path : str = get_header_path(package_name, namespace, root_path=root_path)
     class_name : str = to_pascal_case(_get_provider_module_name())
@@ -104,7 +104,7 @@ def generate_provider_header_file(root_path: str, package_name: str, ctx: dict[s
     add_blank(ls)
     i = begin_class(ls, i, class_name, base_classes=['core::settings::json::SettingsProvider'])
 
-    i = add_access_qualifier(ls, i, 'public:')
+    i = add_access_qualifier(ls, i, 'public')
     i = add_line(ls, i, 'using core::settings::json::SettingsProvider::SettingsProvider;')
     add_blank(ls)
     i = add_copy_and_move_ctor_deletes(ls, i, class_name)
@@ -112,7 +112,7 @@ def generate_provider_header_file(root_path: str, package_name: str, ctx: dict[s
     i = add_dtor_declaration(ls, i, class_name, is_noexcept=True, is_default=True)
     add_blank(ls)
 
-    i = add_access_qualifier(ls, i, 'public:')
+    i = add_access_qualifier(ls, i, 'public')
     i = _add_getter_declarations(ls, i, ctx['providers'][package_name])
 
     i = end_class(ls, i, class_name)
@@ -121,10 +121,8 @@ def generate_provider_header_file(root_path: str, package_name: str, ctx: dict[s
 
     create_file(path, ls)
 
-    return path
 
-
-def generate_provider_source_file(root_path: str, package_name: str, ctx: dict[str, Any]) -> str:
+def generate_provider_source_file(root_path: str, package_name: str, ctx: dict[str, Any]) -> None:
     namespace : list[str] = _get_provider_namespace(package_name, ctx)
     path : str = get_source_path(package_name, namespace, root_path=root_path)
     class_name : str = to_pascal_case(_get_provider_module_name())
@@ -147,10 +145,8 @@ def generate_provider_source_file(root_path: str, package_name: str, ctx: dict[s
 
     create_file(path, ls)
 
-    return path
 
-
-def generate_provider_unit_test_file(root_path: str, package_name: str, ctx: dict[str, Any]) -> str:
+def generate_provider_unit_test_file(root_path: str, package_name: str, ctx: dict[str, Any]) -> None:
     namespace : list[str] = _get_provider_namespace(package_name, ctx)
     path : str = get_unit_test_path(package_name, namespace, root_path=root_path)
     class_name : str = to_pascal_case(_get_provider_module_name())
@@ -172,8 +168,6 @@ def generate_provider_unit_test_file(root_path: str, package_name: str, ctx: dic
     i = end_test_case(ls, i)
 
     create_file(path, ls)
-
-    return path
 
 
 def populate_cmake_data(package_name: str, ctx : dict[str, Any]) -> None:
@@ -200,12 +194,8 @@ def generate_settings_provider(root_path: str, package_name: str, ctx: dict[str,
     if not any(('json' in data['__metadata__']['settings']['providers']) for data in ctx['providers'][package_name]):
         return
 
-    sp_hdr_path : str = generate_provider_header_file(root_path, package_name, ctx)
-    sp_src_path : str = generate_provider_source_file(root_path, package_name, ctx)
-    sp_tst_path : str = generate_provider_unit_test_file(root_path, package_name, ctx)
-
-    print(sp_hdr_path)
-    print(sp_src_path)
-    print(sp_tst_path)
+    generate_provider_header_file(root_path, package_name, ctx)
+    generate_provider_source_file(root_path, package_name, ctx)
+    generate_provider_unit_test_file(root_path, package_name, ctx)
 
     populate_cmake_data(package_name, ctx)

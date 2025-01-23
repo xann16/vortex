@@ -1,4 +1,5 @@
 from cpp_utils import get_class_name, get_namespace, add_include, add_blank, add_line, add_block_comment, begin_test_case, end_test_case, add_require, begin_namespace, end_namespace, begin_class, end_class, add_access_qualifier, add_ctor_declaration, add_ctor_definition, add_data_field
+import gen_cpp_enums
 from gen_cpp_properties import add_property_public_declarations, add_property_private_declarations, add_property_definitions, add_property_unit_tests
 from gen_utils import create_file
 import os
@@ -81,12 +82,30 @@ def add_provider_data(data: dict[str, Any], ctx : dict[str, Any]) -> None:
 
     pkg_data.append(data)
 
+
 def _add_settings_includes(ls: list[str], i: int, includes: list[dict[str, Any]], ctx: dict[str, Any]) -> int:
     for include_from in (include['from'] for include in includes):
         i = add_include(ls, i, get_header_path(ctx['defs'][include_from], ctx='include'))
     return i
 
-def generate_dynamic_header_file(root_path: str, data: dict[str, Any], ctx: dict[str, Any]) -> str:
+
+def _add_enum_includes(ls: list[str], i: int, data: dict[str, Any], ctx: str = 'base'):
+    for prop_data in data.values():
+        if 'type' in prop_data and prop_data['type'] == 'enum':
+            enum_data: dict[str, Any] = prop_data['enum']
+            include_path : str = gen_cpp_enums.get_header_include_path_ext(data, enum_data, ctx)
+            i = add_include(ls, i, include_path)
+    return i
+
+def generate_required_enum_classes(root_path: str, data: dict[str, Any], ctx: dict[str, Any]) -> None:
+    for prop_data in data.values():
+        if 'type' in prop_data and prop_data['type'] == 'enum':
+            enum_data: dict[str, Any] = prop_data['enum']
+            gen_cpp_enums.generate_enum(root_path, data, enum_data, ctx)
+
+
+
+def generate_dynamic_header_file(root_path: str, data: dict[str, Any], ctx: dict[str, Any]) -> None:
     path : str = get_header_path(data, root_path=root_path)
     class_name : str = get_class_name(data)
     namespace : list[str] = get_namespace(data)
@@ -104,6 +123,7 @@ def generate_dynamic_header_file(root_path: str, data: dict[str, Any], ctx: dict
     add_blank(ls)
 
     i = add_include(ls, i, 'core/common/types.hpp')
+    i = _add_enum_includes(ls, i, data)
     if '__includes__' in data:
         i = _add_settings_includes(ls, i, data['__includes__'], ctx)
     add_blank(ls)
@@ -129,10 +149,8 @@ def generate_dynamic_header_file(root_path: str, data: dict[str, Any], ctx: dict
 
     create_file(path, ls)
 
-    return path
 
-
-def generate_dynamic_source_file(root_path: str, data: dict[str, Any], ctx: dict[str, Any]) -> str:
+def generate_dynamic_source_file(root_path: str, data: dict[str, Any], ctx: dict[str, Any]) -> None:
     path : str = get_source_path(data, root_path=root_path)
     class_name : str = get_class_name(data)
     namespace : str = get_namespace(data)
@@ -149,6 +167,9 @@ def generate_dynamic_source_file(root_path: str, data: dict[str, Any], ctx: dict
     i = add_include(ls, i, 'nlohmann/json.hpp', is_quoted=False)
     add_blank(ls)
 
+    i = _add_enum_includes(ls, i, data, ctx='json')
+    add_blank(ls)
+
     i = begin_namespace(ls, i, *namespace)
     add_blank(ls)
     i = add_ctor_definition(ls, i, class_name, [('nlohmann::json *', 'data_p')], body=[(0, '// add initial validation')])
@@ -159,10 +180,8 @@ def generate_dynamic_source_file(root_path: str, data: dict[str, Any], ctx: dict
 
     create_file(path, ls)
 
-    return path
 
-
-def generate_dynamic_unit_test_file(root_path: str, data: dict[str, Any], ctx: dict[str, Any]) -> str:
+def generate_dynamic_unit_test_file(root_path: str, data: dict[str, Any], ctx: dict[str, Any]) -> None:
     path : str = get_unit_test_path(data, root_path=root_path)
     class_name : str = get_class_name(data)
     namespace : str = get_namespace(data)
@@ -192,18 +211,14 @@ def generate_dynamic_unit_test_file(root_path: str, data: dict[str, Any], ctx: d
 
     create_file(path, ls)
 
-    return path
-
 
 def generate_cpp(root_path: str, data: dict[str, Any], ctx: dict[str, Any]) -> None:
 
-    dyn_hdr_path : str = generate_dynamic_header_file(root_path, data, ctx)
-    dyn_src_path : str = generate_dynamic_source_file(root_path, data, ctx)
-    dyn_tst_path : str = generate_dynamic_unit_test_file(root_path, data, ctx)
+    generate_dynamic_header_file(root_path, data, ctx)
+    generate_dynamic_source_file(root_path, data, ctx)
+    generate_dynamic_unit_test_file(root_path, data, ctx)
 
-    print(dyn_hdr_path)
-    print(dyn_src_path)
-    print(dyn_tst_path)
+    generate_required_enum_classes(root_path, data, ctx)
 
     add_provider_data(data, ctx)
     populate_cmake_data(data, ctx)

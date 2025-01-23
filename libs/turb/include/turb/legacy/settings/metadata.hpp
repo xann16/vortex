@@ -9,6 +9,10 @@
 #include <nlohmann/json_fwd.hpp>
 
 #include "core/common/types.hpp"
+#include "turb/legacy/settings/enums/sim_method.hpp"
+#include "turb/legacy/settings/enums/particle_mode.hpp"
+#include "turb/legacy/settings/enums/gravity_mode.hpp"
+#include "turb/legacy/settings/enums/particle_twc_kernel_type.hpp"
 
 namespace vortex::turb::legacy::settings
 {
@@ -20,31 +24,31 @@ public:
 
 public:
     // "sim_method" property
-    [[nodiscard]] /* TODO: enum type */ i32 sim_method() const;
-    [[nodiscard]] constexpr /* TODO: enum type */ i32 default_sim_method() const noexcept
+    [[nodiscard]] SimMethod sim_method() const;
+    [[nodiscard]] constexpr SimMethod default_sim_method() const noexcept
     {
-        return /* TODO: enum type first value or predefined - extra processing ??? */ 0;
+        return SimMethod::Dns;
     }
 
     // "particle_mode" property
-    [[nodiscard]] /* TODO: enum type */ i32 particle_mode() const;
-    [[nodiscard]] constexpr /* TODO: enum type */ i32 default_particle_mode() const noexcept
+    [[nodiscard]] ParticleMode particle_mode() const;
+    [[nodiscard]] constexpr ParticleMode default_particle_mode() const noexcept
     {
-        return /* TODO: enum type first value or predefined - extra processing ??? */ 0;
+        return ParticleMode::None;
     }
 
     // "gravity_type" property
-    [[nodiscard]] /* TODO: enum type */ i32 gravity_type() const;
-    [[nodiscard]] constexpr /* TODO: enum type */ i32 default_gravity_type() const noexcept
+    [[nodiscard]] GravityMode gravity_type() const;
+    [[nodiscard]] constexpr GravityMode default_gravity_type() const noexcept
     {
-        return /* TODO: enum type first value or predefined - extra processing ??? */ 0;
+        return GravityMode::None;
     }
 
     // "particle_kernel_type" property
-    [[nodiscard]] /* TODO: enum type */ i32 particle_kernel_type() const;
-    [[nodiscard]] constexpr /* TODO: enum type */ i32 default_particle_kernel_type() const noexcept
+    [[nodiscard]] ParticleTwcKernelType particle_kernel_type() const;
+    [[nodiscard]] constexpr ParticleTwcKernelType default_particle_kernel_type() const noexcept
     {
-        return /* TODO: enum type first value or predefined - extra processing ??? */ 0;
+        return ParticleTwcKernelType::Pnn;
     }
 
     // "k_filter" property

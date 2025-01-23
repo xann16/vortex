@@ -9,6 +9,7 @@
 #include <nlohmann/json_fwd.hpp>
 
 #include "core/common/types.hpp"
+#include "runner/config/enums/parallel_strategy_type.hpp"
 
 namespace vortex::runner::config
 {
@@ -37,10 +38,10 @@ public:
     [[nodiscard]] /* TODO: settings opaque interface */ void * settings() const;
 
     // "parallel_strategy" property
-    [[nodiscard]] /* TODO: enum type */ i32 parallel_strategy() const;
-    [[nodiscard]] constexpr /* TODO: enum type */ i32 default_parallel_strategy() const noexcept
+    [[nodiscard]] ParallelStrategyType parallel_strategy() const;
+    [[nodiscard]] constexpr ParallelStrategyType default_parallel_strategy() const noexcept
     {
-        return /* TODO: enum type first value or predefined - extra processing ??? */ 0;
+        return ParallelStrategyType::Mmx;
     }
 
     // "stages" property

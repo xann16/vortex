@@ -14,7 +14,7 @@ namespace vortex::turb::legacy::settings::providers
 
 class JsonSettingsProvider : public core::settings::json::SettingsProvider
 {
-public::
+public:
     using core::settings::json::SettingsProvider::SettingsProvider;
 
     JsonSettingsProvider( JsonSettingsProvider const& ) = delete;
@@ -24,11 +24,11 @@ public::
 
     ~JsonSettingsProvider() noexcept = default;
 
-public::
+public:
     [[nodiscard]] Settings get_settings( std::string const& key );
-    [[nodiscard]] Settings get_settings( std::string const& key, std::ifstream& is );
-    [[nodiscard]] Settings get_settings( std::string const& key, std::filestream::path const& path );
-    [[nodiscard]] Settings get_settings( std::filestream::path const& path );
+    [[nodiscard]] Settings get_settings( std::string const& key, std::istream& is );
+    [[nodiscard]] Settings get_settings( std::string const& key, std::filesystem::path const& path );
+    [[nodiscard]] Settings get_settings( std::filesystem::path const& path );
 
 }; // end of class JsonSettingsProvider
 

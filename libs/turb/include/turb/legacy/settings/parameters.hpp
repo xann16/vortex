@@ -9,6 +9,8 @@
 #include <nlohmann/json_fwd.hpp>
 
 #include "core/common/types.hpp"
+#include "turb/legacy/settings/enums/forcing_type.hpp"
+#include "turb/legacy/settings/enums/drag_type.hpp"
 
 namespace vortex::turb::legacy::settings
 {
@@ -83,10 +85,10 @@ public:
     }
 
     // "forcing_type" property
-    [[nodiscard]] /* TODO: enum type */ i32 forcing_type() const;
-    [[nodiscard]] constexpr /* TODO: enum type */ i32 default_forcing_type() const noexcept
+    [[nodiscard]] ForcingType forcing_type() const;
+    [[nodiscard]] constexpr ForcingType default_forcing_type() const noexcept
     {
-        return /* TODO: enum type first value or predefined - extra processing ??? */ 0;
+        return ForcingType::Deterministic;
     }
 
     // "deterministic_forcing_k_1" property
@@ -223,10 +225,10 @@ public:
     }
 
     // "drag_type" property
-    [[nodiscard]] /* TODO: enum type */ i32 drag_type() const;
-    [[nodiscard]] constexpr /* TODO: enum type */ i32 default_drag_type() const noexcept
+    [[nodiscard]] DragType drag_type() const;
+    [[nodiscard]] constexpr DragType default_drag_type() const noexcept
     {
-        return /* TODO: enum type first value or predefined - extra processing ??? */ 0;
+        return DragType::Stokes;
     }
 
     // "a" property

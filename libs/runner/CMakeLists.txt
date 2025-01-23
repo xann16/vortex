@@ -8,6 +8,8 @@ set(HEADERS
 
     # files added automatically using vxsw
     include/runner/config/test_stage.hpp
+    include/runner/config/enums/parallel_strategy_type.hpp
+    include/runner/config/enums/parallel_strategy_type_json_integration.hpp
     include/runner/config/test_case.hpp
     include/runner/config/test_fixture.hpp
     # end of vxsw managed section
@@ -17,6 +19,7 @@ set(SOURCES
 
     # files added automatically using vxsw
     src/config/test_stage.cpp
+    src/config/enums/parallel_strategy_type.cpp
     src/config/test_case.cpp
     src/config/test_fixture.cpp
     # end of vxsw managed section
@@ -26,6 +29,7 @@ set(TESTS
 
     # files added automatically using vxsw
     tests/config/test_stage.test.cpp
+    tests/config/enums/parallel_strategy_type.test.cpp
     tests/config/test_case.test.cpp
     tests/config/test_fixture.test.cpp
     # end of vxsw managed section

@@ -22,8 +22,7 @@ TEST_CASE( "TestFixture - Sample Test", "[sample]" )
 TEST_CASE( "TestFixture - property: \"name\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "name", "stest" } };
-    auto obj_p = &obj;
-    auto s = vortex::runner::config::TestFixture{ obj_p };
+    auto s = vortex::runner::config::TestFixture{ &obj };
     auto s_null = vortex::runner::config::TestFixture{ nullptr };
 
     auto value = s.name();
@@ -38,8 +37,7 @@ TEST_CASE( "TestFixture - property: \"name\" - getter", "[settings]" )
 TEST_CASE( "TestFixture - property: \"root_path\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "root_path", "ptest" } };
-    auto obj_p = &obj;
-    auto s = vortex::runner::config::TestFixture{ obj_p };
+    auto s = vortex::runner::config::TestFixture{ &obj };
     auto s_null = vortex::runner::config::TestFixture{ nullptr };
 
     auto value = s.root_path();

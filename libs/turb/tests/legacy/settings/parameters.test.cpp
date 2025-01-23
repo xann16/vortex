@@ -22,8 +22,7 @@ TEST_CASE( "Parameters - Sample Test", "[sample]" )
 TEST_CASE( "Parameters - property: \"N\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "N", -2l } };
-    auto obj_p = &obj;
-    auto s = vortex::turb::legacy::settings::Parameters{ obj_p };
+    auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{ nullptr };
 
     auto value = s.N();
@@ -38,8 +37,7 @@ TEST_CASE( "Parameters - property: \"N\" - getter", "[settings]" )
 TEST_CASE( "Parameters - property: \"N_subdomain\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "N_subdomain", -2l } };
-    auto obj_p = &obj;
-    auto s = vortex::turb::legacy::settings::Parameters{ obj_p };
+    auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{ nullptr };
 
     auto value = s.N_subdomain();
@@ -54,8 +52,7 @@ TEST_CASE( "Parameters - property: \"N_subdomain\" - getter", "[settings]" )
 TEST_CASE( "Parameters - property: \"Nt_max\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "Nt_max", -2l } };
-    auto obj_p = &obj;
-    auto s = vortex::turb::legacy::settings::Parameters{ obj_p };
+    auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{ nullptr };
 
     auto value = s.Nt_max();
@@ -70,8 +67,7 @@ TEST_CASE( "Parameters - property: \"Nt_max\" - getter", "[settings]" )
 TEST_CASE( "Parameters - property: \"dt\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "dt", 0.3 } };
-    auto obj_p = &obj;
-    auto s = vortex::turb::legacy::settings::Parameters{ obj_p };
+    auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{ nullptr };
 
     auto value = s.dt();
@@ -86,8 +82,7 @@ TEST_CASE( "Parameters - property: \"dt\" - getter", "[settings]" )
 TEST_CASE( "Parameters - property: \"rnu\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "rnu", 0.3 } };
-    auto obj_p = &obj;
-    auto s = vortex::turb::legacy::settings::Parameters{ obj_p };
+    auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{ nullptr };
 
     auto value = s.rnu();
@@ -102,8 +97,7 @@ TEST_CASE( "Parameters - property: \"rnu\" - getter", "[settings]" )
 TEST_CASE( "Parameters - property: \"t_init\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "t_init", 0.3 } };
-    auto obj_p = &obj;
-    auto s = vortex::turb::legacy::settings::Parameters{ obj_p };
+    auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{ nullptr };
 
     auto value = s.t_init();
@@ -118,8 +112,7 @@ TEST_CASE( "Parameters - property: \"t_init\" - getter", "[settings]" )
 TEST_CASE( "Parameters - property: \"is_flow_generated\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "is_flow_generated", true } };
-    auto obj_p = &obj;
-    auto s = vortex::turb::legacy::settings::Parameters{ obj_p };
+    auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{ nullptr };
 
     auto value = s.is_flow_generated();
@@ -134,8 +127,7 @@ TEST_CASE( "Parameters - property: \"is_flow_generated\" - getter", "[settings]"
 TEST_CASE( "Parameters - property: \"deterministic_seed\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "deterministic_seed", 4ull } };
-    auto obj_p = &obj;
-    auto s = vortex::turb::legacy::settings::Parameters{ obj_p };
+    auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{ nullptr };
 
     auto value = s.deterministic_seed();
@@ -150,8 +142,7 @@ TEST_CASE( "Parameters - property: \"deterministic_seed\" - getter", "[settings]
 TEST_CASE( "Parameters - property: \"input_velo_index\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "input_velo_index", -2l } };
-    auto obj_p = &obj;
-    auto s = vortex::turb::legacy::settings::Parameters{ obj_p };
+    auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{ nullptr };
 
     auto value = s.input_velo_index();
@@ -165,11 +156,15 @@ TEST_CASE( "Parameters - property: \"input_velo_index\" - getter", "[settings]" 
 
 TEST_CASE( "Parameters - property: \"forcing_type\" - getter", "[settings]" )
 {
+    auto obj = nlohmann::json{ { "forcing_type", "stochastic" } };
+    auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{ nullptr };
 
+    auto value = s.forcing_type();
     auto default_value = s_null.forcing_type();
 
-    REQUIRE( default_value == 0 );
+    REQUIRE( value == vortex::turb::legacy::settings::ForcingType::Stochastic );
+    REQUIRE( default_value == vortex::turb::legacy::settings::ForcingType::Deterministic );
 }
 
 // "deterministic_forcing_k_1" property
@@ -177,8 +172,7 @@ TEST_CASE( "Parameters - property: \"forcing_type\" - getter", "[settings]" )
 TEST_CASE( "Parameters - property: \"deterministic_forcing_k_1\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "deterministic_forcing_k_1", 0.3 } };
-    auto obj_p = &obj;
-    auto s = vortex::turb::legacy::settings::Parameters{ obj_p };
+    auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{ nullptr };
 
     auto value = s.deterministic_forcing_k_1();
@@ -193,8 +187,7 @@ TEST_CASE( "Parameters - property: \"deterministic_forcing_k_1\" - getter", "[se
 TEST_CASE( "Parameters - property: \"deterministic_forcing_k_2\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "deterministic_forcing_k_2", 0.3 } };
-    auto obj_p = &obj;
-    auto s = vortex::turb::legacy::settings::Parameters{ obj_p };
+    auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{ nullptr };
 
     auto value = s.deterministic_forcing_k_2();
@@ -209,8 +202,7 @@ TEST_CASE( "Parameters - property: \"deterministic_forcing_k_2\" - getter", "[se
 TEST_CASE( "Parameters - property: \"stochastic_seed\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "stochastic_seed", 4ull } };
-    auto obj_p = &obj;
-    auto s = vortex::turb::legacy::settings::Parameters{ obj_p };
+    auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{ nullptr };
 
     auto value = s.stochastic_seed();
@@ -225,8 +217,7 @@ TEST_CASE( "Parameters - property: \"stochastic_seed\" - getter", "[settings]" )
 TEST_CASE( "Parameters - property: \"stats_output_interval\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "stats_output_interval", -2l } };
-    auto obj_p = &obj;
-    auto s = vortex::turb::legacy::settings::Parameters{ obj_p };
+    auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{ nullptr };
 
     auto value = s.stats_output_interval();
@@ -241,8 +232,7 @@ TEST_CASE( "Parameters - property: \"stats_output_interval\" - getter", "[settin
 TEST_CASE( "Parameters - property: \"spectrum_output_interval\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "spectrum_output_interval", -2l } };
-    auto obj_p = &obj;
-    auto s = vortex::turb::legacy::settings::Parameters{ obj_p };
+    auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{ nullptr };
 
     auto value = s.spectrum_output_interval();
@@ -257,8 +247,7 @@ TEST_CASE( "Parameters - property: \"spectrum_output_interval\" - getter", "[set
 TEST_CASE( "Parameters - property: \"is_stats_output_extended\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "is_stats_output_extended", true } };
-    auto obj_p = &obj;
-    auto s = vortex::turb::legacy::settings::Parameters{ obj_p };
+    auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{ nullptr };
 
     auto value = s.is_stats_output_extended();
@@ -273,8 +262,7 @@ TEST_CASE( "Parameters - property: \"is_stats_output_extended\" - getter", "[set
 TEST_CASE( "Parameters - property: \"rho_part\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "rho_part", 0.3 } };
-    auto obj_p = &obj;
-    auto s = vortex::turb::legacy::settings::Parameters{ obj_p };
+    auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{ nullptr };
 
     auto value = s.rho_part();
@@ -289,8 +277,7 @@ TEST_CASE( "Parameters - property: \"rho_part\" - getter", "[settings]" )
 TEST_CASE( "Parameters - property: \"rho_fluid\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "rho_fluid", 0.3 } };
-    auto obj_p = &obj;
-    auto s = vortex::turb::legacy::settings::Parameters{ obj_p };
+    auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{ nullptr };
 
     auto value = s.rho_fluid();
@@ -305,8 +292,7 @@ TEST_CASE( "Parameters - property: \"rho_fluid\" - getter", "[settings]" )
 TEST_CASE( "Parameters - property: \"eta_k_init\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "eta_k_init", 0.3 } };
-    auto obj_p = &obj;
-    auto s = vortex::turb::legacy::settings::Parameters{ obj_p };
+    auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{ nullptr };
 
     auto value = s.eta_k_init();
@@ -321,8 +307,7 @@ TEST_CASE( "Parameters - property: \"eta_k_init\" - getter", "[settings]" )
 TEST_CASE( "Parameters - property: \"tau_k_init\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "tau_k_init", 0.3 } };
-    auto obj_p = &obj;
-    auto s = vortex::turb::legacy::settings::Parameters{ obj_p };
+    auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{ nullptr };
 
     auto value = s.tau_k_init();
@@ -337,8 +322,7 @@ TEST_CASE( "Parameters - property: \"tau_k_init\" - getter", "[settings]" )
 TEST_CASE( "Parameters - property: \"shell_thickness\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "shell_thickness", 0.3 } };
-    auto obj_p = &obj;
-    auto s = vortex::turb::legacy::settings::Parameters{ obj_p };
+    auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{ nullptr };
 
     auto value = s.shell_thickness();
@@ -353,8 +337,7 @@ TEST_CASE( "Parameters - property: \"shell_thickness\" - getter", "[settings]" )
 TEST_CASE( "Parameters - property: \"epsilon_env\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "epsilon_env", 0.3 } };
-    auto obj_p = &obj;
-    auto s = vortex::turb::legacy::settings::Parameters{ obj_p };
+    auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{ nullptr };
 
     auto value = s.epsilon_env();
@@ -369,8 +352,7 @@ TEST_CASE( "Parameters - property: \"epsilon_env\" - getter", "[settings]" )
 TEST_CASE( "Parameters - property: \"nu_fluid\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "nu_fluid", 0.3 } };
-    auto obj_p = &obj;
-    auto s = vortex::turb::legacy::settings::Parameters{ obj_p };
+    auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{ nullptr };
 
     auto value = s.nu_fluid();
@@ -385,8 +367,7 @@ TEST_CASE( "Parameters - property: \"nu_fluid\" - getter", "[settings]" )
 TEST_CASE( "Parameters - property: \"gravity\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "gravity", 0.3 } };
-    auto obj_p = &obj;
-    auto s = vortex::turb::legacy::settings::Parameters{ obj_p };
+    auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{ nullptr };
 
     auto value = s.gravity();
@@ -401,8 +382,7 @@ TEST_CASE( "Parameters - property: \"gravity\" - getter", "[settings]" )
 TEST_CASE( "Parameters - property: \"is_part_generated\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "is_part_generated", true } };
-    auto obj_p = &obj;
-    auto s = vortex::turb::legacy::settings::Parameters{ obj_p };
+    auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{ nullptr };
 
     auto value = s.is_part_generated();
@@ -417,8 +397,7 @@ TEST_CASE( "Parameters - property: \"is_part_generated\" - getter", "[settings]"
 TEST_CASE( "Parameters - property: \"is_part_overlapping\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "is_part_overlapping", true } };
-    auto obj_p = &obj;
-    auto s = vortex::turb::legacy::settings::Parameters{ obj_p };
+    auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{ nullptr };
 
     auto value = s.is_part_overlapping();
@@ -433,8 +412,7 @@ TEST_CASE( "Parameters - property: \"is_part_overlapping\" - getter", "[settings
 TEST_CASE( "Parameters - property: \"is_part_hdi_enabled\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "is_part_hdi_enabled", true } };
-    auto obj_p = &obj;
-    auto s = vortex::turb::legacy::settings::Parameters{ obj_p };
+    auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{ nullptr };
 
     auto value = s.is_part_hdi_enabled();
@@ -449,8 +427,7 @@ TEST_CASE( "Parameters - property: \"is_part_hdi_enabled\" - getter", "[settings
 TEST_CASE( "Parameters - property: \"part_hdi_trunc_enabled\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "part_hdi_trunc_enabled", 0.3 } };
-    auto obj_p = &obj;
-    auto s = vortex::turb::legacy::settings::Parameters{ obj_p };
+    auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{ nullptr };
 
     auto value = s.part_hdi_trunc_enabled();
@@ -465,8 +442,7 @@ TEST_CASE( "Parameters - property: \"part_hdi_trunc_enabled\" - getter", "[setti
 TEST_CASE( "Parameters - property: \"N_part\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "N_part", -2l } };
-    auto obj_p = &obj;
-    auto s = vortex::turb::legacy::settings::Parameters{ obj_p };
+    auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{ nullptr };
 
     auto value = s.N_part();
@@ -480,11 +456,15 @@ TEST_CASE( "Parameters - property: \"N_part\" - getter", "[settings]" )
 
 TEST_CASE( "Parameters - property: \"drag_type\" - getter", "[settings]" )
 {
+    auto obj = nlohmann::json{ { "drag_type", "nonlinear" } };
+    auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{ nullptr };
 
+    auto value = s.drag_type();
     auto default_value = s_null.drag_type();
 
-    REQUIRE( default_value == 0 );
+    REQUIRE( value == vortex::turb::legacy::settings::DragType::Nonlinear );
+    REQUIRE( default_value == vortex::turb::legacy::settings::DragType::Stokes );
 }
 
 // "a" property
@@ -492,8 +472,7 @@ TEST_CASE( "Parameters - property: \"drag_type\" - getter", "[settings]" )
 TEST_CASE( "Parameters - property: \"a\" - getter", "[settings]" )
 {
     auto obj = nlohmann::json{ { "a", 0.3 } };
-    auto obj_p = &obj;
-    auto s = vortex::turb::legacy::settings::Parameters{ obj_p };
+    auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{ nullptr };
 
     auto value = s.a();

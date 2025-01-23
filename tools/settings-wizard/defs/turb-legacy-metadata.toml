@@ -7,22 +7,22 @@ namespace = [ "legacy", "settings" ]
 [sim_method]
 type = "enum"
 enum.name = "sim_method"
-enum.values = ["DNS", "LES", "FDNS"]
+enum.values = ["dns", "les", "fdns"]
 
 [particle_mode]
 type = "enum"
 enum.name = "particle_mode"
-enum.values = ["None", "OWC", "TWC"]
+enum.values = ["none", "owc", "twc"]
 
 [gravity_type]
 type = "enum"
 enum.name = "gravity_mode"
-enum.values = ["None", "Vertical", "Horizontal"]
+enum.values = ["none", "vertical", "horizontal"]
 
 [particle_kernel_type]
 type = "enum"
 enum.name = "particle_twc_kernel_type"
-enum.values = ["PNN", "PIC"]
+enum.values = ["pnn", "pic"]
 
 [k_filter]
 type = "i32"
