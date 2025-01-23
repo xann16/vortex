@@ -18,7 +18,7 @@ enum class ParticleTwcKernelType
     Pic
 };
 
-[[nodiscard]] inline constexpr char const * to_c_str( ParticleTwcKernelType value ) noexcept
+[[nodiscard]] inline char const * to_c_str( ParticleTwcKernelType value ) noexcept
 {
     switch( value )
     {
@@ -26,9 +26,8 @@ enum class ParticleTwcKernelType
         return "pnn";
     case ParticleTwcKernelType::Pic:
         return "pic";
-    default:
-        return "unknown";
     }
+        return "unknown";
 }
 
 [[nodiscard]] inline std::string to_string( ParticleTwcKernelType value ) noexcept
@@ -36,7 +35,7 @@ enum class ParticleTwcKernelType
     return std::string{ to_c_str( value ) };
 }
 
-[[nodiscard]] inline constexpr ParticleTwcKernelType to_particle_twc_kernel_type( char const * str ) noexcept
+[[nodiscard]] inline ParticleTwcKernelType to_particle_twc_kernel_type( char const * str ) noexcept
 {
     if ( std::strcmp( str, "pic" ) == 0 )
     {

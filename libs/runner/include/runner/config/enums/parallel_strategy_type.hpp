@@ -19,7 +19,7 @@ enum class ParallelStrategyType
     Xxx
 };
 
-[[nodiscard]] inline constexpr char const * to_c_str( ParallelStrategyType value ) noexcept
+[[nodiscard]] inline char const * to_c_str( ParallelStrategyType value ) noexcept
 {
     switch( value )
     {
@@ -29,9 +29,8 @@ enum class ParallelStrategyType
         return "mxx";
     case ParallelStrategyType::Xxx:
         return "xxx";
-    default:
-        return "unknown";
     }
+        return "unknown";
 }
 
 [[nodiscard]] inline std::string to_string( ParallelStrategyType value ) noexcept
@@ -39,7 +38,7 @@ enum class ParallelStrategyType
     return std::string{ to_c_str( value ) };
 }
 
-[[nodiscard]] inline constexpr ParallelStrategyType to_parallel_strategy_type( char const * str ) noexcept
+[[nodiscard]] inline ParallelStrategyType to_parallel_strategy_type( char const * str ) noexcept
 {
     if ( std::strcmp( str, "mxx" ) == 0 )
     {

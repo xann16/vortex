@@ -18,7 +18,7 @@ enum class ForcingType
     Stochastic
 };
 
-[[nodiscard]] inline constexpr char const * to_c_str( ForcingType value ) noexcept
+[[nodiscard]] inline char const * to_c_str( ForcingType value ) noexcept
 {
     switch( value )
     {
@@ -26,9 +26,8 @@ enum class ForcingType
         return "deterministic";
     case ForcingType::Stochastic:
         return "stochastic";
-    default:
-        return "unknown";
     }
+        return "unknown";
 }
 
 [[nodiscard]] inline std::string to_string( ForcingType value ) noexcept
@@ -36,7 +35,7 @@ enum class ForcingType
     return std::string{ to_c_str( value ) };
 }
 
-[[nodiscard]] inline constexpr ForcingType to_forcing_type( char const * str ) noexcept
+[[nodiscard]] inline ForcingType to_forcing_type( char const * str ) noexcept
 {
     if ( std::strcmp( str, "stochastic" ) == 0 )
     {

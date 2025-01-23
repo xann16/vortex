@@ -19,7 +19,7 @@ enum class GravityMode
     Horizontal
 };
 
-[[nodiscard]] inline constexpr char const * to_c_str( GravityMode value ) noexcept
+[[nodiscard]] inline char const * to_c_str( GravityMode value ) noexcept
 {
     switch( value )
     {
@@ -29,9 +29,8 @@ enum class GravityMode
         return "vertical";
     case GravityMode::Horizontal:
         return "horizontal";
-    default:
-        return "unknown";
     }
+        return "unknown";
 }
 
 [[nodiscard]] inline std::string to_string( GravityMode value ) noexcept
@@ -39,7 +38,7 @@ enum class GravityMode
     return std::string{ to_c_str( value ) };
 }
 
-[[nodiscard]] inline constexpr GravityMode to_gravity_mode( char const * str ) noexcept
+[[nodiscard]] inline GravityMode to_gravity_mode( char const * str ) noexcept
 {
     if ( std::strcmp( str, "vertical" ) == 0 )
     {

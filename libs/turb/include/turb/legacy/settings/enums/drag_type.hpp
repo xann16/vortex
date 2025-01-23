@@ -18,7 +18,7 @@ enum class DragType
     Nonlinear
 };
 
-[[nodiscard]] inline constexpr char const * to_c_str( DragType value ) noexcept
+[[nodiscard]] inline char const * to_c_str( DragType value ) noexcept
 {
     switch( value )
     {
@@ -26,9 +26,8 @@ enum class DragType
         return "stokes";
     case DragType::Nonlinear:
         return "nonlinear";
-    default:
-        return "unknown";
     }
+        return "unknown";
 }
 
 [[nodiscard]] inline std::string to_string( DragType value ) noexcept
@@ -36,7 +35,7 @@ enum class DragType
     return std::string{ to_c_str( value ) };
 }
 
-[[nodiscard]] inline constexpr DragType to_drag_type( char const * str ) noexcept
+[[nodiscard]] inline DragType to_drag_type( char const * str ) noexcept
 {
     if ( std::strcmp( str, "nonlinear" ) == 0 )
     {

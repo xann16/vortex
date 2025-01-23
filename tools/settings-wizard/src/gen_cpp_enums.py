@@ -85,9 +85,8 @@ def generate_enum_header_file(root_path: str, data: dict[str, Any], enum_data: d
     for enum_value in enum_data['values']:
         body_to_str.append((0, f'case {enum_class_name}::{to_pascal_case(enum_value)}:'))
         body_to_str.append((1, f'return "{enum_value}";'))
-    body_to_str.append((0, 'default:'))
-    body_to_str.append((1, 'return "unknown";'))
     body_to_str.append((0, '}'))
+    body_to_str.append((1, 'return "unknown";'))
 
     body_to_enum : list[(int, str)] = []
 
@@ -99,12 +98,12 @@ def generate_enum_header_file(root_path: str, data: dict[str, Any], enum_data: d
     first_enum_value_name : str = to_pascal_case(enum_data['values'][0])
     body_to_enum.append((0, f'return {enum_class_name}::{first_enum_value_name};'))
 
-    i = add_function_declaration(ls, i, 'to_c_str', 'char const *', [(enum_class_name, 'value')], is_noexcept=True, is_nodiscard=True, pre_qualifiers='inline constexpr', is_definition=True, body=body_to_str)
+    i = add_function_declaration(ls, i, 'to_c_str', 'char const *', [(enum_class_name, 'value')], is_noexcept=True, is_nodiscard=True, pre_qualifiers='inline', is_definition=True, body=body_to_str)
     add_blank(ls)
     i = add_function_declaration(ls, i, 'to_string', 'std::string', [(enum_class_name, 'value')], is_noexcept=True, is_nodiscard=True, pre_qualifiers='inline', is_definition=True, body=[(0, 'return std::string{ to_c_str( value ) };')])
     add_blank(ls)
 
-    i = add_function_declaration(ls, i, f'to_{enum_data['name']}', enum_class_name, [('char const *', 'str')], is_noexcept=True, is_nodiscard=True, pre_qualifiers='inline constexpr', is_definition=True, body=body_to_enum)
+    i = add_function_declaration(ls, i, f'to_{enum_data['name']}', enum_class_name, [('char const *', 'str')], is_noexcept=True, is_nodiscard=True, pre_qualifiers='inline', is_definition=True, body=body_to_enum)
     add_blank(ls)
     i = add_function_declaration(ls, i, f'to_{enum_data['name']}', enum_class_name, [('std::string const&', 'str')], is_noexcept=True, is_nodiscard=True, pre_qualifiers='inline', is_definition=True, body=[(0, f'return to_{enum_data["name"]}( str.c_str() );')])
     add_blank(ls)

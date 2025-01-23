@@ -19,7 +19,7 @@ enum class ParticleMode
     Twc
 };
 
-[[nodiscard]] inline constexpr char const * to_c_str( ParticleMode value ) noexcept
+[[nodiscard]] inline char const * to_c_str( ParticleMode value ) noexcept
 {
     switch( value )
     {
@@ -29,9 +29,8 @@ enum class ParticleMode
         return "owc";
     case ParticleMode::Twc:
         return "twc";
-    default:
-        return "unknown";
     }
+        return "unknown";
 }
 
 [[nodiscard]] inline std::string to_string( ParticleMode value ) noexcept
@@ -39,7 +38,7 @@ enum class ParticleMode
     return std::string{ to_c_str( value ) };
 }
 
-[[nodiscard]] inline constexpr ParticleMode to_particle_mode( char const * str ) noexcept
+[[nodiscard]] inline ParticleMode to_particle_mode( char const * str ) noexcept
 {
     if ( std::strcmp( str, "owc" ) == 0 )
     {

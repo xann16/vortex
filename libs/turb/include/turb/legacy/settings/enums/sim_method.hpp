@@ -19,7 +19,7 @@ enum class SimMethod
     Fdns
 };
 
-[[nodiscard]] inline constexpr char const * to_c_str( SimMethod value ) noexcept
+[[nodiscard]] inline char const * to_c_str( SimMethod value ) noexcept
 {
     switch( value )
     {
@@ -29,9 +29,8 @@ enum class SimMethod
         return "les";
     case SimMethod::Fdns:
         return "fdns";
-    default:
-        return "unknown";
     }
+        return "unknown";
 }
 
 [[nodiscard]] inline std::string to_string( SimMethod value ) noexcept
@@ -39,7 +38,7 @@ enum class SimMethod
     return std::string{ to_c_str( value ) };
 }
 
-[[nodiscard]] inline constexpr SimMethod to_sim_method( char const * str ) noexcept
+[[nodiscard]] inline SimMethod to_sim_method( char const * str ) noexcept
 {
     if ( std::strcmp( str, "les" ) == 0 )
     {
