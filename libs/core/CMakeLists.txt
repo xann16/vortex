@@ -5,16 +5,19 @@ project(
 
 set(HEADERS
     include/core/common/types.hpp
+    include/core/settings/json/any_settings.hpp
     include/core/settings/json/document_repository.hpp
     include/core/settings/json/settings_provider.hpp
 )
 set(SOURCES
     src/common/types.cpp
+    src/settings/json/any_settings.cpp
     src/settings/json/document_repository.cpp
     src/settings/json/settings_provider.cpp
 )
 set(TESTS
     tests/common/types.test.cpp
+    tests/settings/json/any_settings.test.cpp
     tests/settings/json/document_repository.test.cpp
     tests/settings/json/settings_provider.test.cpp
 )
