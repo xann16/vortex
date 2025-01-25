@@ -59,11 +59,17 @@ def _add_getter_includes(ls: list[str], i: int, modules: list[Any]) -> int:
 def _add_getter_declarations(ls: list[str], i: int, modules: list[Any]) -> int:
     for module_data in modules:
         module_name : str = module_data['__metadata__']['module']
-        i = add_method_declaration(ls, i, f'get_{module_name}', to_pascal_case(module_name), [('std::string const&', 'key')], is_nodiscard=True)
-        i = add_method_declaration(ls, i, f'get_{module_name}', to_pascal_case(module_name), [('std::string const&', 'key'), ('std::istream&', 'is')], is_nodiscard=True)
-        i = add_method_declaration(ls, i, f'get_{module_name}', to_pascal_case(module_name), [('std::string const&', 'key'), ('std::filesystem::path const&', 'path')], is_nodiscard=True)
-        i = add_method_declaration(ls, i, f'get_{module_name}', to_pascal_case(module_name), [('std::filesystem::path const&', 'path')], is_nodiscard=True)
+        i = add_method_declaration(ls, i, f'get_{module_name}', to_pascal_case(module_name), [('std::filesystem::path const&', 'key')], is_nodiscard=True)
+        i = add_method_declaration(ls, i, f'get_{module_name}', to_pascal_case(module_name), [('std::filesystem::path const&', 'key'), ('std::istream&', 'is')], is_nodiscard=True)
+        i = add_method_declaration(ls, i, f'get_{module_name}', to_pascal_case(module_name), [('std::filesystem::path const&', 'key'), ('nlohmann::json *', 'obj_p')], is_nodiscard=True)
         add_blank(ls)
+
+    any_class_name : str = 'core::settings::json::AnySettings'
+    i = add_method_declaration(ls, i, 'get_any', any_class_name, [('std::filesystem::path const&', 'key')], is_nodiscard=True)
+    i = add_method_declaration(ls, i, 'get_any', any_class_name, [('std::filesystem::path const&', 'key'), ('std::istream&', 'is')], is_nodiscard=True)
+    i = add_method_declaration(ls, i, 'get_any', any_class_name, [('std::filesystem::path const&', 'key'), ('nlohmann::json *', 'obj_p')], is_nodiscard=True)
+    add_blank(ls)
+
     return i
 
 def _add_getter_definitions(ls: list[str], i: int, modules: list[Any], package_name: str) -> int:
@@ -72,14 +78,22 @@ def _add_getter_definitions(ls: list[str], i: int, modules: list[Any], package_n
         class_name : str = to_pascal_case(module_name)
         provider_class_name : str = to_pascal_case(_get_provider_module_name())
 
-        i = add_method_definition(ls, i, f'get_{module_name}', class_name, provider_class_name, [('std::string const&', 'key')], [(0, f'return get<{class_name}>(key);')], is_nodiscard=True)
+        i = add_method_definition(ls, i, f'get_{module_name}', class_name, provider_class_name, [('std::filesystem::path const&', 'key')], [(0, f'return get< {class_name} >( key );')], is_nodiscard=True)
         add_blank(ls)
-        i = add_method_definition(ls, i, f'get_{module_name}', class_name, provider_class_name, [('std::string const&', 'key'), ('std::istream&', 'is')], [(0, f'return get<{class_name}>(key, is);')], is_nodiscard=True)
+        i = add_method_definition(ls, i, f'get_{module_name}', class_name, provider_class_name, [('std::filesystem::path const&', 'key'), ('std::istream&', 'is')], [(0, f'return get< {class_name} >( key, is );')], is_nodiscard=True)
         add_blank(ls)
-        i = add_method_definition(ls, i, f'get_{module_name}', class_name, provider_class_name, [('std::string const&', 'key'), ('std::filesystem::path const&', 'path')], [(0, f'return get<{class_name}>(key, path);')], is_nodiscard=True)
+        i = add_method_definition(ls, i, f'get_{module_name}', class_name, provider_class_name, [('std::filesystem::path const&', 'key'), ('nlohmann::json *', 'obj_p')], [(0, f'return get< {class_name} >( key, obj_p );')], is_nodiscard=True)
         add_blank(ls)
-        i = add_method_definition(ls, i, f'get_{module_name}', class_name, provider_class_name, [('std::filesystem::path const&', 'path')], [(0, f'return get<{class_name}>(path);')], is_nodiscard=True)
-        add_blank(ls)
+
+    any_class_name : str = 'core::settings::json::AnySettings'
+    i = add_method_definition(ls, i, f'get_any', any_class_name, provider_class_name, [('std::filesystem::path const&', 'key')], [(0, f'return get< {any_class_name} >( key );')], is_nodiscard=True)
+    add_blank(ls)
+    i = add_method_definition(ls, i, f'get_any', any_class_name, provider_class_name, [('std::filesystem::path const&', 'key'), ('std::istream&', 'is')], [(0, f'return get< {any_class_name} >( key, is );')], is_nodiscard=True)
+    add_blank(ls)
+    i = add_method_definition(ls, i, f'get_any', any_class_name, provider_class_name, [('std::filesystem::path const&', 'key'), ('nlohmann::json *', 'obj_p')], [(0, f'return get< {any_class_name} >( key, obj_p );')], is_nodiscard=True)
+    add_blank(ls)
+
+
     return i
 
 def generate_provider_header_file(root_path: str, package_name: str, ctx: dict[str, Any]) -> None:
@@ -96,6 +110,7 @@ def generate_provider_header_file(root_path: str, package_name: str, ctx: dict[s
     i = add_line(ls, i, '#pragma once')
     add_blank(ls)
 
+    i = add_include(ls, i, 'core/settings/json/any_settings.hpp')
     i = add_include(ls, i, 'core/settings/json/settings_provider.hpp')
     i = _add_getter_includes(ls, i, ctx['providers'][package_name])
     add_blank(ls)

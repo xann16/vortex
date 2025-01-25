@@ -9,24 +9,34 @@
 namespace vortex::turb::legacy::settings::providers
 {
 
-[[nodiscard]] Settings JsonSettingsProvider::get_settings( std::string const& key )
+[[nodiscard]] Settings JsonSettingsProvider::get_settings( std::filesystem::path const& key )
 {
-    return get<Settings>(key);
+    return get< Settings >( key );
 }
 
-[[nodiscard]] Settings JsonSettingsProvider::get_settings( std::string const& key, std::istream& is )
+[[nodiscard]] Settings JsonSettingsProvider::get_settings( std::filesystem::path const& key, std::istream& is )
 {
-    return get<Settings>(key, is);
+    return get< Settings >( key, is );
 }
 
-[[nodiscard]] Settings JsonSettingsProvider::get_settings( std::string const& key, std::filesystem::path const& path )
+[[nodiscard]] Settings JsonSettingsProvider::get_settings( std::filesystem::path const& key, nlohmann::json * obj_p )
 {
-    return get<Settings>(key, path);
+    return get< Settings >( key, obj_p );
 }
 
-[[nodiscard]] Settings JsonSettingsProvider::get_settings( std::filesystem::path const& path )
+[[nodiscard]] core::settings::json::AnySettings JsonSettingsProvider::get_any( std::filesystem::path const& key )
 {
-    return get<Settings>(path);
+    return get< core::settings::json::AnySettings >( key );
+}
+
+[[nodiscard]] core::settings::json::AnySettings JsonSettingsProvider::get_any( std::filesystem::path const& key, std::istream& is )
+{
+    return get< core::settings::json::AnySettings >( key, is );
+}
+
+[[nodiscard]] core::settings::json::AnySettings JsonSettingsProvider::get_any( std::filesystem::path const& key, nlohmann::json * obj_p )
+{
+    return get< core::settings::json::AnySettings >( key, obj_p );
 }
 
 } // end of namespace vortex::turb::legacy::settings::providers

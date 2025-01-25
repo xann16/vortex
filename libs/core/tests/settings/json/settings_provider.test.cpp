@@ -17,15 +17,26 @@ struct SettingsProviderWrapper : public vortex::core::settings::json::SettingsPr
     }
 };
 
-TEST_CASE("JSON Settings Provider - sample unit test", "[sample]")
+TEST_CASE("JSON Settings Provider - simple load and get test", "[sample]")
 {
     auto sp = SettingsProviderWrapper{};
-
     auto iss = std::istringstream{ "{\"x\":\"y\"}" };
 
-    sp.load("x", iss);
+    sp.load( "x", iss );
+    auto const& obj = *sp.get( "x" );
 
-    auto const& obj = *sp.get("x");
+    REQUIRE( obj[ "x" ] == "y" );
+}
 
-    REQUIRE(obj["x"] == "y");
+TEST_CASE("JSON Settings Provider - simple add_and_save and get test", "[sample]")
+{
+    auto sp = SettingsProviderWrapper{};
+    auto oss = std::ostringstream{};
+    nlohmann::json obj = { { "x", "y" } };
+
+    sp.add_and_save( "x", &obj, oss );
+    auto const& got_obj = *sp.get( "x" );
+
+    REQUIRE( got_obj == obj );
+    REQUIRE( oss.str() == "{\n  \"x\": \"y\"\n}\n" );
 }

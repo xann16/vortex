@@ -13,7 +13,7 @@ namespace vortex::core::settings::json
 {
 
 SettingsProvider::SettingsProvider() noexcept
-    : m_repo_p(new DocumentRepository())
+    : m_repo_p( new DocumentRepository() )
 {}
 
 SettingsProvider::~SettingsProvider() noexcept
@@ -31,51 +31,58 @@ SettingsProvider::~SettingsProvider() noexcept
     return m_repo_p->count();
 }
 
-void SettingsProvider::load(std::string const& key, std::istream& is)
+void SettingsProvider::add( std::filesystem::path const& key, nlohmann::json * obj_p )
+{
+    m_repo_p->add( key, obj_p );
+}
+
+void SettingsProvider::add_and_save( std::filesystem::path const& key, nlohmann::json * obj_p )
+{
+    add( key, obj_p );
+    save( key );
+}
+
+void SettingsProvider::add_and_save( std::filesystem::path const& key, nlohmann::json * obj_p, std::ostream& os )
+{
+    add( key, obj_p );
+    save( key, os );
+}
+
+void SettingsProvider::load( std::filesystem::path const& key, std::istream& is )
 {
     m_repo_p->load( key, is );
 }
 
-void SettingsProvider::load(std::string const& key, std::filesystem::path const& path)
+void SettingsProvider::load( std::filesystem::path const& key )
 {
-    auto ifs = std::ifstream{ path };
+    auto ifs = std::ifstream{ key };
     load( key, ifs );
 }
 
-void SettingsProvider::load(std::filesystem::path const& path)
-{
-    load( path.string(), path );
-}
-
-void SettingsProvider::save(std::string const& key, std::ostream& os)
+void SettingsProvider::save( std::filesystem::path const& key, std::ostream& os )
 {
     m_repo_p->save( key, os );
 }
 
-void SettingsProvider::save(std::string const& key, std::filesystem::path const& path)
+void SettingsProvider::save( std::filesystem::path const& key )
 {
-    auto ofs = std::ofstream{ path };
+    auto ofs = std::ofstream{ key };
     save( key, ofs );
 }
 
-void SettingsProvider::save(std::filesystem::path const& path)
+[[nodiscard]] bool SettingsProvider::contains(std::filesystem::path const& key) const
 {
-    save( path.string(), path );
+    return m_repo_p->contains( key );
 }
 
-[[nodiscard]] bool SettingsProvider::contains(std::string const& key) const
+[[nodiscard]] nlohmann::json * SettingsProvider::get_object_pointer( std::filesystem::path const& key )
 {
-    return m_repo_p->contains(key);
+    return &( m_repo_p->get( key ) );
 }
 
-[[nodiscard]] nlohmann::json * SettingsProvider::get_object_pointer(std::string const& key)
+void SettingsProvider::release( std::filesystem::path const& key )
 {
-    return &(m_repo_p->get(key));
-}
-
-void SettingsProvider::release(std::string const& key)
-{
-    m_repo_p->release(key);
+    m_repo_p->release( key );
 }
 
 void SettingsProvider::release_all()

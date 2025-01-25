@@ -18,11 +18,12 @@ class SettingsProvider
 public:
     SettingsProvider() noexcept;
 
-    SettingsProvider(SettingsProvider const&) = delete;
-    SettingsProvider& operator=(SettingsProvider const&) = delete;
-    SettingsProvider(SettingsProvider &&) = delete;
-    SettingsProvider& operator=(SettingsProvider &&) = delete;
+    SettingsProvider( SettingsProvider const& ) = delete;
+    SettingsProvider& operator=( SettingsProvider const& ) = delete;
+    SettingsProvider( SettingsProvider && ) = delete;
+    SettingsProvider& operator=( SettingsProvider && ) = delete;
 
+protected:
     ~SettingsProvider() noexcept;
 
 public:
@@ -30,71 +31,55 @@ public:
     [[nodiscard]] operator bool() const noexcept { return is_empty(); }
     [[nodiscard]] std::size_t count() const noexcept;
 
-    void load(std::string const& key, std::istream& is);
-    void load(std::string const& key, std::filesystem::path const& path);
-    void load(std::filesystem::path const& path);
+    void add( std::filesystem::path const& key, nlohmann::json * obj_p );
+    void add_and_save( std::filesystem::path const& key, nlohmann::json * obj_p );
+    void add_and_save( std::filesystem::path const& key, nlohmann::json * obj_p, std::ostream& os );
 
-    void save(std::string const& key, std::ostream& os);
-    void save(std::string const& key, std::filesystem::path const& path);
-    void save(std::filesystem::path const& path);
+    void load( std::filesystem::path const& key, std::istream& is );
+    void load( std::filesystem::path const& key );
 
-    [[nodiscard]] bool contains(std::string const& key) const;
+    void save( std::filesystem::path const& key, std::ostream& os );
+    void save( std::filesystem::path const& key );
 
-    void release(std::string const& key);
+    [[nodiscard]] bool contains( std::filesystem::path const& key ) const;
+
+    void release( std::filesystem::path const& key );
     void release_all();
 
 protected:
-    [[nodiscard]] nlohmann::json * get_object_pointer(std::string const& key);
+    [[nodiscard]] nlohmann::json * get_object_pointer( std::filesystem::path const& key );
 
-    template <typename T>
-    [[nodiscard]] T get_impl(std::string const& key)
+    template < typename T >
+    [[nodiscard]] T get( std::filesystem::path const& key, nlohmann::json * obj_p )
     {
-        return T{get_object_pointer(key)};
+        if ( !contains( key ) )
+        {
+            add( key, obj_p );
+        }
+        return T{ get_object_pointer( key ) };
     }
 
-    template <typename T>
-    [[nodiscard]] T get(std::string const& key, std::istream& is)
+    template < typename T >
+    [[nodiscard]] T get( std::filesystem::path const& key, std::istream& is )
     {
-        if (!contains(key))
+        if ( !contains( key ) )
         {
-            load(key, is);
+            load( key, is );
         }
-        return get_impl<T>(key);
+        return T{ get_object_pointer( key ) };
     }
 
-    template <typename T>
-    [[nodiscard]] T get(std::string const& key, std::filesystem::path const& path)
+    template < typename T >
+    [[nodiscard]] T get( std::filesystem::path const& key )
     {
-        if (!contains(key))
+        if ( !contains( key ) )
         {
-            load(key, path);
+            load( key );
         }
-        return get_impl<T>(key);
-    }
-
-    template <typename T>
-    [[nodiscard]] T get(std::filesystem::path const& path)
-    {
-        auto const& key = path.string();
-        if (!contains(key))
-        {
-            load(key, path);
-        }
-        return get_impl<T>(key);
-    }
-
-    template <typename T>
-    [[nodiscard]] T get(std::string const& key)
-    {
-        if (!contains(key))
-        {
-            throw std::out_of_range{"JSON Settings Provider: Key not found."};
-        }
-        return get_impl<T>(key);
+        return T{ get_object_pointer( key ) };
     }
 
 private:
-    //std::unique_ptr<DocumentRepository> m_repo_p;
     DocumentRepository * m_repo_p = nullptr;
 };
 

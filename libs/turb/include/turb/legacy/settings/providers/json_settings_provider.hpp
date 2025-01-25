@@ -6,6 +6,7 @@
 
 #pragma once
 
+#include "core/settings/json/any_settings.hpp"
 #include "core/settings/json/settings_provider.hpp"
 #include "turb/legacy/settings/settings.hpp"
 
@@ -25,10 +26,13 @@ public:
     ~JsonSettingsProvider() noexcept = default;
 
 public:
-    [[nodiscard]] Settings get_settings( std::string const& key );
-    [[nodiscard]] Settings get_settings( std::string const& key, std::istream& is );
-    [[nodiscard]] Settings get_settings( std::string const& key, std::filesystem::path const& path );
-    [[nodiscard]] Settings get_settings( std::filesystem::path const& path );
+    [[nodiscard]] Settings get_settings( std::filesystem::path const& key );
+    [[nodiscard]] Settings get_settings( std::filesystem::path const& key, std::istream& is );
+    [[nodiscard]] Settings get_settings( std::filesystem::path const& key, nlohmann::json * obj_p );
+
+    [[nodiscard]] core::settings::json::AnySettings get_any( std::filesystem::path const& key );
+    [[nodiscard]] core::settings::json::AnySettings get_any( std::filesystem::path const& key, std::istream& is );
+    [[nodiscard]] core::settings::json::AnySettings get_any( std::filesystem::path const& key, nlohmann::json * obj_p );
 
 }; // end of class JsonSettingsProvider
 
