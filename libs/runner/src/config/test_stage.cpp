@@ -6,6 +6,9 @@
 
 #include "runner/config/test_stage.hpp"
 
+#include <iomanip>
+#include <sstream>
+
 #include <nlohmann/json.hpp>
 
 
@@ -18,22 +21,80 @@ TestStage::TestStage( nlohmann::json * data_p )
     // add initial validation
 }
 
+TestStage& TestStage::merge( nlohmann::json * other_data_p )
+{
+    if (!is_empty() && other_data_p != nullptr)
+    {
+        data()->merge_patch( *other_data_p );
+    }
+    return *this;
+}
+
+[[nodiscard]] std::string TestStage::to_string() const
+{
+    auto oss = std::ostringstream{};
+    oss << *this;
+    return oss.str();
+}
+
+std::ostream& TestStage::stringify( std::ostream& os, int indent_size, int indent_level, bool display_all ) const
+{
+    if ( !display_all && ( is_empty() || data()->empty() ) )
+    {
+        os << "<empty>\n"; 
+        return os;
+    }
+    
+    if ( display_all || has_name_set() )
+    {
+        os << std::setw( indent_size * indent_level ) << "" << "name: " << name() << '\n';
+    }
+    if ( display_all || has_settings_set() )
+    {
+        os << std::setw( indent_size * indent_level ) << "" << "settings:\n";
+        settings().stringify( os, indent_size, indent_level + 1, display_all );
+    }
+    
+    return os;
+}
+
+std::ostream& operator<<( std::ostream& os, TestStage const& s )
+{
+    return s.stringify( os, 2, 0, os.flags() & std::ios_base::boolalpha );
+}
+
 // "name" property
 
 [[nodiscard]] std::string_view TestStage::name() const
 {
-    if ( m_data_p == nullptr ) return default_name();
+    if ( is_empty() ) return default_name();
     auto it = m_data_p->find( "name" );
     if ( it == m_data_p->end() || it->is_null() ) return default_name();
     return std::string_view{ it->template get_ref<std::string const&>() };
 }
 
+[[nodiscard]] bool TestStage::has_name_set() const noexcept
+{
+    if ( is_empty() ) return false;
+    auto it = data()->find( "name" );
+    return it != m_data_p->end() && !it->is_null();
+}
+
 // "settings" property
 
-[[nodiscard]] /* TODO: settings opaque interface */ void * TestStage::settings() const
+[[nodiscard]] core::settings::json::AnySettings TestStage::settings() const
 {
-    if ( m_data_p == nullptr ) throw std::runtime_error( "TestStage: cannot get default value of unset property with settings type." );
-    return nullptr;
+    if ( is_empty() ) return default_settings();
+    auto it = m_data_p->find( "settings" );
+    if ( it == m_data_p->end() || it->is_null() ) return default_settings();
+    return core::settings::json::AnySettings{ &( *it ) };
+}
+
+[[nodiscard]] bool TestStage::has_settings_set() const noexcept
+{
+    if ( is_empty() ) return false;
+    auto it = data()->find( "settings" );
+    return it != m_data_p->end() && !it->is_null();
 }
 
 

@@ -6,6 +6,9 @@
 
 #include "turb/legacy/settings/execution_settings.hpp"
 
+#include <iomanip>
+#include <sstream>
+
 #include <nlohmann/json.hpp>
 
 
@@ -18,64 +21,163 @@ ExecutionSettings::ExecutionSettings( nlohmann::json * data_p )
     // add initial validation
 }
 
+ExecutionSettings& ExecutionSettings::merge( nlohmann::json * other_data_p )
+{
+    if (!is_empty() && other_data_p != nullptr)
+    {
+        data()->merge_patch( *other_data_p );
+    }
+    return *this;
+}
+
+[[nodiscard]] std::string ExecutionSettings::to_string() const
+{
+    auto oss = std::ostringstream{};
+    oss << *this;
+    return oss.str();
+}
+
+std::ostream& ExecutionSettings::stringify( std::ostream& os, int indent_size, int indent_level, bool display_all ) const
+{
+    if ( !display_all && ( is_empty() || data()->empty() ) )
+    {
+        os << "<empty>\n"; 
+        return os;
+    }
+    
+    if ( display_all || has_job_name_set() )
+    {
+        os << std::setw( indent_size * indent_level ) << "" << "job_name: " << job_name() << '\n';
+    }
+    if ( display_all || has_grant_no_set() )
+    {
+        os << std::setw( indent_size * indent_level ) << "" << "grant_no: " << grant_no() << '\n';
+    }
+    if ( display_all || has_cpu_node_count_set() )
+    {
+        os << std::setw( indent_size * indent_level ) << "" << "cpu_node_count: " << cpu_node_count() << '\n';
+    }
+    if ( display_all || has_wct_limit_set() )
+    {
+        os << std::setw( indent_size * indent_level ) << "" << "wct_limit: " << wct_limit() << '\n';
+    }
+    if ( display_all || has_process_count_set() )
+    {
+        os << std::setw( indent_size * indent_level ) << "" << "process_count: " << process_count() << '\n';
+    }
+    if ( display_all || has_is_node_overcommit_enabled_set() )
+    {
+        os << std::setw( indent_size * indent_level ) << "" << "is_node_overcommit_enabled: " << ( is_node_overcommit_enabled() ? "true" : "false" ) << '\n';
+    }
+    
+    return os;
+}
+
+std::ostream& operator<<( std::ostream& os, ExecutionSettings const& s )
+{
+    return s.stringify( os, 2, 0, os.flags() & std::ios_base::boolalpha );
+}
+
 // "job_name" property
 
 [[nodiscard]] std::string_view ExecutionSettings::job_name() const
 {
-    if ( m_data_p == nullptr ) return default_job_name();
+    if ( is_empty() ) return default_job_name();
     auto it = m_data_p->find( "job_name" );
     if ( it == m_data_p->end() || it->is_null() ) return default_job_name();
     return std::string_view{ it->template get_ref<std::string const&>() };
+}
+
+[[nodiscard]] bool ExecutionSettings::has_job_name_set() const noexcept
+{
+    if ( is_empty() ) return false;
+    auto it = data()->find( "job_name" );
+    return it != m_data_p->end() && !it->is_null();
 }
 
 // "grant_no" property
 
 [[nodiscard]] std::string_view ExecutionSettings::grant_no() const
 {
-    if ( m_data_p == nullptr ) return default_grant_no();
+    if ( is_empty() ) return default_grant_no();
     auto it = m_data_p->find( "grant_no" );
     if ( it == m_data_p->end() || it->is_null() ) return default_grant_no();
     return std::string_view{ it->template get_ref<std::string const&>() };
+}
+
+[[nodiscard]] bool ExecutionSettings::has_grant_no_set() const noexcept
+{
+    if ( is_empty() ) return false;
+    auto it = data()->find( "grant_no" );
+    return it != m_data_p->end() && !it->is_null();
 }
 
 // "cpu_node_count" property
 
 [[nodiscard]] i32 ExecutionSettings::cpu_node_count() const
 {
-    if ( m_data_p == nullptr ) return default_cpu_node_count();
+    if ( is_empty() ) return default_cpu_node_count();
     auto it = m_data_p->find( "cpu_node_count" );
     if ( it == m_data_p->end() || it->is_null() ) return default_cpu_node_count();
     return it->template get<i32>();
+}
+
+[[nodiscard]] bool ExecutionSettings::has_cpu_node_count_set() const noexcept
+{
+    if ( is_empty() ) return false;
+    auto it = data()->find( "cpu_node_count" );
+    return it != m_data_p->end() && !it->is_null();
 }
 
 // "wct_limit" property
 
 [[nodiscard]] f64 ExecutionSettings::wct_limit() const
 {
-    if ( m_data_p == nullptr ) return default_wct_limit();
+    if ( is_empty() ) return default_wct_limit();
     auto it = m_data_p->find( "wct_limit" );
     if ( it == m_data_p->end() || it->is_null() ) return default_wct_limit();
     return it->template get<f64>();
+}
+
+[[nodiscard]] bool ExecutionSettings::has_wct_limit_set() const noexcept
+{
+    if ( is_empty() ) return false;
+    auto it = data()->find( "wct_limit" );
+    return it != m_data_p->end() && !it->is_null();
 }
 
 // "process_count" property
 
 [[nodiscard]] i32 ExecutionSettings::process_count() const
 {
-    if ( m_data_p == nullptr ) return default_process_count();
+    if ( is_empty() ) return default_process_count();
     auto it = m_data_p->find( "process_count" );
     if ( it == m_data_p->end() || it->is_null() ) return default_process_count();
     return it->template get<i32>();
+}
+
+[[nodiscard]] bool ExecutionSettings::has_process_count_set() const noexcept
+{
+    if ( is_empty() ) return false;
+    auto it = data()->find( "process_count" );
+    return it != m_data_p->end() && !it->is_null();
 }
 
 // "is_node_overcommit_enabled" property
 
 [[nodiscard]] bool ExecutionSettings::is_node_overcommit_enabled() const
 {
-    if ( m_data_p == nullptr ) return default_is_node_overcommit_enabled();
+    if ( is_empty() ) return default_is_node_overcommit_enabled();
     auto it = m_data_p->find( "is_node_overcommit_enabled" );
     if ( it == m_data_p->end() || it->is_null() ) return default_is_node_overcommit_enabled();
     return it->template get<bool>();
+}
+
+[[nodiscard]] bool ExecutionSettings::has_is_node_overcommit_enabled_set() const noexcept
+{
+    if ( is_empty() ) return false;
+    auto it = data()->find( "is_node_overcommit_enabled" );
+    return it != m_data_p->end() && !it->is_null();
 }
 
 

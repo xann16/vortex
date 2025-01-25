@@ -6,6 +6,9 @@
 
 #include "runner/config/test_case.hpp"
 
+#include <iomanip>
+#include <sstream>
+
 #include <nlohmann/json.hpp>
 
 #include "runner/config/enums/parallel_strategy_type_json_integration.hpp"
@@ -19,62 +22,164 @@ TestCase::TestCase( nlohmann::json * data_p )
     // add initial validation
 }
 
+TestCase& TestCase::merge( nlohmann::json * other_data_p )
+{
+    if (!is_empty() && other_data_p != nullptr)
+    {
+        data()->merge_patch( *other_data_p );
+    }
+    return *this;
+}
+
+[[nodiscard]] std::string TestCase::to_string() const
+{
+    auto oss = std::ostringstream{};
+    oss << *this;
+    return oss.str();
+}
+
+std::ostream& TestCase::stringify( std::ostream& os, int indent_size, int indent_level, bool display_all ) const
+{
+    if ( !display_all && ( is_empty() || data()->empty() ) )
+    {
+        os << "<empty>\n"; 
+        return os;
+    }
+    
+    if ( display_all || has_name_set() )
+    {
+        os << std::setw( indent_size * indent_level ) << "" << "name: " << name() << '\n';
+    }
+    if ( display_all || has_template_name_set() )
+    {
+        os << std::setw( indent_size * indent_level ) << "" << "template_name: " << template_name() << '\n';
+    }
+    if ( display_all || has_settings_set() )
+    {
+        os << std::setw( indent_size * indent_level ) << "" << "settings:\n";
+        settings().stringify( os, indent_size, indent_level + 1, display_all );
+    }
+    if ( display_all || has_parallel_strategy_set() )
+    {
+        os << std::setw( indent_size * indent_level ) << "" << "parallel_strategy: " << to_c_str( parallel_strategy() ) << '\n';
+    }
+    if ( display_all || has_stages_set() )
+    {
+        os << std::setw( indent_size * indent_level ) << "" << "stages: " << stages() << '\n';
+    }
+    if ( display_all || has_process_count_set() )
+    {
+        os << std::setw( indent_size * indent_level ) << "" << "process_count: " << process_count() << '\n';
+    }
+    
+    return os;
+}
+
+std::ostream& operator<<( std::ostream& os, TestCase const& s )
+{
+    return s.stringify( os, 2, 0, os.flags() & std::ios_base::boolalpha );
+}
+
 // "name" property
 
 [[nodiscard]] std::string_view TestCase::name() const
 {
-    if ( m_data_p == nullptr ) return default_name();
+    if ( is_empty() ) return default_name();
     auto it = m_data_p->find( "name" );
     if ( it == m_data_p->end() || it->is_null() ) return default_name();
     return std::string_view{ it->template get_ref<std::string const&>() };
+}
+
+[[nodiscard]] bool TestCase::has_name_set() const noexcept
+{
+    if ( is_empty() ) return false;
+    auto it = data()->find( "name" );
+    return it != m_data_p->end() && !it->is_null();
 }
 
 // "template_name" property
 
 [[nodiscard]] std::string_view TestCase::template_name() const
 {
-    if ( m_data_p == nullptr ) return default_template_name();
+    if ( is_empty() ) return default_template_name();
     auto it = m_data_p->find( "template_name" );
     if ( it == m_data_p->end() || it->is_null() ) return default_template_name();
     return std::string_view{ it->template get_ref<std::string const&>() };
 }
 
+[[nodiscard]] bool TestCase::has_template_name_set() const noexcept
+{
+    if ( is_empty() ) return false;
+    auto it = data()->find( "template_name" );
+    return it != m_data_p->end() && !it->is_null();
+}
+
 // "settings" property
 
-[[nodiscard]] /* TODO: settings opaque interface */ void * TestCase::settings() const
+[[nodiscard]] core::settings::json::AnySettings TestCase::settings() const
 {
-    if ( m_data_p == nullptr ) throw std::runtime_error( "TestCase: cannot get default value of unset property with settings type." );
-    return nullptr;
+    if ( is_empty() ) return default_settings();
+    auto it = m_data_p->find( "settings" );
+    if ( it == m_data_p->end() || it->is_null() ) return default_settings();
+    return core::settings::json::AnySettings{ &( *it ) };
+}
+
+[[nodiscard]] bool TestCase::has_settings_set() const noexcept
+{
+    if ( is_empty() ) return false;
+    auto it = data()->find( "settings" );
+    return it != m_data_p->end() && !it->is_null();
 }
 
 // "parallel_strategy" property
 
 [[nodiscard]] ParallelStrategyType TestCase::parallel_strategy() const
 {
-    if ( m_data_p == nullptr ) return default_parallel_strategy();
+    if ( is_empty() ) return default_parallel_strategy();
     auto it = m_data_p->find( "parallel_strategy" );
     if ( it == m_data_p->end() || it->is_null() ) return default_parallel_strategy();
     return it->template get<ParallelStrategyType>();
+}
+
+[[nodiscard]] bool TestCase::has_parallel_strategy_set() const noexcept
+{
+    if ( is_empty() ) return false;
+    auto it = data()->find( "parallel_strategy" );
+    return it != m_data_p->end() && !it->is_null();
 }
 
 // "stages" property
 
 [[nodiscard]] std::string_view TestCase::stages() const
 {
-    if ( m_data_p == nullptr ) return default_stages();
+    if ( is_empty() ) return default_stages();
     auto it = m_data_p->find( "stages" );
     if ( it == m_data_p->end() || it->is_null() ) return default_stages();
     return std::string_view{ it->template get_ref<std::string const&>() };
+}
+
+[[nodiscard]] bool TestCase::has_stages_set() const noexcept
+{
+    if ( is_empty() ) return false;
+    auto it = data()->find( "stages" );
+    return it != m_data_p->end() && !it->is_null();
 }
 
 // "process_count" property
 
 [[nodiscard]] i32 TestCase::process_count() const
 {
-    if ( m_data_p == nullptr ) return default_process_count();
+    if ( is_empty() ) return default_process_count();
     auto it = m_data_p->find( "process_count" );
     if ( it == m_data_p->end() || it->is_null() ) return default_process_count();
     return it->template get<i32>();
+}
+
+[[nodiscard]] bool TestCase::has_process_count_set() const noexcept
+{
+    if ( is_empty() ) return false;
+    auto it = data()->find( "process_count" );
+    return it != m_data_p->end() && !it->is_null();
 }
 
 

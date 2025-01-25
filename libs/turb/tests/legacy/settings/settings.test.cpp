@@ -10,44 +10,148 @@
 
 #include "turb/legacy/settings/settings.hpp"
 
-TEST_CASE( "Settings - Sample Test", "[sample]" )
+TEST_CASE( "Settings - basic test", "[settings]" )
 {
-    vortex::turb::legacy::settings::Settings( nullptr );
+    nlohmann::json obj = nlohmann::json::object();
+    auto s = vortex::turb::legacy::settings::Settings{ &obj };
 
-    REQUIRE( true );
+    REQUIRE( !s.is_empty() );
+
+    auto data_p = s.data();
+    auto anys = s.as_any();
+
+    REQUIRE( !anys.is_empty() );
+
+    auto ss = vortex::turb::legacy::settings::Settings{ anys };
+
+    REQUIRE( !ss.is_empty() );
+    REQUIRE( data_p != nullptr );
+    REQUIRE( obj == *data_p );
+    REQUIRE( *anys.data() == *data_p );
+    REQUIRE( *ss.data() == *data_p );
+}
+
+TEST_CASE( "Settings - basic empty test", "[settings]" )
+{
+    auto s = vortex::turb::legacy::settings::Settings{};
+
+    REQUIRE( s.is_empty() );
+
+    auto anys = s.as_any();
+
+    REQUIRE( anys.is_empty() );
+
+    auto ss = vortex::turb::legacy::settings::Settings{ anys };
+
+    REQUIRE( ss.is_empty() );
+    REQUIRE( s.data() == nullptr );
+    REQUIRE( anys.data() == nullptr );
+    REQUIRE( ss.data() == nullptr );
+}
+
+TEST_CASE( "Settings - conversion to string", "[settings][.][!mayfail]" )
+{
+    // TODO - add conversion to string tests for generated setting classes
+    REQUIRE( false );
+}
+
+TEST_CASE( "Settings - conversion to string - display all", "[settings][.][!mayfail]" )
+{
+    // TODO - add conversion to string tests for generated setting classes
+    REQUIRE( false );
+}
+
+TEST_CASE( "Settings - conversion to string - extra indent size", "[settings][.][!mayfail]" )
+{
+    // TODO - add conversion to string tests for generated setting classes
+    REQUIRE( false );
+}
+
+TEST_CASE( "Settings - conversion to string - extra indent level", "[settings][.][!mayfail]" )
+{
+    // TODO - add conversion to string tests for generated setting classes
+    REQUIRE( false );
+}
+
+TEST_CASE( "Settings - conversion to string for empty", "[settings][.][!mayfail]" )
+{
+    // TODO - add conversion to string tests for generated setting classes
+    REQUIRE( false );
+}
+
+TEST_CASE( "Settings - merge", "[settings][.][!mayfail]" )
+{
+    // TODO - add merge tests for generated setting classes
+    REQUIRE( false );
+}
+
+TEST_CASE( "Settings - merge with removal", "[settings][.][!mayfail]" )
+{
+    // TODO - add merge tests for generated setting classes
+    REQUIRE( false );
+}
+
+TEST_CASE( "Settings - merge with empties", "[settings][.][!mayfail]" )
+{
+    // TODO - add merge tests for generated setting classes
+    REQUIRE( false );
 }
 
 // "metadata" property
 
-TEST_CASE( "Settings - property: \"metadata\" - getter", "[settings]" )
+TEST_CASE( "Settings - property: \"metadata\" - getter, default, has_set", "[settings]" )
 {
-    auto s_null = vortex::turb::legacy::settings::Settings{ nullptr };
+    nlohmann::json obj = { { "metadata", { { "x", "y" } } } };
+    auto s = vortex::turb::legacy::settings::Settings{ &obj };
+    auto s_null = vortex::turb::legacy::settings::Settings{};
 
+    auto value = s.metadata();
     auto default_value = s_null.metadata();
 
-    REQUIRE( default_value == nullptr );
+    REQUIRE( !value.is_empty() );
+    REQUIRE( value.data()->at( "x" ) == "y" );
+    REQUIRE( default_value.is_empty() );
+
+    REQUIRE( s.has_metadata_set() );
+    REQUIRE( !s_null.has_metadata_set() );
 }
 
 // "parameters" property
 
-TEST_CASE( "Settings - property: \"parameters\" - getter", "[settings]" )
+TEST_CASE( "Settings - property: \"parameters\" - getter, default, has_set", "[settings]" )
 {
-    auto s_null = vortex::turb::legacy::settings::Settings{ nullptr };
+    nlohmann::json obj = { { "parameters", { { "x", "y" } } } };
+    auto s = vortex::turb::legacy::settings::Settings{ &obj };
+    auto s_null = vortex::turb::legacy::settings::Settings{};
 
+    auto value = s.parameters();
     auto default_value = s_null.parameters();
 
-    REQUIRE( default_value == nullptr );
+    REQUIRE( !value.is_empty() );
+    REQUIRE( value.data()->at( "x" ) == "y" );
+    REQUIRE( default_value.is_empty() );
+
+    REQUIRE( s.has_parameters_set() );
+    REQUIRE( !s_null.has_parameters_set() );
 }
 
 // "execution_settings" property
 
-TEST_CASE( "Settings - property: \"execution_settings\" - getter", "[settings]" )
+TEST_CASE( "Settings - property: \"execution_settings\" - getter, default, has_set", "[settings]" )
 {
-    auto s_null = vortex::turb::legacy::settings::Settings{ nullptr };
+    nlohmann::json obj = { { "execution_settings", { { "x", "y" } } } };
+    auto s = vortex::turb::legacy::settings::Settings{ &obj };
+    auto s_null = vortex::turb::legacy::settings::Settings{};
 
+    auto value = s.execution_settings();
     auto default_value = s_null.execution_settings();
 
-    REQUIRE( default_value == nullptr );
+    REQUIRE( !value.is_empty() );
+    REQUIRE( value.data()->at( "x" ) == "y" );
+    REQUIRE( default_value.is_empty() );
+
+    REQUIRE( s.has_execution_settings_set() );
+    REQUIRE( !s_null.has_execution_settings_set() );
 }
 
 

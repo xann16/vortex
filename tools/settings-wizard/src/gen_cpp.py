@@ -1,6 +1,6 @@
-from cpp_utils import get_class_name, get_namespace, add_include, add_blank, add_line, add_block_comment, begin_test_case, end_test_case, add_require, begin_namespace, end_namespace, begin_class, end_class, add_access_qualifier, add_ctor_declaration, add_ctor_definition, add_data_field
+from cpp_utils import get_class_name, get_namespace, add_include, add_blank, add_line, add_block_comment, begin_test_case, end_test_case, add_require, begin_namespace, end_namespace, begin_class, end_class, add_access_qualifier, add_ctor_declaration, add_ctor_definition, add_method_definition, add_method_declaration, add_function_definition, add_data_field
 import gen_cpp_enums
-from gen_cpp_properties import add_property_public_declarations, add_property_private_declarations, add_property_definitions, add_property_unit_tests
+from gen_cpp_properties import add_property_public_declarations, add_property_private_declarations, add_property_definitions, add_property_unit_tests, get_stringify_body
 from gen_utils import create_file
 import os
 from typing import Any
@@ -119,10 +119,14 @@ def generate_dynamic_header_file(root_path: str, data: dict[str, Any], ctx: dict
     i = add_line(ls, i, '#pragma once')
     add_blank(ls)
 
+    i = add_include(ls, i, 'ostream', is_quoted=False)
+    add_blank(ls)
+
     i = add_include(ls, i, 'nlohmann/json_fwd.hpp', is_quoted=False)
     add_blank(ls)
 
     i = add_include(ls, i, 'core/common/types.hpp')
+    i = add_include(ls, i, 'core/settings/json/any_settings.hpp')
     i = _add_enum_includes(ls, i, data)
     if '__includes__' in data:
         i = _add_settings_includes(ls, i, data['__includes__'], ctx)
@@ -133,10 +137,27 @@ def generate_dynamic_header_file(root_path: str, data: dict[str, Any], ctx: dict
     i = begin_class(ls, i, class_name)
 
     i = add_access_qualifier(ls, i, 'public')
-    i = add_ctor_declaration(ls, i, class_name, [('nlohmann::json *', 'data_p')], is_explicit=True)
+    i = add_line(ls, i, f'{class_name}() noexcept = default;')
+    i = add_ctor_declaration(ls, i, class_name, [('nlohmann::json *', 'data_p', None, None)], is_explicit=True)
+    i = add_ctor_declaration(ls, i, class_name, [('core::settings::json::AnySettings', 's', class_name, 's.data()')], is_explicit=True, is_definition=True, body=[])
     add_blank(ls)
 
     i = add_access_qualifier(ls, i, 'public')
+    add_blank(ls)
+    i = add_method_declaration(ls, i, 'data', 'nlohmann::json *', [], body=[(0, 'return m_data_p;')], is_definition=True, is_noexcept=True, is_const=True, is_nodiscard=True)
+    i = add_method_declaration(ls, i, 'is_empty', 'bool', [], body=[(0, 'return data() == nullptr;')], is_definition=True, is_noexcept=True, is_const=True, is_nodiscard=True)
+    i = add_method_declaration(ls, i, 'as_any', 'core::settings::json::AnySettings', [], body=[(0, 'return core::settings::json::AnySettings{ data() };')], is_definition=True, is_noexcept=True, is_const=True, is_nodiscard=True)
+    add_blank(ls)
+    i = add_method_declaration(ls, i, 'merge', f'{class_name}&', [('nlohmann::json *', 'other_data_p')])
+    i = add_method_declaration(ls, i, 'merge', f'{class_name}&', [('core::settings::json::AnySettings const&', 'other')], body=[(0, 'return merge( other.data() );')], is_definition=True)
+    i = add_method_declaration(ls, i, 'merge', f'{class_name}&', [(f'{class_name} const&', 'other')], body=[(0, 'return merge( other.data() );')], is_definition=True)
+    add_blank(ls)
+    i = add_method_declaration(ls, i, 'to_string', 'std::string', [], is_const=True, is_nodiscard=True)
+    i = add_method_declaration(ls, i, 'stringify', 'std::ostream&', [('std::ostream&', 'os'), ('int', 'indent_size'), ('int', 'indent_level'), ('bool', 'display_all')], is_const=True)
+    add_blank(ls)
+    i = add_method_declaration(ls, i, 'operator<<', 'std::ostream&', [('std::ostream&', 'os'), (f'{class_name} const&', 's')], pre_qualifiers='friend')
+    add_blank(ls)
+
     i = add_property_public_declarations(ls, i, data, ctx)
     add_blank(ls)
 
@@ -164,6 +185,10 @@ def generate_dynamic_source_file(root_path: str, data: dict[str, Any], ctx: dict
     i = add_include(ls, i, get_header_path(data, ctx='include'))
     add_blank(ls)
 
+    i = add_include(ls, i, 'iomanip', is_quoted=False)
+    i = add_include(ls, i, 'sstream', is_quoted=False)
+    add_blank(ls)
+
     i = add_include(ls, i, 'nlohmann/json.hpp', is_quoted=False)
     add_blank(ls)
 
@@ -172,8 +197,34 @@ def generate_dynamic_source_file(root_path: str, data: dict[str, Any], ctx: dict
 
     i = begin_namespace(ls, i, *namespace)
     add_blank(ls)
-    i = add_ctor_definition(ls, i, class_name, [('nlohmann::json *', 'data_p')], body=[(0, '// add initial validation')])
+    i = add_ctor_definition(ls, i, class_name, [('nlohmann::json *', 'data_p', None, None)], body=[(0, '// add initial validation')])
     add_blank(ls)
+
+    merge_body : list[(int, str)] = [
+        (0, 'if (!is_empty() && other_data_p != nullptr)'),
+        (0, '{'),
+        (1, 'data()->merge_patch( *other_data_p );'),
+        (0, '}'),
+        (0, 'return *this;'),
+    ]
+    i = add_method_definition(ls, i, 'merge', f'{class_name}&', class_name, [('nlohmann::json *', 'other_data_p')], body=merge_body)
+    add_blank(ls)
+
+    to_string_body : list[(int, str)] = [
+        (0, 'auto oss = std::ostringstream{};'),
+        (0, 'oss << *this;'),
+        (0, 'return oss.str();')
+    ]
+    i = add_method_definition(ls, i, 'to_string', 'std::string', class_name, [], is_const=True, is_nodiscard=True, body=to_string_body)
+    add_blank(ls)
+
+    i = add_method_definition(ls, i, 'stringify', 'std::ostream&', class_name, [('std::ostream&', 'os'), ('int', 'indent_size'), ('int', 'indent_level'), ('bool', 'display_all')], body=get_stringify_body(data), is_const=True)
+    add_blank(ls)
+
+    op_ln : str = 'return s.stringify( os, 2, 0, os.flags() & std::ios_base::boolalpha );'
+    i = add_function_definition(ls, i, 'operator<<', 'std::ostream&', [('std::ostream&', 'os'), (f'{class_name} const&', 's')], body=[(0, op_ln)])
+    add_blank(ls)
+
     i = add_property_definitions(ls, i, data, ctx)
     add_blank(ls)
     i = end_namespace(ls, i, *namespace)
@@ -199,11 +250,101 @@ def generate_dynamic_unit_test_file(root_path: str, data: dict[str, Any], ctx: d
 
     add_blank(ls)
 
-    i = begin_test_case(ls, i, f'{class_name} - Sample Test', 'sample')
-    i = add_line(ls, i, '::'.join(namespace) + '::' + class_name + '( nullptr );')
+    i = begin_test_case(ls, i, f'{class_name} - basic test', 'settings')
+    i = add_line(ls, i, 'nlohmann::json obj = nlohmann::json::object();')
+    i = add_line(ls, i, 'auto s = ' + '::'.join(namespace) + '::' + class_name + '{ &obj };')
     add_blank(ls)
-    i = add_require(ls, i, 'true')
+    i = add_require(ls, i, '!s.is_empty()')
+    add_blank(ls)
+    i = add_line(ls, i, 'auto data_p = s.data();')
+    i = add_line(ls, i, 'auto anys = s.as_any();')
+    add_blank(ls)
+    i = add_require(ls, i, '!anys.is_empty()')
+    add_blank(ls)
+    i = add_line(ls, i, 'auto ss = ' + '::'.join(namespace) + '::' + class_name + '{ anys };')
+    add_blank(ls)
+    i = add_require(ls, i, '!ss.is_empty()')
+    i = add_require(ls, i, 'data_p != nullptr')
+    i = add_require(ls, i, 'obj == *data_p')
+    i = add_require(ls, i, '*anys.data() == *data_p')
+    i = add_require(ls, i, '*ss.data() == *data_p')
     i = end_test_case(ls, i)
+
+    add_blank(ls)
+
+    i = begin_test_case(ls, i, f'{class_name} - basic empty test', 'settings')
+    i = add_line(ls, i, 'auto s = ' + '::'.join(namespace) + '::' + class_name + '{};')
+    add_blank(ls)
+    i = add_require(ls, i, 's.is_empty()')
+    add_blank(ls)
+    i = add_line(ls, i, 'auto anys = s.as_any();')
+    add_blank(ls)
+    i = add_require(ls, i, 'anys.is_empty()')
+    add_blank(ls)
+    i = add_line(ls, i, 'auto ss = ' + '::'.join(namespace) + '::' + class_name + '{ anys };')
+    add_blank(ls)
+    i = add_require(ls, i, 'ss.is_empty()')
+    i = add_require(ls, i, 's.data() == nullptr')
+    i = add_require(ls, i, 'anys.data() == nullptr')
+    i = add_require(ls, i, 'ss.data() == nullptr')
+    i = end_test_case(ls, i)
+
+    add_blank(ls)
+
+    i = begin_test_case(ls, i, f'{class_name} - conversion to string', 'settings', '.', '!mayfail')
+    i = add_block_comment(ls, i, 'TODO - add conversion to string tests for generated setting classes')
+    i = add_require(ls, i, 'false')
+    i = end_test_case(ls, i)
+
+    add_blank(ls)
+
+    i = begin_test_case(ls, i, f'{class_name} - conversion to string - display all', 'settings', '.', '!mayfail')
+    i = add_block_comment(ls, i, 'TODO - add conversion to string tests for generated setting classes')
+    i = add_require(ls, i, 'false')
+    i = end_test_case(ls, i)
+
+    add_blank(ls)
+
+    i = begin_test_case(ls, i, f'{class_name} - conversion to string - extra indent size', 'settings', '.', '!mayfail')
+    i = add_block_comment(ls, i, 'TODO - add conversion to string tests for generated setting classes')
+    i = add_require(ls, i, 'false')
+    i = end_test_case(ls, i)
+
+    add_blank(ls)
+
+    i = begin_test_case(ls, i, f'{class_name} - conversion to string - extra indent level', 'settings', '.', '!mayfail')
+    i = add_block_comment(ls, i, 'TODO - add conversion to string tests for generated setting classes')
+    i = add_require(ls, i, 'false')
+    i = end_test_case(ls, i)
+
+    add_blank(ls)
+
+    i = begin_test_case(ls, i, f'{class_name} - conversion to string for empty', 'settings', '.', '!mayfail')
+    i = add_block_comment(ls, i, 'TODO - add conversion to string tests for generated setting classes')
+    i = add_require(ls, i, 'false')
+    i = end_test_case(ls, i)
+
+    add_blank(ls)
+
+    i = begin_test_case(ls, i, f'{class_name} - merge', 'settings', '.', '!mayfail')
+    i = add_block_comment(ls, i, 'TODO - add merge tests for generated setting classes')
+    i = add_require(ls, i, 'false')
+    i = end_test_case(ls, i)
+
+    add_blank(ls)
+
+    i = begin_test_case(ls, i, f'{class_name} - merge with removal', 'settings', '.', '!mayfail')
+    i = add_block_comment(ls, i, 'TODO - add merge tests for generated setting classes')
+    i = add_require(ls, i, 'false')
+    i = end_test_case(ls, i)
+
+    add_blank(ls)
+
+    i = begin_test_case(ls, i, f'{class_name} - merge with empties', 'settings', '.', '!mayfail')
+    i = add_block_comment(ls, i, 'TODO - add merge tests for generated setting classes')
+    i = add_require(ls, i, 'false')
+    i = end_test_case(ls, i)
+
     add_blank(ls)
 
     i = add_property_unit_tests(ls, i, data, ctx)

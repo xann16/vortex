@@ -6,9 +6,12 @@
 
 #pragma once
 
+#include <ostream>
+
 #include <nlohmann/json_fwd.hpp>
 
 #include "core/common/types.hpp"
+#include "core/settings/json/any_settings.hpp"
 #include "turb/legacy/settings/enums/sim_method.hpp"
 #include "turb/legacy/settings/enums/particle_mode.hpp"
 #include "turb/legacy/settings/enums/gravity_mode.hpp"
@@ -20,11 +23,45 @@ namespace vortex::turb::legacy::settings
 class Metadata
 {
 public:
+    Metadata() noexcept = default;
     explicit Metadata( nlohmann::json * data_p );
+    explicit Metadata( core::settings::json::AnySettings s )
+    :   Metadata( s.data() )
+    {}
 
 public:
+
+    [[nodiscard]] nlohmann::json * data() const noexcept
+    {
+        return m_data_p;
+    }
+    [[nodiscard]] bool is_empty() const noexcept
+    {
+        return data() == nullptr;
+    }
+    [[nodiscard]] core::settings::json::AnySettings as_any() const noexcept
+    {
+        return core::settings::json::AnySettings{ data() };
+    }
+
+    Metadata& merge( nlohmann::json * other_data_p );
+    Metadata& merge( core::settings::json::AnySettings const& other )
+    {
+        return merge( other.data() );
+    }
+    Metadata& merge( Metadata const& other )
+    {
+        return merge( other.data() );
+    }
+
+    [[nodiscard]] std::string to_string() const;
+    std::ostream& stringify( std::ostream& os, int indent_size, int indent_level, bool display_all ) const;
+
+    friend std::ostream& operator<<( std::ostream& os, Metadata const& s );
+
     // "sim_method" property
     [[nodiscard]] SimMethod sim_method() const;
+    [[nodiscard]] bool has_sim_method_set() const noexcept;
     [[nodiscard]] constexpr SimMethod default_sim_method() const noexcept
     {
         return SimMethod::Dns;
@@ -32,6 +69,7 @@ public:
 
     // "particle_mode" property
     [[nodiscard]] ParticleMode particle_mode() const;
+    [[nodiscard]] bool has_particle_mode_set() const noexcept;
     [[nodiscard]] constexpr ParticleMode default_particle_mode() const noexcept
     {
         return ParticleMode::None;
@@ -39,6 +77,7 @@ public:
 
     // "gravity_type" property
     [[nodiscard]] GravityMode gravity_type() const;
+    [[nodiscard]] bool has_gravity_type_set() const noexcept;
     [[nodiscard]] constexpr GravityMode default_gravity_type() const noexcept
     {
         return GravityMode::None;
@@ -46,6 +85,7 @@ public:
 
     // "particle_kernel_type" property
     [[nodiscard]] ParticleTwcKernelType particle_kernel_type() const;
+    [[nodiscard]] bool has_particle_kernel_type_set() const noexcept;
     [[nodiscard]] constexpr ParticleTwcKernelType default_particle_kernel_type() const noexcept
     {
         return ParticleTwcKernelType::Pnn;
@@ -53,6 +93,7 @@ public:
 
     // "k_filter" property
     [[nodiscard]] i32 k_filter() const;
+    [[nodiscard]] bool has_k_filter_set() const noexcept;
     [[nodiscard]] constexpr i32 default_k_filter() const noexcept
     {
         return i32{};
@@ -60,6 +101,7 @@ public:
 
     // "C_K" property
     [[nodiscard]] real C_K() const;
+    [[nodiscard]] bool has_C_K_set() const noexcept;
     [[nodiscard]] constexpr real default_C_K() const noexcept
     {
         return 2.5;
@@ -67,6 +109,7 @@ public:
 
     // "target_Phi" property
     [[nodiscard]] real target_Phi() const;
+    [[nodiscard]] bool has_target_Phi_set() const noexcept;
     [[nodiscard]] constexpr real default_target_Phi() const noexcept
     {
         return real{};
@@ -74,6 +117,7 @@ public:
 
     // "superpart_factor" property
     [[nodiscard]] real superpart_factor() const;
+    [[nodiscard]] bool has_superpart_factor_set() const noexcept;
     [[nodiscard]] constexpr real default_superpart_factor() const noexcept
     {
         return 1;
@@ -81,6 +125,7 @@ public:
 
     // "src_flow_path" property
     [[nodiscard]] std::string_view src_flow_path() const;
+    [[nodiscard]] bool has_src_flow_path_set() const noexcept;
     [[nodiscard]] constexpr std::string_view default_src_flow_path() const noexcept
     {
         return std::string_view{};
@@ -88,6 +133,7 @@ public:
 
     // "src_part_path" property
     [[nodiscard]] std::string_view src_part_path() const;
+    [[nodiscard]] bool has_src_part_path_set() const noexcept;
     [[nodiscard]] constexpr std::string_view default_src_part_path() const noexcept
     {
         return std::string_view{};
@@ -95,6 +141,7 @@ public:
 
     // "part_output_delay" property
     [[nodiscard]] i32 part_output_delay() const;
+    [[nodiscard]] bool has_part_output_delay_set() const noexcept;
     [[nodiscard]] constexpr i32 default_part_output_delay() const noexcept
     {
         return i32{};
@@ -102,6 +149,7 @@ public:
 
     // "is_perf_full_profile_enabled" property
     [[nodiscard]] bool is_perf_full_profile_enabled() const;
+    [[nodiscard]] bool has_is_perf_full_profile_enabled_set() const noexcept;
     [[nodiscard]] constexpr bool default_is_perf_full_profile_enabled() const noexcept
     {
         return bool{};
@@ -109,6 +157,7 @@ public:
 
     // "is_perf_simple_enabled" property
     [[nodiscard]] bool is_perf_simple_enabled() const;
+    [[nodiscard]] bool has_is_perf_simple_enabled_set() const noexcept;
     [[nodiscard]] constexpr bool default_is_perf_simple_enabled() const noexcept
     {
         return bool{};
@@ -116,6 +165,7 @@ public:
 
     // "is_perf_part_dist_enabled" property
     [[nodiscard]] bool is_perf_part_dist_enabled() const;
+    [[nodiscard]] bool has_is_perf_part_dist_enabled_set() const noexcept;
     [[nodiscard]] constexpr bool default_is_perf_part_dist_enabled() const noexcept
     {
         return bool{};
@@ -123,6 +173,7 @@ public:
 
     // "perf_full_start" property
     [[nodiscard]] i32 perf_full_start() const;
+    [[nodiscard]] bool has_perf_full_start_set() const noexcept;
     [[nodiscard]] constexpr i32 default_perf_full_start() const noexcept
     {
         return i32{};
@@ -130,6 +181,7 @@ public:
 
     // "perf_full_end" property
     [[nodiscard]] i32 perf_full_end() const;
+    [[nodiscard]] bool has_perf_full_end_set() const noexcept;
     [[nodiscard]] constexpr i32 default_perf_full_end() const noexcept
     {
         return i32{};
@@ -137,6 +189,7 @@ public:
 
     // "part_perf_interval" property
     [[nodiscard]] i32 part_perf_interval() const;
+    [[nodiscard]] bool has_part_perf_interval_set() const noexcept;
     [[nodiscard]] constexpr i32 default_part_perf_interval() const noexcept
     {
         return i32{};

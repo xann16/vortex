@@ -6,9 +6,12 @@
 
 #pragma once
 
+#include <ostream>
+
 #include <nlohmann/json_fwd.hpp>
 
 #include "core/common/types.hpp"
+#include "core/settings/json/any_settings.hpp"
 #include "turb/legacy/settings/metadata.hpp"
 #include "turb/legacy/settings/parameters.hpp"
 #include "turb/legacy/settings/execution_settings.hpp"
@@ -19,28 +22,64 @@ namespace vortex::turb::legacy::settings
 class Settings
 {
 public:
+    Settings() noexcept = default;
     explicit Settings( nlohmann::json * data_p );
+    explicit Settings( core::settings::json::AnySettings s )
+    :   Settings( s.data() )
+    {}
 
 public:
-    // "metadata" property
-    [[nodiscard]] /* TODO: settings dynamic class */ void * metadata() const;
-    [[nodiscard]] constexpr /* TODO: settings dynamic class */ void * default_metadata() const noexcept
+
+    [[nodiscard]] nlohmann::json * data() const noexcept
     {
-        return /* TODO: settings dynamic class constructor from nullptr */ nullptr;
+        return m_data_p;
+    }
+    [[nodiscard]] bool is_empty() const noexcept
+    {
+        return data() == nullptr;
+    }
+    [[nodiscard]] core::settings::json::AnySettings as_any() const noexcept
+    {
+        return core::settings::json::AnySettings{ data() };
+    }
+
+    Settings& merge( nlohmann::json * other_data_p );
+    Settings& merge( core::settings::json::AnySettings const& other )
+    {
+        return merge( other.data() );
+    }
+    Settings& merge( Settings const& other )
+    {
+        return merge( other.data() );
+    }
+
+    [[nodiscard]] std::string to_string() const;
+    std::ostream& stringify( std::ostream& os, int indent_size, int indent_level, bool display_all ) const;
+
+    friend std::ostream& operator<<( std::ostream& os, Settings const& s );
+
+    // "metadata" property
+    [[nodiscard]] turb::legacy::settings::Metadata metadata() const;
+    [[nodiscard]] bool has_metadata_set() const noexcept;
+    [[nodiscard]] constexpr turb::legacy::settings::Metadata default_metadata() const noexcept
+    {
+        return turb::legacy::settings::Metadata{};;
     }
 
     // "parameters" property
-    [[nodiscard]] /* TODO: settings dynamic class */ void * parameters() const;
-    [[nodiscard]] constexpr /* TODO: settings dynamic class */ void * default_parameters() const noexcept
+    [[nodiscard]] turb::legacy::settings::Parameters parameters() const;
+    [[nodiscard]] bool has_parameters_set() const noexcept;
+    [[nodiscard]] constexpr turb::legacy::settings::Parameters default_parameters() const noexcept
     {
-        return /* TODO: settings dynamic class constructor from nullptr */ nullptr;
+        return turb::legacy::settings::Parameters{};;
     }
 
     // "execution_settings" property
-    [[nodiscard]] /* TODO: settings dynamic class */ void * execution_settings() const;
-    [[nodiscard]] constexpr /* TODO: settings dynamic class */ void * default_execution_settings() const noexcept
+    [[nodiscard]] turb::legacy::settings::ExecutionSettings execution_settings() const;
+    [[nodiscard]] bool has_execution_settings_set() const noexcept;
+    [[nodiscard]] constexpr turb::legacy::settings::ExecutionSettings default_execution_settings() const noexcept
     {
-        return /* TODO: settings dynamic class constructor from nullptr */ nullptr;
+        return turb::legacy::settings::ExecutionSettings{};;
     }
 
 

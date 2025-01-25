@@ -10,96 +10,200 @@
 
 #include "runner/config/test_case.hpp"
 
-TEST_CASE( "TestCase - Sample Test", "[sample]" )
+TEST_CASE( "TestCase - basic test", "[settings]" )
 {
-    vortex::runner::config::TestCase( nullptr );
+    nlohmann::json obj = nlohmann::json::object();
+    auto s = vortex::runner::config::TestCase{ &obj };
 
-    REQUIRE( true );
+    REQUIRE( !s.is_empty() );
+
+    auto data_p = s.data();
+    auto anys = s.as_any();
+
+    REQUIRE( !anys.is_empty() );
+
+    auto ss = vortex::runner::config::TestCase{ anys };
+
+    REQUIRE( !ss.is_empty() );
+    REQUIRE( data_p != nullptr );
+    REQUIRE( obj == *data_p );
+    REQUIRE( *anys.data() == *data_p );
+    REQUIRE( *ss.data() == *data_p );
+}
+
+TEST_CASE( "TestCase - basic empty test", "[settings]" )
+{
+    auto s = vortex::runner::config::TestCase{};
+
+    REQUIRE( s.is_empty() );
+
+    auto anys = s.as_any();
+
+    REQUIRE( anys.is_empty() );
+
+    auto ss = vortex::runner::config::TestCase{ anys };
+
+    REQUIRE( ss.is_empty() );
+    REQUIRE( s.data() == nullptr );
+    REQUIRE( anys.data() == nullptr );
+    REQUIRE( ss.data() == nullptr );
+}
+
+TEST_CASE( "TestCase - conversion to string", "[settings][.][!mayfail]" )
+{
+    // TODO - add conversion to string tests for generated setting classes
+    REQUIRE( false );
+}
+
+TEST_CASE( "TestCase - conversion to string - display all", "[settings][.][!mayfail]" )
+{
+    // TODO - add conversion to string tests for generated setting classes
+    REQUIRE( false );
+}
+
+TEST_CASE( "TestCase - conversion to string - extra indent size", "[settings][.][!mayfail]" )
+{
+    // TODO - add conversion to string tests for generated setting classes
+    REQUIRE( false );
+}
+
+TEST_CASE( "TestCase - conversion to string - extra indent level", "[settings][.][!mayfail]" )
+{
+    // TODO - add conversion to string tests for generated setting classes
+    REQUIRE( false );
+}
+
+TEST_CASE( "TestCase - conversion to string for empty", "[settings][.][!mayfail]" )
+{
+    // TODO - add conversion to string tests for generated setting classes
+    REQUIRE( false );
+}
+
+TEST_CASE( "TestCase - merge", "[settings][.][!mayfail]" )
+{
+    // TODO - add merge tests for generated setting classes
+    REQUIRE( false );
+}
+
+TEST_CASE( "TestCase - merge with removal", "[settings][.][!mayfail]" )
+{
+    // TODO - add merge tests for generated setting classes
+    REQUIRE( false );
+}
+
+TEST_CASE( "TestCase - merge with empties", "[settings][.][!mayfail]" )
+{
+    // TODO - add merge tests for generated setting classes
+    REQUIRE( false );
 }
 
 // "name" property
 
-TEST_CASE( "TestCase - property: \"name\" - getter", "[settings]" )
+TEST_CASE( "TestCase - property: \"name\" - getter, default, has_set", "[settings]" )
 {
-    auto obj = nlohmann::json{ { "name", "stest" } };
+    nlohmann::json obj = { { "name", "stest" } };
     auto s = vortex::runner::config::TestCase{ &obj };
-    auto s_null = vortex::runner::config::TestCase{ nullptr };
+    auto s_null = vortex::runner::config::TestCase{};
 
     auto value = s.name();
     auto default_value = s_null.name();
 
     REQUIRE( value == "stest" );
     REQUIRE( default_value == std::string_view{} );
+
+    REQUIRE( s.has_name_set() );
+    REQUIRE( !s_null.has_name_set() );
 }
 
 // "template_name" property
 
-TEST_CASE( "TestCase - property: \"template_name\" - getter", "[settings]" )
+TEST_CASE( "TestCase - property: \"template_name\" - getter, default, has_set", "[settings]" )
 {
-    auto obj = nlohmann::json{ { "template_name", "stest" } };
+    nlohmann::json obj = { { "template_name", "stest" } };
     auto s = vortex::runner::config::TestCase{ &obj };
-    auto s_null = vortex::runner::config::TestCase{ nullptr };
+    auto s_null = vortex::runner::config::TestCase{};
 
     auto value = s.template_name();
     auto default_value = s_null.template_name();
 
     REQUIRE( value == "stest" );
     REQUIRE( default_value == std::string_view{} );
+
+    REQUIRE( s.has_template_name_set() );
+    REQUIRE( !s_null.has_template_name_set() );
 }
 
 // "settings" property
 
-TEST_CASE( "TestCase - property: \"settings\" - getter", "[settings]" )
+TEST_CASE( "TestCase - property: \"settings\" - getter, default, has_set", "[settings]" )
 {
-    auto s_null = vortex::runner::config::TestCase{ nullptr };
+    nlohmann::json obj = { { "settings", { { "x", "y" } } } };
+    auto s = vortex::runner::config::TestCase{ &obj };
+    auto s_null = vortex::runner::config::TestCase{};
 
+    auto value = s.settings();
+    auto default_value = s_null.settings();
 
-    REQUIRE_THROWS_AS( s_null.settings(), std::runtime_error );
+    REQUIRE( !value.is_empty() );
+    REQUIRE( value.data()->at( "x" ) == "y" );
+    REQUIRE( default_value.is_empty() );
+
+    REQUIRE( s.has_settings_set() );
+    REQUIRE( !s_null.has_settings_set() );
 }
 
 // "parallel_strategy" property
 
-TEST_CASE( "TestCase - property: \"parallel_strategy\" - getter", "[settings]" )
+TEST_CASE( "TestCase - property: \"parallel_strategy\" - getter, default, has_set", "[settings]" )
 {
-    auto obj = nlohmann::json{ { "parallel_strategy", "xxx" } };
+    nlohmann::json obj = { { "parallel_strategy", "xxx" } };
     auto s = vortex::runner::config::TestCase{ &obj };
-    auto s_null = vortex::runner::config::TestCase{ nullptr };
+    auto s_null = vortex::runner::config::TestCase{};
 
     auto value = s.parallel_strategy();
     auto default_value = s_null.parallel_strategy();
 
     REQUIRE( value == vortex::runner::config::ParallelStrategyType::Xxx );
     REQUIRE( default_value == vortex::runner::config::ParallelStrategyType::Mmx );
+
+    REQUIRE( s.has_parallel_strategy_set() );
+    REQUIRE( !s_null.has_parallel_strategy_set() );
 }
 
 // "stages" property
 
-TEST_CASE( "TestCase - property: \"stages\" - getter", "[settings]" )
+TEST_CASE( "TestCase - property: \"stages\" - getter, default, has_set", "[settings]" )
 {
-    auto obj = nlohmann::json{ { "stages", "stest" } };
+    nlohmann::json obj = { { "stages", "stest" } };
     auto s = vortex::runner::config::TestCase{ &obj };
-    auto s_null = vortex::runner::config::TestCase{ nullptr };
+    auto s_null = vortex::runner::config::TestCase{};
 
     auto value = s.stages();
     auto default_value = s_null.stages();
 
     REQUIRE( value == "stest" );
     REQUIRE( default_value == std::string_view{} );
+
+    REQUIRE( s.has_stages_set() );
+    REQUIRE( !s_null.has_stages_set() );
 }
 
 // "process_count" property
 
-TEST_CASE( "TestCase - property: \"process_count\" - getter", "[settings]" )
+TEST_CASE( "TestCase - property: \"process_count\" - getter, default, has_set", "[settings]" )
 {
-    auto obj = nlohmann::json{ { "process_count", -2l } };
+    nlohmann::json obj = { { "process_count", -2l } };
     auto s = vortex::runner::config::TestCase{ &obj };
-    auto s_null = vortex::runner::config::TestCase{ nullptr };
+    auto s_null = vortex::runner::config::TestCase{};
 
     auto value = s.process_count();
     auto default_value = s_null.process_count();
 
     REQUIRE( static_cast< vortex::i32 >( value ) == -2l );
     REQUIRE( static_cast< vortex::i32 >( default_value ) == 1 );
+
+    REQUIRE( s.has_process_count_set() );
+    REQUIRE( !s_null.has_process_count_set() );
 }
 
 

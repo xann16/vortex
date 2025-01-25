@@ -6,6 +6,9 @@
 
 #include "turb/legacy/settings/settings.hpp"
 
+#include <iomanip>
+#include <sstream>
+
 #include <nlohmann/json.hpp>
 
 
@@ -18,28 +21,103 @@ Settings::Settings( nlohmann::json * data_p )
     // add initial validation
 }
 
+Settings& Settings::merge( nlohmann::json * other_data_p )
+{
+    if (!is_empty() && other_data_p != nullptr)
+    {
+        data()->merge_patch( *other_data_p );
+    }
+    return *this;
+}
+
+[[nodiscard]] std::string Settings::to_string() const
+{
+    auto oss = std::ostringstream{};
+    oss << *this;
+    return oss.str();
+}
+
+std::ostream& Settings::stringify( std::ostream& os, int indent_size, int indent_level, bool display_all ) const
+{
+    if ( !display_all && ( is_empty() || data()->empty() ) )
+    {
+        os << "<empty>\n"; 
+        return os;
+    }
+    
+    if ( display_all || has_metadata_set() )
+    {
+        os << std::setw( indent_size * indent_level ) << "" << "metadata:\n";
+        metadata().stringify( os, indent_size, indent_level + 1, display_all );
+    }
+    if ( display_all || has_parameters_set() )
+    {
+        os << std::setw( indent_size * indent_level ) << "" << "parameters:\n";
+        parameters().stringify( os, indent_size, indent_level + 1, display_all );
+    }
+    if ( display_all || has_execution_settings_set() )
+    {
+        os << std::setw( indent_size * indent_level ) << "" << "execution_settings:\n";
+        execution_settings().stringify( os, indent_size, indent_level + 1, display_all );
+    }
+    
+    return os;
+}
+
+std::ostream& operator<<( std::ostream& os, Settings const& s )
+{
+    return s.stringify( os, 2, 0, os.flags() & std::ios_base::boolalpha );
+}
+
 // "metadata" property
 
-[[nodiscard]] /* TODO: settings dynamic class */ void * Settings::metadata() const
+[[nodiscard]] turb::legacy::settings::Metadata Settings::metadata() const
 {
-    if ( m_data_p == nullptr ) return default_metadata();
-    return nullptr;
+    if ( is_empty() ) return default_metadata();
+    auto it = m_data_p->find( "metadata" );
+    if ( it == m_data_p->end() || it->is_null() ) return default_metadata();
+    return turb::legacy::settings::Metadata{ &( *it ) };
+}
+
+[[nodiscard]] bool Settings::has_metadata_set() const noexcept
+{
+    if ( is_empty() ) return false;
+    auto it = data()->find( "metadata" );
+    return it != m_data_p->end() && !it->is_null();
 }
 
 // "parameters" property
 
-[[nodiscard]] /* TODO: settings dynamic class */ void * Settings::parameters() const
+[[nodiscard]] turb::legacy::settings::Parameters Settings::parameters() const
 {
-    if ( m_data_p == nullptr ) return default_parameters();
-    return nullptr;
+    if ( is_empty() ) return default_parameters();
+    auto it = m_data_p->find( "parameters" );
+    if ( it == m_data_p->end() || it->is_null() ) return default_parameters();
+    return turb::legacy::settings::Parameters{ &( *it ) };
+}
+
+[[nodiscard]] bool Settings::has_parameters_set() const noexcept
+{
+    if ( is_empty() ) return false;
+    auto it = data()->find( "parameters" );
+    return it != m_data_p->end() && !it->is_null();
 }
 
 // "execution_settings" property
 
-[[nodiscard]] /* TODO: settings dynamic class */ void * Settings::execution_settings() const
+[[nodiscard]] turb::legacy::settings::ExecutionSettings Settings::execution_settings() const
 {
-    if ( m_data_p == nullptr ) return default_execution_settings();
-    return nullptr;
+    if ( is_empty() ) return default_execution_settings();
+    auto it = m_data_p->find( "execution_settings" );
+    if ( it == m_data_p->end() || it->is_null() ) return default_execution_settings();
+    return turb::legacy::settings::ExecutionSettings{ &( *it ) };
+}
+
+[[nodiscard]] bool Settings::has_execution_settings_set() const noexcept
+{
+    if ( is_empty() ) return false;
+    auto it = data()->find( "execution_settings" );
+    return it != m_data_p->end() && !it->is_null();
 }
 
 

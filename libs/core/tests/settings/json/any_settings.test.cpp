@@ -1,6 +1,7 @@
 #include <sstream>
 
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/matchers/catch_matchers_string.hpp>
 #include <nlohmann/json.hpp>
 
 #include "core/settings/json/any_settings.hpp"
@@ -28,18 +29,75 @@ TEST_CASE("JSON Any Settings - basic empty test", "[settings]")
 
 TEST_CASE("JSON Any Settings - conversion to string", "[settings]")
 {
-    nlohmann::json obj = { { "x", "y" } };
+    nlohmann::json obj = { { "x", "y" }, {"null",  nullptr} };
     auto s = vortex::core::settings::json::AnySettings{ &obj };
+    auto ossfy = std::ostringstream{};
     auto oss = std::ostringstream{};
 
+    s.stringify(ossfy, 2, 0, false);
     oss << s;
+
+    auto ossfy_result = ossfy.str();
     auto oss_result = oss.str();
     auto str_result = s.to_string();
 
-    const auto expected = "{\n  \"x\": \"y\"\n}\n";
+    const auto expected = "x: y\n";
 
+    REQUIRE(ossfy_result == expected);
     REQUIRE(oss_result == expected);
     REQUIRE(str_result == expected);
+}
+
+TEST_CASE("JSON Any Settings - conversion to string - display all", "[settings]")
+{
+    nlohmann::json obj = { { "x", "y" }, {"null", nullptr} };
+    auto s = vortex::core::settings::json::AnySettings{ &obj };
+    auto ossfy = std::ostringstream{};
+    auto oss = std::ostringstream{};
+
+    s.stringify(ossfy, 2, 0, true);
+    oss << std::boolalpha << s;
+
+    auto ossfy_result = ossfy.str();
+    auto oss_result = oss.str();
+
+    const auto expected_line_x = "x: y\n";
+    const auto expected_line_null = "null: null\n";
+
+    REQUIRE_THAT(ossfy_result, Catch::Matchers::ContainsSubstring( expected_line_x ) );
+    REQUIRE_THAT(ossfy_result, Catch::Matchers::ContainsSubstring( expected_line_null ) );
+    REQUIRE_THAT(oss_result, Catch::Matchers::ContainsSubstring( expected_line_x ) );
+    REQUIRE_THAT(oss_result, Catch::Matchers::ContainsSubstring( expected_line_null ) );
+}
+
+TEST_CASE("JSON Any Settings - conversion to string - extra indent size", "[settings]")
+{
+    nlohmann::json obj = { { "x", { { "y", "z" } } } };
+    auto s = vortex::core::settings::json::AnySettings{ &obj };
+    auto ossfy = std::ostringstream{};
+
+    s.stringify(ossfy, 4, 0, false);
+
+    auto ossfy_result = ossfy.str();
+
+    const auto expected = "x:\n    y: z\n";
+
+    REQUIRE(ossfy_result == expected);
+}
+
+TEST_CASE("JSON Any Settings - conversion to string - extra indent level", "[settings]")
+{
+    nlohmann::json obj = { { "x", { { "y", "z" } } } };
+    auto s = vortex::core::settings::json::AnySettings{ &obj };
+    auto ossfy = std::ostringstream{};
+
+    s.stringify(ossfy, 2, 2, false);
+
+    auto ossfy_result = ossfy.str();
+
+    const auto expected = "    x:\n      y: z\n";
+
+    REQUIRE(ossfy_result == expected);
 }
 
 TEST_CASE("JSON Any Settings - conversion to string for empty", "[settings]")
@@ -51,8 +109,10 @@ TEST_CASE("JSON Any Settings - conversion to string for empty", "[settings]")
     auto oss_result = oss.str();
     auto str_result = s.to_string();
 
-    REQUIRE(oss_result == "");
-    REQUIRE(str_result == "");
+    const auto expected = "<empty>\n";
+
+    REQUIRE(oss_result == expected);
+    REQUIRE(str_result == expected);
 }
 
 TEST_CASE("JSON Any Settings - merge", "[settings]")

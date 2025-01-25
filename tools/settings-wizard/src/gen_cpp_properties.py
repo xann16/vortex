@@ -20,12 +20,18 @@ BASE_TYPES = {
     'path':    ('std::string_view', '"ptest"'),
 }
 
-def _get_return_type(p: dict[str, Any]) -> str:
+def _get_module_type(name: str, data: dict[str, Any], ctx: dict[str, Any]) -> str:
+    from_path : str = [inc['from'] for inc in data['__includes__'] if name in inc['import']['modules']][0] if ('__includes__' in data) else ''
+    import_metadata : dict[str, Any] = ctx['defs'][from_path]['__metadata__']
+    return '::'.join([import_metadata['package'].lstrip('*')] + import_metadata['namespace'] + [to_pascal_case(name)])
+
+
+def _get_return_type(p: dict[str, Any], data: dict[str, Any], ctx: dict[str, Any]) -> str:
     property_type : str = p['type']
     if property_type == 'module':
-        return '/* TODO: settings dynamic class */ void *'
+        return _get_module_type(p['module']['name'], data, ctx)
     elif property_type == 'settings':
-        return '/* TODO: settings opaque interface */ void *'
+        return 'core::settings::json::AnySettings'
     elif property_type == 'enum':
         return to_pascal_case(p['enum']['name'])
     elif property_type in BASE_TYPES:
@@ -33,15 +39,15 @@ def _get_return_type(p: dict[str, Any]) -> str:
     else:
         raise RuntimeError(f'Unexpected property type: {property_type}.')
 
-def _get_default_value(name: str, p: dict[str, Any]) -> str:
+def _get_default_value(name: str, p: dict[str, Any], data: dict[str, Any], ctx: dict[str, Any]) -> str:
     property_type : str = p['type']
     default_value : str | None = p['default'] if 'default' in p else None
 
     if isinstance(default_value, str) and default_value.startswith('@'):
         return f'{default_value.lstrip('@')}()'
 
-    if property_type == 'module':
-        return '/* TODO: settings dynamic class constructor from nullptr */ nullptr'
+    if property_type in ['module', 'settings']:
+        return _get_return_type(p, data, ctx) + '{};'
     elif property_type == 'enum':
         enum_values : list[str] = p['enum']['values']
         if default_value and default_value not in enum_values:
@@ -50,49 +56,87 @@ def _get_default_value(name: str, p: dict[str, Any]) -> str:
         return to_pascal_case(p['enum']['name']) + '::' + to_pascal_case(enum_values[0] if not default_value else default_value)
     elif property_type in BASE_TYPES:
         default_str : str = f'"{default_value}"' if (property_type == 'string' or property_type == 'path') else str(default_value)
-
         return default_str if default_value is not None else (BASE_TYPES[property_type][0] + '{}')
     else:
         raise RuntimeError(f'Unexpected property type: {property_type}.')
 
+def get_stringify_body(data: list[str]) -> list[(int, str)]:
+    result : list[(int, str)] = []
+
+    result.append((0, 'if ( !display_all && ( is_empty() || data()->empty() ) )'))
+    result.append((0, '{'))
+    result.append((1, 'os << "<empty>\\n"; '))
+    result.append((1, 'return os;'))
+    result.append((0, '}'))
+    result.append((0, ''))
+
+    for name, prop in data.items():
+        if not name.startswith('__'):
+            result.append((0, f'if ( display_all || has_{name}_set() )'))
+            result.append((0, '{'))
+
+            property_type : str = prop['type']
+            line_start : str = f'os << std::setw( indent_size * indent_level ) << "" << "{name}:'
+            if property_type in BASE_TYPES:
+                if property_type != 'boolean':
+                    result.append((1, f'{line_start} " << {name}() << \'\\n\';'))
+                else:
+                    result.append((1, f'{line_start} " << ( {name}() ? "true" : "false" ) << \'\\n\';'))
+            elif (property_type == 'enum'):
+                    result.append((1, f'{line_start} " << to_c_str( {name}() ) << \'\\n\';'))
+            elif (property_type in ['settings', 'module']):
+                    result.append((1, f'{line_start}\\n";'))
+                    result.append((1, f'{name}().stringify( os, indent_size, indent_level + 1, display_all );'))
+
+            result.append((0, '}'))
+
+    result.append((0, ''))
+    result.append((0, 'return os;'))
+
+    return result
+
 
 ### DEFAULT VALUE
 
-def _add_default_value_declaration(ls: list[str], i: int, name: str, p: dict[str, Any]) -> int:
-    if p['type'] == 'settings':
-        return i
-    return_type : str = _get_return_type(p)
-    default_value : str = _get_default_value(name, p)
+def _add_default_value_declaration(ls: list[str], i: int, name: str, p: dict[str, Any], data: dict[str, Any], ctx: dict[str, Any]) -> int:
+    return_type : str = _get_return_type(p, data, ctx)
+    default_value : str = _get_default_value(name, p, data, ctx)
     body : list[(int, str)] = [(0, f'return {default_value};' )]
     preq : str = '' if ('default' in p and isinstance(p['default'], str) and p['default'].startswith('@')) else 'constexpr'
     return add_method_declaration(ls, i, f'default_{name}', return_type, [], body=body, is_const=True, is_nodiscard=True, is_noexcept=True, is_definition=True, pre_qualifiers=preq)
 
+### HAS_SET
+
+def _add_has_set_declaration(ls: list[str], i: int, name: str, p: dict[str, Any]) -> int:
+    return add_method_declaration(ls, i, f'has_{name}_set', 'bool', [], is_const=True, is_nodiscard=True, is_noexcept=True)
+
+def _add_has_set_definition(ls: list[str], i: int, class_name: str, name: str, p: dict[str, Any]) -> int:
+    body : list[(int, str)] = []
+
+    body.append((0, f'if ( is_empty() ) return false;'))
+    body.append((0, f'auto it = data()->find( "{name}" );'))
+    body.append((0, f'return it != m_data_p->end() && !it->is_null();'))
+
+    return add_method_definition(ls, i, f'has_{name}_set', 'bool', class_name, [], body, is_const=True, is_nodiscard=True, is_noexcept=True)
+
 ### GETTERS
 
-def _add_getter_declaration(ls: list[str], i: int, name: str, p: dict[str, Any]) -> int:
-    return_type : str = _get_return_type(p)
+def _add_getter_declaration(ls: list[str], i: int, name: str, p: dict[str, Any], data: dict[str, Any], ctx: dict[str, Any]) -> int:
+    return_type : str = _get_return_type(p, data, ctx)
     return add_method_declaration(ls, i, name, return_type, [], is_const=True, is_nodiscard=True)
 
-def _add_getter_definition(ls: list[str], i: int, class_name: str, name: str, p: dict[str, Any]) -> int:
-    return_type : str = _get_return_type(p)
+def _add_getter_definition(ls: list[str], i: int, class_name: str, name: str, p: dict[str, Any], data: dict[str, Any], ctx: dict[str, Any]) -> int:
+    return_type : str = _get_return_type(p, data, ctx)
     property_type : str = p['type']
 
     body : list[(int, str)] = []
 
-    if property_type == 'settings':
-        body.append((0, f'if ( m_data_p == nullptr ) throw std::runtime_error( "{class_name}: cannot get default value of unset property with settings type." );'))
-    else:
-        body.append((0, f'if ( m_data_p == nullptr ) return default_{name}();'))
+    body.append((0, f'if ( is_empty() ) return default_{name}();'))
+    body.append((0, f'auto it = m_data_p->find( "{name}" );'))
+    body.append((0, f'if ( it == m_data_p->end() || it->is_null() ) return default_{name}();'))
 
-    # TEMP IF
-    if property_type in BASE_TYPES or property_type == 'enum':
-        body.append((0, f'auto it = m_data_p->find( "{name}" );'))
-        body.append((0, f'if ( it == m_data_p->end() || it->is_null() ) return default_{name}();'))
-
-    if property_type == 'module':
-        body.append((0, 'return nullptr;'))
-    elif property_type == 'settings':
-        body.append((0, 'return nullptr;'))
+    if property_type in ['module', 'settings']:
+        body.append((0, f'return {return_type}' + '{ &( *it ) };'))
     elif property_type == 'enum':
         body.append((0, f'return it->template get<{return_type}>();'))
     elif property_type in BASE_TYPES:
@@ -105,42 +149,42 @@ def _add_getter_definition(ls: list[str], i: int, class_name: str, name: str, p:
 
     return add_method_definition(ls, i, name, return_type, class_name, [], body, is_const=True, is_nodiscard=True)
 
-def _add_getter_test(ls: list[str], i: int, class_name: str, name: str, p: dict[str, Any], namespace: list[str]) -> int:
-    return_type : str = _get_return_type(p)
+def _add_getter_test(ls: list[str], i: int, class_name: str, name: str, p: dict[str, Any], namespace: list[str], data: dict[str, Any], ctx: dict[str, Any]) -> int:
+    return_type : str = _get_return_type(p, data, ctx)
     property_type : str = p['type']
 
-    i = begin_test_case(ls, i, f'{class_name} - property: \\\"{name}\\\" - getter', 'settings')
+    i = begin_test_case(ls, i, f'{class_name} - property: \\\"{name}\\\" - getter, default, has_set', 'settings')
 
     if property_type in BASE_TYPES:
-        i = add_line(ls, i, 'auto obj = nlohmann::json{ { "' + name + f'", {BASE_TYPES[property_type][1]}' + ' } };' )
-        i = add_line(ls, i, 'auto s = ' + '::'.join(namespace) + '::' + class_name + '{ &obj };')
+        i = add_line(ls, i, 'nlohmann::json obj = { { "' + name + f'", {BASE_TYPES[property_type][1]}' + ' } };' )
     elif property_type == 'enum':
-        i = add_line(ls, i, 'auto obj = nlohmann::json{ { "' + name + f'", "{p['enum']['values'][-1]}"' + ' } };' )
-        i = add_line(ls, i, 'auto s = ' + '::'.join(namespace) + '::' + class_name + '{ &obj };')
-    i = add_line(ls, i, 'auto s_null = ' + '::'.join(namespace) + '::' + class_name + '{ nullptr };')
+        i = add_line(ls, i, 'nlohmann::json obj = { { "' + name + f'", "{p['enum']['values'][-1]}"' + ' } };' )
+    elif property_type in ['module', 'settings']:
+        # TODO - specific sets for specific setting classes (i.e. module)
+        i = add_line(ls, i, 'nlohmann::json obj = { { "' + name + '", { { "x", "y" } } } };' )
+    else:
+        raise RuntimeError(f'Unexpected property type: {property_type}.')
+
+    i = add_line(ls, i, 'auto s = ' + '::'.join(namespace) + '::' + class_name + '{ &obj };')
+    i = add_line(ls, i, 'auto s_null = ' + '::'.join(namespace) + '::' + class_name + '{};')
     add_blank(ls)
 
-    if property_type in BASE_TYPES or property_type == 'enum':
-        i = add_line(ls, i, f'auto value = s.{name}();')
-    if property_type == 'settings':
-        add_blank(ls)
-        i = add_require(ls, i, f's_null.{name}(), std::runtime_error', suffix='throws_as')
-    else:
-        i = add_line(ls, i, f'auto default_value = s_null.{name}();')
-        add_blank(ls)
+    i = add_line(ls, i, f'auto value = s.{name}();')
+    i = add_line(ls, i, f'auto default_value = s_null.{name}();')
+    add_blank(ls)
 
-    if property_type == 'module':
-        i = add_require(ls, i, 'default_value == nullptr')
-    elif property_type == 'settings':
-        pass
+    if property_type in ['module', 'settings']:
+        i = add_require(ls, i, '!value.is_empty()')
+        i = add_require(ls, i, 'value.data()->at( "x" ) == "y"')
+        i = add_require(ls, i, 'default_value.is_empty()')
     elif property_type == 'enum':
         i = add_require(ls, i, f'value == {'::'.join(namespace)}::{to_pascal_case(p['enum']['name'])}::{to_pascal_case(p['enum']['values'][-1])}')
-        i = add_require(ls, i, f'default_value == {'::'.join(namespace)}::{_get_default_value(name, p)}')
+        i = add_require(ls, i, f'default_value == {'::'.join(namespace)}::{_get_default_value(name, p, data, ctx)}')
     elif property_type in BASE_TYPES:
         is_fp : bool = property_type in ['f32', 'f64', 'real']
         val_str : str = 'value' if property_type in ['boolean', 'string', 'path'] else f'static_cast< vortex::{BASE_TYPES[property_type][0]} >( value )'
         def_val_str : str = 'default_value' if property_type in ['boolean', 'string', 'path'] else f'static_cast< vortex::{BASE_TYPES[property_type][0]} >( default_value )'
-        default_value : str = _get_default_value(name, p)
+        default_value : str = _get_default_value(name, p, data, ctx)
         def_prefix = 's_null.' if ('default' in p and isinstance(p['default'], str) and p['default'].startswith('@')) else ('' if ('default' in p or property_type in ['string', 'path', 'boolean']) else 'vortex::')
 
         if is_fp:
@@ -152,6 +196,10 @@ def _add_getter_test(ls: list[str], i: int, class_name: str, name: str, p: dict[
     else:
         raise RuntimeError(f'Unexpected property type: {property_type}.')
 
+    add_blank(ls)
+    add_require(ls, i, f's.has_{name}_set()')
+    add_require(ls, i, f'!s_null.has_{name}_set()')
+
     i = end_test_case(ls, i)
 
     return i
@@ -161,8 +209,9 @@ def add_property_public_declarations(ls: list[str], i: int, data: dict[str, Any]
     for name, prop in data.items():
         if not name.startswith('__'):
             i = add_block_comment(ls, i, f'"{name}" property')
-            i = _add_getter_declaration(ls, i, name, prop)
-            i = _add_default_value_declaration(ls, i, name, prop)
+            i = _add_getter_declaration(ls, i, name, prop, data, ctx)
+            i = _add_has_set_declaration(ls, i, name, prop)
+            i = _add_default_value_declaration(ls, i, name, prop, data, ctx)
             add_blank(ls)
     return i
 
@@ -181,7 +230,9 @@ def add_property_definitions(ls: list[str], i: int, data: dict[str, Any], ctx: d
         if not name.startswith('__'):
             i = add_block_comment(ls, i, f'"{name}" property')
             add_blank(ls)
-            i = _add_getter_definition(ls, i, class_name, name, prop)
+            i = _add_getter_definition(ls, i, class_name, name, prop, data, ctx)
+            add_blank(ls)
+            i = _add_has_set_definition(ls, i, class_name, name, prop)
             add_blank(ls)
     return i
 
@@ -193,6 +244,6 @@ def add_property_unit_tests(ls: list[str], i: int, data: dict[str, Any], ctx: di
         if not name.startswith('__'):
             i = add_block_comment(ls, i, f'"{name}" property')
             add_blank(ls)
-            i = _add_getter_test(ls, i, class_name, name, prop, namespace)
+            i = _add_getter_test(ls, i, class_name, name, prop, namespace, data, ctx)
             add_blank(ls)
     return i

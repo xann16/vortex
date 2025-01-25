@@ -6,9 +6,12 @@
 
 #pragma once
 
+#include <ostream>
+
 #include <nlohmann/json_fwd.hpp>
 
 #include "core/common/types.hpp"
+#include "core/settings/json/any_settings.hpp"
 #include "runner/config/enums/parallel_strategy_type.hpp"
 
 namespace vortex::runner::config
@@ -17,11 +20,45 @@ namespace vortex::runner::config
 class TestCase
 {
 public:
+    TestCase() noexcept = default;
     explicit TestCase( nlohmann::json * data_p );
+    explicit TestCase( core::settings::json::AnySettings s )
+    :   TestCase( s.data() )
+    {}
 
 public:
+
+    [[nodiscard]] nlohmann::json * data() const noexcept
+    {
+        return m_data_p;
+    }
+    [[nodiscard]] bool is_empty() const noexcept
+    {
+        return data() == nullptr;
+    }
+    [[nodiscard]] core::settings::json::AnySettings as_any() const noexcept
+    {
+        return core::settings::json::AnySettings{ data() };
+    }
+
+    TestCase& merge( nlohmann::json * other_data_p );
+    TestCase& merge( core::settings::json::AnySettings const& other )
+    {
+        return merge( other.data() );
+    }
+    TestCase& merge( TestCase const& other )
+    {
+        return merge( other.data() );
+    }
+
+    [[nodiscard]] std::string to_string() const;
+    std::ostream& stringify( std::ostream& os, int indent_size, int indent_level, bool display_all ) const;
+
+    friend std::ostream& operator<<( std::ostream& os, TestCase const& s );
+
     // "name" property
     [[nodiscard]] std::string_view name() const;
+    [[nodiscard]] bool has_name_set() const noexcept;
     [[nodiscard]] constexpr std::string_view default_name() const noexcept
     {
         return std::string_view{};
@@ -29,16 +66,23 @@ public:
 
     // "template_name" property
     [[nodiscard]] std::string_view template_name() const;
+    [[nodiscard]] bool has_template_name_set() const noexcept;
     [[nodiscard]] constexpr std::string_view default_template_name() const noexcept
     {
         return std::string_view{};
     }
 
     // "settings" property
-    [[nodiscard]] /* TODO: settings opaque interface */ void * settings() const;
+    [[nodiscard]] core::settings::json::AnySettings settings() const;
+    [[nodiscard]] bool has_settings_set() const noexcept;
+    [[nodiscard]] constexpr core::settings::json::AnySettings default_settings() const noexcept
+    {
+        return core::settings::json::AnySettings{};;
+    }
 
     // "parallel_strategy" property
     [[nodiscard]] ParallelStrategyType parallel_strategy() const;
+    [[nodiscard]] bool has_parallel_strategy_set() const noexcept;
     [[nodiscard]] constexpr ParallelStrategyType default_parallel_strategy() const noexcept
     {
         return ParallelStrategyType::Mmx;
@@ -46,6 +90,7 @@ public:
 
     // "stages" property
     [[nodiscard]] std::string_view stages() const;
+    [[nodiscard]] bool has_stages_set() const noexcept;
     [[nodiscard]] constexpr std::string_view default_stages() const noexcept
     {
         return std::string_view{};
@@ -53,6 +98,7 @@ public:
 
     // "process_count" property
     [[nodiscard]] i32 process_count() const;
+    [[nodiscard]] bool has_process_count_set() const noexcept;
     [[nodiscard]] constexpr i32 default_process_count() const noexcept
     {
         return 1;

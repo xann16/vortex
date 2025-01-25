@@ -10,101 +10,199 @@
 
 #include "turb/legacy/settings/execution_settings.hpp"
 
-TEST_CASE( "ExecutionSettings - Sample Test", "[sample]" )
+TEST_CASE( "ExecutionSettings - basic test", "[settings]" )
 {
-    vortex::turb::legacy::settings::ExecutionSettings( nullptr );
+    nlohmann::json obj = nlohmann::json::object();
+    auto s = vortex::turb::legacy::settings::ExecutionSettings{ &obj };
 
-    REQUIRE( true );
+    REQUIRE( !s.is_empty() );
+
+    auto data_p = s.data();
+    auto anys = s.as_any();
+
+    REQUIRE( !anys.is_empty() );
+
+    auto ss = vortex::turb::legacy::settings::ExecutionSettings{ anys };
+
+    REQUIRE( !ss.is_empty() );
+    REQUIRE( data_p != nullptr );
+    REQUIRE( obj == *data_p );
+    REQUIRE( *anys.data() == *data_p );
+    REQUIRE( *ss.data() == *data_p );
+}
+
+TEST_CASE( "ExecutionSettings - basic empty test", "[settings]" )
+{
+    auto s = vortex::turb::legacy::settings::ExecutionSettings{};
+
+    REQUIRE( s.is_empty() );
+
+    auto anys = s.as_any();
+
+    REQUIRE( anys.is_empty() );
+
+    auto ss = vortex::turb::legacy::settings::ExecutionSettings{ anys };
+
+    REQUIRE( ss.is_empty() );
+    REQUIRE( s.data() == nullptr );
+    REQUIRE( anys.data() == nullptr );
+    REQUIRE( ss.data() == nullptr );
+}
+
+TEST_CASE( "ExecutionSettings - conversion to string", "[settings][.][!mayfail]" )
+{
+    // TODO - add conversion to string tests for generated setting classes
+    REQUIRE( false );
+}
+
+TEST_CASE( "ExecutionSettings - conversion to string - display all", "[settings][.][!mayfail]" )
+{
+    // TODO - add conversion to string tests for generated setting classes
+    REQUIRE( false );
+}
+
+TEST_CASE( "ExecutionSettings - conversion to string - extra indent size", "[settings][.][!mayfail]" )
+{
+    // TODO - add conversion to string tests for generated setting classes
+    REQUIRE( false );
+}
+
+TEST_CASE( "ExecutionSettings - conversion to string - extra indent level", "[settings][.][!mayfail]" )
+{
+    // TODO - add conversion to string tests for generated setting classes
+    REQUIRE( false );
+}
+
+TEST_CASE( "ExecutionSettings - conversion to string for empty", "[settings][.][!mayfail]" )
+{
+    // TODO - add conversion to string tests for generated setting classes
+    REQUIRE( false );
+}
+
+TEST_CASE( "ExecutionSettings - merge", "[settings][.][!mayfail]" )
+{
+    // TODO - add merge tests for generated setting classes
+    REQUIRE( false );
+}
+
+TEST_CASE( "ExecutionSettings - merge with removal", "[settings][.][!mayfail]" )
+{
+    // TODO - add merge tests for generated setting classes
+    REQUIRE( false );
+}
+
+TEST_CASE( "ExecutionSettings - merge with empties", "[settings][.][!mayfail]" )
+{
+    // TODO - add merge tests for generated setting classes
+    REQUIRE( false );
 }
 
 // "job_name" property
 
-TEST_CASE( "ExecutionSettings - property: \"job_name\" - getter", "[settings]" )
+TEST_CASE( "ExecutionSettings - property: \"job_name\" - getter, default, has_set", "[settings]" )
 {
-    auto obj = nlohmann::json{ { "job_name", "stest" } };
+    nlohmann::json obj = { { "job_name", "stest" } };
     auto s = vortex::turb::legacy::settings::ExecutionSettings{ &obj };
-    auto s_null = vortex::turb::legacy::settings::ExecutionSettings{ nullptr };
+    auto s_null = vortex::turb::legacy::settings::ExecutionSettings{};
 
     auto value = s.job_name();
     auto default_value = s_null.job_name();
 
     REQUIRE( value == "stest" );
     REQUIRE( default_value == std::string_view{} );
+
+    REQUIRE( s.has_job_name_set() );
+    REQUIRE( !s_null.has_job_name_set() );
 }
 
 // "grant_no" property
 
-TEST_CASE( "ExecutionSettings - property: \"grant_no\" - getter", "[settings]" )
+TEST_CASE( "ExecutionSettings - property: \"grant_no\" - getter, default, has_set", "[settings]" )
 {
-    auto obj = nlohmann::json{ { "grant_no", "stest" } };
+    nlohmann::json obj = { { "grant_no", "stest" } };
     auto s = vortex::turb::legacy::settings::ExecutionSettings{ &obj };
-    auto s_null = vortex::turb::legacy::settings::ExecutionSettings{ nullptr };
+    auto s_null = vortex::turb::legacy::settings::ExecutionSettings{};
 
     auto value = s.grant_no();
     auto default_value = s_null.grant_no();
 
     REQUIRE( value == "stest" );
     REQUIRE( default_value == std::string_view{} );
+
+    REQUIRE( s.has_grant_no_set() );
+    REQUIRE( !s_null.has_grant_no_set() );
 }
 
 // "cpu_node_count" property
 
-TEST_CASE( "ExecutionSettings - property: \"cpu_node_count\" - getter", "[settings]" )
+TEST_CASE( "ExecutionSettings - property: \"cpu_node_count\" - getter, default, has_set", "[settings]" )
 {
-    auto obj = nlohmann::json{ { "cpu_node_count", -2l } };
+    nlohmann::json obj = { { "cpu_node_count", -2l } };
     auto s = vortex::turb::legacy::settings::ExecutionSettings{ &obj };
-    auto s_null = vortex::turb::legacy::settings::ExecutionSettings{ nullptr };
+    auto s_null = vortex::turb::legacy::settings::ExecutionSettings{};
 
     auto value = s.cpu_node_count();
     auto default_value = s_null.cpu_node_count();
 
     REQUIRE( static_cast< vortex::i32 >( value ) == -2l );
     REQUIRE( static_cast< vortex::i32 >( default_value ) == 1 );
+
+    REQUIRE( s.has_cpu_node_count_set() );
+    REQUIRE( !s_null.has_cpu_node_count_set() );
 }
 
 // "wct_limit" property
 
-TEST_CASE( "ExecutionSettings - property: \"wct_limit\" - getter", "[settings]" )
+TEST_CASE( "ExecutionSettings - property: \"wct_limit\" - getter, default, has_set", "[settings]" )
 {
-    auto obj = nlohmann::json{ { "wct_limit", 0.2 } };
+    nlohmann::json obj = { { "wct_limit", 0.2 } };
     auto s = vortex::turb::legacy::settings::ExecutionSettings{ &obj };
-    auto s_null = vortex::turb::legacy::settings::ExecutionSettings{ nullptr };
+    auto s_null = vortex::turb::legacy::settings::ExecutionSettings{};
 
     auto value = s.wct_limit();
     auto default_value = s_null.wct_limit();
 
     REQUIRE_THAT( static_cast< vortex::f64 >( value ), Catch::Matchers::WithinAbs( 0.2, 1e-05 ) );
     REQUIRE_THAT( static_cast< vortex::f64 >( default_value ), Catch::Matchers::WithinAbs( 60.0, 1e-05 ) );
+
+    REQUIRE( s.has_wct_limit_set() );
+    REQUIRE( !s_null.has_wct_limit_set() );
 }
 
 // "process_count" property
 
-TEST_CASE( "ExecutionSettings - property: \"process_count\" - getter", "[settings]" )
+TEST_CASE( "ExecutionSettings - property: \"process_count\" - getter, default, has_set", "[settings]" )
 {
-    auto obj = nlohmann::json{ { "process_count", -2l } };
+    nlohmann::json obj = { { "process_count", -2l } };
     auto s = vortex::turb::legacy::settings::ExecutionSettings{ &obj };
-    auto s_null = vortex::turb::legacy::settings::ExecutionSettings{ nullptr };
+    auto s_null = vortex::turb::legacy::settings::ExecutionSettings{};
 
     auto value = s.process_count();
     auto default_value = s_null.process_count();
 
     REQUIRE( static_cast< vortex::i32 >( value ) == -2l );
     REQUIRE( static_cast< vortex::i32 >( default_value ) == 1 );
+
+    REQUIRE( s.has_process_count_set() );
+    REQUIRE( !s_null.has_process_count_set() );
 }
 
 // "is_node_overcommit_enabled" property
 
-TEST_CASE( "ExecutionSettings - property: \"is_node_overcommit_enabled\" - getter", "[settings]" )
+TEST_CASE( "ExecutionSettings - property: \"is_node_overcommit_enabled\" - getter, default, has_set", "[settings]" )
 {
-    auto obj = nlohmann::json{ { "is_node_overcommit_enabled", true } };
+    nlohmann::json obj = { { "is_node_overcommit_enabled", true } };
     auto s = vortex::turb::legacy::settings::ExecutionSettings{ &obj };
-    auto s_null = vortex::turb::legacy::settings::ExecutionSettings{ nullptr };
+    auto s_null = vortex::turb::legacy::settings::ExecutionSettings{};
 
     auto value = s.is_node_overcommit_enabled();
     auto default_value = s_null.is_node_overcommit_enabled();
 
     REQUIRE( value == true );
     REQUIRE( default_value == bool{} );
+
+    REQUIRE( s.has_is_node_overcommit_enabled_set() );
+    REQUIRE( !s_null.has_is_node_overcommit_enabled_set() );
 }
 
 

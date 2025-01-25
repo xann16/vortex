@@ -67,8 +67,8 @@ def add_access_qualifier(ls: list[str], i: int, qualifier: str) -> int:
 
 def _add_ctor_body(ls: list[str], i: int, signature: str, args: list[(str, str, str)], body: list[(int, str)] | None) -> int:
     i = add_line(ls, i, signature)
-    for j, (_, arg_name) in enumerate(args):
-        i = add_line(ls, i, (':' if j == 0 else ',') + (' ' * (TAB_SIZE - 1)) + 'm_' + arg_name + '( ' + arg_name + ' )')
+    for j, (_, arg_name, init_arg_name, init_expr) in enumerate(args):
+        i = add_line(ls, i, (':' if j == 0 else ',') + (' ' * (TAB_SIZE - 1)) + (init_arg_name if init_arg_name else f'm_{arg_name}') + '( ' + (init_expr if init_expr else arg_name) + ' )')
     if not body:
         return add_line(ls, i, '{}')
 
@@ -77,15 +77,15 @@ def _add_ctor_body(ls: list[str], i: int, signature: str, args: list[(str, str, 
         add_line(ls, i + indent_offset, line)
     return close_brace(ls, i)
 
-def add_ctor_declaration(ls: list[str], i: int, class_name: str, args: list[(str, str)], body: list[(int, str)] | None = None, is_explicit: bool = False, is_definition: bool = False, is_noexcept: bool = False) -> int:
-    args_list : list[str] = [f'{data_type} {name}' for data_type, name in args]
+def add_ctor_declaration(ls: list[str], i: int, class_name: str, args: list[(str, str, str | None, str | None)], body: list[(int, str)] | None = None, is_explicit: bool = False, is_definition: bool = False, is_noexcept: bool = False) -> int:
+    args_list : list[str] = [f'{data_type} {name}' for data_type, name, _, _ in args]
     signature : str = ('explicit ' if is_explicit else '') + class_name + '( ' + ', '.join(args_list) + ' )' + (' noexcept' if is_noexcept else '')
     if not is_definition:
         return add_line(ls, i, signature + ';')
     return _add_ctor_body(ls, i, signature, args, body)
 
-def add_ctor_definition(ls: list[str], i: int, class_name: str, args: list[(str, str)], body: list[(int, str)], is_noexcept: bool = False) -> int:
-    args_list : list[str] = [f'{data_type} {name}' for data_type, name in args]
+def add_ctor_definition(ls: list[str], i: int, class_name: str, args: list[(str, str, str | None, str | None)], body: list[(int, str)], is_noexcept: bool = False) -> int:
+    args_list : list[str] = [f'{data_type} {name}' for data_type, name, _, _ in args]
     signature : str = class_name + '::' + class_name + '( ' + ', '.join(args_list) + ' )' + (' noexcept' if is_noexcept else '')
     return _add_ctor_body(ls, i, signature, args, body)
 
@@ -150,13 +150,14 @@ def add_function_declaration(ls: list[str], i: int, function_name: str, return_t
     return add_method_declaration(ls, i, function_name, return_type, args, body, is_definition=is_definition, is_noexcept=is_noexcept, is_nodiscard=is_nodiscard, pre_qualifiers=pre_qualifiers, is_const=False)
 
 def add_function_definition(ls: list[str], i: int, function_name: str, return_type: str, args: list[(str, str)], body: list[(int, str)], is_noexcept: bool = False, is_nodiscard: bool = False) -> int:
-    return add_method_definition(ls, i, function_name, '', args, body, is_definition=is_definition, is_noexcept=is_noexcept, is_nodiscard=is_nodiscard, pre_qualifiers=pre_qualifiers, is_const=False)
+    return add_method_definition(ls, i, function_name, return_type, '', args, body, is_noexcept=is_noexcept, is_nodiscard=is_nodiscard, is_const=False)
 
 
 # TESTING
 
-def begin_test_case(ls: list[str], i: int, case_name: str, case_tags: str = '') -> None:
-    i = add_line(ls, i, f'TEST_CASE( "{case_name}", "[{case_tags}]" )')
+def begin_test_case(ls: list[str], i: int, case_name: str, *case_tags: str) -> None:
+    tags_str : str = ''.join(f'[{tag}]' for tag in case_tags)
+    i = add_line(ls, i, f'TEST_CASE( "{case_name}", "{tags_str}" )')
     return open_brace(ls, i)
 
 def end_test_case(ls: list[str], i: int) -> None:

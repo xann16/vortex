@@ -6,9 +6,12 @@
 
 #pragma once
 
+#include <ostream>
+
 #include <nlohmann/json_fwd.hpp>
 
 #include "core/common/types.hpp"
+#include "core/settings/json/any_settings.hpp"
 #include "runner/config/test_case.hpp"
 #include "runner/config/test_stage.hpp"
 
@@ -18,11 +21,45 @@ namespace vortex::runner::config
 class TestFixture
 {
 public:
+    TestFixture() noexcept = default;
     explicit TestFixture( nlohmann::json * data_p );
+    explicit TestFixture( core::settings::json::AnySettings s )
+    :   TestFixture( s.data() )
+    {}
 
 public:
+
+    [[nodiscard]] nlohmann::json * data() const noexcept
+    {
+        return m_data_p;
+    }
+    [[nodiscard]] bool is_empty() const noexcept
+    {
+        return data() == nullptr;
+    }
+    [[nodiscard]] core::settings::json::AnySettings as_any() const noexcept
+    {
+        return core::settings::json::AnySettings{ data() };
+    }
+
+    TestFixture& merge( nlohmann::json * other_data_p );
+    TestFixture& merge( core::settings::json::AnySettings const& other )
+    {
+        return merge( other.data() );
+    }
+    TestFixture& merge( TestFixture const& other )
+    {
+        return merge( other.data() );
+    }
+
+    [[nodiscard]] std::string to_string() const;
+    std::ostream& stringify( std::ostream& os, int indent_size, int indent_level, bool display_all ) const;
+
+    friend std::ostream& operator<<( std::ostream& os, TestFixture const& s );
+
     // "name" property
     [[nodiscard]] std::string_view name() const;
+    [[nodiscard]] bool has_name_set() const noexcept;
     [[nodiscard]] constexpr std::string_view default_name() const noexcept
     {
         return std::string_view{};
@@ -30,26 +67,34 @@ public:
 
     // "root_path" property
     [[nodiscard]] std::string_view root_path() const;
+    [[nodiscard]] bool has_root_path_set() const noexcept;
     [[nodiscard]] constexpr std::string_view default_root_path() const noexcept
     {
         return ".";
     }
 
     // "default_settings" property
-    [[nodiscard]] /* TODO: settings opaque interface */ void * default_settings() const;
+    [[nodiscard]] core::settings::json::AnySettings default_settings() const;
+    [[nodiscard]] bool has_default_settings_set() const noexcept;
+    [[nodiscard]] constexpr core::settings::json::AnySettings default_default_settings() const noexcept
+    {
+        return core::settings::json::AnySettings{};;
+    }
 
     // "test_cases" property
-    [[nodiscard]] /* TODO: settings dynamic class */ void * test_cases() const;
-    [[nodiscard]] constexpr /* TODO: settings dynamic class */ void * default_test_cases() const noexcept
+    [[nodiscard]] runner::config::TestCase test_cases() const;
+    [[nodiscard]] bool has_test_cases_set() const noexcept;
+    [[nodiscard]] constexpr runner::config::TestCase default_test_cases() const noexcept
     {
-        return /* TODO: settings dynamic class constructor from nullptr */ nullptr;
+        return runner::config::TestCase{};;
     }
 
     // "test_stages" property
-    [[nodiscard]] /* TODO: settings dynamic class */ void * test_stages() const;
-    [[nodiscard]] constexpr /* TODO: settings dynamic class */ void * default_test_stages() const noexcept
+    [[nodiscard]] runner::config::TestStage test_stages() const;
+    [[nodiscard]] bool has_test_stages_set() const noexcept;
+    [[nodiscard]] constexpr runner::config::TestStage default_test_stages() const noexcept
     {
-        return /* TODO: settings dynamic class constructor from nullptr */ nullptr;
+        return runner::config::TestStage{};;
     }
 
 

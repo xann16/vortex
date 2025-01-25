@@ -6,6 +6,9 @@
 
 #include "turb/legacy/settings/parameters.hpp"
 
+#include <iomanip>
+#include <sstream>
+
 #include <nlohmann/json.hpp>
 
 #include "turb/legacy/settings/enums/forcing_type_json_integration.hpp"
@@ -20,314 +23,688 @@ Parameters::Parameters( nlohmann::json * data_p )
     // add initial validation
 }
 
+Parameters& Parameters::merge( nlohmann::json * other_data_p )
+{
+    if (!is_empty() && other_data_p != nullptr)
+    {
+        data()->merge_patch( *other_data_p );
+    }
+    return *this;
+}
+
+[[nodiscard]] std::string Parameters::to_string() const
+{
+    auto oss = std::ostringstream{};
+    oss << *this;
+    return oss.str();
+}
+
+std::ostream& Parameters::stringify( std::ostream& os, int indent_size, int indent_level, bool display_all ) const
+{
+    if ( !display_all && ( is_empty() || data()->empty() ) )
+    {
+        os << "<empty>\n"; 
+        return os;
+    }
+    
+    if ( display_all || has_N_set() )
+    {
+        os << std::setw( indent_size * indent_level ) << "" << "N: " << N() << '\n';
+    }
+    if ( display_all || has_N_subdomain_set() )
+    {
+        os << std::setw( indent_size * indent_level ) << "" << "N_subdomain: " << N_subdomain() << '\n';
+    }
+    if ( display_all || has_Nt_max_set() )
+    {
+        os << std::setw( indent_size * indent_level ) << "" << "Nt_max: " << Nt_max() << '\n';
+    }
+    if ( display_all || has_dt_set() )
+    {
+        os << std::setw( indent_size * indent_level ) << "" << "dt: " << dt() << '\n';
+    }
+    if ( display_all || has_rnu_set() )
+    {
+        os << std::setw( indent_size * indent_level ) << "" << "rnu: " << rnu() << '\n';
+    }
+    if ( display_all || has_t_init_set() )
+    {
+        os << std::setw( indent_size * indent_level ) << "" << "t_init: " << t_init() << '\n';
+    }
+    if ( display_all || has_is_flow_generated_set() )
+    {
+        os << std::setw( indent_size * indent_level ) << "" << "is_flow_generated: " << ( is_flow_generated() ? "true" : "false" ) << '\n';
+    }
+    if ( display_all || has_deterministic_seed_set() )
+    {
+        os << std::setw( indent_size * indent_level ) << "" << "deterministic_seed: " << deterministic_seed() << '\n';
+    }
+    if ( display_all || has_input_velo_index_set() )
+    {
+        os << std::setw( indent_size * indent_level ) << "" << "input_velo_index: " << input_velo_index() << '\n';
+    }
+    if ( display_all || has_forcing_type_set() )
+    {
+        os << std::setw( indent_size * indent_level ) << "" << "forcing_type: " << to_c_str( forcing_type() ) << '\n';
+    }
+    if ( display_all || has_deterministic_forcing_k_1_set() )
+    {
+        os << std::setw( indent_size * indent_level ) << "" << "deterministic_forcing_k_1: " << deterministic_forcing_k_1() << '\n';
+    }
+    if ( display_all || has_deterministic_forcing_k_2_set() )
+    {
+        os << std::setw( indent_size * indent_level ) << "" << "deterministic_forcing_k_2: " << deterministic_forcing_k_2() << '\n';
+    }
+    if ( display_all || has_stochastic_seed_set() )
+    {
+        os << std::setw( indent_size * indent_level ) << "" << "stochastic_seed: " << stochastic_seed() << '\n';
+    }
+    if ( display_all || has_stats_output_interval_set() )
+    {
+        os << std::setw( indent_size * indent_level ) << "" << "stats_output_interval: " << stats_output_interval() << '\n';
+    }
+    if ( display_all || has_spectrum_output_interval_set() )
+    {
+        os << std::setw( indent_size * indent_level ) << "" << "spectrum_output_interval: " << spectrum_output_interval() << '\n';
+    }
+    if ( display_all || has_is_stats_output_extended_set() )
+    {
+        os << std::setw( indent_size * indent_level ) << "" << "is_stats_output_extended: " << ( is_stats_output_extended() ? "true" : "false" ) << '\n';
+    }
+    if ( display_all || has_rho_part_set() )
+    {
+        os << std::setw( indent_size * indent_level ) << "" << "rho_part: " << rho_part() << '\n';
+    }
+    if ( display_all || has_rho_fluid_set() )
+    {
+        os << std::setw( indent_size * indent_level ) << "" << "rho_fluid: " << rho_fluid() << '\n';
+    }
+    if ( display_all || has_eta_k_init_set() )
+    {
+        os << std::setw( indent_size * indent_level ) << "" << "eta_k_init: " << eta_k_init() << '\n';
+    }
+    if ( display_all || has_tau_k_init_set() )
+    {
+        os << std::setw( indent_size * indent_level ) << "" << "tau_k_init: " << tau_k_init() << '\n';
+    }
+    if ( display_all || has_shell_thickness_set() )
+    {
+        os << std::setw( indent_size * indent_level ) << "" << "shell_thickness: " << shell_thickness() << '\n';
+    }
+    if ( display_all || has_epsilon_env_set() )
+    {
+        os << std::setw( indent_size * indent_level ) << "" << "epsilon_env: " << epsilon_env() << '\n';
+    }
+    if ( display_all || has_nu_fluid_set() )
+    {
+        os << std::setw( indent_size * indent_level ) << "" << "nu_fluid: " << nu_fluid() << '\n';
+    }
+    if ( display_all || has_gravity_set() )
+    {
+        os << std::setw( indent_size * indent_level ) << "" << "gravity: " << gravity() << '\n';
+    }
+    if ( display_all || has_is_part_generated_set() )
+    {
+        os << std::setw( indent_size * indent_level ) << "" << "is_part_generated: " << ( is_part_generated() ? "true" : "false" ) << '\n';
+    }
+    if ( display_all || has_is_part_overlapping_set() )
+    {
+        os << std::setw( indent_size * indent_level ) << "" << "is_part_overlapping: " << ( is_part_overlapping() ? "true" : "false" ) << '\n';
+    }
+    if ( display_all || has_is_part_hdi_enabled_set() )
+    {
+        os << std::setw( indent_size * indent_level ) << "" << "is_part_hdi_enabled: " << ( is_part_hdi_enabled() ? "true" : "false" ) << '\n';
+    }
+    if ( display_all || has_part_hdi_trunc_enabled_set() )
+    {
+        os << std::setw( indent_size * indent_level ) << "" << "part_hdi_trunc_enabled: " << part_hdi_trunc_enabled() << '\n';
+    }
+    if ( display_all || has_N_part_set() )
+    {
+        os << std::setw( indent_size * indent_level ) << "" << "N_part: " << N_part() << '\n';
+    }
+    if ( display_all || has_drag_type_set() )
+    {
+        os << std::setw( indent_size * indent_level ) << "" << "drag_type: " << to_c_str( drag_type() ) << '\n';
+    }
+    if ( display_all || has_a_set() )
+    {
+        os << std::setw( indent_size * indent_level ) << "" << "a: " << a() << '\n';
+    }
+    
+    return os;
+}
+
+std::ostream& operator<<( std::ostream& os, Parameters const& s )
+{
+    return s.stringify( os, 2, 0, os.flags() & std::ios_base::boolalpha );
+}
+
 // "N" property
 
 [[nodiscard]] i32 Parameters::N() const
 {
-    if ( m_data_p == nullptr ) return default_N();
+    if ( is_empty() ) return default_N();
     auto it = m_data_p->find( "N" );
     if ( it == m_data_p->end() || it->is_null() ) return default_N();
     return it->template get<i32>();
+}
+
+[[nodiscard]] bool Parameters::has_N_set() const noexcept
+{
+    if ( is_empty() ) return false;
+    auto it = data()->find( "N" );
+    return it != m_data_p->end() && !it->is_null();
 }
 
 // "N_subdomain" property
 
 [[nodiscard]] i32 Parameters::N_subdomain() const
 {
-    if ( m_data_p == nullptr ) return default_N_subdomain();
+    if ( is_empty() ) return default_N_subdomain();
     auto it = m_data_p->find( "N_subdomain" );
     if ( it == m_data_p->end() || it->is_null() ) return default_N_subdomain();
     return it->template get<i32>();
+}
+
+[[nodiscard]] bool Parameters::has_N_subdomain_set() const noexcept
+{
+    if ( is_empty() ) return false;
+    auto it = data()->find( "N_subdomain" );
+    return it != m_data_p->end() && !it->is_null();
 }
 
 // "Nt_max" property
 
 [[nodiscard]] i32 Parameters::Nt_max() const
 {
-    if ( m_data_p == nullptr ) return default_Nt_max();
+    if ( is_empty() ) return default_Nt_max();
     auto it = m_data_p->find( "Nt_max" );
     if ( it == m_data_p->end() || it->is_null() ) return default_Nt_max();
     return it->template get<i32>();
+}
+
+[[nodiscard]] bool Parameters::has_Nt_max_set() const noexcept
+{
+    if ( is_empty() ) return false;
+    auto it = data()->find( "Nt_max" );
+    return it != m_data_p->end() && !it->is_null();
 }
 
 // "dt" property
 
 [[nodiscard]] real Parameters::dt() const
 {
-    if ( m_data_p == nullptr ) return default_dt();
+    if ( is_empty() ) return default_dt();
     auto it = m_data_p->find( "dt" );
     if ( it == m_data_p->end() || it->is_null() ) return default_dt();
     return it->template get<real>();
+}
+
+[[nodiscard]] bool Parameters::has_dt_set() const noexcept
+{
+    if ( is_empty() ) return false;
+    auto it = data()->find( "dt" );
+    return it != m_data_p->end() && !it->is_null();
 }
 
 // "rnu" property
 
 [[nodiscard]] real Parameters::rnu() const
 {
-    if ( m_data_p == nullptr ) return default_rnu();
+    if ( is_empty() ) return default_rnu();
     auto it = m_data_p->find( "rnu" );
     if ( it == m_data_p->end() || it->is_null() ) return default_rnu();
     return it->template get<real>();
+}
+
+[[nodiscard]] bool Parameters::has_rnu_set() const noexcept
+{
+    if ( is_empty() ) return false;
+    auto it = data()->find( "rnu" );
+    return it != m_data_p->end() && !it->is_null();
 }
 
 // "t_init" property
 
 [[nodiscard]] real Parameters::t_init() const
 {
-    if ( m_data_p == nullptr ) return default_t_init();
+    if ( is_empty() ) return default_t_init();
     auto it = m_data_p->find( "t_init" );
     if ( it == m_data_p->end() || it->is_null() ) return default_t_init();
     return it->template get<real>();
+}
+
+[[nodiscard]] bool Parameters::has_t_init_set() const noexcept
+{
+    if ( is_empty() ) return false;
+    auto it = data()->find( "t_init" );
+    return it != m_data_p->end() && !it->is_null();
 }
 
 // "is_flow_generated" property
 
 [[nodiscard]] bool Parameters::is_flow_generated() const
 {
-    if ( m_data_p == nullptr ) return default_is_flow_generated();
+    if ( is_empty() ) return default_is_flow_generated();
     auto it = m_data_p->find( "is_flow_generated" );
     if ( it == m_data_p->end() || it->is_null() ) return default_is_flow_generated();
     return it->template get<bool>();
+}
+
+[[nodiscard]] bool Parameters::has_is_flow_generated_set() const noexcept
+{
+    if ( is_empty() ) return false;
+    auto it = data()->find( "is_flow_generated" );
+    return it != m_data_p->end() && !it->is_null();
 }
 
 // "deterministic_seed" property
 
 [[nodiscard]] u64 Parameters::deterministic_seed() const
 {
-    if ( m_data_p == nullptr ) return default_deterministic_seed();
+    if ( is_empty() ) return default_deterministic_seed();
     auto it = m_data_p->find( "deterministic_seed" );
     if ( it == m_data_p->end() || it->is_null() ) return default_deterministic_seed();
     return it->template get<u64>();
+}
+
+[[nodiscard]] bool Parameters::has_deterministic_seed_set() const noexcept
+{
+    if ( is_empty() ) return false;
+    auto it = data()->find( "deterministic_seed" );
+    return it != m_data_p->end() && !it->is_null();
 }
 
 // "input_velo_index" property
 
 [[nodiscard]] i32 Parameters::input_velo_index() const
 {
-    if ( m_data_p == nullptr ) return default_input_velo_index();
+    if ( is_empty() ) return default_input_velo_index();
     auto it = m_data_p->find( "input_velo_index" );
     if ( it == m_data_p->end() || it->is_null() ) return default_input_velo_index();
     return it->template get<i32>();
+}
+
+[[nodiscard]] bool Parameters::has_input_velo_index_set() const noexcept
+{
+    if ( is_empty() ) return false;
+    auto it = data()->find( "input_velo_index" );
+    return it != m_data_p->end() && !it->is_null();
 }
 
 // "forcing_type" property
 
 [[nodiscard]] ForcingType Parameters::forcing_type() const
 {
-    if ( m_data_p == nullptr ) return default_forcing_type();
+    if ( is_empty() ) return default_forcing_type();
     auto it = m_data_p->find( "forcing_type" );
     if ( it == m_data_p->end() || it->is_null() ) return default_forcing_type();
     return it->template get<ForcingType>();
+}
+
+[[nodiscard]] bool Parameters::has_forcing_type_set() const noexcept
+{
+    if ( is_empty() ) return false;
+    auto it = data()->find( "forcing_type" );
+    return it != m_data_p->end() && !it->is_null();
 }
 
 // "deterministic_forcing_k_1" property
 
 [[nodiscard]] real Parameters::deterministic_forcing_k_1() const
 {
-    if ( m_data_p == nullptr ) return default_deterministic_forcing_k_1();
+    if ( is_empty() ) return default_deterministic_forcing_k_1();
     auto it = m_data_p->find( "deterministic_forcing_k_1" );
     if ( it == m_data_p->end() || it->is_null() ) return default_deterministic_forcing_k_1();
     return it->template get<real>();
+}
+
+[[nodiscard]] bool Parameters::has_deterministic_forcing_k_1_set() const noexcept
+{
+    if ( is_empty() ) return false;
+    auto it = data()->find( "deterministic_forcing_k_1" );
+    return it != m_data_p->end() && !it->is_null();
 }
 
 // "deterministic_forcing_k_2" property
 
 [[nodiscard]] real Parameters::deterministic_forcing_k_2() const
 {
-    if ( m_data_p == nullptr ) return default_deterministic_forcing_k_2();
+    if ( is_empty() ) return default_deterministic_forcing_k_2();
     auto it = m_data_p->find( "deterministic_forcing_k_2" );
     if ( it == m_data_p->end() || it->is_null() ) return default_deterministic_forcing_k_2();
     return it->template get<real>();
+}
+
+[[nodiscard]] bool Parameters::has_deterministic_forcing_k_2_set() const noexcept
+{
+    if ( is_empty() ) return false;
+    auto it = data()->find( "deterministic_forcing_k_2" );
+    return it != m_data_p->end() && !it->is_null();
 }
 
 // "stochastic_seed" property
 
 [[nodiscard]] u64 Parameters::stochastic_seed() const
 {
-    if ( m_data_p == nullptr ) return default_stochastic_seed();
+    if ( is_empty() ) return default_stochastic_seed();
     auto it = m_data_p->find( "stochastic_seed" );
     if ( it == m_data_p->end() || it->is_null() ) return default_stochastic_seed();
     return it->template get<u64>();
+}
+
+[[nodiscard]] bool Parameters::has_stochastic_seed_set() const noexcept
+{
+    if ( is_empty() ) return false;
+    auto it = data()->find( "stochastic_seed" );
+    return it != m_data_p->end() && !it->is_null();
 }
 
 // "stats_output_interval" property
 
 [[nodiscard]] i32 Parameters::stats_output_interval() const
 {
-    if ( m_data_p == nullptr ) return default_stats_output_interval();
+    if ( is_empty() ) return default_stats_output_interval();
     auto it = m_data_p->find( "stats_output_interval" );
     if ( it == m_data_p->end() || it->is_null() ) return default_stats_output_interval();
     return it->template get<i32>();
+}
+
+[[nodiscard]] bool Parameters::has_stats_output_interval_set() const noexcept
+{
+    if ( is_empty() ) return false;
+    auto it = data()->find( "stats_output_interval" );
+    return it != m_data_p->end() && !it->is_null();
 }
 
 // "spectrum_output_interval" property
 
 [[nodiscard]] i32 Parameters::spectrum_output_interval() const
 {
-    if ( m_data_p == nullptr ) return default_spectrum_output_interval();
+    if ( is_empty() ) return default_spectrum_output_interval();
     auto it = m_data_p->find( "spectrum_output_interval" );
     if ( it == m_data_p->end() || it->is_null() ) return default_spectrum_output_interval();
     return it->template get<i32>();
+}
+
+[[nodiscard]] bool Parameters::has_spectrum_output_interval_set() const noexcept
+{
+    if ( is_empty() ) return false;
+    auto it = data()->find( "spectrum_output_interval" );
+    return it != m_data_p->end() && !it->is_null();
 }
 
 // "is_stats_output_extended" property
 
 [[nodiscard]] bool Parameters::is_stats_output_extended() const
 {
-    if ( m_data_p == nullptr ) return default_is_stats_output_extended();
+    if ( is_empty() ) return default_is_stats_output_extended();
     auto it = m_data_p->find( "is_stats_output_extended" );
     if ( it == m_data_p->end() || it->is_null() ) return default_is_stats_output_extended();
     return it->template get<bool>();
+}
+
+[[nodiscard]] bool Parameters::has_is_stats_output_extended_set() const noexcept
+{
+    if ( is_empty() ) return false;
+    auto it = data()->find( "is_stats_output_extended" );
+    return it != m_data_p->end() && !it->is_null();
 }
 
 // "rho_part" property
 
 [[nodiscard]] real Parameters::rho_part() const
 {
-    if ( m_data_p == nullptr ) return default_rho_part();
+    if ( is_empty() ) return default_rho_part();
     auto it = m_data_p->find( "rho_part" );
     if ( it == m_data_p->end() || it->is_null() ) return default_rho_part();
     return it->template get<real>();
+}
+
+[[nodiscard]] bool Parameters::has_rho_part_set() const noexcept
+{
+    if ( is_empty() ) return false;
+    auto it = data()->find( "rho_part" );
+    return it != m_data_p->end() && !it->is_null();
 }
 
 // "rho_fluid" property
 
 [[nodiscard]] real Parameters::rho_fluid() const
 {
-    if ( m_data_p == nullptr ) return default_rho_fluid();
+    if ( is_empty() ) return default_rho_fluid();
     auto it = m_data_p->find( "rho_fluid" );
     if ( it == m_data_p->end() || it->is_null() ) return default_rho_fluid();
     return it->template get<real>();
+}
+
+[[nodiscard]] bool Parameters::has_rho_fluid_set() const noexcept
+{
+    if ( is_empty() ) return false;
+    auto it = data()->find( "rho_fluid" );
+    return it != m_data_p->end() && !it->is_null();
 }
 
 // "eta_k_init" property
 
 [[nodiscard]] real Parameters::eta_k_init() const
 {
-    if ( m_data_p == nullptr ) return default_eta_k_init();
+    if ( is_empty() ) return default_eta_k_init();
     auto it = m_data_p->find( "eta_k_init" );
     if ( it == m_data_p->end() || it->is_null() ) return default_eta_k_init();
     return it->template get<real>();
+}
+
+[[nodiscard]] bool Parameters::has_eta_k_init_set() const noexcept
+{
+    if ( is_empty() ) return false;
+    auto it = data()->find( "eta_k_init" );
+    return it != m_data_p->end() && !it->is_null();
 }
 
 // "tau_k_init" property
 
 [[nodiscard]] real Parameters::tau_k_init() const
 {
-    if ( m_data_p == nullptr ) return default_tau_k_init();
+    if ( is_empty() ) return default_tau_k_init();
     auto it = m_data_p->find( "tau_k_init" );
     if ( it == m_data_p->end() || it->is_null() ) return default_tau_k_init();
     return it->template get<real>();
+}
+
+[[nodiscard]] bool Parameters::has_tau_k_init_set() const noexcept
+{
+    if ( is_empty() ) return false;
+    auto it = data()->find( "tau_k_init" );
+    return it != m_data_p->end() && !it->is_null();
 }
 
 // "shell_thickness" property
 
 [[nodiscard]] real Parameters::shell_thickness() const
 {
-    if ( m_data_p == nullptr ) return default_shell_thickness();
+    if ( is_empty() ) return default_shell_thickness();
     auto it = m_data_p->find( "shell_thickness" );
     if ( it == m_data_p->end() || it->is_null() ) return default_shell_thickness();
     return it->template get<real>();
+}
+
+[[nodiscard]] bool Parameters::has_shell_thickness_set() const noexcept
+{
+    if ( is_empty() ) return false;
+    auto it = data()->find( "shell_thickness" );
+    return it != m_data_p->end() && !it->is_null();
 }
 
 // "epsilon_env" property
 
 [[nodiscard]] real Parameters::epsilon_env() const
 {
-    if ( m_data_p == nullptr ) return default_epsilon_env();
+    if ( is_empty() ) return default_epsilon_env();
     auto it = m_data_p->find( "epsilon_env" );
     if ( it == m_data_p->end() || it->is_null() ) return default_epsilon_env();
     return it->template get<real>();
+}
+
+[[nodiscard]] bool Parameters::has_epsilon_env_set() const noexcept
+{
+    if ( is_empty() ) return false;
+    auto it = data()->find( "epsilon_env" );
+    return it != m_data_p->end() && !it->is_null();
 }
 
 // "nu_fluid" property
 
 [[nodiscard]] real Parameters::nu_fluid() const
 {
-    if ( m_data_p == nullptr ) return default_nu_fluid();
+    if ( is_empty() ) return default_nu_fluid();
     auto it = m_data_p->find( "nu_fluid" );
     if ( it == m_data_p->end() || it->is_null() ) return default_nu_fluid();
     return it->template get<real>();
+}
+
+[[nodiscard]] bool Parameters::has_nu_fluid_set() const noexcept
+{
+    if ( is_empty() ) return false;
+    auto it = data()->find( "nu_fluid" );
+    return it != m_data_p->end() && !it->is_null();
 }
 
 // "gravity" property
 
 [[nodiscard]] real Parameters::gravity() const
 {
-    if ( m_data_p == nullptr ) return default_gravity();
+    if ( is_empty() ) return default_gravity();
     auto it = m_data_p->find( "gravity" );
     if ( it == m_data_p->end() || it->is_null() ) return default_gravity();
     return it->template get<real>();
+}
+
+[[nodiscard]] bool Parameters::has_gravity_set() const noexcept
+{
+    if ( is_empty() ) return false;
+    auto it = data()->find( "gravity" );
+    return it != m_data_p->end() && !it->is_null();
 }
 
 // "is_part_generated" property
 
 [[nodiscard]] bool Parameters::is_part_generated() const
 {
-    if ( m_data_p == nullptr ) return default_is_part_generated();
+    if ( is_empty() ) return default_is_part_generated();
     auto it = m_data_p->find( "is_part_generated" );
     if ( it == m_data_p->end() || it->is_null() ) return default_is_part_generated();
     return it->template get<bool>();
+}
+
+[[nodiscard]] bool Parameters::has_is_part_generated_set() const noexcept
+{
+    if ( is_empty() ) return false;
+    auto it = data()->find( "is_part_generated" );
+    return it != m_data_p->end() && !it->is_null();
 }
 
 // "is_part_overlapping" property
 
 [[nodiscard]] bool Parameters::is_part_overlapping() const
 {
-    if ( m_data_p == nullptr ) return default_is_part_overlapping();
+    if ( is_empty() ) return default_is_part_overlapping();
     auto it = m_data_p->find( "is_part_overlapping" );
     if ( it == m_data_p->end() || it->is_null() ) return default_is_part_overlapping();
     return it->template get<bool>();
+}
+
+[[nodiscard]] bool Parameters::has_is_part_overlapping_set() const noexcept
+{
+    if ( is_empty() ) return false;
+    auto it = data()->find( "is_part_overlapping" );
+    return it != m_data_p->end() && !it->is_null();
 }
 
 // "is_part_hdi_enabled" property
 
 [[nodiscard]] bool Parameters::is_part_hdi_enabled() const
 {
-    if ( m_data_p == nullptr ) return default_is_part_hdi_enabled();
+    if ( is_empty() ) return default_is_part_hdi_enabled();
     auto it = m_data_p->find( "is_part_hdi_enabled" );
     if ( it == m_data_p->end() || it->is_null() ) return default_is_part_hdi_enabled();
     return it->template get<bool>();
+}
+
+[[nodiscard]] bool Parameters::has_is_part_hdi_enabled_set() const noexcept
+{
+    if ( is_empty() ) return false;
+    auto it = data()->find( "is_part_hdi_enabled" );
+    return it != m_data_p->end() && !it->is_null();
 }
 
 // "part_hdi_trunc_enabled" property
 
 [[nodiscard]] real Parameters::part_hdi_trunc_enabled() const
 {
-    if ( m_data_p == nullptr ) return default_part_hdi_trunc_enabled();
+    if ( is_empty() ) return default_part_hdi_trunc_enabled();
     auto it = m_data_p->find( "part_hdi_trunc_enabled" );
     if ( it == m_data_p->end() || it->is_null() ) return default_part_hdi_trunc_enabled();
     return it->template get<real>();
+}
+
+[[nodiscard]] bool Parameters::has_part_hdi_trunc_enabled_set() const noexcept
+{
+    if ( is_empty() ) return false;
+    auto it = data()->find( "part_hdi_trunc_enabled" );
+    return it != m_data_p->end() && !it->is_null();
 }
 
 // "N_part" property
 
 [[nodiscard]] i32 Parameters::N_part() const
 {
-    if ( m_data_p == nullptr ) return default_N_part();
+    if ( is_empty() ) return default_N_part();
     auto it = m_data_p->find( "N_part" );
     if ( it == m_data_p->end() || it->is_null() ) return default_N_part();
     return it->template get<i32>();
+}
+
+[[nodiscard]] bool Parameters::has_N_part_set() const noexcept
+{
+    if ( is_empty() ) return false;
+    auto it = data()->find( "N_part" );
+    return it != m_data_p->end() && !it->is_null();
 }
 
 // "drag_type" property
 
 [[nodiscard]] DragType Parameters::drag_type() const
 {
-    if ( m_data_p == nullptr ) return default_drag_type();
+    if ( is_empty() ) return default_drag_type();
     auto it = m_data_p->find( "drag_type" );
     if ( it == m_data_p->end() || it->is_null() ) return default_drag_type();
     return it->template get<DragType>();
+}
+
+[[nodiscard]] bool Parameters::has_drag_type_set() const noexcept
+{
+    if ( is_empty() ) return false;
+    auto it = data()->find( "drag_type" );
+    return it != m_data_p->end() && !it->is_null();
 }
 
 // "a" property
 
 [[nodiscard]] real Parameters::a() const
 {
-    if ( m_data_p == nullptr ) return default_a();
+    if ( is_empty() ) return default_a();
     auto it = m_data_p->find( "a" );
     if ( it == m_data_p->end() || it->is_null() ) return default_a();
     return it->template get<real>();
+}
+
+[[nodiscard]] bool Parameters::has_a_set() const noexcept
+{
+    if ( is_empty() ) return false;
+    auto it = data()->find( "a" );
+    return it != m_data_p->end() && !it->is_null();
 }
 
 
