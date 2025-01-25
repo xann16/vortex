@@ -63,7 +63,7 @@ public:
     [[nodiscard]] bool has_metadata_set() const noexcept;
     [[nodiscard]] constexpr turb::legacy::settings::Metadata default_metadata() const noexcept
     {
-        return turb::legacy::settings::Metadata{};;
+        return turb::legacy::settings::Metadata{};
     }
 
     // "parameters" property
@@ -71,7 +71,7 @@ public:
     [[nodiscard]] bool has_parameters_set() const noexcept;
     [[nodiscard]] constexpr turb::legacy::settings::Parameters default_parameters() const noexcept
     {
-        return turb::legacy::settings::Parameters{};;
+        return turb::legacy::settings::Parameters{};
     }
 
     // "execution_settings" property
@@ -79,7 +79,7 @@ public:
     [[nodiscard]] bool has_execution_settings_set() const noexcept;
     [[nodiscard]] constexpr turb::legacy::settings::ExecutionSettings default_execution_settings() const noexcept
     {
-        return turb::legacy::settings::ExecutionSettings{};;
+        return turb::legacy::settings::ExecutionSettings{};
     }
 
 

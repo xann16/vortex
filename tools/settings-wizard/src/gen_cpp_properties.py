@@ -47,7 +47,7 @@ def _get_default_value(name: str, p: dict[str, Any], data: dict[str, Any], ctx: 
         return f'{default_value.lstrip('@')}()'
 
     if property_type in ['module', 'settings']:
-        return _get_return_type(p, data, ctx) + '{};'
+        return _get_return_type(p, data, ctx) + '{}'
     elif property_type == 'enum':
         enum_values : list[str] = p['enum']['values']
         if default_value and default_value not in enum_values:

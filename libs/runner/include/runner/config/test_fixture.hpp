@@ -78,7 +78,7 @@ public:
     [[nodiscard]] bool has_default_settings_set() const noexcept;
     [[nodiscard]] constexpr core::settings::json::AnySettings default_default_settings() const noexcept
     {
-        return core::settings::json::AnySettings{};;
+        return core::settings::json::AnySettings{};
     }
 
     // "test_cases" property
@@ -86,7 +86,7 @@ public:
     [[nodiscard]] bool has_test_cases_set() const noexcept;
     [[nodiscard]] constexpr runner::config::TestCase default_test_cases() const noexcept
     {
-        return runner::config::TestCase{};;
+        return runner::config::TestCase{};
     }
 
     // "test_stages" property
@@ -94,7 +94,7 @@ public:
     [[nodiscard]] bool has_test_stages_set() const noexcept;
     [[nodiscard]] constexpr runner::config::TestStage default_test_stages() const noexcept
     {
-        return runner::config::TestStage{};;
+        return runner::config::TestStage{};
     }
 
 

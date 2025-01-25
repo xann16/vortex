@@ -68,7 +68,7 @@ public:
     [[nodiscard]] bool has_settings_set() const noexcept;
     [[nodiscard]] constexpr core::settings::json::AnySettings default_settings() const noexcept
     {
-        return core::settings::json::AnySettings{};;
+        return core::settings::json::AnySettings{};
     }
 
 
