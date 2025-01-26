@@ -28,7 +28,7 @@ jobs:
           - intelmpi
 
         exclude:
-          # catch2 import via Conan causes issues with gcc-13
+          # catch2 import via Conan causes issues with gcc-13 on Intel MacOS
           - os: macos-13
             compiler: gcc-13
           # Intel MPI not supported on Apple hardware
@@ -41,6 +41,10 @@ jobs:
           - os: macos-13
             compiler: llvm-18
           - os: macos-13
+            compiler: llvm-19
+          - os: macos-14
+            compiler: llvm-18
+          - os: macos-14
             compiler: llvm-19
 
     steps:
