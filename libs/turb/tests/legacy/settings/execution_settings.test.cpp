@@ -115,6 +115,48 @@ TEST_CASE( "ExecutionSettings - property: \"job_name\" - getter, default, has_se
     REQUIRE( !s_null.has_job_name_set() );
 }
 
+TEST_CASE( "ExecutionSettings - property: \"job_name\" - setter, reset", "[settings]" )
+{
+    nlohmann::json obj = nlohmann::json::object();
+    auto s = vortex::turb::legacy::settings::ExecutionSettings{ &obj };
+    auto s_null = vortex::turb::legacy::settings::ExecutionSettings{};
+
+    const auto sv = std::string_view{ "sv" };
+    const auto str = std::string{ "str" };
+    const auto cstr = "cstr";
+
+    REQUIRE( !s.has_job_name_set() );
+    REQUIRE( !s_null.has_job_name_set() );
+
+    REQUIRE_NOTHROW( s.reset_job_name() );
+    REQUIRE_NOTHROW( s_null.reset_job_name() );
+
+    REQUIRE_THROWS_AS( s_null.set_job_name( sv ), std::runtime_error );
+    REQUIRE_THROWS_AS( s_null.set_job_name( str ), std::runtime_error );
+    REQUIRE_THROWS_AS( s_null.set_job_name( cstr ), std::runtime_error );
+    REQUIRE_THROWS_AS( s_null.set_job_name( std::string{ "mvstr" } ), std::runtime_error );
+
+    s.set_job_name( sv );
+    REQUIRE( s.has_job_name_set() );
+    REQUIRE( s.job_name() == "sv" );
+
+    s.set_job_name( str );
+    REQUIRE( s.has_job_name_set() );
+    REQUIRE( s.job_name() == "str" );
+
+    s.set_job_name( cstr );
+    REQUIRE( s.has_job_name_set() );
+    REQUIRE( s.job_name() == "cstr" );
+
+    s.set_job_name( std::string{ "mvstr" } );
+    REQUIRE( s.has_job_name_set() );
+    REQUIRE( s.job_name() == "mvstr" );
+
+    s.reset_job_name();
+    REQUIRE( !s.has_job_name_set() );
+
+}
+
 // "grant_no" property
 
 TEST_CASE( "ExecutionSettings - property: \"grant_no\" - getter, default, has_set", "[settings]" )
@@ -131,6 +173,48 @@ TEST_CASE( "ExecutionSettings - property: \"grant_no\" - getter, default, has_se
 
     REQUIRE( s.has_grant_no_set() );
     REQUIRE( !s_null.has_grant_no_set() );
+}
+
+TEST_CASE( "ExecutionSettings - property: \"grant_no\" - setter, reset", "[settings]" )
+{
+    nlohmann::json obj = nlohmann::json::object();
+    auto s = vortex::turb::legacy::settings::ExecutionSettings{ &obj };
+    auto s_null = vortex::turb::legacy::settings::ExecutionSettings{};
+
+    const auto sv = std::string_view{ "sv" };
+    const auto str = std::string{ "str" };
+    const auto cstr = "cstr";
+
+    REQUIRE( !s.has_grant_no_set() );
+    REQUIRE( !s_null.has_grant_no_set() );
+
+    REQUIRE_NOTHROW( s.reset_grant_no() );
+    REQUIRE_NOTHROW( s_null.reset_grant_no() );
+
+    REQUIRE_THROWS_AS( s_null.set_grant_no( sv ), std::runtime_error );
+    REQUIRE_THROWS_AS( s_null.set_grant_no( str ), std::runtime_error );
+    REQUIRE_THROWS_AS( s_null.set_grant_no( cstr ), std::runtime_error );
+    REQUIRE_THROWS_AS( s_null.set_grant_no( std::string{ "mvstr" } ), std::runtime_error );
+
+    s.set_grant_no( sv );
+    REQUIRE( s.has_grant_no_set() );
+    REQUIRE( s.grant_no() == "sv" );
+
+    s.set_grant_no( str );
+    REQUIRE( s.has_grant_no_set() );
+    REQUIRE( s.grant_no() == "str" );
+
+    s.set_grant_no( cstr );
+    REQUIRE( s.has_grant_no_set() );
+    REQUIRE( s.grant_no() == "cstr" );
+
+    s.set_grant_no( std::string{ "mvstr" } );
+    REQUIRE( s.has_grant_no_set() );
+    REQUIRE( s.grant_no() == "mvstr" );
+
+    s.reset_grant_no();
+    REQUIRE( !s.has_grant_no_set() );
+
 }
 
 // "cpu_node_count" property
@@ -151,6 +235,31 @@ TEST_CASE( "ExecutionSettings - property: \"cpu_node_count\" - getter, default, 
     REQUIRE( !s_null.has_cpu_node_count_set() );
 }
 
+TEST_CASE( "ExecutionSettings - property: \"cpu_node_count\" - setter, reset", "[settings]" )
+{
+    nlohmann::json obj = nlohmann::json::object();
+    auto s = vortex::turb::legacy::settings::ExecutionSettings{ &obj };
+    auto s_null = vortex::turb::legacy::settings::ExecutionSettings{};
+
+    const auto value = -2l;
+
+    REQUIRE( !s.has_cpu_node_count_set() );
+    REQUIRE( !s_null.has_cpu_node_count_set() );
+
+    REQUIRE_NOTHROW( s.reset_cpu_node_count() );
+    REQUIRE_NOTHROW( s_null.reset_cpu_node_count() );
+
+    REQUIRE_THROWS_AS( s_null.set_cpu_node_count( value ), std::runtime_error );
+
+    s.set_cpu_node_count( value );
+    REQUIRE( s.has_cpu_node_count_set() );
+    REQUIRE( s.cpu_node_count() == value );
+
+    s.reset_cpu_node_count();
+    REQUIRE( !s.has_cpu_node_count_set() );
+
+}
+
 // "wct_limit" property
 
 TEST_CASE( "ExecutionSettings - property: \"wct_limit\" - getter, default, has_set", "[settings]" )
@@ -167,6 +276,31 @@ TEST_CASE( "ExecutionSettings - property: \"wct_limit\" - getter, default, has_s
 
     REQUIRE( s.has_wct_limit_set() );
     REQUIRE( !s_null.has_wct_limit_set() );
+}
+
+TEST_CASE( "ExecutionSettings - property: \"wct_limit\" - setter, reset", "[settings]" )
+{
+    nlohmann::json obj = nlohmann::json::object();
+    auto s = vortex::turb::legacy::settings::ExecutionSettings{ &obj };
+    auto s_null = vortex::turb::legacy::settings::ExecutionSettings{};
+
+    const auto value = 0.2;
+
+    REQUIRE( !s.has_wct_limit_set() );
+    REQUIRE( !s_null.has_wct_limit_set() );
+
+    REQUIRE_NOTHROW( s.reset_wct_limit() );
+    REQUIRE_NOTHROW( s_null.reset_wct_limit() );
+
+    REQUIRE_THROWS_AS( s_null.set_wct_limit( value ), std::runtime_error );
+
+    s.set_wct_limit( value );
+    REQUIRE( s.has_wct_limit_set() );
+    REQUIRE( s.wct_limit() == value );
+
+    s.reset_wct_limit();
+    REQUIRE( !s.has_wct_limit_set() );
+
 }
 
 // "process_count" property
@@ -187,6 +321,31 @@ TEST_CASE( "ExecutionSettings - property: \"process_count\" - getter, default, h
     REQUIRE( !s_null.has_process_count_set() );
 }
 
+TEST_CASE( "ExecutionSettings - property: \"process_count\" - setter, reset", "[settings]" )
+{
+    nlohmann::json obj = nlohmann::json::object();
+    auto s = vortex::turb::legacy::settings::ExecutionSettings{ &obj };
+    auto s_null = vortex::turb::legacy::settings::ExecutionSettings{};
+
+    const auto value = -2l;
+
+    REQUIRE( !s.has_process_count_set() );
+    REQUIRE( !s_null.has_process_count_set() );
+
+    REQUIRE_NOTHROW( s.reset_process_count() );
+    REQUIRE_NOTHROW( s_null.reset_process_count() );
+
+    REQUIRE_THROWS_AS( s_null.set_process_count( value ), std::runtime_error );
+
+    s.set_process_count( value );
+    REQUIRE( s.has_process_count_set() );
+    REQUIRE( s.process_count() == value );
+
+    s.reset_process_count();
+    REQUIRE( !s.has_process_count_set() );
+
+}
+
 // "is_node_overcommit_enabled" property
 
 TEST_CASE( "ExecutionSettings - property: \"is_node_overcommit_enabled\" - getter, default, has_set", "[settings]" )
@@ -203,6 +362,31 @@ TEST_CASE( "ExecutionSettings - property: \"is_node_overcommit_enabled\" - gette
 
     REQUIRE( s.has_is_node_overcommit_enabled_set() );
     REQUIRE( !s_null.has_is_node_overcommit_enabled_set() );
+}
+
+TEST_CASE( "ExecutionSettings - property: \"is_node_overcommit_enabled\" - setter, reset", "[settings]" )
+{
+    nlohmann::json obj = nlohmann::json::object();
+    auto s = vortex::turb::legacy::settings::ExecutionSettings{ &obj };
+    auto s_null = vortex::turb::legacy::settings::ExecutionSettings{};
+
+    const auto value = true;
+
+    REQUIRE( !s.has_is_node_overcommit_enabled_set() );
+    REQUIRE( !s_null.has_is_node_overcommit_enabled_set() );
+
+    REQUIRE_NOTHROW( s.reset_is_node_overcommit_enabled() );
+    REQUIRE_NOTHROW( s_null.reset_is_node_overcommit_enabled() );
+
+    REQUIRE_THROWS_AS( s_null.set_is_node_overcommit_enabled( value ), std::runtime_error );
+
+    s.set_is_node_overcommit_enabled( value );
+    REQUIRE( s.has_is_node_overcommit_enabled_set() );
+    REQUIRE( s.is_node_overcommit_enabled() == value );
+
+    s.reset_is_node_overcommit_enabled();
+    REQUIRE( !s.has_is_node_overcommit_enabled_set() );
+
 }
 
 

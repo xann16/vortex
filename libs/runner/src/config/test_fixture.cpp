@@ -82,8 +82,8 @@ std::ostream& operator<<( std::ostream& os, TestFixture const& s )
 [[nodiscard]] std::string_view TestFixture::name() const
 {
     if ( is_empty() ) return default_name();
-    auto it = m_data_p->find( "name" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_name();
+    auto it = data()->find( "name" );
+    if ( it == data()->end() || it->is_null() ) return default_name();
     return std::string_view{ it->template get_ref<std::string const&>() };
 }
 
@@ -91,7 +91,24 @@ std::ostream& operator<<( std::ostream& os, TestFixture const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "name" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void TestFixture::reset_name()
+{
+    if ( is_empty() ) return;
+    data()->erase( "name" );
+}
+
+void TestFixture::set_name( std::string const& name )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"name\". Object is empty." };
+    data()->operator[]( "name" ) = name;
+}
+void TestFixture::set_name( std::string && name )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"name\". Object is empty." };
+    data()->operator[]( "name" ) = name;
 }
 
 // "root_path" property
@@ -99,8 +116,8 @@ std::ostream& operator<<( std::ostream& os, TestFixture const& s )
 [[nodiscard]] std::string_view TestFixture::root_path() const
 {
     if ( is_empty() ) return default_root_path();
-    auto it = m_data_p->find( "root_path" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_root_path();
+    auto it = data()->find( "root_path" );
+    if ( it == data()->end() || it->is_null() ) return default_root_path();
     return std::string_view{ it->template get_ref<std::string const&>() };
 }
 
@@ -108,7 +125,24 @@ std::ostream& operator<<( std::ostream& os, TestFixture const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "root_path" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void TestFixture::reset_root_path()
+{
+    if ( is_empty() ) return;
+    data()->erase( "root_path" );
+}
+
+void TestFixture::set_root_path( std::string const& root_path )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"root_path\". Object is empty." };
+    data()->operator[]( "root_path" ) = root_path;
+}
+void TestFixture::set_root_path( std::string && root_path )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"root_path\". Object is empty." };
+    data()->operator[]( "root_path" ) = root_path;
 }
 
 // "default_settings" property
@@ -116,8 +150,8 @@ std::ostream& operator<<( std::ostream& os, TestFixture const& s )
 [[nodiscard]] core::settings::json::AnySettings TestFixture::default_settings() const
 {
     if ( is_empty() ) return default_default_settings();
-    auto it = m_data_p->find( "default_settings" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_default_settings();
+    auto it = data()->find( "default_settings" );
+    if ( it == data()->end() || it->is_null() ) return default_default_settings();
     return core::settings::json::AnySettings{ &( *it ) };
 }
 
@@ -125,7 +159,26 @@ std::ostream& operator<<( std::ostream& os, TestFixture const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "default_settings" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void TestFixture::reset_default_settings()
+{
+    if ( is_empty() ) return;
+    data()->erase( "default_settings" );
+}
+
+void TestFixture::set_default_settings( core::settings::json::AnySettings default_settings )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"default_settings\". Object is empty." };
+    if ( default_settings.is_empty() )
+    {
+        reset_default_settings();
+    }
+    else
+    {
+        data()->operator[]( "default_settings" ) = *( default_settings.data() );
+    }
 }
 
 // "test_cases" property
@@ -133,8 +186,8 @@ std::ostream& operator<<( std::ostream& os, TestFixture const& s )
 [[nodiscard]] runner::config::TestCase TestFixture::test_cases() const
 {
     if ( is_empty() ) return default_test_cases();
-    auto it = m_data_p->find( "test_cases" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_test_cases();
+    auto it = data()->find( "test_cases" );
+    if ( it == data()->end() || it->is_null() ) return default_test_cases();
     return runner::config::TestCase{ &( *it ) };
 }
 
@@ -142,7 +195,26 @@ std::ostream& operator<<( std::ostream& os, TestFixture const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "test_cases" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void TestFixture::reset_test_cases()
+{
+    if ( is_empty() ) return;
+    data()->erase( "test_cases" );
+}
+
+void TestFixture::set_test_cases( runner::config::TestCase test_cases )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"test_cases\". Object is empty." };
+    if ( test_cases.is_empty() )
+    {
+        reset_test_cases();
+    }
+    else
+    {
+        data()->operator[]( "test_cases" ) = *( test_cases.data() );
+    }
 }
 
 // "test_stages" property
@@ -150,8 +222,8 @@ std::ostream& operator<<( std::ostream& os, TestFixture const& s )
 [[nodiscard]] runner::config::TestStage TestFixture::test_stages() const
 {
     if ( is_empty() ) return default_test_stages();
-    auto it = m_data_p->find( "test_stages" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_test_stages();
+    auto it = data()->find( "test_stages" );
+    if ( it == data()->end() || it->is_null() ) return default_test_stages();
     return runner::config::TestStage{ &( *it ) };
 }
 
@@ -159,7 +231,26 @@ std::ostream& operator<<( std::ostream& os, TestFixture const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "test_stages" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void TestFixture::reset_test_stages()
+{
+    if ( is_empty() ) return;
+    data()->erase( "test_stages" );
+}
+
+void TestFixture::set_test_stages( runner::config::TestStage test_stages )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"test_stages\". Object is empty." };
+    if ( test_stages.is_empty() )
+    {
+        reset_test_stages();
+    }
+    else
+    {
+        data()->operator[]( "test_stages" ) = *( test_stages.data() );
+    }
 }
 
 

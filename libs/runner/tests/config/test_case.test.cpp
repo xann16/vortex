@@ -115,6 +115,48 @@ TEST_CASE( "TestCase - property: \"name\" - getter, default, has_set", "[setting
     REQUIRE( !s_null.has_name_set() );
 }
 
+TEST_CASE( "TestCase - property: \"name\" - setter, reset", "[settings]" )
+{
+    nlohmann::json obj = nlohmann::json::object();
+    auto s = vortex::runner::config::TestCase{ &obj };
+    auto s_null = vortex::runner::config::TestCase{};
+
+    const auto sv = std::string_view{ "sv" };
+    const auto str = std::string{ "str" };
+    const auto cstr = "cstr";
+
+    REQUIRE( !s.has_name_set() );
+    REQUIRE( !s_null.has_name_set() );
+
+    REQUIRE_NOTHROW( s.reset_name() );
+    REQUIRE_NOTHROW( s_null.reset_name() );
+
+    REQUIRE_THROWS_AS( s_null.set_name( sv ), std::runtime_error );
+    REQUIRE_THROWS_AS( s_null.set_name( str ), std::runtime_error );
+    REQUIRE_THROWS_AS( s_null.set_name( cstr ), std::runtime_error );
+    REQUIRE_THROWS_AS( s_null.set_name( std::string{ "mvstr" } ), std::runtime_error );
+
+    s.set_name( sv );
+    REQUIRE( s.has_name_set() );
+    REQUIRE( s.name() == "sv" );
+
+    s.set_name( str );
+    REQUIRE( s.has_name_set() );
+    REQUIRE( s.name() == "str" );
+
+    s.set_name( cstr );
+    REQUIRE( s.has_name_set() );
+    REQUIRE( s.name() == "cstr" );
+
+    s.set_name( std::string{ "mvstr" } );
+    REQUIRE( s.has_name_set() );
+    REQUIRE( s.name() == "mvstr" );
+
+    s.reset_name();
+    REQUIRE( !s.has_name_set() );
+
+}
+
 // "template_name" property
 
 TEST_CASE( "TestCase - property: \"template_name\" - getter, default, has_set", "[settings]" )
@@ -131,6 +173,48 @@ TEST_CASE( "TestCase - property: \"template_name\" - getter, default, has_set", 
 
     REQUIRE( s.has_template_name_set() );
     REQUIRE( !s_null.has_template_name_set() );
+}
+
+TEST_CASE( "TestCase - property: \"template_name\" - setter, reset", "[settings]" )
+{
+    nlohmann::json obj = nlohmann::json::object();
+    auto s = vortex::runner::config::TestCase{ &obj };
+    auto s_null = vortex::runner::config::TestCase{};
+
+    const auto sv = std::string_view{ "sv" };
+    const auto str = std::string{ "str" };
+    const auto cstr = "cstr";
+
+    REQUIRE( !s.has_template_name_set() );
+    REQUIRE( !s_null.has_template_name_set() );
+
+    REQUIRE_NOTHROW( s.reset_template_name() );
+    REQUIRE_NOTHROW( s_null.reset_template_name() );
+
+    REQUIRE_THROWS_AS( s_null.set_template_name( sv ), std::runtime_error );
+    REQUIRE_THROWS_AS( s_null.set_template_name( str ), std::runtime_error );
+    REQUIRE_THROWS_AS( s_null.set_template_name( cstr ), std::runtime_error );
+    REQUIRE_THROWS_AS( s_null.set_template_name( std::string{ "mvstr" } ), std::runtime_error );
+
+    s.set_template_name( sv );
+    REQUIRE( s.has_template_name_set() );
+    REQUIRE( s.template_name() == "sv" );
+
+    s.set_template_name( str );
+    REQUIRE( s.has_template_name_set() );
+    REQUIRE( s.template_name() == "str" );
+
+    s.set_template_name( cstr );
+    REQUIRE( s.has_template_name_set() );
+    REQUIRE( s.template_name() == "cstr" );
+
+    s.set_template_name( std::string{ "mvstr" } );
+    REQUIRE( s.has_template_name_set() );
+    REQUIRE( s.template_name() == "mvstr" );
+
+    s.reset_template_name();
+    REQUIRE( !s.has_template_name_set() );
+
 }
 
 // "settings" property
@@ -152,6 +236,38 @@ TEST_CASE( "TestCase - property: \"settings\" - getter, default, has_set", "[set
     REQUIRE( !s_null.has_settings_set() );
 }
 
+TEST_CASE( "TestCase - property: \"settings\" - setter, reset", "[settings]" )
+{
+    nlohmann::json obj = nlohmann::json::object();
+    auto s = vortex::runner::config::TestCase{ &obj };
+    auto s_null = vortex::runner::config::TestCase{};
+
+    nlohmann::json vobj = nlohmann::json::object();
+    const auto value = vortex::core::settings::json::AnySettings{ &vobj };
+    const auto nvalue = vortex::core::settings::json::AnySettings{};
+
+    REQUIRE( !s.has_settings_set() );
+    REQUIRE( !s_null.has_settings_set() );
+
+    REQUIRE_NOTHROW( s.reset_settings() );
+    REQUIRE_NOTHROW( s_null.reset_settings() );
+
+    REQUIRE_THROWS_AS( s_null.set_settings( value ), std::runtime_error );
+
+    s.set_settings( value );
+    REQUIRE( s.has_settings_set() );
+    REQUIRE( *( s.settings().data() ) == nlohmann::json::object() );
+
+    s.set_settings( nvalue );
+    REQUIRE( !s.has_settings_set() );
+
+    s.set_settings( value );
+
+    s.reset_settings();
+    REQUIRE( !s.has_settings_set() );
+
+}
+
 // "parallel_strategy" property
 
 TEST_CASE( "TestCase - property: \"parallel_strategy\" - getter, default, has_set", "[settings]" )
@@ -168,6 +284,31 @@ TEST_CASE( "TestCase - property: \"parallel_strategy\" - getter, default, has_se
 
     REQUIRE( s.has_parallel_strategy_set() );
     REQUIRE( !s_null.has_parallel_strategy_set() );
+}
+
+TEST_CASE( "TestCase - property: \"parallel_strategy\" - setter, reset", "[settings]" )
+{
+    nlohmann::json obj = nlohmann::json::object();
+    auto s = vortex::runner::config::TestCase{ &obj };
+    auto s_null = vortex::runner::config::TestCase{};
+
+    const auto value = vortex::runner::config::ParallelStrategyType::Xxx;
+
+    REQUIRE( !s.has_parallel_strategy_set() );
+    REQUIRE( !s_null.has_parallel_strategy_set() );
+
+    REQUIRE_NOTHROW( s.reset_parallel_strategy() );
+    REQUIRE_NOTHROW( s_null.reset_parallel_strategy() );
+
+    REQUIRE_THROWS_AS( s_null.set_parallel_strategy( value ), std::runtime_error );
+
+    s.set_parallel_strategy( value );
+    REQUIRE( s.has_parallel_strategy_set() );
+    REQUIRE( s.parallel_strategy() == value );
+
+    s.reset_parallel_strategy();
+    REQUIRE( !s.has_parallel_strategy_set() );
+
 }
 
 // "stages" property
@@ -188,6 +329,48 @@ TEST_CASE( "TestCase - property: \"stages\" - getter, default, has_set", "[setti
     REQUIRE( !s_null.has_stages_set() );
 }
 
+TEST_CASE( "TestCase - property: \"stages\" - setter, reset", "[settings]" )
+{
+    nlohmann::json obj = nlohmann::json::object();
+    auto s = vortex::runner::config::TestCase{ &obj };
+    auto s_null = vortex::runner::config::TestCase{};
+
+    const auto sv = std::string_view{ "sv" };
+    const auto str = std::string{ "str" };
+    const auto cstr = "cstr";
+
+    REQUIRE( !s.has_stages_set() );
+    REQUIRE( !s_null.has_stages_set() );
+
+    REQUIRE_NOTHROW( s.reset_stages() );
+    REQUIRE_NOTHROW( s_null.reset_stages() );
+
+    REQUIRE_THROWS_AS( s_null.set_stages( sv ), std::runtime_error );
+    REQUIRE_THROWS_AS( s_null.set_stages( str ), std::runtime_error );
+    REQUIRE_THROWS_AS( s_null.set_stages( cstr ), std::runtime_error );
+    REQUIRE_THROWS_AS( s_null.set_stages( std::string{ "mvstr" } ), std::runtime_error );
+
+    s.set_stages( sv );
+    REQUIRE( s.has_stages_set() );
+    REQUIRE( s.stages() == "sv" );
+
+    s.set_stages( str );
+    REQUIRE( s.has_stages_set() );
+    REQUIRE( s.stages() == "str" );
+
+    s.set_stages( cstr );
+    REQUIRE( s.has_stages_set() );
+    REQUIRE( s.stages() == "cstr" );
+
+    s.set_stages( std::string{ "mvstr" } );
+    REQUIRE( s.has_stages_set() );
+    REQUIRE( s.stages() == "mvstr" );
+
+    s.reset_stages();
+    REQUIRE( !s.has_stages_set() );
+
+}
+
 // "process_count" property
 
 TEST_CASE( "TestCase - property: \"process_count\" - getter, default, has_set", "[settings]" )
@@ -204,6 +387,31 @@ TEST_CASE( "TestCase - property: \"process_count\" - getter, default, has_set", 
 
     REQUIRE( s.has_process_count_set() );
     REQUIRE( !s_null.has_process_count_set() );
+}
+
+TEST_CASE( "TestCase - property: \"process_count\" - setter, reset", "[settings]" )
+{
+    nlohmann::json obj = nlohmann::json::object();
+    auto s = vortex::runner::config::TestCase{ &obj };
+    auto s_null = vortex::runner::config::TestCase{};
+
+    const auto value = -2l;
+
+    REQUIRE( !s.has_process_count_set() );
+    REQUIRE( !s_null.has_process_count_set() );
+
+    REQUIRE_NOTHROW( s.reset_process_count() );
+    REQUIRE_NOTHROW( s_null.reset_process_count() );
+
+    REQUIRE_THROWS_AS( s_null.set_process_count( value ), std::runtime_error );
+
+    s.set_process_count( value );
+    REQUIRE( s.has_process_count_set() );
+    REQUIRE( s.process_count() == value );
+
+    s.reset_process_count();
+    REQUIRE( !s.has_process_count_set() );
+
 }
 
 

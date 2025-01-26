@@ -83,8 +83,8 @@ std::ostream& operator<<( std::ostream& os, ExecutionSettings const& s )
 [[nodiscard]] std::string_view ExecutionSettings::job_name() const
 {
     if ( is_empty() ) return default_job_name();
-    auto it = m_data_p->find( "job_name" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_job_name();
+    auto it = data()->find( "job_name" );
+    if ( it == data()->end() || it->is_null() ) return default_job_name();
     return std::string_view{ it->template get_ref<std::string const&>() };
 }
 
@@ -92,7 +92,24 @@ std::ostream& operator<<( std::ostream& os, ExecutionSettings const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "job_name" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void ExecutionSettings::reset_job_name()
+{
+    if ( is_empty() ) return;
+    data()->erase( "job_name" );
+}
+
+void ExecutionSettings::set_job_name( std::string const& job_name )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"job_name\". Object is empty." };
+    data()->operator[]( "job_name" ) = job_name;
+}
+void ExecutionSettings::set_job_name( std::string && job_name )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"job_name\". Object is empty." };
+    data()->operator[]( "job_name" ) = job_name;
 }
 
 // "grant_no" property
@@ -100,8 +117,8 @@ std::ostream& operator<<( std::ostream& os, ExecutionSettings const& s )
 [[nodiscard]] std::string_view ExecutionSettings::grant_no() const
 {
     if ( is_empty() ) return default_grant_no();
-    auto it = m_data_p->find( "grant_no" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_grant_no();
+    auto it = data()->find( "grant_no" );
+    if ( it == data()->end() || it->is_null() ) return default_grant_no();
     return std::string_view{ it->template get_ref<std::string const&>() };
 }
 
@@ -109,7 +126,24 @@ std::ostream& operator<<( std::ostream& os, ExecutionSettings const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "grant_no" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void ExecutionSettings::reset_grant_no()
+{
+    if ( is_empty() ) return;
+    data()->erase( "grant_no" );
+}
+
+void ExecutionSettings::set_grant_no( std::string const& grant_no )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"grant_no\". Object is empty." };
+    data()->operator[]( "grant_no" ) = grant_no;
+}
+void ExecutionSettings::set_grant_no( std::string && grant_no )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"grant_no\". Object is empty." };
+    data()->operator[]( "grant_no" ) = grant_no;
 }
 
 // "cpu_node_count" property
@@ -117,8 +151,8 @@ std::ostream& operator<<( std::ostream& os, ExecutionSettings const& s )
 [[nodiscard]] i32 ExecutionSettings::cpu_node_count() const
 {
     if ( is_empty() ) return default_cpu_node_count();
-    auto it = m_data_p->find( "cpu_node_count" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_cpu_node_count();
+    auto it = data()->find( "cpu_node_count" );
+    if ( it == data()->end() || it->is_null() ) return default_cpu_node_count();
     return it->template get<i32>();
 }
 
@@ -126,7 +160,19 @@ std::ostream& operator<<( std::ostream& os, ExecutionSettings const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "cpu_node_count" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void ExecutionSettings::reset_cpu_node_count()
+{
+    if ( is_empty() ) return;
+    data()->erase( "cpu_node_count" );
+}
+
+void ExecutionSettings::set_cpu_node_count( i32 cpu_node_count )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"cpu_node_count\". Object is empty." };
+    data()->operator[]( "cpu_node_count" ) = cpu_node_count;
 }
 
 // "wct_limit" property
@@ -134,8 +180,8 @@ std::ostream& operator<<( std::ostream& os, ExecutionSettings const& s )
 [[nodiscard]] f64 ExecutionSettings::wct_limit() const
 {
     if ( is_empty() ) return default_wct_limit();
-    auto it = m_data_p->find( "wct_limit" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_wct_limit();
+    auto it = data()->find( "wct_limit" );
+    if ( it == data()->end() || it->is_null() ) return default_wct_limit();
     return it->template get<f64>();
 }
 
@@ -143,7 +189,19 @@ std::ostream& operator<<( std::ostream& os, ExecutionSettings const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "wct_limit" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void ExecutionSettings::reset_wct_limit()
+{
+    if ( is_empty() ) return;
+    data()->erase( "wct_limit" );
+}
+
+void ExecutionSettings::set_wct_limit( f64 wct_limit )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"wct_limit\". Object is empty." };
+    data()->operator[]( "wct_limit" ) = wct_limit;
 }
 
 // "process_count" property
@@ -151,8 +209,8 @@ std::ostream& operator<<( std::ostream& os, ExecutionSettings const& s )
 [[nodiscard]] i32 ExecutionSettings::process_count() const
 {
     if ( is_empty() ) return default_process_count();
-    auto it = m_data_p->find( "process_count" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_process_count();
+    auto it = data()->find( "process_count" );
+    if ( it == data()->end() || it->is_null() ) return default_process_count();
     return it->template get<i32>();
 }
 
@@ -160,7 +218,19 @@ std::ostream& operator<<( std::ostream& os, ExecutionSettings const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "process_count" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void ExecutionSettings::reset_process_count()
+{
+    if ( is_empty() ) return;
+    data()->erase( "process_count" );
+}
+
+void ExecutionSettings::set_process_count( i32 process_count )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"process_count\". Object is empty." };
+    data()->operator[]( "process_count" ) = process_count;
 }
 
 // "is_node_overcommit_enabled" property
@@ -168,8 +238,8 @@ std::ostream& operator<<( std::ostream& os, ExecutionSettings const& s )
 [[nodiscard]] bool ExecutionSettings::is_node_overcommit_enabled() const
 {
     if ( is_empty() ) return default_is_node_overcommit_enabled();
-    auto it = m_data_p->find( "is_node_overcommit_enabled" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_is_node_overcommit_enabled();
+    auto it = data()->find( "is_node_overcommit_enabled" );
+    if ( it == data()->end() || it->is_null() ) return default_is_node_overcommit_enabled();
     return it->template get<bool>();
 }
 
@@ -177,7 +247,19 @@ std::ostream& operator<<( std::ostream& os, ExecutionSettings const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "is_node_overcommit_enabled" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void ExecutionSettings::reset_is_node_overcommit_enabled()
+{
+    if ( is_empty() ) return;
+    data()->erase( "is_node_overcommit_enabled" );
+}
+
+void ExecutionSettings::set_is_node_overcommit_enabled( bool is_node_overcommit_enabled )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"is_node_overcommit_enabled\". Object is empty." };
+    data()->operator[]( "is_node_overcommit_enabled" ) = is_node_overcommit_enabled;
 }
 
 

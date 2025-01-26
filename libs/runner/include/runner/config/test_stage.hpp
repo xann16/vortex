@@ -62,6 +62,17 @@ public:
     {
         return std::string_view{};
     }
+    void reset_name();
+    void set_name( std::string const& name );
+    void set_name( std::string && name );
+    void set_name( std::string_view name )
+    {
+        set_name( std::string{ name } );
+    }
+    void set_name( char const * name )
+    {
+        set_name( std::string{ name } );
+    }
 
     // "settings" property
     [[nodiscard]] core::settings::json::AnySettings settings() const;
@@ -70,6 +81,8 @@ public:
     {
         return core::settings::json::AnySettings{};
     }
+    void reset_settings();
+    void set_settings( core::settings::json::AnySettings settings );
 
 
 private:

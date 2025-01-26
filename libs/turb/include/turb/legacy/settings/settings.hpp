@@ -65,6 +65,8 @@ public:
     {
         return turb::legacy::settings::Metadata{};
     }
+    void reset_metadata();
+    void set_metadata( turb::legacy::settings::Metadata metadata );
 
     // "parameters" property
     [[nodiscard]] turb::legacy::settings::Parameters parameters() const;
@@ -73,6 +75,8 @@ public:
     {
         return turb::legacy::settings::Parameters{};
     }
+    void reset_parameters();
+    void set_parameters( turb::legacy::settings::Parameters parameters );
 
     // "execution_settings" property
     [[nodiscard]] turb::legacy::settings::ExecutionSettings execution_settings() const;
@@ -81,6 +85,8 @@ public:
     {
         return turb::legacy::settings::ExecutionSettings{};
     }
+    void reset_execution_settings();
+    void set_execution_settings( turb::legacy::settings::ExecutionSettings execution_settings );
 
 
 private:

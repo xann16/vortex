@@ -39,6 +39,20 @@ def _get_return_type(p: dict[str, Any], data: dict[str, Any], ctx: dict[str, Any
     else:
         raise RuntimeError(f'Unexpected property type: {property_type}.')
 
+def _get_arg_type(p: dict[str, Any], data: dict[str, Any], ctx: dict[str, Any]) -> str:
+    property_type : str = p['type']
+    if property_type == 'module':
+        return _get_module_type(p['module']['name'], data, ctx)
+    elif property_type == 'settings':
+        return 'core::settings::json::AnySettings'
+    elif property_type == 'enum':
+        return to_pascal_case(p['enum']['name'])
+    elif property_type in BASE_TYPES:
+        return BASE_TYPES[property_type][0]
+    else:
+        raise RuntimeError(f'Unexpected property type: {property_type}.')
+
+
 def _get_default_value(name: str, p: dict[str, Any], data: dict[str, Any], ctx: dict[str, Any]) -> str:
     property_type : str = p['type']
     default_value : str | None = p['default'] if 'default' in p else None
@@ -107,15 +121,15 @@ def _add_default_value_declaration(ls: list[str], i: int, name: str, p: dict[str
 
 ### HAS_SET
 
-def _add_has_set_declaration(ls: list[str], i: int, name: str, p: dict[str, Any]) -> int:
+def _add_has_set_declaration(ls: list[str], i: int, name: str, p: dict[str, Any], data: dict[str, Any], ctx: dict[str, Any]) -> int:
     return add_method_declaration(ls, i, f'has_{name}_set', 'bool', [], is_const=True, is_nodiscard=True, is_noexcept=True)
 
-def _add_has_set_definition(ls: list[str], i: int, class_name: str, name: str, p: dict[str, Any]) -> int:
+def _add_has_set_definition(ls: list[str], i: int, class_name: str, name: str, p: dict[str, Any], data: dict[str, Any], ctx: dict[str, Any]) -> int:
     body : list[(int, str)] = []
 
     body.append((0, f'if ( is_empty() ) return false;'))
     body.append((0, f'auto it = data()->find( "{name}" );'))
-    body.append((0, f'return it != m_data_p->end() && !it->is_null();'))
+    body.append((0, f'return it != data()->end() && !it->is_null();'))
 
     return add_method_definition(ls, i, f'has_{name}_set', 'bool', class_name, [], body, is_const=True, is_nodiscard=True, is_noexcept=True)
 
@@ -132,8 +146,8 @@ def _add_getter_definition(ls: list[str], i: int, class_name: str, name: str, p:
     body : list[(int, str)] = []
 
     body.append((0, f'if ( is_empty() ) return default_{name}();'))
-    body.append((0, f'auto it = m_data_p->find( "{name}" );'))
-    body.append((0, f'if ( it == m_data_p->end() || it->is_null() ) return default_{name}();'))
+    body.append((0, f'auto it = data()->find( "{name}" );'))
+    body.append((0, f'if ( it == data()->end() || it->is_null() ) return default_{name}();'))
 
     if property_type in ['module', 'settings']:
         body.append((0, f'return {return_type}' + '{ &( *it ) };'))
@@ -204,23 +218,160 @@ def _add_getter_test(ls: list[str], i: int, class_name: str, name: str, p: dict[
 
     return i
 
+### RESET
+
+def _add_reset_declaration(ls: list[str], i: int, name: str, p: dict[str, Any], data: dict[str, Any], ctx: dict[str, Any]) -> int:
+    return add_method_declaration(ls, i, f'reset_{name}', 'void', [])
+
+def _add_reset_definition(ls: list[str], i: int, class_name: str, name: str, p: dict[str, Any], data: dict[str, Any], ctx: dict[str, Any]) -> int:
+    return add_method_definition(ls, i, f'reset_{name}', 'void', class_name, [], [(0, f'if ( is_empty() ) return;'), (0, f'data()->erase( "{name}" );')])
+
+### SETTERS
+
+def _add_setter_declaration(ls: list[str], i: int, name: str, p: dict[str, Any], data: dict[str, Any], ctx: dict[str, Any]) -> int:
+    arg_type : str = _get_arg_type(p, data, ctx)
+    if arg_type != 'std::string_view':
+        i = add_method_declaration(ls, i, f'set_{name}', 'void', [(arg_type, name)])
+    else:
+        i = add_method_declaration(ls, i, f'set_{name}', 'void', [('std::string const&', name)])
+        i = add_method_declaration(ls, i, f'set_{name}', 'void', [('std::string &&', name)])
+        i = add_method_declaration(ls, i, f'set_{name}', 'void', [('std::string_view', name)], is_definition=True, body=[(0, f'set_{name}( std::string{{ {name} }} );')])
+        i = add_method_declaration(ls, i, f'set_{name}', 'void', [('char const *', name)], is_definition=True, body=[(0, f'set_{name}( std::string{{ {name} }} );')])
+    return i
+
+def _add_setter_definition(ls: list[str], i: int, class_name: str, name: str, p: dict[str, Any], data: dict[str, Any], ctx: dict[str, Any]) -> int:
+    arg_type : str = _get_arg_type(p, data, ctx)
+    property_type : str = p['type']
+
+    body : list[(int, str)] = []
+
+    body.append((0, f'if ( is_empty() ) throw std::runtime_error{{ "Cannot set value for property \\"{name}\\". Object is empty." }};'))
+
+    if property_type in ['module', 'settings']:
+        body.append((0, f'if ( {name}.is_empty() )'))
+        body.append((0, '{'))
+        body.append((1, f'reset_{name}();'))
+        body.append((0, '}'))
+        body.append((0, 'else'))
+        body.append((0, '{'))
+        body.append((1, f'data()->operator[]( "{name}" ) = *( {name}.data() );'))
+        body.append((0, '}'))
+    elif property_type in BASE_TYPES or property_type == 'enum':
+        body.append((0, f'data()->operator[]( "{name}" ) = {name};'))
+    else:
+        raise RuntimeError(f'Unexpected property type: {property_type}.')
+
+    if arg_type == 'std::string_view':
+        i = add_method_definition(ls, i, f'set_{name}', 'void', class_name, [('std::string const&', name)], body)
+        i = add_method_definition(ls, i, f'set_{name}', 'void', class_name, [('std::string &&', name)], body)
+    else:
+        i = add_method_definition(ls, i, f'set_{name}', 'void', class_name, [(arg_type, name)], body)
+
+    return i
+
+def _add_setter_test(ls: list[str], i: int, class_name: str, name: str, p: dict[str, Any], namespace: list[str], data: dict[str, Any], ctx: dict[str, Any]) -> int:
+    arg_type : str = _get_arg_type(p, data, ctx)
+    property_type : str = p['type']
+
+    i = begin_test_case(ls, i, f'{class_name} - property: \\\"{name}\\\" - setter, reset', 'settings')
+
+    i = add_line(ls, i, 'nlohmann::json obj = nlohmann::json::object();' )
+    i = add_line(ls, i, 'auto s = ' + '::'.join(namespace) + '::' + class_name + '{ &obj };')
+    i = add_line(ls, i, 'auto s_null = ' + '::'.join(namespace) + '::' + class_name + '{};')
+    add_blank(ls)
+
+    if property_type in BASE_TYPES:
+        if arg_type == 'std::string_view':
+            i = add_line(ls, i, f'const auto sv = std::string_view{{ "sv" }};')
+            i = add_line(ls, i, f'const auto str = std::string{{ "str" }};')
+            i = add_line(ls, i, f'const auto cstr = "cstr";')
+        else:
+            i = add_line(ls, i, f'const auto value = {BASE_TYPES[property_type][1]};')
+    if property_type == 'enum':
+        i = add_line(ls, i, f'const auto value = {'::'.join(namespace)}::{to_pascal_case(p['enum']['name'])}::{to_pascal_case(p['enum']['values'][-1])};')
+    elif property_type in ['module', 'settings']:
+        # TODO - specific sets for specific setting classes (i.e. module)
+        i = add_line(ls, i, f'nlohmann::json vobj = nlohmann::json::object();')
+        i = add_line(ls, i, f'const auto value = vortex::{arg_type}{{ &vobj }};')
+        i = add_line(ls, i, f'const auto nvalue = vortex::{arg_type}{{}};')
+    add_blank(ls)
+
+    i = add_require(ls, i, f'!s.has_{name}_set()')
+    i = add_require(ls, i, f'!s_null.has_{name}_set()')
+    add_blank(ls)
+
+    i = add_require(ls, i, f's.reset_{name}()', suffix='nothrow')
+    i = add_require(ls, i, f's_null.reset_{name}()', suffix='nothrow')
+    add_blank(ls)
+
+    if arg_type == 'std::string_view':
+        i = add_require(ls, i, f's_null.set_{name}( sv ), std::runtime_error', suffix='throws_as')
+        i = add_require(ls, i, f's_null.set_{name}( str ), std::runtime_error', suffix='throws_as')
+        i = add_require(ls, i, f's_null.set_{name}( cstr ), std::runtime_error', suffix='throws_as')
+        i = add_require(ls, i, f's_null.set_{name}( std::string{{ "mvstr" }} ), std::runtime_error', suffix='throws_as')
+    else:
+        i = add_require(ls, i, f's_null.set_{name}( value ), std::runtime_error', suffix='throws_as')
+    add_blank(ls)
+
+    if arg_type == 'std::string_view':
+        i = add_line(ls, i, f's.set_{name}( sv );')
+        i = add_require(ls, i, f's.has_{name}_set()')
+        i = add_require(ls, i, f's.{name}() == "sv"')
+        add_blank(ls)
+
+        i = add_line(ls, i, f's.set_{name}( str );')
+        i = add_require(ls, i, f's.has_{name}_set()')
+        i = add_require(ls, i, f's.{name}() == "str"')
+        add_blank(ls)
+
+        i = add_line(ls, i, f's.set_{name}( cstr );')
+        i = add_require(ls, i, f's.has_{name}_set()')
+        i = add_require(ls, i, f's.{name}() == "cstr"')
+        add_blank(ls)
+
+        i = add_line(ls, i, f's.set_{name}( std::string{{ "mvstr" }} );')
+        i = add_require(ls, i, f's.has_{name}_set()')
+        i = add_require(ls, i, f's.{name}() == "mvstr"')
+        add_blank(ls)
+    else:
+        i = add_line(ls, i, f's.set_{name}( value );')
+        i = add_require(ls, i, f's.has_{name}_set()')
+        if property_type in ['module', 'settings']:
+            i = add_require(ls, i, f'*( s.{name}().data() ) == nlohmann::json::object()')
+        else:
+            i = add_require(ls, i, f's.{name}() == value')
+        add_blank(ls)
+
+    if property_type in ['module', 'settings']:
+        i = add_line(ls, i, f's.set_{name}( nvalue );')
+        i = add_require(ls, i, f'!s.has_{name}_set()')
+        add_blank(ls)
+        i = add_line(ls, i, f's.set_{name}( value );')
+        add_blank(ls)
+
+
+
+    i = add_line(ls, i, f's.reset_{name}();')
+    i = add_require(ls, i, f'!s.has_{name}_set()')
+    add_blank(ls)
+
+    i = end_test_case(ls, i)
+
+    return i
+
+
+###########
 
 def add_property_public_declarations(ls: list[str], i: int, data: dict[str, Any], ctx: dict[str, Any]) -> int:
     for name, prop in data.items():
         if not name.startswith('__'):
             i = add_block_comment(ls, i, f'"{name}" property')
             i = _add_getter_declaration(ls, i, name, prop, data, ctx)
-            i = _add_has_set_declaration(ls, i, name, prop)
+            i = _add_has_set_declaration(ls, i, name, prop, data, ctx)
             i = _add_default_value_declaration(ls, i, name, prop, data, ctx)
+            i = _add_reset_declaration(ls, i, name, prop, data, ctx)
+            i = _add_setter_declaration(ls, i, name, prop, data, ctx)
             add_blank(ls)
-    return i
-
-
-def add_property_private_declarations(ls: list[str], i: int, props: dict[str, Any], ctx: dict[str, Any]) -> int:
-#    for name, prop in data.items():
-#        if not name.startswith('__'):
-#            pass
-#            #i = _add_raw_getter(ls, i, name, prop, ctx)
     return i
 
 def add_property_definitions(ls: list[str], i: int, data: dict[str, Any], ctx: dict[str, Any]) -> int:
@@ -232,7 +383,11 @@ def add_property_definitions(ls: list[str], i: int, data: dict[str, Any], ctx: d
             add_blank(ls)
             i = _add_getter_definition(ls, i, class_name, name, prop, data, ctx)
             add_blank(ls)
-            i = _add_has_set_definition(ls, i, class_name, name, prop)
+            i = _add_has_set_definition(ls, i, class_name, name, prop, data, ctx)
+            add_blank(ls)
+            i = _add_reset_definition(ls, i, class_name, name, prop, data, ctx)
+            add_blank(ls)
+            i = _add_setter_definition(ls, i, class_name, name, prop, data, ctx)
             add_blank(ls)
     return i
 
@@ -245,5 +400,7 @@ def add_property_unit_tests(ls: list[str], i: int, data: dict[str, Any], ctx: di
             i = add_block_comment(ls, i, f'"{name}" property')
             add_blank(ls)
             i = _add_getter_test(ls, i, class_name, name, prop, namespace, data, ctx)
+            add_blank(ls)
+            i = _add_setter_test(ls, i, class_name, name, prop, namespace, data, ctx)
             add_blank(ls)
     return i

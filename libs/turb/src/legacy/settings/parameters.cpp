@@ -185,8 +185,8 @@ std::ostream& operator<<( std::ostream& os, Parameters const& s )
 [[nodiscard]] i32 Parameters::N() const
 {
     if ( is_empty() ) return default_N();
-    auto it = m_data_p->find( "N" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_N();
+    auto it = data()->find( "N" );
+    if ( it == data()->end() || it->is_null() ) return default_N();
     return it->template get<i32>();
 }
 
@@ -194,7 +194,19 @@ std::ostream& operator<<( std::ostream& os, Parameters const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "N" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void Parameters::reset_N()
+{
+    if ( is_empty() ) return;
+    data()->erase( "N" );
+}
+
+void Parameters::set_N( i32 N )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"N\". Object is empty." };
+    data()->operator[]( "N" ) = N;
 }
 
 // "N_subdomain" property
@@ -202,8 +214,8 @@ std::ostream& operator<<( std::ostream& os, Parameters const& s )
 [[nodiscard]] i32 Parameters::N_subdomain() const
 {
     if ( is_empty() ) return default_N_subdomain();
-    auto it = m_data_p->find( "N_subdomain" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_N_subdomain();
+    auto it = data()->find( "N_subdomain" );
+    if ( it == data()->end() || it->is_null() ) return default_N_subdomain();
     return it->template get<i32>();
 }
 
@@ -211,7 +223,19 @@ std::ostream& operator<<( std::ostream& os, Parameters const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "N_subdomain" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void Parameters::reset_N_subdomain()
+{
+    if ( is_empty() ) return;
+    data()->erase( "N_subdomain" );
+}
+
+void Parameters::set_N_subdomain( i32 N_subdomain )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"N_subdomain\". Object is empty." };
+    data()->operator[]( "N_subdomain" ) = N_subdomain;
 }
 
 // "Nt_max" property
@@ -219,8 +243,8 @@ std::ostream& operator<<( std::ostream& os, Parameters const& s )
 [[nodiscard]] i32 Parameters::Nt_max() const
 {
     if ( is_empty() ) return default_Nt_max();
-    auto it = m_data_p->find( "Nt_max" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_Nt_max();
+    auto it = data()->find( "Nt_max" );
+    if ( it == data()->end() || it->is_null() ) return default_Nt_max();
     return it->template get<i32>();
 }
 
@@ -228,7 +252,19 @@ std::ostream& operator<<( std::ostream& os, Parameters const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "Nt_max" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void Parameters::reset_Nt_max()
+{
+    if ( is_empty() ) return;
+    data()->erase( "Nt_max" );
+}
+
+void Parameters::set_Nt_max( i32 Nt_max )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"Nt_max\". Object is empty." };
+    data()->operator[]( "Nt_max" ) = Nt_max;
 }
 
 // "dt" property
@@ -236,8 +272,8 @@ std::ostream& operator<<( std::ostream& os, Parameters const& s )
 [[nodiscard]] real Parameters::dt() const
 {
     if ( is_empty() ) return default_dt();
-    auto it = m_data_p->find( "dt" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_dt();
+    auto it = data()->find( "dt" );
+    if ( it == data()->end() || it->is_null() ) return default_dt();
     return it->template get<real>();
 }
 
@@ -245,7 +281,19 @@ std::ostream& operator<<( std::ostream& os, Parameters const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "dt" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void Parameters::reset_dt()
+{
+    if ( is_empty() ) return;
+    data()->erase( "dt" );
+}
+
+void Parameters::set_dt( real dt )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"dt\". Object is empty." };
+    data()->operator[]( "dt" ) = dt;
 }
 
 // "rnu" property
@@ -253,8 +301,8 @@ std::ostream& operator<<( std::ostream& os, Parameters const& s )
 [[nodiscard]] real Parameters::rnu() const
 {
     if ( is_empty() ) return default_rnu();
-    auto it = m_data_p->find( "rnu" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_rnu();
+    auto it = data()->find( "rnu" );
+    if ( it == data()->end() || it->is_null() ) return default_rnu();
     return it->template get<real>();
 }
 
@@ -262,7 +310,19 @@ std::ostream& operator<<( std::ostream& os, Parameters const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "rnu" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void Parameters::reset_rnu()
+{
+    if ( is_empty() ) return;
+    data()->erase( "rnu" );
+}
+
+void Parameters::set_rnu( real rnu )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"rnu\". Object is empty." };
+    data()->operator[]( "rnu" ) = rnu;
 }
 
 // "t_init" property
@@ -270,8 +330,8 @@ std::ostream& operator<<( std::ostream& os, Parameters const& s )
 [[nodiscard]] real Parameters::t_init() const
 {
     if ( is_empty() ) return default_t_init();
-    auto it = m_data_p->find( "t_init" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_t_init();
+    auto it = data()->find( "t_init" );
+    if ( it == data()->end() || it->is_null() ) return default_t_init();
     return it->template get<real>();
 }
 
@@ -279,7 +339,19 @@ std::ostream& operator<<( std::ostream& os, Parameters const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "t_init" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void Parameters::reset_t_init()
+{
+    if ( is_empty() ) return;
+    data()->erase( "t_init" );
+}
+
+void Parameters::set_t_init( real t_init )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"t_init\". Object is empty." };
+    data()->operator[]( "t_init" ) = t_init;
 }
 
 // "is_flow_generated" property
@@ -287,8 +359,8 @@ std::ostream& operator<<( std::ostream& os, Parameters const& s )
 [[nodiscard]] bool Parameters::is_flow_generated() const
 {
     if ( is_empty() ) return default_is_flow_generated();
-    auto it = m_data_p->find( "is_flow_generated" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_is_flow_generated();
+    auto it = data()->find( "is_flow_generated" );
+    if ( it == data()->end() || it->is_null() ) return default_is_flow_generated();
     return it->template get<bool>();
 }
 
@@ -296,7 +368,19 @@ std::ostream& operator<<( std::ostream& os, Parameters const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "is_flow_generated" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void Parameters::reset_is_flow_generated()
+{
+    if ( is_empty() ) return;
+    data()->erase( "is_flow_generated" );
+}
+
+void Parameters::set_is_flow_generated( bool is_flow_generated )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"is_flow_generated\". Object is empty." };
+    data()->operator[]( "is_flow_generated" ) = is_flow_generated;
 }
 
 // "deterministic_seed" property
@@ -304,8 +388,8 @@ std::ostream& operator<<( std::ostream& os, Parameters const& s )
 [[nodiscard]] u64 Parameters::deterministic_seed() const
 {
     if ( is_empty() ) return default_deterministic_seed();
-    auto it = m_data_p->find( "deterministic_seed" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_deterministic_seed();
+    auto it = data()->find( "deterministic_seed" );
+    if ( it == data()->end() || it->is_null() ) return default_deterministic_seed();
     return it->template get<u64>();
 }
 
@@ -313,7 +397,19 @@ std::ostream& operator<<( std::ostream& os, Parameters const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "deterministic_seed" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void Parameters::reset_deterministic_seed()
+{
+    if ( is_empty() ) return;
+    data()->erase( "deterministic_seed" );
+}
+
+void Parameters::set_deterministic_seed( u64 deterministic_seed )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"deterministic_seed\". Object is empty." };
+    data()->operator[]( "deterministic_seed" ) = deterministic_seed;
 }
 
 // "input_velo_index" property
@@ -321,8 +417,8 @@ std::ostream& operator<<( std::ostream& os, Parameters const& s )
 [[nodiscard]] i32 Parameters::input_velo_index() const
 {
     if ( is_empty() ) return default_input_velo_index();
-    auto it = m_data_p->find( "input_velo_index" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_input_velo_index();
+    auto it = data()->find( "input_velo_index" );
+    if ( it == data()->end() || it->is_null() ) return default_input_velo_index();
     return it->template get<i32>();
 }
 
@@ -330,7 +426,19 @@ std::ostream& operator<<( std::ostream& os, Parameters const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "input_velo_index" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void Parameters::reset_input_velo_index()
+{
+    if ( is_empty() ) return;
+    data()->erase( "input_velo_index" );
+}
+
+void Parameters::set_input_velo_index( i32 input_velo_index )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"input_velo_index\". Object is empty." };
+    data()->operator[]( "input_velo_index" ) = input_velo_index;
 }
 
 // "forcing_type" property
@@ -338,8 +446,8 @@ std::ostream& operator<<( std::ostream& os, Parameters const& s )
 [[nodiscard]] ForcingType Parameters::forcing_type() const
 {
     if ( is_empty() ) return default_forcing_type();
-    auto it = m_data_p->find( "forcing_type" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_forcing_type();
+    auto it = data()->find( "forcing_type" );
+    if ( it == data()->end() || it->is_null() ) return default_forcing_type();
     return it->template get<ForcingType>();
 }
 
@@ -347,7 +455,19 @@ std::ostream& operator<<( std::ostream& os, Parameters const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "forcing_type" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void Parameters::reset_forcing_type()
+{
+    if ( is_empty() ) return;
+    data()->erase( "forcing_type" );
+}
+
+void Parameters::set_forcing_type( ForcingType forcing_type )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"forcing_type\". Object is empty." };
+    data()->operator[]( "forcing_type" ) = forcing_type;
 }
 
 // "deterministic_forcing_k_1" property
@@ -355,8 +475,8 @@ std::ostream& operator<<( std::ostream& os, Parameters const& s )
 [[nodiscard]] real Parameters::deterministic_forcing_k_1() const
 {
     if ( is_empty() ) return default_deterministic_forcing_k_1();
-    auto it = m_data_p->find( "deterministic_forcing_k_1" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_deterministic_forcing_k_1();
+    auto it = data()->find( "deterministic_forcing_k_1" );
+    if ( it == data()->end() || it->is_null() ) return default_deterministic_forcing_k_1();
     return it->template get<real>();
 }
 
@@ -364,7 +484,19 @@ std::ostream& operator<<( std::ostream& os, Parameters const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "deterministic_forcing_k_1" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void Parameters::reset_deterministic_forcing_k_1()
+{
+    if ( is_empty() ) return;
+    data()->erase( "deterministic_forcing_k_1" );
+}
+
+void Parameters::set_deterministic_forcing_k_1( real deterministic_forcing_k_1 )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"deterministic_forcing_k_1\". Object is empty." };
+    data()->operator[]( "deterministic_forcing_k_1" ) = deterministic_forcing_k_1;
 }
 
 // "deterministic_forcing_k_2" property
@@ -372,8 +504,8 @@ std::ostream& operator<<( std::ostream& os, Parameters const& s )
 [[nodiscard]] real Parameters::deterministic_forcing_k_2() const
 {
     if ( is_empty() ) return default_deterministic_forcing_k_2();
-    auto it = m_data_p->find( "deterministic_forcing_k_2" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_deterministic_forcing_k_2();
+    auto it = data()->find( "deterministic_forcing_k_2" );
+    if ( it == data()->end() || it->is_null() ) return default_deterministic_forcing_k_2();
     return it->template get<real>();
 }
 
@@ -381,7 +513,19 @@ std::ostream& operator<<( std::ostream& os, Parameters const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "deterministic_forcing_k_2" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void Parameters::reset_deterministic_forcing_k_2()
+{
+    if ( is_empty() ) return;
+    data()->erase( "deterministic_forcing_k_2" );
+}
+
+void Parameters::set_deterministic_forcing_k_2( real deterministic_forcing_k_2 )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"deterministic_forcing_k_2\". Object is empty." };
+    data()->operator[]( "deterministic_forcing_k_2" ) = deterministic_forcing_k_2;
 }
 
 // "stochastic_seed" property
@@ -389,8 +533,8 @@ std::ostream& operator<<( std::ostream& os, Parameters const& s )
 [[nodiscard]] u64 Parameters::stochastic_seed() const
 {
     if ( is_empty() ) return default_stochastic_seed();
-    auto it = m_data_p->find( "stochastic_seed" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_stochastic_seed();
+    auto it = data()->find( "stochastic_seed" );
+    if ( it == data()->end() || it->is_null() ) return default_stochastic_seed();
     return it->template get<u64>();
 }
 
@@ -398,7 +542,19 @@ std::ostream& operator<<( std::ostream& os, Parameters const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "stochastic_seed" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void Parameters::reset_stochastic_seed()
+{
+    if ( is_empty() ) return;
+    data()->erase( "stochastic_seed" );
+}
+
+void Parameters::set_stochastic_seed( u64 stochastic_seed )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"stochastic_seed\". Object is empty." };
+    data()->operator[]( "stochastic_seed" ) = stochastic_seed;
 }
 
 // "stats_output_interval" property
@@ -406,8 +562,8 @@ std::ostream& operator<<( std::ostream& os, Parameters const& s )
 [[nodiscard]] i32 Parameters::stats_output_interval() const
 {
     if ( is_empty() ) return default_stats_output_interval();
-    auto it = m_data_p->find( "stats_output_interval" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_stats_output_interval();
+    auto it = data()->find( "stats_output_interval" );
+    if ( it == data()->end() || it->is_null() ) return default_stats_output_interval();
     return it->template get<i32>();
 }
 
@@ -415,7 +571,19 @@ std::ostream& operator<<( std::ostream& os, Parameters const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "stats_output_interval" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void Parameters::reset_stats_output_interval()
+{
+    if ( is_empty() ) return;
+    data()->erase( "stats_output_interval" );
+}
+
+void Parameters::set_stats_output_interval( i32 stats_output_interval )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"stats_output_interval\". Object is empty." };
+    data()->operator[]( "stats_output_interval" ) = stats_output_interval;
 }
 
 // "spectrum_output_interval" property
@@ -423,8 +591,8 @@ std::ostream& operator<<( std::ostream& os, Parameters const& s )
 [[nodiscard]] i32 Parameters::spectrum_output_interval() const
 {
     if ( is_empty() ) return default_spectrum_output_interval();
-    auto it = m_data_p->find( "spectrum_output_interval" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_spectrum_output_interval();
+    auto it = data()->find( "spectrum_output_interval" );
+    if ( it == data()->end() || it->is_null() ) return default_spectrum_output_interval();
     return it->template get<i32>();
 }
 
@@ -432,7 +600,19 @@ std::ostream& operator<<( std::ostream& os, Parameters const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "spectrum_output_interval" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void Parameters::reset_spectrum_output_interval()
+{
+    if ( is_empty() ) return;
+    data()->erase( "spectrum_output_interval" );
+}
+
+void Parameters::set_spectrum_output_interval( i32 spectrum_output_interval )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"spectrum_output_interval\". Object is empty." };
+    data()->operator[]( "spectrum_output_interval" ) = spectrum_output_interval;
 }
 
 // "is_stats_output_extended" property
@@ -440,8 +620,8 @@ std::ostream& operator<<( std::ostream& os, Parameters const& s )
 [[nodiscard]] bool Parameters::is_stats_output_extended() const
 {
     if ( is_empty() ) return default_is_stats_output_extended();
-    auto it = m_data_p->find( "is_stats_output_extended" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_is_stats_output_extended();
+    auto it = data()->find( "is_stats_output_extended" );
+    if ( it == data()->end() || it->is_null() ) return default_is_stats_output_extended();
     return it->template get<bool>();
 }
 
@@ -449,7 +629,19 @@ std::ostream& operator<<( std::ostream& os, Parameters const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "is_stats_output_extended" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void Parameters::reset_is_stats_output_extended()
+{
+    if ( is_empty() ) return;
+    data()->erase( "is_stats_output_extended" );
+}
+
+void Parameters::set_is_stats_output_extended( bool is_stats_output_extended )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"is_stats_output_extended\". Object is empty." };
+    data()->operator[]( "is_stats_output_extended" ) = is_stats_output_extended;
 }
 
 // "rho_part" property
@@ -457,8 +649,8 @@ std::ostream& operator<<( std::ostream& os, Parameters const& s )
 [[nodiscard]] real Parameters::rho_part() const
 {
     if ( is_empty() ) return default_rho_part();
-    auto it = m_data_p->find( "rho_part" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_rho_part();
+    auto it = data()->find( "rho_part" );
+    if ( it == data()->end() || it->is_null() ) return default_rho_part();
     return it->template get<real>();
 }
 
@@ -466,7 +658,19 @@ std::ostream& operator<<( std::ostream& os, Parameters const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "rho_part" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void Parameters::reset_rho_part()
+{
+    if ( is_empty() ) return;
+    data()->erase( "rho_part" );
+}
+
+void Parameters::set_rho_part( real rho_part )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"rho_part\". Object is empty." };
+    data()->operator[]( "rho_part" ) = rho_part;
 }
 
 // "rho_fluid" property
@@ -474,8 +678,8 @@ std::ostream& operator<<( std::ostream& os, Parameters const& s )
 [[nodiscard]] real Parameters::rho_fluid() const
 {
     if ( is_empty() ) return default_rho_fluid();
-    auto it = m_data_p->find( "rho_fluid" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_rho_fluid();
+    auto it = data()->find( "rho_fluid" );
+    if ( it == data()->end() || it->is_null() ) return default_rho_fluid();
     return it->template get<real>();
 }
 
@@ -483,7 +687,19 @@ std::ostream& operator<<( std::ostream& os, Parameters const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "rho_fluid" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void Parameters::reset_rho_fluid()
+{
+    if ( is_empty() ) return;
+    data()->erase( "rho_fluid" );
+}
+
+void Parameters::set_rho_fluid( real rho_fluid )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"rho_fluid\". Object is empty." };
+    data()->operator[]( "rho_fluid" ) = rho_fluid;
 }
 
 // "eta_k_init" property
@@ -491,8 +707,8 @@ std::ostream& operator<<( std::ostream& os, Parameters const& s )
 [[nodiscard]] real Parameters::eta_k_init() const
 {
     if ( is_empty() ) return default_eta_k_init();
-    auto it = m_data_p->find( "eta_k_init" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_eta_k_init();
+    auto it = data()->find( "eta_k_init" );
+    if ( it == data()->end() || it->is_null() ) return default_eta_k_init();
     return it->template get<real>();
 }
 
@@ -500,7 +716,19 @@ std::ostream& operator<<( std::ostream& os, Parameters const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "eta_k_init" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void Parameters::reset_eta_k_init()
+{
+    if ( is_empty() ) return;
+    data()->erase( "eta_k_init" );
+}
+
+void Parameters::set_eta_k_init( real eta_k_init )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"eta_k_init\". Object is empty." };
+    data()->operator[]( "eta_k_init" ) = eta_k_init;
 }
 
 // "tau_k_init" property
@@ -508,8 +736,8 @@ std::ostream& operator<<( std::ostream& os, Parameters const& s )
 [[nodiscard]] real Parameters::tau_k_init() const
 {
     if ( is_empty() ) return default_tau_k_init();
-    auto it = m_data_p->find( "tau_k_init" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_tau_k_init();
+    auto it = data()->find( "tau_k_init" );
+    if ( it == data()->end() || it->is_null() ) return default_tau_k_init();
     return it->template get<real>();
 }
 
@@ -517,7 +745,19 @@ std::ostream& operator<<( std::ostream& os, Parameters const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "tau_k_init" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void Parameters::reset_tau_k_init()
+{
+    if ( is_empty() ) return;
+    data()->erase( "tau_k_init" );
+}
+
+void Parameters::set_tau_k_init( real tau_k_init )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"tau_k_init\". Object is empty." };
+    data()->operator[]( "tau_k_init" ) = tau_k_init;
 }
 
 // "shell_thickness" property
@@ -525,8 +765,8 @@ std::ostream& operator<<( std::ostream& os, Parameters const& s )
 [[nodiscard]] real Parameters::shell_thickness() const
 {
     if ( is_empty() ) return default_shell_thickness();
-    auto it = m_data_p->find( "shell_thickness" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_shell_thickness();
+    auto it = data()->find( "shell_thickness" );
+    if ( it == data()->end() || it->is_null() ) return default_shell_thickness();
     return it->template get<real>();
 }
 
@@ -534,7 +774,19 @@ std::ostream& operator<<( std::ostream& os, Parameters const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "shell_thickness" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void Parameters::reset_shell_thickness()
+{
+    if ( is_empty() ) return;
+    data()->erase( "shell_thickness" );
+}
+
+void Parameters::set_shell_thickness( real shell_thickness )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"shell_thickness\". Object is empty." };
+    data()->operator[]( "shell_thickness" ) = shell_thickness;
 }
 
 // "epsilon_env" property
@@ -542,8 +794,8 @@ std::ostream& operator<<( std::ostream& os, Parameters const& s )
 [[nodiscard]] real Parameters::epsilon_env() const
 {
     if ( is_empty() ) return default_epsilon_env();
-    auto it = m_data_p->find( "epsilon_env" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_epsilon_env();
+    auto it = data()->find( "epsilon_env" );
+    if ( it == data()->end() || it->is_null() ) return default_epsilon_env();
     return it->template get<real>();
 }
 
@@ -551,7 +803,19 @@ std::ostream& operator<<( std::ostream& os, Parameters const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "epsilon_env" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void Parameters::reset_epsilon_env()
+{
+    if ( is_empty() ) return;
+    data()->erase( "epsilon_env" );
+}
+
+void Parameters::set_epsilon_env( real epsilon_env )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"epsilon_env\". Object is empty." };
+    data()->operator[]( "epsilon_env" ) = epsilon_env;
 }
 
 // "nu_fluid" property
@@ -559,8 +823,8 @@ std::ostream& operator<<( std::ostream& os, Parameters const& s )
 [[nodiscard]] real Parameters::nu_fluid() const
 {
     if ( is_empty() ) return default_nu_fluid();
-    auto it = m_data_p->find( "nu_fluid" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_nu_fluid();
+    auto it = data()->find( "nu_fluid" );
+    if ( it == data()->end() || it->is_null() ) return default_nu_fluid();
     return it->template get<real>();
 }
 
@@ -568,7 +832,19 @@ std::ostream& operator<<( std::ostream& os, Parameters const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "nu_fluid" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void Parameters::reset_nu_fluid()
+{
+    if ( is_empty() ) return;
+    data()->erase( "nu_fluid" );
+}
+
+void Parameters::set_nu_fluid( real nu_fluid )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"nu_fluid\". Object is empty." };
+    data()->operator[]( "nu_fluid" ) = nu_fluid;
 }
 
 // "gravity" property
@@ -576,8 +852,8 @@ std::ostream& operator<<( std::ostream& os, Parameters const& s )
 [[nodiscard]] real Parameters::gravity() const
 {
     if ( is_empty() ) return default_gravity();
-    auto it = m_data_p->find( "gravity" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_gravity();
+    auto it = data()->find( "gravity" );
+    if ( it == data()->end() || it->is_null() ) return default_gravity();
     return it->template get<real>();
 }
 
@@ -585,7 +861,19 @@ std::ostream& operator<<( std::ostream& os, Parameters const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "gravity" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void Parameters::reset_gravity()
+{
+    if ( is_empty() ) return;
+    data()->erase( "gravity" );
+}
+
+void Parameters::set_gravity( real gravity )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"gravity\". Object is empty." };
+    data()->operator[]( "gravity" ) = gravity;
 }
 
 // "is_part_generated" property
@@ -593,8 +881,8 @@ std::ostream& operator<<( std::ostream& os, Parameters const& s )
 [[nodiscard]] bool Parameters::is_part_generated() const
 {
     if ( is_empty() ) return default_is_part_generated();
-    auto it = m_data_p->find( "is_part_generated" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_is_part_generated();
+    auto it = data()->find( "is_part_generated" );
+    if ( it == data()->end() || it->is_null() ) return default_is_part_generated();
     return it->template get<bool>();
 }
 
@@ -602,7 +890,19 @@ std::ostream& operator<<( std::ostream& os, Parameters const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "is_part_generated" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void Parameters::reset_is_part_generated()
+{
+    if ( is_empty() ) return;
+    data()->erase( "is_part_generated" );
+}
+
+void Parameters::set_is_part_generated( bool is_part_generated )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"is_part_generated\". Object is empty." };
+    data()->operator[]( "is_part_generated" ) = is_part_generated;
 }
 
 // "is_part_overlapping" property
@@ -610,8 +910,8 @@ std::ostream& operator<<( std::ostream& os, Parameters const& s )
 [[nodiscard]] bool Parameters::is_part_overlapping() const
 {
     if ( is_empty() ) return default_is_part_overlapping();
-    auto it = m_data_p->find( "is_part_overlapping" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_is_part_overlapping();
+    auto it = data()->find( "is_part_overlapping" );
+    if ( it == data()->end() || it->is_null() ) return default_is_part_overlapping();
     return it->template get<bool>();
 }
 
@@ -619,7 +919,19 @@ std::ostream& operator<<( std::ostream& os, Parameters const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "is_part_overlapping" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void Parameters::reset_is_part_overlapping()
+{
+    if ( is_empty() ) return;
+    data()->erase( "is_part_overlapping" );
+}
+
+void Parameters::set_is_part_overlapping( bool is_part_overlapping )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"is_part_overlapping\". Object is empty." };
+    data()->operator[]( "is_part_overlapping" ) = is_part_overlapping;
 }
 
 // "is_part_hdi_enabled" property
@@ -627,8 +939,8 @@ std::ostream& operator<<( std::ostream& os, Parameters const& s )
 [[nodiscard]] bool Parameters::is_part_hdi_enabled() const
 {
     if ( is_empty() ) return default_is_part_hdi_enabled();
-    auto it = m_data_p->find( "is_part_hdi_enabled" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_is_part_hdi_enabled();
+    auto it = data()->find( "is_part_hdi_enabled" );
+    if ( it == data()->end() || it->is_null() ) return default_is_part_hdi_enabled();
     return it->template get<bool>();
 }
 
@@ -636,7 +948,19 @@ std::ostream& operator<<( std::ostream& os, Parameters const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "is_part_hdi_enabled" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void Parameters::reset_is_part_hdi_enabled()
+{
+    if ( is_empty() ) return;
+    data()->erase( "is_part_hdi_enabled" );
+}
+
+void Parameters::set_is_part_hdi_enabled( bool is_part_hdi_enabled )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"is_part_hdi_enabled\". Object is empty." };
+    data()->operator[]( "is_part_hdi_enabled" ) = is_part_hdi_enabled;
 }
 
 // "part_hdi_trunc_enabled" property
@@ -644,8 +968,8 @@ std::ostream& operator<<( std::ostream& os, Parameters const& s )
 [[nodiscard]] real Parameters::part_hdi_trunc_enabled() const
 {
     if ( is_empty() ) return default_part_hdi_trunc_enabled();
-    auto it = m_data_p->find( "part_hdi_trunc_enabled" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_part_hdi_trunc_enabled();
+    auto it = data()->find( "part_hdi_trunc_enabled" );
+    if ( it == data()->end() || it->is_null() ) return default_part_hdi_trunc_enabled();
     return it->template get<real>();
 }
 
@@ -653,7 +977,19 @@ std::ostream& operator<<( std::ostream& os, Parameters const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "part_hdi_trunc_enabled" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void Parameters::reset_part_hdi_trunc_enabled()
+{
+    if ( is_empty() ) return;
+    data()->erase( "part_hdi_trunc_enabled" );
+}
+
+void Parameters::set_part_hdi_trunc_enabled( real part_hdi_trunc_enabled )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"part_hdi_trunc_enabled\". Object is empty." };
+    data()->operator[]( "part_hdi_trunc_enabled" ) = part_hdi_trunc_enabled;
 }
 
 // "N_part" property
@@ -661,8 +997,8 @@ std::ostream& operator<<( std::ostream& os, Parameters const& s )
 [[nodiscard]] i32 Parameters::N_part() const
 {
     if ( is_empty() ) return default_N_part();
-    auto it = m_data_p->find( "N_part" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_N_part();
+    auto it = data()->find( "N_part" );
+    if ( it == data()->end() || it->is_null() ) return default_N_part();
     return it->template get<i32>();
 }
 
@@ -670,7 +1006,19 @@ std::ostream& operator<<( std::ostream& os, Parameters const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "N_part" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void Parameters::reset_N_part()
+{
+    if ( is_empty() ) return;
+    data()->erase( "N_part" );
+}
+
+void Parameters::set_N_part( i32 N_part )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"N_part\". Object is empty." };
+    data()->operator[]( "N_part" ) = N_part;
 }
 
 // "drag_type" property
@@ -678,8 +1026,8 @@ std::ostream& operator<<( std::ostream& os, Parameters const& s )
 [[nodiscard]] DragType Parameters::drag_type() const
 {
     if ( is_empty() ) return default_drag_type();
-    auto it = m_data_p->find( "drag_type" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_drag_type();
+    auto it = data()->find( "drag_type" );
+    if ( it == data()->end() || it->is_null() ) return default_drag_type();
     return it->template get<DragType>();
 }
 
@@ -687,7 +1035,19 @@ std::ostream& operator<<( std::ostream& os, Parameters const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "drag_type" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void Parameters::reset_drag_type()
+{
+    if ( is_empty() ) return;
+    data()->erase( "drag_type" );
+}
+
+void Parameters::set_drag_type( DragType drag_type )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"drag_type\". Object is empty." };
+    data()->operator[]( "drag_type" ) = drag_type;
 }
 
 // "a" property
@@ -695,8 +1055,8 @@ std::ostream& operator<<( std::ostream& os, Parameters const& s )
 [[nodiscard]] real Parameters::a() const
 {
     if ( is_empty() ) return default_a();
-    auto it = m_data_p->find( "a" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_a();
+    auto it = data()->find( "a" );
+    if ( it == data()->end() || it->is_null() ) return default_a();
     return it->template get<real>();
 }
 
@@ -704,7 +1064,19 @@ std::ostream& operator<<( std::ostream& os, Parameters const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "a" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void Parameters::reset_a()
+{
+    if ( is_empty() ) return;
+    data()->erase( "a" );
+}
+
+void Parameters::set_a( real a )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"a\". Object is empty." };
+    data()->operator[]( "a" ) = a;
 }
 
 

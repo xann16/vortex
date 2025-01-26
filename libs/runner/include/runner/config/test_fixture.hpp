@@ -64,6 +64,17 @@ public:
     {
         return std::string_view{};
     }
+    void reset_name();
+    void set_name( std::string const& name );
+    void set_name( std::string && name );
+    void set_name( std::string_view name )
+    {
+        set_name( std::string{ name } );
+    }
+    void set_name( char const * name )
+    {
+        set_name( std::string{ name } );
+    }
 
     // "root_path" property
     [[nodiscard]] std::string_view root_path() const;
@@ -71,6 +82,17 @@ public:
     [[nodiscard]] constexpr std::string_view default_root_path() const noexcept
     {
         return ".";
+    }
+    void reset_root_path();
+    void set_root_path( std::string const& root_path );
+    void set_root_path( std::string && root_path );
+    void set_root_path( std::string_view root_path )
+    {
+        set_root_path( std::string{ root_path } );
+    }
+    void set_root_path( char const * root_path )
+    {
+        set_root_path( std::string{ root_path } );
     }
 
     // "default_settings" property
@@ -80,6 +102,8 @@ public:
     {
         return core::settings::json::AnySettings{};
     }
+    void reset_default_settings();
+    void set_default_settings( core::settings::json::AnySettings default_settings );
 
     // "test_cases" property
     [[nodiscard]] runner::config::TestCase test_cases() const;
@@ -88,6 +112,8 @@ public:
     {
         return runner::config::TestCase{};
     }
+    void reset_test_cases();
+    void set_test_cases( runner::config::TestCase test_cases );
 
     // "test_stages" property
     [[nodiscard]] runner::config::TestStage test_stages() const;
@@ -96,6 +122,8 @@ public:
     {
         return runner::config::TestStage{};
     }
+    void reset_test_stages();
+    void set_test_stages( runner::config::TestStage test_stages );
 
 
 private:

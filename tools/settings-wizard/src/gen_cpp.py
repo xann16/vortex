@@ -1,6 +1,6 @@
 from cpp_utils import get_class_name, get_namespace, add_include, add_blank, add_line, add_block_comment, begin_test_case, end_test_case, add_require, begin_namespace, end_namespace, begin_class, end_class, add_access_qualifier, add_ctor_declaration, add_ctor_definition, add_method_definition, add_method_declaration, add_function_definition, add_data_field
 import gen_cpp_enums
-from gen_cpp_properties import add_property_public_declarations, add_property_private_declarations, add_property_definitions, add_property_unit_tests, get_stringify_body
+from gen_cpp_properties import add_property_public_declarations, add_property_definitions, add_property_unit_tests, get_stringify_body
 from gen_utils import create_file
 import os
 from typing import Any

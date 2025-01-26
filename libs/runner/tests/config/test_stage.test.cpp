@@ -115,6 +115,48 @@ TEST_CASE( "TestStage - property: \"name\" - getter, default, has_set", "[settin
     REQUIRE( !s_null.has_name_set() );
 }
 
+TEST_CASE( "TestStage - property: \"name\" - setter, reset", "[settings]" )
+{
+    nlohmann::json obj = nlohmann::json::object();
+    auto s = vortex::runner::config::TestStage{ &obj };
+    auto s_null = vortex::runner::config::TestStage{};
+
+    const auto sv = std::string_view{ "sv" };
+    const auto str = std::string{ "str" };
+    const auto cstr = "cstr";
+
+    REQUIRE( !s.has_name_set() );
+    REQUIRE( !s_null.has_name_set() );
+
+    REQUIRE_NOTHROW( s.reset_name() );
+    REQUIRE_NOTHROW( s_null.reset_name() );
+
+    REQUIRE_THROWS_AS( s_null.set_name( sv ), std::runtime_error );
+    REQUIRE_THROWS_AS( s_null.set_name( str ), std::runtime_error );
+    REQUIRE_THROWS_AS( s_null.set_name( cstr ), std::runtime_error );
+    REQUIRE_THROWS_AS( s_null.set_name( std::string{ "mvstr" } ), std::runtime_error );
+
+    s.set_name( sv );
+    REQUIRE( s.has_name_set() );
+    REQUIRE( s.name() == "sv" );
+
+    s.set_name( str );
+    REQUIRE( s.has_name_set() );
+    REQUIRE( s.name() == "str" );
+
+    s.set_name( cstr );
+    REQUIRE( s.has_name_set() );
+    REQUIRE( s.name() == "cstr" );
+
+    s.set_name( std::string{ "mvstr" } );
+    REQUIRE( s.has_name_set() );
+    REQUIRE( s.name() == "mvstr" );
+
+    s.reset_name();
+    REQUIRE( !s.has_name_set() );
+
+}
+
 // "settings" property
 
 TEST_CASE( "TestStage - property: \"settings\" - getter, default, has_set", "[settings]" )
@@ -132,6 +174,38 @@ TEST_CASE( "TestStage - property: \"settings\" - getter, default, has_set", "[se
 
     REQUIRE( s.has_settings_set() );
     REQUIRE( !s_null.has_settings_set() );
+}
+
+TEST_CASE( "TestStage - property: \"settings\" - setter, reset", "[settings]" )
+{
+    nlohmann::json obj = nlohmann::json::object();
+    auto s = vortex::runner::config::TestStage{ &obj };
+    auto s_null = vortex::runner::config::TestStage{};
+
+    nlohmann::json vobj = nlohmann::json::object();
+    const auto value = vortex::core::settings::json::AnySettings{ &vobj };
+    const auto nvalue = vortex::core::settings::json::AnySettings{};
+
+    REQUIRE( !s.has_settings_set() );
+    REQUIRE( !s_null.has_settings_set() );
+
+    REQUIRE_NOTHROW( s.reset_settings() );
+    REQUIRE_NOTHROW( s_null.reset_settings() );
+
+    REQUIRE_THROWS_AS( s_null.set_settings( value ), std::runtime_error );
+
+    s.set_settings( value );
+    REQUIRE( s.has_settings_set() );
+    REQUIRE( *( s.settings().data() ) == nlohmann::json::object() );
+
+    s.set_settings( nvalue );
+    REQUIRE( !s.has_settings_set() );
+
+    s.set_settings( value );
+
+    s.reset_settings();
+    REQUIRE( !s.has_settings_set() );
+
 }
 
 

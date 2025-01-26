@@ -66,6 +66,8 @@ public:
     {
         return SimMethod::Dns;
     }
+    void reset_sim_method();
+    void set_sim_method( SimMethod sim_method );
 
     // "particle_mode" property
     [[nodiscard]] ParticleMode particle_mode() const;
@@ -74,6 +76,8 @@ public:
     {
         return ParticleMode::None;
     }
+    void reset_particle_mode();
+    void set_particle_mode( ParticleMode particle_mode );
 
     // "gravity_type" property
     [[nodiscard]] GravityMode gravity_type() const;
@@ -82,6 +86,8 @@ public:
     {
         return GravityMode::None;
     }
+    void reset_gravity_type();
+    void set_gravity_type( GravityMode gravity_type );
 
     // "particle_kernel_type" property
     [[nodiscard]] ParticleTwcKernelType particle_kernel_type() const;
@@ -90,6 +96,8 @@ public:
     {
         return ParticleTwcKernelType::Pnn;
     }
+    void reset_particle_kernel_type();
+    void set_particle_kernel_type( ParticleTwcKernelType particle_kernel_type );
 
     // "k_filter" property
     [[nodiscard]] i32 k_filter() const;
@@ -98,6 +106,8 @@ public:
     {
         return i32{};
     }
+    void reset_k_filter();
+    void set_k_filter( i32 k_filter );
 
     // "C_K" property
     [[nodiscard]] real C_K() const;
@@ -106,6 +116,8 @@ public:
     {
         return 2.5;
     }
+    void reset_C_K();
+    void set_C_K( real C_K );
 
     // "target_Phi" property
     [[nodiscard]] real target_Phi() const;
@@ -114,6 +126,8 @@ public:
     {
         return real{};
     }
+    void reset_target_Phi();
+    void set_target_Phi( real target_Phi );
 
     // "superpart_factor" property
     [[nodiscard]] real superpart_factor() const;
@@ -122,6 +136,8 @@ public:
     {
         return 1;
     }
+    void reset_superpart_factor();
+    void set_superpart_factor( real superpart_factor );
 
     // "src_flow_path" property
     [[nodiscard]] std::string_view src_flow_path() const;
@@ -129,6 +145,17 @@ public:
     [[nodiscard]] constexpr std::string_view default_src_flow_path() const noexcept
     {
         return std::string_view{};
+    }
+    void reset_src_flow_path();
+    void set_src_flow_path( std::string const& src_flow_path );
+    void set_src_flow_path( std::string && src_flow_path );
+    void set_src_flow_path( std::string_view src_flow_path )
+    {
+        set_src_flow_path( std::string{ src_flow_path } );
+    }
+    void set_src_flow_path( char const * src_flow_path )
+    {
+        set_src_flow_path( std::string{ src_flow_path } );
     }
 
     // "src_part_path" property
@@ -138,6 +165,17 @@ public:
     {
         return std::string_view{};
     }
+    void reset_src_part_path();
+    void set_src_part_path( std::string const& src_part_path );
+    void set_src_part_path( std::string && src_part_path );
+    void set_src_part_path( std::string_view src_part_path )
+    {
+        set_src_part_path( std::string{ src_part_path } );
+    }
+    void set_src_part_path( char const * src_part_path )
+    {
+        set_src_part_path( std::string{ src_part_path } );
+    }
 
     // "part_output_delay" property
     [[nodiscard]] i32 part_output_delay() const;
@@ -146,6 +184,8 @@ public:
     {
         return i32{};
     }
+    void reset_part_output_delay();
+    void set_part_output_delay( i32 part_output_delay );
 
     // "is_perf_full_profile_enabled" property
     [[nodiscard]] bool is_perf_full_profile_enabled() const;
@@ -154,6 +194,8 @@ public:
     {
         return bool{};
     }
+    void reset_is_perf_full_profile_enabled();
+    void set_is_perf_full_profile_enabled( bool is_perf_full_profile_enabled );
 
     // "is_perf_simple_enabled" property
     [[nodiscard]] bool is_perf_simple_enabled() const;
@@ -162,6 +204,8 @@ public:
     {
         return bool{};
     }
+    void reset_is_perf_simple_enabled();
+    void set_is_perf_simple_enabled( bool is_perf_simple_enabled );
 
     // "is_perf_part_dist_enabled" property
     [[nodiscard]] bool is_perf_part_dist_enabled() const;
@@ -170,6 +214,8 @@ public:
     {
         return bool{};
     }
+    void reset_is_perf_part_dist_enabled();
+    void set_is_perf_part_dist_enabled( bool is_perf_part_dist_enabled );
 
     // "perf_full_start" property
     [[nodiscard]] i32 perf_full_start() const;
@@ -178,6 +224,8 @@ public:
     {
         return i32{};
     }
+    void reset_perf_full_start();
+    void set_perf_full_start( i32 perf_full_start );
 
     // "perf_full_end" property
     [[nodiscard]] i32 perf_full_end() const;
@@ -186,6 +234,8 @@ public:
     {
         return i32{};
     }
+    void reset_perf_full_end();
+    void set_perf_full_end( i32 perf_full_end );
 
     // "part_perf_interval" property
     [[nodiscard]] i32 part_perf_interval() const;
@@ -194,6 +244,8 @@ public:
     {
         return i32{};
     }
+    void reset_part_perf_interval();
+    void set_part_perf_interval( i32 part_perf_interval );
 
 
 private:

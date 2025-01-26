@@ -131,8 +131,8 @@ std::ostream& operator<<( std::ostream& os, Metadata const& s )
 [[nodiscard]] SimMethod Metadata::sim_method() const
 {
     if ( is_empty() ) return default_sim_method();
-    auto it = m_data_p->find( "sim_method" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_sim_method();
+    auto it = data()->find( "sim_method" );
+    if ( it == data()->end() || it->is_null() ) return default_sim_method();
     return it->template get<SimMethod>();
 }
 
@@ -140,7 +140,19 @@ std::ostream& operator<<( std::ostream& os, Metadata const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "sim_method" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void Metadata::reset_sim_method()
+{
+    if ( is_empty() ) return;
+    data()->erase( "sim_method" );
+}
+
+void Metadata::set_sim_method( SimMethod sim_method )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"sim_method\". Object is empty." };
+    data()->operator[]( "sim_method" ) = sim_method;
 }
 
 // "particle_mode" property
@@ -148,8 +160,8 @@ std::ostream& operator<<( std::ostream& os, Metadata const& s )
 [[nodiscard]] ParticleMode Metadata::particle_mode() const
 {
     if ( is_empty() ) return default_particle_mode();
-    auto it = m_data_p->find( "particle_mode" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_particle_mode();
+    auto it = data()->find( "particle_mode" );
+    if ( it == data()->end() || it->is_null() ) return default_particle_mode();
     return it->template get<ParticleMode>();
 }
 
@@ -157,7 +169,19 @@ std::ostream& operator<<( std::ostream& os, Metadata const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "particle_mode" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void Metadata::reset_particle_mode()
+{
+    if ( is_empty() ) return;
+    data()->erase( "particle_mode" );
+}
+
+void Metadata::set_particle_mode( ParticleMode particle_mode )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"particle_mode\". Object is empty." };
+    data()->operator[]( "particle_mode" ) = particle_mode;
 }
 
 // "gravity_type" property
@@ -165,8 +189,8 @@ std::ostream& operator<<( std::ostream& os, Metadata const& s )
 [[nodiscard]] GravityMode Metadata::gravity_type() const
 {
     if ( is_empty() ) return default_gravity_type();
-    auto it = m_data_p->find( "gravity_type" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_gravity_type();
+    auto it = data()->find( "gravity_type" );
+    if ( it == data()->end() || it->is_null() ) return default_gravity_type();
     return it->template get<GravityMode>();
 }
 
@@ -174,7 +198,19 @@ std::ostream& operator<<( std::ostream& os, Metadata const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "gravity_type" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void Metadata::reset_gravity_type()
+{
+    if ( is_empty() ) return;
+    data()->erase( "gravity_type" );
+}
+
+void Metadata::set_gravity_type( GravityMode gravity_type )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"gravity_type\". Object is empty." };
+    data()->operator[]( "gravity_type" ) = gravity_type;
 }
 
 // "particle_kernel_type" property
@@ -182,8 +218,8 @@ std::ostream& operator<<( std::ostream& os, Metadata const& s )
 [[nodiscard]] ParticleTwcKernelType Metadata::particle_kernel_type() const
 {
     if ( is_empty() ) return default_particle_kernel_type();
-    auto it = m_data_p->find( "particle_kernel_type" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_particle_kernel_type();
+    auto it = data()->find( "particle_kernel_type" );
+    if ( it == data()->end() || it->is_null() ) return default_particle_kernel_type();
     return it->template get<ParticleTwcKernelType>();
 }
 
@@ -191,7 +227,19 @@ std::ostream& operator<<( std::ostream& os, Metadata const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "particle_kernel_type" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void Metadata::reset_particle_kernel_type()
+{
+    if ( is_empty() ) return;
+    data()->erase( "particle_kernel_type" );
+}
+
+void Metadata::set_particle_kernel_type( ParticleTwcKernelType particle_kernel_type )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"particle_kernel_type\". Object is empty." };
+    data()->operator[]( "particle_kernel_type" ) = particle_kernel_type;
 }
 
 // "k_filter" property
@@ -199,8 +247,8 @@ std::ostream& operator<<( std::ostream& os, Metadata const& s )
 [[nodiscard]] i32 Metadata::k_filter() const
 {
     if ( is_empty() ) return default_k_filter();
-    auto it = m_data_p->find( "k_filter" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_k_filter();
+    auto it = data()->find( "k_filter" );
+    if ( it == data()->end() || it->is_null() ) return default_k_filter();
     return it->template get<i32>();
 }
 
@@ -208,7 +256,19 @@ std::ostream& operator<<( std::ostream& os, Metadata const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "k_filter" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void Metadata::reset_k_filter()
+{
+    if ( is_empty() ) return;
+    data()->erase( "k_filter" );
+}
+
+void Metadata::set_k_filter( i32 k_filter )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"k_filter\". Object is empty." };
+    data()->operator[]( "k_filter" ) = k_filter;
 }
 
 // "C_K" property
@@ -216,8 +276,8 @@ std::ostream& operator<<( std::ostream& os, Metadata const& s )
 [[nodiscard]] real Metadata::C_K() const
 {
     if ( is_empty() ) return default_C_K();
-    auto it = m_data_p->find( "C_K" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_C_K();
+    auto it = data()->find( "C_K" );
+    if ( it == data()->end() || it->is_null() ) return default_C_K();
     return it->template get<real>();
 }
 
@@ -225,7 +285,19 @@ std::ostream& operator<<( std::ostream& os, Metadata const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "C_K" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void Metadata::reset_C_K()
+{
+    if ( is_empty() ) return;
+    data()->erase( "C_K" );
+}
+
+void Metadata::set_C_K( real C_K )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"C_K\". Object is empty." };
+    data()->operator[]( "C_K" ) = C_K;
 }
 
 // "target_Phi" property
@@ -233,8 +305,8 @@ std::ostream& operator<<( std::ostream& os, Metadata const& s )
 [[nodiscard]] real Metadata::target_Phi() const
 {
     if ( is_empty() ) return default_target_Phi();
-    auto it = m_data_p->find( "target_Phi" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_target_Phi();
+    auto it = data()->find( "target_Phi" );
+    if ( it == data()->end() || it->is_null() ) return default_target_Phi();
     return it->template get<real>();
 }
 
@@ -242,7 +314,19 @@ std::ostream& operator<<( std::ostream& os, Metadata const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "target_Phi" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void Metadata::reset_target_Phi()
+{
+    if ( is_empty() ) return;
+    data()->erase( "target_Phi" );
+}
+
+void Metadata::set_target_Phi( real target_Phi )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"target_Phi\". Object is empty." };
+    data()->operator[]( "target_Phi" ) = target_Phi;
 }
 
 // "superpart_factor" property
@@ -250,8 +334,8 @@ std::ostream& operator<<( std::ostream& os, Metadata const& s )
 [[nodiscard]] real Metadata::superpart_factor() const
 {
     if ( is_empty() ) return default_superpart_factor();
-    auto it = m_data_p->find( "superpart_factor" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_superpart_factor();
+    auto it = data()->find( "superpart_factor" );
+    if ( it == data()->end() || it->is_null() ) return default_superpart_factor();
     return it->template get<real>();
 }
 
@@ -259,7 +343,19 @@ std::ostream& operator<<( std::ostream& os, Metadata const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "superpart_factor" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void Metadata::reset_superpart_factor()
+{
+    if ( is_empty() ) return;
+    data()->erase( "superpart_factor" );
+}
+
+void Metadata::set_superpart_factor( real superpart_factor )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"superpart_factor\". Object is empty." };
+    data()->operator[]( "superpart_factor" ) = superpart_factor;
 }
 
 // "src_flow_path" property
@@ -267,8 +363,8 @@ std::ostream& operator<<( std::ostream& os, Metadata const& s )
 [[nodiscard]] std::string_view Metadata::src_flow_path() const
 {
     if ( is_empty() ) return default_src_flow_path();
-    auto it = m_data_p->find( "src_flow_path" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_src_flow_path();
+    auto it = data()->find( "src_flow_path" );
+    if ( it == data()->end() || it->is_null() ) return default_src_flow_path();
     return std::string_view{ it->template get_ref<std::string const&>() };
 }
 
@@ -276,7 +372,24 @@ std::ostream& operator<<( std::ostream& os, Metadata const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "src_flow_path" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void Metadata::reset_src_flow_path()
+{
+    if ( is_empty() ) return;
+    data()->erase( "src_flow_path" );
+}
+
+void Metadata::set_src_flow_path( std::string const& src_flow_path )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"src_flow_path\". Object is empty." };
+    data()->operator[]( "src_flow_path" ) = src_flow_path;
+}
+void Metadata::set_src_flow_path( std::string && src_flow_path )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"src_flow_path\". Object is empty." };
+    data()->operator[]( "src_flow_path" ) = src_flow_path;
 }
 
 // "src_part_path" property
@@ -284,8 +397,8 @@ std::ostream& operator<<( std::ostream& os, Metadata const& s )
 [[nodiscard]] std::string_view Metadata::src_part_path() const
 {
     if ( is_empty() ) return default_src_part_path();
-    auto it = m_data_p->find( "src_part_path" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_src_part_path();
+    auto it = data()->find( "src_part_path" );
+    if ( it == data()->end() || it->is_null() ) return default_src_part_path();
     return std::string_view{ it->template get_ref<std::string const&>() };
 }
 
@@ -293,7 +406,24 @@ std::ostream& operator<<( std::ostream& os, Metadata const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "src_part_path" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void Metadata::reset_src_part_path()
+{
+    if ( is_empty() ) return;
+    data()->erase( "src_part_path" );
+}
+
+void Metadata::set_src_part_path( std::string const& src_part_path )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"src_part_path\". Object is empty." };
+    data()->operator[]( "src_part_path" ) = src_part_path;
+}
+void Metadata::set_src_part_path( std::string && src_part_path )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"src_part_path\". Object is empty." };
+    data()->operator[]( "src_part_path" ) = src_part_path;
 }
 
 // "part_output_delay" property
@@ -301,8 +431,8 @@ std::ostream& operator<<( std::ostream& os, Metadata const& s )
 [[nodiscard]] i32 Metadata::part_output_delay() const
 {
     if ( is_empty() ) return default_part_output_delay();
-    auto it = m_data_p->find( "part_output_delay" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_part_output_delay();
+    auto it = data()->find( "part_output_delay" );
+    if ( it == data()->end() || it->is_null() ) return default_part_output_delay();
     return it->template get<i32>();
 }
 
@@ -310,7 +440,19 @@ std::ostream& operator<<( std::ostream& os, Metadata const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "part_output_delay" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void Metadata::reset_part_output_delay()
+{
+    if ( is_empty() ) return;
+    data()->erase( "part_output_delay" );
+}
+
+void Metadata::set_part_output_delay( i32 part_output_delay )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"part_output_delay\". Object is empty." };
+    data()->operator[]( "part_output_delay" ) = part_output_delay;
 }
 
 // "is_perf_full_profile_enabled" property
@@ -318,8 +460,8 @@ std::ostream& operator<<( std::ostream& os, Metadata const& s )
 [[nodiscard]] bool Metadata::is_perf_full_profile_enabled() const
 {
     if ( is_empty() ) return default_is_perf_full_profile_enabled();
-    auto it = m_data_p->find( "is_perf_full_profile_enabled" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_is_perf_full_profile_enabled();
+    auto it = data()->find( "is_perf_full_profile_enabled" );
+    if ( it == data()->end() || it->is_null() ) return default_is_perf_full_profile_enabled();
     return it->template get<bool>();
 }
 
@@ -327,7 +469,19 @@ std::ostream& operator<<( std::ostream& os, Metadata const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "is_perf_full_profile_enabled" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void Metadata::reset_is_perf_full_profile_enabled()
+{
+    if ( is_empty() ) return;
+    data()->erase( "is_perf_full_profile_enabled" );
+}
+
+void Metadata::set_is_perf_full_profile_enabled( bool is_perf_full_profile_enabled )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"is_perf_full_profile_enabled\". Object is empty." };
+    data()->operator[]( "is_perf_full_profile_enabled" ) = is_perf_full_profile_enabled;
 }
 
 // "is_perf_simple_enabled" property
@@ -335,8 +489,8 @@ std::ostream& operator<<( std::ostream& os, Metadata const& s )
 [[nodiscard]] bool Metadata::is_perf_simple_enabled() const
 {
     if ( is_empty() ) return default_is_perf_simple_enabled();
-    auto it = m_data_p->find( "is_perf_simple_enabled" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_is_perf_simple_enabled();
+    auto it = data()->find( "is_perf_simple_enabled" );
+    if ( it == data()->end() || it->is_null() ) return default_is_perf_simple_enabled();
     return it->template get<bool>();
 }
 
@@ -344,7 +498,19 @@ std::ostream& operator<<( std::ostream& os, Metadata const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "is_perf_simple_enabled" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void Metadata::reset_is_perf_simple_enabled()
+{
+    if ( is_empty() ) return;
+    data()->erase( "is_perf_simple_enabled" );
+}
+
+void Metadata::set_is_perf_simple_enabled( bool is_perf_simple_enabled )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"is_perf_simple_enabled\". Object is empty." };
+    data()->operator[]( "is_perf_simple_enabled" ) = is_perf_simple_enabled;
 }
 
 // "is_perf_part_dist_enabled" property
@@ -352,8 +518,8 @@ std::ostream& operator<<( std::ostream& os, Metadata const& s )
 [[nodiscard]] bool Metadata::is_perf_part_dist_enabled() const
 {
     if ( is_empty() ) return default_is_perf_part_dist_enabled();
-    auto it = m_data_p->find( "is_perf_part_dist_enabled" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_is_perf_part_dist_enabled();
+    auto it = data()->find( "is_perf_part_dist_enabled" );
+    if ( it == data()->end() || it->is_null() ) return default_is_perf_part_dist_enabled();
     return it->template get<bool>();
 }
 
@@ -361,7 +527,19 @@ std::ostream& operator<<( std::ostream& os, Metadata const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "is_perf_part_dist_enabled" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void Metadata::reset_is_perf_part_dist_enabled()
+{
+    if ( is_empty() ) return;
+    data()->erase( "is_perf_part_dist_enabled" );
+}
+
+void Metadata::set_is_perf_part_dist_enabled( bool is_perf_part_dist_enabled )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"is_perf_part_dist_enabled\". Object is empty." };
+    data()->operator[]( "is_perf_part_dist_enabled" ) = is_perf_part_dist_enabled;
 }
 
 // "perf_full_start" property
@@ -369,8 +547,8 @@ std::ostream& operator<<( std::ostream& os, Metadata const& s )
 [[nodiscard]] i32 Metadata::perf_full_start() const
 {
     if ( is_empty() ) return default_perf_full_start();
-    auto it = m_data_p->find( "perf_full_start" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_perf_full_start();
+    auto it = data()->find( "perf_full_start" );
+    if ( it == data()->end() || it->is_null() ) return default_perf_full_start();
     return it->template get<i32>();
 }
 
@@ -378,7 +556,19 @@ std::ostream& operator<<( std::ostream& os, Metadata const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "perf_full_start" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void Metadata::reset_perf_full_start()
+{
+    if ( is_empty() ) return;
+    data()->erase( "perf_full_start" );
+}
+
+void Metadata::set_perf_full_start( i32 perf_full_start )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"perf_full_start\". Object is empty." };
+    data()->operator[]( "perf_full_start" ) = perf_full_start;
 }
 
 // "perf_full_end" property
@@ -386,8 +576,8 @@ std::ostream& operator<<( std::ostream& os, Metadata const& s )
 [[nodiscard]] i32 Metadata::perf_full_end() const
 {
     if ( is_empty() ) return default_perf_full_end();
-    auto it = m_data_p->find( "perf_full_end" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_perf_full_end();
+    auto it = data()->find( "perf_full_end" );
+    if ( it == data()->end() || it->is_null() ) return default_perf_full_end();
     return it->template get<i32>();
 }
 
@@ -395,7 +585,19 @@ std::ostream& operator<<( std::ostream& os, Metadata const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "perf_full_end" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void Metadata::reset_perf_full_end()
+{
+    if ( is_empty() ) return;
+    data()->erase( "perf_full_end" );
+}
+
+void Metadata::set_perf_full_end( i32 perf_full_end )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"perf_full_end\". Object is empty." };
+    data()->operator[]( "perf_full_end" ) = perf_full_end;
 }
 
 // "part_perf_interval" property
@@ -403,8 +605,8 @@ std::ostream& operator<<( std::ostream& os, Metadata const& s )
 [[nodiscard]] i32 Metadata::part_perf_interval() const
 {
     if ( is_empty() ) return default_part_perf_interval();
-    auto it = m_data_p->find( "part_perf_interval" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_part_perf_interval();
+    auto it = data()->find( "part_perf_interval" );
+    if ( it == data()->end() || it->is_null() ) return default_part_perf_interval();
     return it->template get<i32>();
 }
 
@@ -412,7 +614,19 @@ std::ostream& operator<<( std::ostream& os, Metadata const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "part_perf_interval" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void Metadata::reset_part_perf_interval()
+{
+    if ( is_empty() ) return;
+    data()->erase( "part_perf_interval" );
+}
+
+void Metadata::set_part_perf_interval( i32 part_perf_interval )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"part_perf_interval\". Object is empty." };
+    data()->operator[]( "part_perf_interval" ) = part_perf_interval;
 }
 
 

@@ -68,8 +68,8 @@ std::ostream& operator<<( std::ostream& os, TestStage const& s )
 [[nodiscard]] std::string_view TestStage::name() const
 {
     if ( is_empty() ) return default_name();
-    auto it = m_data_p->find( "name" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_name();
+    auto it = data()->find( "name" );
+    if ( it == data()->end() || it->is_null() ) return default_name();
     return std::string_view{ it->template get_ref<std::string const&>() };
 }
 
@@ -77,7 +77,24 @@ std::ostream& operator<<( std::ostream& os, TestStage const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "name" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void TestStage::reset_name()
+{
+    if ( is_empty() ) return;
+    data()->erase( "name" );
+}
+
+void TestStage::set_name( std::string const& name )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"name\". Object is empty." };
+    data()->operator[]( "name" ) = name;
+}
+void TestStage::set_name( std::string && name )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"name\". Object is empty." };
+    data()->operator[]( "name" ) = name;
 }
 
 // "settings" property
@@ -85,8 +102,8 @@ std::ostream& operator<<( std::ostream& os, TestStage const& s )
 [[nodiscard]] core::settings::json::AnySettings TestStage::settings() const
 {
     if ( is_empty() ) return default_settings();
-    auto it = m_data_p->find( "settings" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_settings();
+    auto it = data()->find( "settings" );
+    if ( it == data()->end() || it->is_null() ) return default_settings();
     return core::settings::json::AnySettings{ &( *it ) };
 }
 
@@ -94,7 +111,26 @@ std::ostream& operator<<( std::ostream& os, TestStage const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "settings" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void TestStage::reset_settings()
+{
+    if ( is_empty() ) return;
+    data()->erase( "settings" );
+}
+
+void TestStage::set_settings( core::settings::json::AnySettings settings )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"settings\". Object is empty." };
+    if ( settings.is_empty() )
+    {
+        reset_settings();
+    }
+    else
+    {
+        data()->operator[]( "settings" ) = *( settings.data() );
+    }
 }
 
 

@@ -63,6 +63,17 @@ public:
     {
         return std::string_view{};
     }
+    void reset_name();
+    void set_name( std::string const& name );
+    void set_name( std::string && name );
+    void set_name( std::string_view name )
+    {
+        set_name( std::string{ name } );
+    }
+    void set_name( char const * name )
+    {
+        set_name( std::string{ name } );
+    }
 
     // "template_name" property
     [[nodiscard]] std::string_view template_name() const;
@@ -70,6 +81,17 @@ public:
     [[nodiscard]] constexpr std::string_view default_template_name() const noexcept
     {
         return std::string_view{};
+    }
+    void reset_template_name();
+    void set_template_name( std::string const& template_name );
+    void set_template_name( std::string && template_name );
+    void set_template_name( std::string_view template_name )
+    {
+        set_template_name( std::string{ template_name } );
+    }
+    void set_template_name( char const * template_name )
+    {
+        set_template_name( std::string{ template_name } );
     }
 
     // "settings" property
@@ -79,6 +101,8 @@ public:
     {
         return core::settings::json::AnySettings{};
     }
+    void reset_settings();
+    void set_settings( core::settings::json::AnySettings settings );
 
     // "parallel_strategy" property
     [[nodiscard]] ParallelStrategyType parallel_strategy() const;
@@ -87,6 +111,8 @@ public:
     {
         return ParallelStrategyType::Mmx;
     }
+    void reset_parallel_strategy();
+    void set_parallel_strategy( ParallelStrategyType parallel_strategy );
 
     // "stages" property
     [[nodiscard]] std::string_view stages() const;
@@ -94,6 +120,17 @@ public:
     [[nodiscard]] constexpr std::string_view default_stages() const noexcept
     {
         return std::string_view{};
+    }
+    void reset_stages();
+    void set_stages( std::string const& stages );
+    void set_stages( std::string && stages );
+    void set_stages( std::string_view stages )
+    {
+        set_stages( std::string{ stages } );
+    }
+    void set_stages( char const * stages )
+    {
+        set_stages( std::string{ stages } );
     }
 
     // "process_count" property
@@ -103,6 +140,8 @@ public:
     {
         return 1;
     }
+    void reset_process_count();
+    void set_process_count( i32 process_count );
 
 
 private:

@@ -85,8 +85,8 @@ std::ostream& operator<<( std::ostream& os, TestCase const& s )
 [[nodiscard]] std::string_view TestCase::name() const
 {
     if ( is_empty() ) return default_name();
-    auto it = m_data_p->find( "name" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_name();
+    auto it = data()->find( "name" );
+    if ( it == data()->end() || it->is_null() ) return default_name();
     return std::string_view{ it->template get_ref<std::string const&>() };
 }
 
@@ -94,7 +94,24 @@ std::ostream& operator<<( std::ostream& os, TestCase const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "name" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void TestCase::reset_name()
+{
+    if ( is_empty() ) return;
+    data()->erase( "name" );
+}
+
+void TestCase::set_name( std::string const& name )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"name\". Object is empty." };
+    data()->operator[]( "name" ) = name;
+}
+void TestCase::set_name( std::string && name )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"name\". Object is empty." };
+    data()->operator[]( "name" ) = name;
 }
 
 // "template_name" property
@@ -102,8 +119,8 @@ std::ostream& operator<<( std::ostream& os, TestCase const& s )
 [[nodiscard]] std::string_view TestCase::template_name() const
 {
     if ( is_empty() ) return default_template_name();
-    auto it = m_data_p->find( "template_name" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_template_name();
+    auto it = data()->find( "template_name" );
+    if ( it == data()->end() || it->is_null() ) return default_template_name();
     return std::string_view{ it->template get_ref<std::string const&>() };
 }
 
@@ -111,7 +128,24 @@ std::ostream& operator<<( std::ostream& os, TestCase const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "template_name" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void TestCase::reset_template_name()
+{
+    if ( is_empty() ) return;
+    data()->erase( "template_name" );
+}
+
+void TestCase::set_template_name( std::string const& template_name )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"template_name\". Object is empty." };
+    data()->operator[]( "template_name" ) = template_name;
+}
+void TestCase::set_template_name( std::string && template_name )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"template_name\". Object is empty." };
+    data()->operator[]( "template_name" ) = template_name;
 }
 
 // "settings" property
@@ -119,8 +153,8 @@ std::ostream& operator<<( std::ostream& os, TestCase const& s )
 [[nodiscard]] core::settings::json::AnySettings TestCase::settings() const
 {
     if ( is_empty() ) return default_settings();
-    auto it = m_data_p->find( "settings" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_settings();
+    auto it = data()->find( "settings" );
+    if ( it == data()->end() || it->is_null() ) return default_settings();
     return core::settings::json::AnySettings{ &( *it ) };
 }
 
@@ -128,7 +162,26 @@ std::ostream& operator<<( std::ostream& os, TestCase const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "settings" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void TestCase::reset_settings()
+{
+    if ( is_empty() ) return;
+    data()->erase( "settings" );
+}
+
+void TestCase::set_settings( core::settings::json::AnySettings settings )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"settings\". Object is empty." };
+    if ( settings.is_empty() )
+    {
+        reset_settings();
+    }
+    else
+    {
+        data()->operator[]( "settings" ) = *( settings.data() );
+    }
 }
 
 // "parallel_strategy" property
@@ -136,8 +189,8 @@ std::ostream& operator<<( std::ostream& os, TestCase const& s )
 [[nodiscard]] ParallelStrategyType TestCase::parallel_strategy() const
 {
     if ( is_empty() ) return default_parallel_strategy();
-    auto it = m_data_p->find( "parallel_strategy" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_parallel_strategy();
+    auto it = data()->find( "parallel_strategy" );
+    if ( it == data()->end() || it->is_null() ) return default_parallel_strategy();
     return it->template get<ParallelStrategyType>();
 }
 
@@ -145,7 +198,19 @@ std::ostream& operator<<( std::ostream& os, TestCase const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "parallel_strategy" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void TestCase::reset_parallel_strategy()
+{
+    if ( is_empty() ) return;
+    data()->erase( "parallel_strategy" );
+}
+
+void TestCase::set_parallel_strategy( ParallelStrategyType parallel_strategy )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"parallel_strategy\". Object is empty." };
+    data()->operator[]( "parallel_strategy" ) = parallel_strategy;
 }
 
 // "stages" property
@@ -153,8 +218,8 @@ std::ostream& operator<<( std::ostream& os, TestCase const& s )
 [[nodiscard]] std::string_view TestCase::stages() const
 {
     if ( is_empty() ) return default_stages();
-    auto it = m_data_p->find( "stages" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_stages();
+    auto it = data()->find( "stages" );
+    if ( it == data()->end() || it->is_null() ) return default_stages();
     return std::string_view{ it->template get_ref<std::string const&>() };
 }
 
@@ -162,7 +227,24 @@ std::ostream& operator<<( std::ostream& os, TestCase const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "stages" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void TestCase::reset_stages()
+{
+    if ( is_empty() ) return;
+    data()->erase( "stages" );
+}
+
+void TestCase::set_stages( std::string const& stages )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"stages\". Object is empty." };
+    data()->operator[]( "stages" ) = stages;
+}
+void TestCase::set_stages( std::string && stages )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"stages\". Object is empty." };
+    data()->operator[]( "stages" ) = stages;
 }
 
 // "process_count" property
@@ -170,8 +252,8 @@ std::ostream& operator<<( std::ostream& os, TestCase const& s )
 [[nodiscard]] i32 TestCase::process_count() const
 {
     if ( is_empty() ) return default_process_count();
-    auto it = m_data_p->find( "process_count" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_process_count();
+    auto it = data()->find( "process_count" );
+    if ( it == data()->end() || it->is_null() ) return default_process_count();
     return it->template get<i32>();
 }
 
@@ -179,7 +261,19 @@ std::ostream& operator<<( std::ostream& os, TestCase const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "process_count" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void TestCase::reset_process_count()
+{
+    if ( is_empty() ) return;
+    data()->erase( "process_count" );
+}
+
+void TestCase::set_process_count( i32 process_count )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"process_count\". Object is empty." };
+    data()->operator[]( "process_count" ) = process_count;
 }
 
 

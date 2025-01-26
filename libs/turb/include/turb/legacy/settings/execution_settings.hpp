@@ -62,6 +62,17 @@ public:
     {
         return std::string_view{};
     }
+    void reset_job_name();
+    void set_job_name( std::string const& job_name );
+    void set_job_name( std::string && job_name );
+    void set_job_name( std::string_view job_name )
+    {
+        set_job_name( std::string{ job_name } );
+    }
+    void set_job_name( char const * job_name )
+    {
+        set_job_name( std::string{ job_name } );
+    }
 
     // "grant_no" property
     [[nodiscard]] std::string_view grant_no() const;
@@ -69,6 +80,17 @@ public:
     [[nodiscard]] constexpr std::string_view default_grant_no() const noexcept
     {
         return std::string_view{};
+    }
+    void reset_grant_no();
+    void set_grant_no( std::string const& grant_no );
+    void set_grant_no( std::string && grant_no );
+    void set_grant_no( std::string_view grant_no )
+    {
+        set_grant_no( std::string{ grant_no } );
+    }
+    void set_grant_no( char const * grant_no )
+    {
+        set_grant_no( std::string{ grant_no } );
     }
 
     // "cpu_node_count" property
@@ -78,6 +100,8 @@ public:
     {
         return 1;
     }
+    void reset_cpu_node_count();
+    void set_cpu_node_count( i32 cpu_node_count );
 
     // "wct_limit" property
     [[nodiscard]] f64 wct_limit() const;
@@ -86,6 +110,8 @@ public:
     {
         return 60.0;
     }
+    void reset_wct_limit();
+    void set_wct_limit( f64 wct_limit );
 
     // "process_count" property
     [[nodiscard]] i32 process_count() const;
@@ -94,6 +120,8 @@ public:
     {
         return 1;
     }
+    void reset_process_count();
+    void set_process_count( i32 process_count );
 
     // "is_node_overcommit_enabled" property
     [[nodiscard]] bool is_node_overcommit_enabled() const;
@@ -102,6 +130,8 @@ public:
     {
         return bool{};
     }
+    void reset_is_node_overcommit_enabled();
+    void set_is_node_overcommit_enabled( bool is_node_overcommit_enabled );
 
 
 private:

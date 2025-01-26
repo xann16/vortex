@@ -74,8 +74,8 @@ std::ostream& operator<<( std::ostream& os, Settings const& s )
 [[nodiscard]] turb::legacy::settings::Metadata Settings::metadata() const
 {
     if ( is_empty() ) return default_metadata();
-    auto it = m_data_p->find( "metadata" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_metadata();
+    auto it = data()->find( "metadata" );
+    if ( it == data()->end() || it->is_null() ) return default_metadata();
     return turb::legacy::settings::Metadata{ &( *it ) };
 }
 
@@ -83,7 +83,26 @@ std::ostream& operator<<( std::ostream& os, Settings const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "metadata" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void Settings::reset_metadata()
+{
+    if ( is_empty() ) return;
+    data()->erase( "metadata" );
+}
+
+void Settings::set_metadata( turb::legacy::settings::Metadata metadata )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"metadata\". Object is empty." };
+    if ( metadata.is_empty() )
+    {
+        reset_metadata();
+    }
+    else
+    {
+        data()->operator[]( "metadata" ) = *( metadata.data() );
+    }
 }
 
 // "parameters" property
@@ -91,8 +110,8 @@ std::ostream& operator<<( std::ostream& os, Settings const& s )
 [[nodiscard]] turb::legacy::settings::Parameters Settings::parameters() const
 {
     if ( is_empty() ) return default_parameters();
-    auto it = m_data_p->find( "parameters" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_parameters();
+    auto it = data()->find( "parameters" );
+    if ( it == data()->end() || it->is_null() ) return default_parameters();
     return turb::legacy::settings::Parameters{ &( *it ) };
 }
 
@@ -100,7 +119,26 @@ std::ostream& operator<<( std::ostream& os, Settings const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "parameters" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void Settings::reset_parameters()
+{
+    if ( is_empty() ) return;
+    data()->erase( "parameters" );
+}
+
+void Settings::set_parameters( turb::legacy::settings::Parameters parameters )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"parameters\". Object is empty." };
+    if ( parameters.is_empty() )
+    {
+        reset_parameters();
+    }
+    else
+    {
+        data()->operator[]( "parameters" ) = *( parameters.data() );
+    }
 }
 
 // "execution_settings" property
@@ -108,8 +146,8 @@ std::ostream& operator<<( std::ostream& os, Settings const& s )
 [[nodiscard]] turb::legacy::settings::ExecutionSettings Settings::execution_settings() const
 {
     if ( is_empty() ) return default_execution_settings();
-    auto it = m_data_p->find( "execution_settings" );
-    if ( it == m_data_p->end() || it->is_null() ) return default_execution_settings();
+    auto it = data()->find( "execution_settings" );
+    if ( it == data()->end() || it->is_null() ) return default_execution_settings();
     return turb::legacy::settings::ExecutionSettings{ &( *it ) };
 }
 
@@ -117,7 +155,26 @@ std::ostream& operator<<( std::ostream& os, Settings const& s )
 {
     if ( is_empty() ) return false;
     auto it = data()->find( "execution_settings" );
-    return it != m_data_p->end() && !it->is_null();
+    return it != data()->end() && !it->is_null();
+}
+
+void Settings::reset_execution_settings()
+{
+    if ( is_empty() ) return;
+    data()->erase( "execution_settings" );
+}
+
+void Settings::set_execution_settings( turb::legacy::settings::ExecutionSettings execution_settings )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"execution_settings\". Object is empty." };
+    if ( execution_settings.is_empty() )
+    {
+        reset_execution_settings();
+    }
+    else
+    {
+        data()->operator[]( "execution_settings" ) = *( execution_settings.data() );
+    }
 }
 
 

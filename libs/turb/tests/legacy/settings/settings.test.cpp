@@ -116,6 +116,38 @@ TEST_CASE( "Settings - property: \"metadata\" - getter, default, has_set", "[set
     REQUIRE( !s_null.has_metadata_set() );
 }
 
+TEST_CASE( "Settings - property: \"metadata\" - setter, reset", "[settings]" )
+{
+    nlohmann::json obj = nlohmann::json::object();
+    auto s = vortex::turb::legacy::settings::Settings{ &obj };
+    auto s_null = vortex::turb::legacy::settings::Settings{};
+
+    nlohmann::json vobj = nlohmann::json::object();
+    const auto value = vortex::turb::legacy::settings::Metadata{ &vobj };
+    const auto nvalue = vortex::turb::legacy::settings::Metadata{};
+
+    REQUIRE( !s.has_metadata_set() );
+    REQUIRE( !s_null.has_metadata_set() );
+
+    REQUIRE_NOTHROW( s.reset_metadata() );
+    REQUIRE_NOTHROW( s_null.reset_metadata() );
+
+    REQUIRE_THROWS_AS( s_null.set_metadata( value ), std::runtime_error );
+
+    s.set_metadata( value );
+    REQUIRE( s.has_metadata_set() );
+    REQUIRE( *( s.metadata().data() ) == nlohmann::json::object() );
+
+    s.set_metadata( nvalue );
+    REQUIRE( !s.has_metadata_set() );
+
+    s.set_metadata( value );
+
+    s.reset_metadata();
+    REQUIRE( !s.has_metadata_set() );
+
+}
+
 // "parameters" property
 
 TEST_CASE( "Settings - property: \"parameters\" - getter, default, has_set", "[settings]" )
@@ -135,6 +167,38 @@ TEST_CASE( "Settings - property: \"parameters\" - getter, default, has_set", "[s
     REQUIRE( !s_null.has_parameters_set() );
 }
 
+TEST_CASE( "Settings - property: \"parameters\" - setter, reset", "[settings]" )
+{
+    nlohmann::json obj = nlohmann::json::object();
+    auto s = vortex::turb::legacy::settings::Settings{ &obj };
+    auto s_null = vortex::turb::legacy::settings::Settings{};
+
+    nlohmann::json vobj = nlohmann::json::object();
+    const auto value = vortex::turb::legacy::settings::Parameters{ &vobj };
+    const auto nvalue = vortex::turb::legacy::settings::Parameters{};
+
+    REQUIRE( !s.has_parameters_set() );
+    REQUIRE( !s_null.has_parameters_set() );
+
+    REQUIRE_NOTHROW( s.reset_parameters() );
+    REQUIRE_NOTHROW( s_null.reset_parameters() );
+
+    REQUIRE_THROWS_AS( s_null.set_parameters( value ), std::runtime_error );
+
+    s.set_parameters( value );
+    REQUIRE( s.has_parameters_set() );
+    REQUIRE( *( s.parameters().data() ) == nlohmann::json::object() );
+
+    s.set_parameters( nvalue );
+    REQUIRE( !s.has_parameters_set() );
+
+    s.set_parameters( value );
+
+    s.reset_parameters();
+    REQUIRE( !s.has_parameters_set() );
+
+}
+
 // "execution_settings" property
 
 TEST_CASE( "Settings - property: \"execution_settings\" - getter, default, has_set", "[settings]" )
@@ -152,6 +216,38 @@ TEST_CASE( "Settings - property: \"execution_settings\" - getter, default, has_s
 
     REQUIRE( s.has_execution_settings_set() );
     REQUIRE( !s_null.has_execution_settings_set() );
+}
+
+TEST_CASE( "Settings - property: \"execution_settings\" - setter, reset", "[settings]" )
+{
+    nlohmann::json obj = nlohmann::json::object();
+    auto s = vortex::turb::legacy::settings::Settings{ &obj };
+    auto s_null = vortex::turb::legacy::settings::Settings{};
+
+    nlohmann::json vobj = nlohmann::json::object();
+    const auto value = vortex::turb::legacy::settings::ExecutionSettings{ &vobj };
+    const auto nvalue = vortex::turb::legacy::settings::ExecutionSettings{};
+
+    REQUIRE( !s.has_execution_settings_set() );
+    REQUIRE( !s_null.has_execution_settings_set() );
+
+    REQUIRE_NOTHROW( s.reset_execution_settings() );
+    REQUIRE_NOTHROW( s_null.reset_execution_settings() );
+
+    REQUIRE_THROWS_AS( s_null.set_execution_settings( value ), std::runtime_error );
+
+    s.set_execution_settings( value );
+    REQUIRE( s.has_execution_settings_set() );
+    REQUIRE( *( s.execution_settings().data() ) == nlohmann::json::object() );
+
+    s.set_execution_settings( nvalue );
+    REQUIRE( !s.has_execution_settings_set() );
+
+    s.set_execution_settings( value );
+
+    s.reset_execution_settings();
+    REQUIRE( !s.has_execution_settings_set() );
+
 }
 
 
