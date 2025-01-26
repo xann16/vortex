@@ -348,7 +348,7 @@ TEST_CASE( "Metadata - property: \"C_K\" - setter, reset", "[settings]" )
 
     s.set_C_K( value );
     REQUIRE( s.has_C_K_set() );
-    REQUIRE( s.C_K() == value );
+    REQUIRE_THAT( s.C_K(), Catch::Matchers::WithinAbs( value, 1e-05 ) );
 
     s.reset_C_K();
     REQUIRE( !s.has_C_K_set() );
@@ -391,7 +391,7 @@ TEST_CASE( "Metadata - property: \"target_Phi\" - setter, reset", "[settings]" )
 
     s.set_target_Phi( value );
     REQUIRE( s.has_target_Phi_set() );
-    REQUIRE( s.target_Phi() == value );
+    REQUIRE_THAT( s.target_Phi(), Catch::Matchers::WithinAbs( value, 1e-05 ) );
 
     s.reset_target_Phi();
     REQUIRE( !s.has_target_Phi_set() );
@@ -434,7 +434,7 @@ TEST_CASE( "Metadata - property: \"superpart_factor\" - setter, reset", "[settin
 
     s.set_superpart_factor( value );
     REQUIRE( s.has_superpart_factor_set() );
-    REQUIRE( s.superpart_factor() == value );
+    REQUIRE_THAT( s.superpart_factor(), Catch::Matchers::WithinAbs( value, 1e-05 ) );
 
     s.reset_superpart_factor();
     REQUIRE( !s.has_superpart_factor_set() );

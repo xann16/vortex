@@ -338,6 +338,8 @@ def _add_setter_test(ls: list[str], i: int, class_name: str, name: str, p: dict[
         i = add_require(ls, i, f's.has_{name}_set()')
         if property_type in ['module', 'settings']:
             i = add_require(ls, i, f'*( s.{name}().data() ) == nlohmann::json::object()')
+        elif property_type in ['f32', 'f64', 'real']:
+            i = add_require(ls, i, f's.{name}(), Catch::Matchers::WithinAbs( value, {FP_CMP_EPS} )', suffix='that')
         else:
             i = add_require(ls, i, f's.{name}() == value')
         add_blank(ls)

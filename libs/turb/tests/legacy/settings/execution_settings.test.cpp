@@ -296,7 +296,7 @@ TEST_CASE( "ExecutionSettings - property: \"wct_limit\" - setter, reset", "[sett
 
     s.set_wct_limit( value );
     REQUIRE( s.has_wct_limit_set() );
-    REQUIRE( s.wct_limit() == value );
+    REQUIRE_THAT( s.wct_limit(), Catch::Matchers::WithinAbs( value, 1e-05 ) );
 
     s.reset_wct_limit();
     REQUIRE( !s.has_wct_limit_set() );

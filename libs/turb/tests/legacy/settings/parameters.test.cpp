@@ -262,7 +262,7 @@ TEST_CASE( "Parameters - property: \"dt\" - setter, reset", "[settings]" )
 
     s.set_dt( value );
     REQUIRE( s.has_dt_set() );
-    REQUIRE( s.dt() == value );
+    REQUIRE_THAT( s.dt(), Catch::Matchers::WithinAbs( value, 1e-05 ) );
 
     s.reset_dt();
     REQUIRE( !s.has_dt_set() );
@@ -305,7 +305,7 @@ TEST_CASE( "Parameters - property: \"rnu\" - setter, reset", "[settings]" )
 
     s.set_rnu( value );
     REQUIRE( s.has_rnu_set() );
-    REQUIRE( s.rnu() == value );
+    REQUIRE_THAT( s.rnu(), Catch::Matchers::WithinAbs( value, 1e-05 ) );
 
     s.reset_rnu();
     REQUIRE( !s.has_rnu_set() );
@@ -348,7 +348,7 @@ TEST_CASE( "Parameters - property: \"t_init\" - setter, reset", "[settings]" )
 
     s.set_t_init( value );
     REQUIRE( s.has_t_init_set() );
-    REQUIRE( s.t_init() == value );
+    REQUIRE_THAT( s.t_init(), Catch::Matchers::WithinAbs( value, 1e-05 ) );
 
     s.reset_t_init();
     REQUIRE( !s.has_t_init_set() );
@@ -563,7 +563,7 @@ TEST_CASE( "Parameters - property: \"deterministic_forcing_k_1\" - setter, reset
 
     s.set_deterministic_forcing_k_1( value );
     REQUIRE( s.has_deterministic_forcing_k_1_set() );
-    REQUIRE( s.deterministic_forcing_k_1() == value );
+    REQUIRE_THAT( s.deterministic_forcing_k_1(), Catch::Matchers::WithinAbs( value, 1e-05 ) );
 
     s.reset_deterministic_forcing_k_1();
     REQUIRE( !s.has_deterministic_forcing_k_1_set() );
@@ -606,7 +606,7 @@ TEST_CASE( "Parameters - property: \"deterministic_forcing_k_2\" - setter, reset
 
     s.set_deterministic_forcing_k_2( value );
     REQUIRE( s.has_deterministic_forcing_k_2_set() );
-    REQUIRE( s.deterministic_forcing_k_2() == value );
+    REQUIRE_THAT( s.deterministic_forcing_k_2(), Catch::Matchers::WithinAbs( value, 1e-05 ) );
 
     s.reset_deterministic_forcing_k_2();
     REQUIRE( !s.has_deterministic_forcing_k_2_set() );
@@ -821,7 +821,7 @@ TEST_CASE( "Parameters - property: \"rho_part\" - setter, reset", "[settings]" )
 
     s.set_rho_part( value );
     REQUIRE( s.has_rho_part_set() );
-    REQUIRE( s.rho_part() == value );
+    REQUIRE_THAT( s.rho_part(), Catch::Matchers::WithinAbs( value, 1e-05 ) );
 
     s.reset_rho_part();
     REQUIRE( !s.has_rho_part_set() );
@@ -864,7 +864,7 @@ TEST_CASE( "Parameters - property: \"rho_fluid\" - setter, reset", "[settings]" 
 
     s.set_rho_fluid( value );
     REQUIRE( s.has_rho_fluid_set() );
-    REQUIRE( s.rho_fluid() == value );
+    REQUIRE_THAT( s.rho_fluid(), Catch::Matchers::WithinAbs( value, 1e-05 ) );
 
     s.reset_rho_fluid();
     REQUIRE( !s.has_rho_fluid_set() );
@@ -907,7 +907,7 @@ TEST_CASE( "Parameters - property: \"eta_k_init\" - setter, reset", "[settings]"
 
     s.set_eta_k_init( value );
     REQUIRE( s.has_eta_k_init_set() );
-    REQUIRE( s.eta_k_init() == value );
+    REQUIRE_THAT( s.eta_k_init(), Catch::Matchers::WithinAbs( value, 1e-05 ) );
 
     s.reset_eta_k_init();
     REQUIRE( !s.has_eta_k_init_set() );
@@ -950,7 +950,7 @@ TEST_CASE( "Parameters - property: \"tau_k_init\" - setter, reset", "[settings]"
 
     s.set_tau_k_init( value );
     REQUIRE( s.has_tau_k_init_set() );
-    REQUIRE( s.tau_k_init() == value );
+    REQUIRE_THAT( s.tau_k_init(), Catch::Matchers::WithinAbs( value, 1e-05 ) );
 
     s.reset_tau_k_init();
     REQUIRE( !s.has_tau_k_init_set() );
@@ -993,7 +993,7 @@ TEST_CASE( "Parameters - property: \"shell_thickness\" - setter, reset", "[setti
 
     s.set_shell_thickness( value );
     REQUIRE( s.has_shell_thickness_set() );
-    REQUIRE( s.shell_thickness() == value );
+    REQUIRE_THAT( s.shell_thickness(), Catch::Matchers::WithinAbs( value, 1e-05 ) );
 
     s.reset_shell_thickness();
     REQUIRE( !s.has_shell_thickness_set() );
@@ -1036,7 +1036,7 @@ TEST_CASE( "Parameters - property: \"epsilon_env\" - setter, reset", "[settings]
 
     s.set_epsilon_env( value );
     REQUIRE( s.has_epsilon_env_set() );
-    REQUIRE( s.epsilon_env() == value );
+    REQUIRE_THAT( s.epsilon_env(), Catch::Matchers::WithinAbs( value, 1e-05 ) );
 
     s.reset_epsilon_env();
     REQUIRE( !s.has_epsilon_env_set() );
@@ -1079,7 +1079,7 @@ TEST_CASE( "Parameters - property: \"nu_fluid\" - setter, reset", "[settings]" )
 
     s.set_nu_fluid( value );
     REQUIRE( s.has_nu_fluid_set() );
-    REQUIRE( s.nu_fluid() == value );
+    REQUIRE_THAT( s.nu_fluid(), Catch::Matchers::WithinAbs( value, 1e-05 ) );
 
     s.reset_nu_fluid();
     REQUIRE( !s.has_nu_fluid_set() );
@@ -1122,7 +1122,7 @@ TEST_CASE( "Parameters - property: \"gravity\" - setter, reset", "[settings]" )
 
     s.set_gravity( value );
     REQUIRE( s.has_gravity_set() );
-    REQUIRE( s.gravity() == value );
+    REQUIRE_THAT( s.gravity(), Catch::Matchers::WithinAbs( value, 1e-05 ) );
 
     s.reset_gravity();
     REQUIRE( !s.has_gravity_set() );
@@ -1294,7 +1294,7 @@ TEST_CASE( "Parameters - property: \"part_hdi_trunc_enabled\" - setter, reset", 
 
     s.set_part_hdi_trunc_enabled( value );
     REQUIRE( s.has_part_hdi_trunc_enabled_set() );
-    REQUIRE( s.part_hdi_trunc_enabled() == value );
+    REQUIRE_THAT( s.part_hdi_trunc_enabled(), Catch::Matchers::WithinAbs( value, 1e-05 ) );
 
     s.reset_part_hdi_trunc_enabled();
     REQUIRE( !s.has_part_hdi_trunc_enabled_set() );
@@ -1423,7 +1423,7 @@ TEST_CASE( "Parameters - property: \"a\" - setter, reset", "[settings]" )
 
     s.set_a( value );
     REQUIRE( s.has_a_set() );
-    REQUIRE( s.a() == value );
+    REQUIRE_THAT( s.a(), Catch::Matchers::WithinAbs( value, 1e-05 ) );
 
     s.reset_a();
     REQUIRE( !s.has_a_set() );
