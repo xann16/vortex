@@ -14,7 +14,8 @@ jobs:
       matrix:
         os:
           - ubuntu-24.04
-          - macos-13
+          - macos-13        # Intel
+          - macos-14        # Intel
         compiler:
           - llvm-18
           - llvm-19
@@ -32,6 +33,8 @@ jobs:
             compiler: gcc-13
           # Intel MPI not supported on Apple hardware
           - os: macos-13
+            mpi: intelmpi
+          - os: macos-14
             mpi: intelmpi
           # temporary disable Clang for MacOS due to problems in compiler detection
           # - TODO: improve 'conan profile detect' and conan profile handling
