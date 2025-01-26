@@ -33,6 +33,12 @@ jobs:
           # Intel MPI not supported on Apple hardware
           - os: macos-13
             mpi: intelmpi
+          # temporary disable Clang for MacOS due to problems in compiler detection
+          # - TODO: improve 'conan profile detect' and conan profile handling
+          - os: macos-13
+            compiler: llvm-18
+          - os: macos-13
+            compiler: llvm-19
 
     steps:
       - uses: actions/checkout@v4
