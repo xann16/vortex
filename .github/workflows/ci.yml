@@ -26,6 +26,14 @@ jobs:
           - openmpi
           - intelmpi
 
+        exclude:
+          # catch2 import via Conan causes issues with gcc-13
+          - platform: macos-13
+            compiler: gcc-13
+          # Intel MPI not supported on Apple hardware
+          - platform: macos-13
+            mpi: intelmpi
+
     steps:
       - uses: actions/checkout@v4
 
