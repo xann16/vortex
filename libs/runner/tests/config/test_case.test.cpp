@@ -97,6 +97,12 @@ TEST_CASE( "TestCase - merge with empties", "[settings][.][!mayfail]" )
     REQUIRE( false );
 }
 
+TEST_CASE( "TestCase - equality and inequality operators", "[settings][.][!mayfail]" )
+{
+    // TODO - add merge tests for generated setting classes
+    REQUIRE( false );
+}
+
 // "name" property
 
 TEST_CASE( "TestCase - property: \"name\" - getter, default, has_set", "[settings]" )
@@ -221,7 +227,7 @@ TEST_CASE( "TestCase - property: \"template_name\" - setter, reset", "[settings]
 
 TEST_CASE( "TestCase - property: \"settings\" - getter, default, has_set", "[settings]" )
 {
-    nlohmann::json obj = { { "settings", { { "x", "y" } } } };
+    nlohmann::json obj = { { "settings", { { "x", "y"} } } };
     auto s = vortex::runner::config::TestCase{ &obj };
     auto s_null = vortex::runner::config::TestCase{};
 
@@ -315,15 +321,18 @@ TEST_CASE( "TestCase - property: \"parallel_strategy\" - setter, reset", "[setti
 
 TEST_CASE( "TestCase - property: \"stages\" - getter, default, has_set", "[settings]" )
 {
-    nlohmann::json obj = { { "stages", "stest" } };
+    nlohmann::json obj = { { "stages", { "stest", "stest", "stest" } } };
     auto s = vortex::runner::config::TestCase{ &obj };
     auto s_null = vortex::runner::config::TestCase{};
 
     auto value = s.stages();
     auto default_value = s_null.stages();
 
-    REQUIRE( value == "stest" );
-    REQUIRE( default_value == std::string_view{} );
+    REQUIRE( value.size() == 3ull );
+    REQUIRE( value[ 0 ] == "stest" );
+    REQUIRE( value[ 1 ] == "stest" );
+    REQUIRE( value[ 2 ] == "stest" );
+    REQUIRE( default_value.empty() );
 
     REQUIRE( s.has_stages_set() );
     REQUIRE( !s_null.has_stages_set() );
@@ -335,9 +344,7 @@ TEST_CASE( "TestCase - property: \"stages\" - setter, reset", "[settings]" )
     auto s = vortex::runner::config::TestCase{ &obj };
     auto s_null = vortex::runner::config::TestCase{};
 
-    const auto sv = std::string_view{ "sv" };
-    const auto str = std::string{ "str" };
-    const auto cstr = "cstr";
+    const auto value = std::vector< std::string >{ "stest", "stest", "stest" };
 
     REQUIRE( !s.has_stages_set() );
     REQUIRE( !s_null.has_stages_set() );
@@ -345,26 +352,30 @@ TEST_CASE( "TestCase - property: \"stages\" - setter, reset", "[settings]" )
     REQUIRE_NOTHROW( s.reset_stages() );
     REQUIRE_NOTHROW( s_null.reset_stages() );
 
-    REQUIRE_THROWS_AS( s_null.set_stages( sv ), std::runtime_error );
-    REQUIRE_THROWS_AS( s_null.set_stages( str ), std::runtime_error );
-    REQUIRE_THROWS_AS( s_null.set_stages( cstr ), std::runtime_error );
-    REQUIRE_THROWS_AS( s_null.set_stages( std::string{ "mvstr" } ), std::runtime_error );
+    REQUIRE_THROWS_AS( s_null.set_stages( value ), std::runtime_error );
+    REQUIRE_THROWS_AS( s_null.set_stages( std::vector< std::string >{ value } ), std::runtime_error );
+    REQUIRE_THROWS_AS( s_null.set_stages( { "stest", "stest", "stest" } ), std::runtime_error );
 
-    s.set_stages( sv );
-    REQUIRE( s.has_stages_set() );
-    REQUIRE( s.stages() == "sv" );
+    s.reset_stages();
+    REQUIRE( !s.has_stages_set() );
 
-    s.set_stages( str );
+    s.set_stages( value );
     REQUIRE( s.has_stages_set() );
-    REQUIRE( s.stages() == "str" );
+    REQUIRE( s.stages() == value );
 
-    s.set_stages( cstr );
-    REQUIRE( s.has_stages_set() );
-    REQUIRE( s.stages() == "cstr" );
+    s.reset_stages();
+    REQUIRE( !s.has_stages_set() );
 
-    s.set_stages( std::string{ "mvstr" } );
+    s.set_stages( std::vector< std::string >{ value } );
     REQUIRE( s.has_stages_set() );
-    REQUIRE( s.stages() == "mvstr" );
+    REQUIRE( s.stages() == value );
+
+    s.reset_stages();
+    REQUIRE( !s.has_stages_set() );
+
+    s.set_stages( { "stest", "stest", "stest" } );
+    REQUIRE( s.has_stages_set() );
+    REQUIRE( s.stages() == value );
 
     s.reset_stages();
     REQUIRE( !s.has_stages_set() );

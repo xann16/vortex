@@ -126,6 +126,13 @@ std::ostream& operator<<( std::ostream& os, Metadata const& s )
     return s.stringify( os, 2, 0, os.flags() & std::ios_base::boolalpha );
 }
 
+bool operator==( Metadata const& lhs, Metadata const& rhs )
+{
+    return lhs.is_empty()
+        ? rhs.is_empty()
+        : ( !rhs.is_empty() && *lhs.data() == *rhs.data() );
+}
+
 // "sim_method" property
 
 [[nodiscard]] SimMethod Metadata::sim_method() const
@@ -133,7 +140,7 @@ std::ostream& operator<<( std::ostream& os, Metadata const& s )
     if ( is_empty() ) return default_sim_method();
     auto it = data()->find( "sim_method" );
     if ( it == data()->end() || it->is_null() ) return default_sim_method();
-    return it->template get<SimMethod>();
+    return it->template get< SimMethod >();
 }
 
 [[nodiscard]] bool Metadata::has_sim_method_set() const noexcept
@@ -162,7 +169,7 @@ void Metadata::set_sim_method( SimMethod sim_method )
     if ( is_empty() ) return default_particle_mode();
     auto it = data()->find( "particle_mode" );
     if ( it == data()->end() || it->is_null() ) return default_particle_mode();
-    return it->template get<ParticleMode>();
+    return it->template get< ParticleMode >();
 }
 
 [[nodiscard]] bool Metadata::has_particle_mode_set() const noexcept
@@ -191,7 +198,7 @@ void Metadata::set_particle_mode( ParticleMode particle_mode )
     if ( is_empty() ) return default_gravity_type();
     auto it = data()->find( "gravity_type" );
     if ( it == data()->end() || it->is_null() ) return default_gravity_type();
-    return it->template get<GravityMode>();
+    return it->template get< GravityMode >();
 }
 
 [[nodiscard]] bool Metadata::has_gravity_type_set() const noexcept
@@ -220,7 +227,7 @@ void Metadata::set_gravity_type( GravityMode gravity_type )
     if ( is_empty() ) return default_particle_kernel_type();
     auto it = data()->find( "particle_kernel_type" );
     if ( it == data()->end() || it->is_null() ) return default_particle_kernel_type();
-    return it->template get<ParticleTwcKernelType>();
+    return it->template get< ParticleTwcKernelType >();
 }
 
 [[nodiscard]] bool Metadata::has_particle_kernel_type_set() const noexcept
@@ -249,7 +256,7 @@ void Metadata::set_particle_kernel_type( ParticleTwcKernelType particle_kernel_t
     if ( is_empty() ) return default_k_filter();
     auto it = data()->find( "k_filter" );
     if ( it == data()->end() || it->is_null() ) return default_k_filter();
-    return it->template get<i32>();
+    return it->template get< i32 >();
 }
 
 [[nodiscard]] bool Metadata::has_k_filter_set() const noexcept
@@ -278,7 +285,7 @@ void Metadata::set_k_filter( i32 k_filter )
     if ( is_empty() ) return default_C_K();
     auto it = data()->find( "C_K" );
     if ( it == data()->end() || it->is_null() ) return default_C_K();
-    return it->template get<real>();
+    return it->template get< real >();
 }
 
 [[nodiscard]] bool Metadata::has_C_K_set() const noexcept
@@ -307,7 +314,7 @@ void Metadata::set_C_K( real C_K )
     if ( is_empty() ) return default_target_Phi();
     auto it = data()->find( "target_Phi" );
     if ( it == data()->end() || it->is_null() ) return default_target_Phi();
-    return it->template get<real>();
+    return it->template get< real >();
 }
 
 [[nodiscard]] bool Metadata::has_target_Phi_set() const noexcept
@@ -336,7 +343,7 @@ void Metadata::set_target_Phi( real target_Phi )
     if ( is_empty() ) return default_superpart_factor();
     auto it = data()->find( "superpart_factor" );
     if ( it == data()->end() || it->is_null() ) return default_superpart_factor();
-    return it->template get<real>();
+    return it->template get< real >();
 }
 
 [[nodiscard]] bool Metadata::has_superpart_factor_set() const noexcept
@@ -433,7 +440,7 @@ void Metadata::set_src_part_path( std::string && src_part_path )
     if ( is_empty() ) return default_part_output_delay();
     auto it = data()->find( "part_output_delay" );
     if ( it == data()->end() || it->is_null() ) return default_part_output_delay();
-    return it->template get<i32>();
+    return it->template get< i32 >();
 }
 
 [[nodiscard]] bool Metadata::has_part_output_delay_set() const noexcept
@@ -462,7 +469,7 @@ void Metadata::set_part_output_delay( i32 part_output_delay )
     if ( is_empty() ) return default_is_perf_full_profile_enabled();
     auto it = data()->find( "is_perf_full_profile_enabled" );
     if ( it == data()->end() || it->is_null() ) return default_is_perf_full_profile_enabled();
-    return it->template get<bool>();
+    return it->template get< bool >();
 }
 
 [[nodiscard]] bool Metadata::has_is_perf_full_profile_enabled_set() const noexcept
@@ -491,7 +498,7 @@ void Metadata::set_is_perf_full_profile_enabled( bool is_perf_full_profile_enabl
     if ( is_empty() ) return default_is_perf_simple_enabled();
     auto it = data()->find( "is_perf_simple_enabled" );
     if ( it == data()->end() || it->is_null() ) return default_is_perf_simple_enabled();
-    return it->template get<bool>();
+    return it->template get< bool >();
 }
 
 [[nodiscard]] bool Metadata::has_is_perf_simple_enabled_set() const noexcept
@@ -520,7 +527,7 @@ void Metadata::set_is_perf_simple_enabled( bool is_perf_simple_enabled )
     if ( is_empty() ) return default_is_perf_part_dist_enabled();
     auto it = data()->find( "is_perf_part_dist_enabled" );
     if ( it == data()->end() || it->is_null() ) return default_is_perf_part_dist_enabled();
-    return it->template get<bool>();
+    return it->template get< bool >();
 }
 
 [[nodiscard]] bool Metadata::has_is_perf_part_dist_enabled_set() const noexcept
@@ -549,7 +556,7 @@ void Metadata::set_is_perf_part_dist_enabled( bool is_perf_part_dist_enabled )
     if ( is_empty() ) return default_perf_full_start();
     auto it = data()->find( "perf_full_start" );
     if ( it == data()->end() || it->is_null() ) return default_perf_full_start();
-    return it->template get<i32>();
+    return it->template get< i32 >();
 }
 
 [[nodiscard]] bool Metadata::has_perf_full_start_set() const noexcept
@@ -578,7 +585,7 @@ void Metadata::set_perf_full_start( i32 perf_full_start )
     if ( is_empty() ) return default_perf_full_end();
     auto it = data()->find( "perf_full_end" );
     if ( it == data()->end() || it->is_null() ) return default_perf_full_end();
-    return it->template get<i32>();
+    return it->template get< i32 >();
 }
 
 [[nodiscard]] bool Metadata::has_perf_full_end_set() const noexcept
@@ -607,7 +614,7 @@ void Metadata::set_perf_full_end( i32 perf_full_end )
     if ( is_empty() ) return default_part_perf_interval();
     auto it = data()->find( "part_perf_interval" );
     if ( it == data()->end() || it->is_null() ) return default_part_perf_interval();
-    return it->template get<i32>();
+    return it->template get< i32 >();
 }
 
 [[nodiscard]] bool Metadata::has_part_perf_interval_set() const noexcept

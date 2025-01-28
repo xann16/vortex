@@ -57,6 +57,12 @@ public:
 
     friend std::ostream& operator<<( std::ostream& os, TestFixture const& s );
 
+    friend bool operator==( TestFixture const& lhs, TestFixture const& rhs );
+    friend bool operator!=( TestFixture const& lhs, TestFixture const& rhs )
+    {
+        return !( lhs == rhs );
+    }
+
     // "name" property
     [[nodiscard]] std::string_view name() const;
     [[nodiscard]] bool has_name_set() const noexcept;
@@ -106,24 +112,28 @@ public:
     void set_default_settings( core::settings::json::AnySettings default_settings );
 
     // "test_cases" property
-    [[nodiscard]] runner::config::TestCase test_cases() const;
+    [[nodiscard]] std::vector< runner::config::TestCase > test_cases() const;
     [[nodiscard]] bool has_test_cases_set() const noexcept;
-    [[nodiscard]] constexpr runner::config::TestCase default_test_cases() const noexcept
+    [[nodiscard]] std::vector< runner::config::TestCase > default_test_cases() const noexcept
     {
-        return runner::config::TestCase{};
+        return std::vector< runner::config::TestCase >{};
     }
     void reset_test_cases();
-    void set_test_cases( runner::config::TestCase test_cases );
+    void set_test_cases( std::vector< runner::config::TestCase > const& test_cases );
+    void set_test_cases( std::vector< runner::config::TestCase > && test_cases );
+    void set_test_cases( std::initializer_list< runner::config::TestCase > test_cases_list );
 
     // "test_stages" property
-    [[nodiscard]] runner::config::TestStage test_stages() const;
+    [[nodiscard]] std::vector< runner::config::TestStage > test_stages() const;
     [[nodiscard]] bool has_test_stages_set() const noexcept;
-    [[nodiscard]] constexpr runner::config::TestStage default_test_stages() const noexcept
+    [[nodiscard]] std::vector< runner::config::TestStage > default_test_stages() const noexcept
     {
-        return runner::config::TestStage{};
+        return std::vector< runner::config::TestStage >{};
     }
     void reset_test_stages();
-    void set_test_stages( runner::config::TestStage test_stages );
+    void set_test_stages( std::vector< runner::config::TestStage > const& test_stages );
+    void set_test_stages( std::vector< runner::config::TestStage > && test_stages );
+    void set_test_stages( std::initializer_list< runner::config::TestStage > test_stages_list );
 
 
 private:

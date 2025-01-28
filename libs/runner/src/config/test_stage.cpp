@@ -63,6 +63,13 @@ std::ostream& operator<<( std::ostream& os, TestStage const& s )
     return s.stringify( os, 2, 0, os.flags() & std::ios_base::boolalpha );
 }
 
+bool operator==( TestStage const& lhs, TestStage const& rhs )
+{
+    return lhs.is_empty()
+        ? rhs.is_empty()
+        : ( !rhs.is_empty() && *lhs.data() == *rhs.data() );
+}
+
 // "name" property
 
 [[nodiscard]] std::string_view TestStage::name() const

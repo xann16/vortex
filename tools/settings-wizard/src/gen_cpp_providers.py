@@ -93,7 +93,6 @@ def _add_getter_definitions(ls: list[str], i: int, modules: list[Any], package_n
     i = add_method_definition(ls, i, f'get_any', any_class_name, provider_class_name, [('std::filesystem::path const&', 'key'), ('nlohmann::json *', 'obj_p')], [(0, f'return get< {any_class_name} >( key, obj_p );')], is_nodiscard=True)
     add_blank(ls)
 
-
     return i
 
 def generate_provider_header_file(root_path: str, package_name: str, ctx: dict[str, Any]) -> None:

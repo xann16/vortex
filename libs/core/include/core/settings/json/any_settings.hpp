@@ -28,6 +28,13 @@ public:
 
     friend std::ostream& operator<<( std::ostream& os, AnySettings const& settings );
 
+    friend bool operator==( AnySettings const& lhs, AnySettings const& rhs );
+    friend bool operator!=( AnySettings const& lhs, AnySettings const& rhs )
+    {
+        return !( lhs == rhs );
+    }
+
+
 private:
     nlohmann::json * m_data_p = nullptr;
 };

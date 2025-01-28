@@ -97,6 +97,12 @@ TEST_CASE( "Parameters - merge with empties", "[settings][.][!mayfail]" )
     REQUIRE( false );
 }
 
+TEST_CASE( "Parameters - equality and inequality operators", "[settings][.][!mayfail]" )
+{
+    // TODO - add merge tests for generated setting classes
+    REQUIRE( false );
+}
+
 // "N" property
 
 TEST_CASE( "Parameters - property: \"N\" - getter, default, has_set", "[settings]" )

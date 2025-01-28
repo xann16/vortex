@@ -55,6 +55,12 @@ public:
 
     friend std::ostream& operator<<( std::ostream& os, ExecutionSettings const& s );
 
+    friend bool operator==( ExecutionSettings const& lhs, ExecutionSettings const& rhs );
+    friend bool operator!=( ExecutionSettings const& lhs, ExecutionSettings const& rhs )
+    {
+        return !( lhs == rhs );
+    }
+
     // "job_name" property
     [[nodiscard]] std::string_view job_name() const;
     [[nodiscard]] bool has_job_name_set() const noexcept;

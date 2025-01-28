@@ -20,14 +20,24 @@ BASE_TYPES = {
     'path':    ('std::string_view', '"ptest"'),
 }
 
+
+def _is_array(p: dict[str, Any]) -> bool:
+    return 'is_array' in p and p['is_array']
+
+
 def _get_module_type(name: str, data: dict[str, Any], ctx: dict[str, Any]) -> str:
     from_path : str = [inc['from'] for inc in data['__includes__'] if name in inc['import']['modules']][0] if ('__includes__' in data) else ''
     import_metadata : dict[str, Any] = ctx['defs'][from_path]['__metadata__']
     return '::'.join([import_metadata['package'].lstrip('*')] + import_metadata['namespace'] + [to_pascal_case(name)])
 
 
-def _get_return_type(p: dict[str, Any], data: dict[str, Any], ctx: dict[str, Any]) -> str:
+def _get_return_type(p: dict[str, Any], data: dict[str, Any], ctx: dict[str, Any], skip_array: bool = False) -> str:
+    is_array : bool = _is_array(p)
     property_type : str = p['type']
+
+    if not skip_array and is_array:
+        return f'std::vector< {_get_return_type(p, data, ctx, skip_array=True).replace('_view', '')} >'
+
     if property_type == 'module':
         return _get_module_type(p['module']['name'], data, ctx)
     elif property_type == 'settings':
@@ -39,8 +49,13 @@ def _get_return_type(p: dict[str, Any], data: dict[str, Any], ctx: dict[str, Any
     else:
         raise RuntimeError(f'Unexpected property type: {property_type}.')
 
-def _get_arg_type(p: dict[str, Any], data: dict[str, Any], ctx: dict[str, Any]) -> str:
+def _get_arg_type(p: dict[str, Any], data: dict[str, Any], ctx: dict[str, Any], skip_array: bool = False) -> str:
+    is_array : bool = _is_array(p)
     property_type : str = p['type']
+
+    if not skip_array and is_array:
+        return f'std::vector< {_get_return_type(p, data, ctx, skip_array=True).replace('_view', '')} > const&'
+
     if property_type == 'module':
         return _get_module_type(p['module']['name'], data, ctx)
     elif property_type == 'settings':
@@ -53,9 +68,9 @@ def _get_arg_type(p: dict[str, Any], data: dict[str, Any], ctx: dict[str, Any]) 
         raise RuntimeError(f'Unexpected property type: {property_type}.')
 
 
-def _get_default_value(name: str, p: dict[str, Any], data: dict[str, Any], ctx: dict[str, Any]) -> str:
+def _get_default_value(name: str, p: dict[str, Any], data: dict[str, Any], ctx: dict[str, Any], skip_arrays: bool = False) -> str:
     property_type : str = p['type']
-    default_value : str | None = p['default'] if 'default' in p else None
+    default_value : Any = p['default'] if 'default' in p else None
 
     if isinstance(default_value, str) and default_value.startswith('@'):
         return f'{default_value.lstrip('@')}()'
@@ -67,12 +82,47 @@ def _get_default_value(name: str, p: dict[str, Any], data: dict[str, Any], ctx: 
         if default_value and default_value not in enum_values:
             print(f"WARNING: Invalid default value '{default_value}' for enum '{name}'. Valid values include: {', '.join(enum_values)}. Using first value '{enum_values[0]}' instead.")
             default_value = None
-        return to_pascal_case(p['enum']['name']) + '::' + to_pascal_case(enum_values[0] if not default_value else default_value)
+        return _get_return_type(p, data, ctx) + '::' + to_pascal_case(enum_values[0] if not default_value else default_value)
     elif property_type in BASE_TYPES:
-        default_str : str = f'"{default_value}"' if (property_type == 'string' or property_type == 'path') else str(default_value)
-        return default_str if default_value is not None else (BASE_TYPES[property_type][0] + '{}')
+        default_str : str = '' if default_value is None else (f'"{default_value}"' if (property_type == 'string' or property_type == 'path') else str(default_value))
+        return default_str if default_value is not None else (_get_return_type(p, data, ctx) + '{}')
     else:
         raise RuntimeError(f'Unexpected property type: {property_type}.')
+
+def _get_value_stingification(name: str, property_type: str, is_array: bool, indent: int, is_in_array: bool = False) -> list[(int, str)]:
+    result : list[(int, str)] = []
+
+    line_start : str = f'os << std::setw( indent_size * {"( indent_level + 1 )" if is_in_array else "indent_level"} ) << "" << "{'- ' if is_in_array else f"{name}:"}'
+    if not is_array:
+        getter : str = 'el' if is_in_array else f'{name}()'
+        if property_type in BASE_TYPES:
+            if property_type != 'boolean':
+                result.append((indent, f'{line_start} " << {getter} << \'\\n\';'))
+            else:
+                result.append((indent, f'{line_start} " << ( {getter} ? "true" : "false" ) << \'\\n\';'))
+        elif property_type == 'enum':
+            result.append((indent, f'{line_start} " << to_c_str( {getter} ) << \'\\n\';'))
+        elif property_type in ['settings', 'module']:
+            result.append((indent, f'{line_start}\\n";'))
+            result.append((indent, f'{getter}.stringify( os, indent_size, indent_level + {'2' if is_in_array else '1'}, display_all );'))
+    else:
+        result.append((indent, f'{line_start}";'))
+        result.append((indent, f'auto const& {name}_arr = {name}();'))
+        result.append((indent, ''))
+        result.append((indent, f'if ( {name}_arr.empty() )'))
+        result.append((indent, '{'))
+        result.append((indent + 1, 'os << " <empty>\\n";'))
+        result.append((indent, '}'))
+        result.append((indent, 'else'))
+        result.append((indent, '{'))
+        result.append((indent + 1, 'os << \'\\n\';'))
+        result.append((indent + 1, f'for (auto const& el : {name}_arr)'))
+        result.append((indent + 1, '{'))
+        result.extend(_get_value_stingification(name, property_type, False, indent + 2, is_in_array=True))
+        result.append((indent + 1, '}'))
+        result.append((indent, '}'))
+
+    return result
 
 def get_stringify_body(data: list[str]) -> list[(int, str)]:
     result : list[(int, str)] = []
@@ -88,20 +138,7 @@ def get_stringify_body(data: list[str]) -> list[(int, str)]:
         if not name.startswith('__'):
             result.append((0, f'if ( display_all || has_{name}_set() )'))
             result.append((0, '{'))
-
-            property_type : str = prop['type']
-            line_start : str = f'os << std::setw( indent_size * indent_level ) << "" << "{name}:'
-            if property_type in BASE_TYPES:
-                if property_type != 'boolean':
-                    result.append((1, f'{line_start} " << {name}() << \'\\n\';'))
-                else:
-                    result.append((1, f'{line_start} " << ( {name}() ? "true" : "false" ) << \'\\n\';'))
-            elif (property_type == 'enum'):
-                    result.append((1, f'{line_start} " << to_c_str( {name}() ) << \'\\n\';'))
-            elif (property_type in ['settings', 'module']):
-                    result.append((1, f'{line_start}\\n";'))
-                    result.append((1, f'{name}().stringify( os, indent_size, indent_level + 1, display_all );'))
-
+            result.extend(_get_value_stingification(name, prop['type'], _is_array(prop), 1))
             result.append((0, '}'))
 
     result.append((0, ''))
@@ -109,6 +146,7 @@ def get_stringify_body(data: list[str]) -> list[(int, str)]:
 
     return result
 
+##### GENERAL PROPERTIES #####
 
 ### DEFAULT VALUE
 
@@ -116,7 +154,7 @@ def _add_default_value_declaration(ls: list[str], i: int, name: str, p: dict[str
     return_type : str = _get_return_type(p, data, ctx)
     default_value : str = _get_default_value(name, p, data, ctx)
     body : list[(int, str)] = [(0, f'return {default_value};' )]
-    preq : str = '' if ('default' in p and isinstance(p['default'], str) and p['default'].startswith('@')) else 'constexpr'
+    preq : str = '' if _is_array(p) or ('default' in p and isinstance(p['default'], str) and p['default'].startswith('@')) else 'constexpr'
     return add_method_declaration(ls, i, f'default_{name}', return_type, [], body=body, is_const=True, is_nodiscard=True, is_noexcept=True, is_definition=True, pre_qualifiers=preq)
 
 ### HAS_SET
@@ -149,33 +187,67 @@ def _add_getter_definition(ls: list[str], i: int, class_name: str, name: str, p:
     body.append((0, f'auto it = data()->find( "{name}" );'))
     body.append((0, f'if ( it == data()->end() || it->is_null() ) return default_{name}();'))
 
-    if property_type in ['module', 'settings']:
-        body.append((0, f'return {return_type}' + '{ &( *it ) };'))
-    elif property_type == 'enum':
-        body.append((0, f'return it->template get<{return_type}>();'))
-    elif property_type in BASE_TYPES:
-        if property_type == 'string' or property_type == 'path':
-            body.append((0, 'return std::string_view{' + f' it->template get_ref<std::string const&>() ' + '};'))
+    if not _is_array(p):
+        if property_type in ['module', 'settings']:
+            body.append((0, f'return {return_type}' + '{ &( *it ) };'))
+        elif property_type == 'enum':
+            body.append((0, f'return it->template get< {return_type} >();'))
+        elif property_type in BASE_TYPES:
+            if property_type == 'string' or property_type == 'path':
+                body.append((0, 'return std::string_view{' + f' it->template get_ref<std::string const&>() ' + '};'))
+            else:
+                body.append((0, f'return it->template get< {return_type} >();'))
         else:
-            body.append((0, f'return it->template get<{return_type}>();'))
+            raise RuntimeError(f'Unexpected property type: {property_type}.')
+
     else:
-        raise RuntimeError(f'Unexpected property type: {property_type}.')
+        value_type : str = _get_return_type(p, data, ctx, skip_array=True)
+
+        body.append((0, ''))
+        body.append((0, f'auto result = {return_type}{{}};'))
+        body.append((0, 'result.reserve( it->size() );'))
+        body.append((0, ''))
+        body.append((0, f'auto value_mapping = []( auto& value )'))
+        body.append((0, '{'))
+
+        if property_type in ['module', 'settings']:
+            body.append((1, f'return {value_type}' + '{ &value };'))
+        elif property_type == 'enum':
+            body.append((1, f'return value.template get< {value_type} >();'))
+        elif property_type in BASE_TYPES:
+            return_type = return_type.replace('_view', '')
+            if property_type == 'string' or property_type == 'path':
+                body.append((1, 'return  value.template get< std::string >();'))
+            else:
+                body.append((1, f'return value.template get< {value_type} >();'))
+        else:
+            raise RuntimeError(f'Unexpected property type: {property_type}.')
+
+        body.append((0, '};'))
+        body.append((0, ''))
+        body.append((0, 'std::transform( it->begin(), it->end(), std::back_inserter( result ), value_mapping );'))
+        body.append((0, 'return result;'))
 
     return add_method_definition(ls, i, name, return_type, class_name, [], body, is_const=True, is_nodiscard=True)
 
 def _add_getter_test(ls: list[str], i: int, class_name: str, name: str, p: dict[str, Any], namespace: list[str], data: dict[str, Any], ctx: dict[str, Any]) -> int:
+    is_array : bool = _is_array(p)
     return_type : str = _get_return_type(p, data, ctx)
     property_type : str = p['type']
 
     i = begin_test_case(ls, i, f'{class_name} - property: \\\"{name}\\\" - getter, default, has_set', 'settings')
 
     if property_type in BASE_TYPES:
-        i = add_line(ls, i, 'nlohmann::json obj = { { "' + name + f'", {BASE_TYPES[property_type][1]}' + ' } };' )
+        val_str : str = f'{{ {BASE_TYPES[property_type][1]}, {BASE_TYPES[property_type][1]}, {BASE_TYPES[property_type][1]} }}' if is_array else BASE_TYPES[property_type][1]
+        i = add_line(ls, i, 'nlohmann::json obj = { { "' + name + f'", {val_str}' + ' } };' )
     elif property_type == 'enum':
-        i = add_line(ls, i, 'nlohmann::json obj = { { "' + name + f'", "{p['enum']['values'][-1]}"' + ' } };' )
+        val_str : str = f'{{ {", ".join(str(val) for val in p['enum']['values'])} }}' if is_array else p['enum']['values'][-1]
+        i = add_line(ls, i, 'nlohmann::json obj = { { "' + name + f'", "{val_str}"' + ' } };' )
     elif property_type in ['module', 'settings']:
         # TODO - specific sets for specific setting classes (i.e. module)
-        i = add_line(ls, i, 'nlohmann::json obj = { { "' + name + '", { { "x", "y" } } } };' )
+        init_str : str = '{ { "x", "y"} }'
+        full_init_str : str = ('{ ' + ', '.join([init_str, init_str, init_str]) + ' }') if is_array else init_str
+        i = add_line(ls, i, 'nlohmann::json obj = { { "' + name + '", ' + full_init_str + ' } };' )
     else:
         raise RuntimeError(f'Unexpected property type: {property_type}.')
 
@@ -187,28 +259,58 @@ def _add_getter_test(ls: list[str], i: int, class_name: str, name: str, p: dict[
     i = add_line(ls, i, f'auto default_value = s_null.{name}();')
     add_blank(ls)
 
-    if property_type in ['module', 'settings']:
-        i = add_require(ls, i, '!value.is_empty()')
-        i = add_require(ls, i, 'value.data()->at( "x" ) == "y"')
-        i = add_require(ls, i, 'default_value.is_empty()')
-    elif property_type == 'enum':
-        i = add_require(ls, i, f'value == {'::'.join(namespace)}::{to_pascal_case(p['enum']['name'])}::{to_pascal_case(p['enum']['values'][-1])}')
-        i = add_require(ls, i, f'default_value == {'::'.join(namespace)}::{_get_default_value(name, p, data, ctx)}')
-    elif property_type in BASE_TYPES:
-        is_fp : bool = property_type in ['f32', 'f64', 'real']
-        val_str : str = 'value' if property_type in ['boolean', 'string', 'path'] else f'static_cast< vortex::{BASE_TYPES[property_type][0]} >( value )'
-        def_val_str : str = 'default_value' if property_type in ['boolean', 'string', 'path'] else f'static_cast< vortex::{BASE_TYPES[property_type][0]} >( default_value )'
-        default_value : str = _get_default_value(name, p, data, ctx)
-        def_prefix = 's_null.' if ('default' in p and isinstance(p['default'], str) and p['default'].startswith('@')) else ('' if ('default' in p or property_type in ['string', 'path', 'boolean']) else 'vortex::')
+    if not is_array:
+        if property_type in ['module', 'settings']:
+            i = add_require(ls, i, '!value.is_empty()')
+            i = add_require(ls, i, 'value.data()->at( "x" ) == "y"')
+            i = add_require(ls, i, 'default_value.is_empty()')
+        elif property_type == 'enum':
+            i = add_require(ls, i, f'value == {'::'.join(namespace)}::{to_pascal_case(p['enum']['name'])}::{to_pascal_case(p['enum']['values'][-1])}')
+            i = add_require(ls, i, f'default_value == {'::'.join(namespace)}::{_get_default_value(name, p, data, ctx)}')
+        elif property_type in BASE_TYPES:
+            is_fp : bool = property_type in ['f32', 'f64', 'real']
+            val_str : str = 'value' if property_type in ['boolean', 'string', 'path'] else f'static_cast< vortex::{BASE_TYPES[property_type][0]} >( value )'
+            def_val_str : str = 'default_value' if property_type in ['boolean', 'string', 'path'] else f'static_cast< vortex::{BASE_TYPES[property_type][0]} >( default_value )'
+            default_value : str = _get_default_value(name, p, data, ctx)
+            def_prefix = 's_null.' if ('default' in p and isinstance(p['default'], str) and p['default'].startswith('@')) else ('' if ('default' in p or property_type in ['string', 'path', 'boolean']) else 'vortex::')
 
-        if is_fp:
-            i = add_require(ls, i, f'{val_str}, Catch::Matchers::WithinAbs( {BASE_TYPES[property_type][1]}, {FP_CMP_EPS} )', suffix='that')
-            i = add_require(ls, i, f'{def_val_str}, Catch::Matchers::WithinAbs( {def_prefix}{default_value}, {FP_CMP_EPS} )', suffix='that')
+            if is_fp:
+                i = add_require(ls, i, f'{val_str}, Catch::Matchers::WithinAbs( {BASE_TYPES[property_type][1]}, {FP_CMP_EPS} )', suffix='that')
+                i = add_require(ls, i, f'{def_val_str}, Catch::Matchers::WithinAbs( {def_prefix}{default_value}, {FP_CMP_EPS} )', suffix='that')
+            else:
+                i = add_require(ls, i, f'{val_str} == {BASE_TYPES[property_type][1]}')
+                i = add_require(ls, i, f'{def_val_str} == {def_prefix}{default_value}')
         else:
-            i = add_require(ls, i, f'{val_str} == {BASE_TYPES[property_type][1]}')
-            i = add_require(ls, i, f'{def_val_str} == {def_prefix}{default_value}')
+            raise RuntimeError(f'Unexpected property type: {property_type}.')
+
     else:
-        raise RuntimeError(f'Unexpected property type: {property_type}.')
+        if property_type in ['module', 'settings']:
+            i = add_require(ls, i, '!value.empty()')
+            i = add_require(ls, i, 'value.size() == 3ull')
+            i = add_require(ls, i, '!value[ 0 ].is_empty()')
+            i = add_require(ls, i, 'value[ 0 ].data()->at( "x" ) == "y"')
+            i = add_require(ls, i, '!value[ 1 ].is_empty()')
+            i = add_require(ls, i, 'value[ 1 ].data()->at( "x" ) == "y"')
+            i = add_require(ls, i, '!value[ 2 ].is_empty()')
+            i = add_require(ls, i, 'value[ 2 ].data()->at( "x" ) == "y"')
+            i = add_require(ls, i, 'default_value.empty()')
+        elif property_type == 'enum':
+            for ii, ename in enumerate(p['enum']['values']):
+                i = add_require(ls, i, f'value.size() == {len(p['enum']['values'])}ull')
+                i = add_require(ls, i, f'value[ {ii} ] == {'::'.join(namespace)}::{to_pascal_case(p['enum']['name'])}::{to_pascal_case(ename)}')
+            i = add_require(ls, i, f'default_value.empty()')
+        elif property_type in BASE_TYPES:
+            is_fp : bool = property_type in ['f32', 'f64', 'real']
+            val_str : str = 'value[ XXXXX ]' if property_type in ['boolean', 'string', 'path'] else f'static_cast< vortex::{BASE_TYPES[property_type][0]} >( value[ XXXXX ] )'
+            i = add_require(ls, i, 'value.size() == 3ull')
+            for ii in [0, 1, 2]:
+                if is_fp:
+                    i = add_require(ls, i, f'{val_str.replace('XXXXX', str(ii))}, Catch::Matchers::WithinAbs( {BASE_TYPES[property_type][1]}, {FP_CMP_EPS} )', suffix='that')
+                else:
+                    i = add_require(ls, i, f'{val_str.replace('XXXXX', str(ii))} == {BASE_TYPES[property_type][1]}')
+            i = add_require(ls, i, f'default_value.empty()')
+        else:
+            raise RuntimeError(f'Unexpected property type: {property_type}.')
 
     add_blank(ls)
     add_require(ls, i, f's.has_{name}_set()')
@@ -229,17 +331,25 @@ def _add_reset_definition(ls: list[str], i: int, class_name: str, name: str, p: 
 ### SETTERS
 
 def _add_setter_declaration(ls: list[str], i: int, name: str, p: dict[str, Any], data: dict[str, Any], ctx: dict[str, Any]) -> int:
+    is_array : bool = _is_array(p)
     arg_type : str = _get_arg_type(p, data, ctx)
-    if arg_type != 'std::string_view':
-        i = add_method_declaration(ls, i, f'set_{name}', 'void', [(arg_type, name)])
+
+    if not is_array:
+        if arg_type != 'std::string_view':
+            i = add_method_declaration(ls, i, f'set_{name}', 'void', [(arg_type, name)])
+        else:
+            i = add_method_declaration(ls, i, f'set_{name}', 'void', [('std::string const&', name)])
+            i = add_method_declaration(ls, i, f'set_{name}', 'void', [('std::string &&', name)])
+            i = add_method_declaration(ls, i, f'set_{name}', 'void', [('std::string_view', name)], is_definition=True, body=[(0, f'set_{name}( std::string{{ {name} }} );')])
+            i = add_method_declaration(ls, i, f'set_{name}', 'void', [('char const *', name)], is_definition=True, body=[(0, f'set_{name}( std::string{{ {name} }} );')])
     else:
-        i = add_method_declaration(ls, i, f'set_{name}', 'void', [('std::string const&', name)])
-        i = add_method_declaration(ls, i, f'set_{name}', 'void', [('std::string &&', name)])
-        i = add_method_declaration(ls, i, f'set_{name}', 'void', [('std::string_view', name)], is_definition=True, body=[(0, f'set_{name}( std::string{{ {name} }} );')])
-        i = add_method_declaration(ls, i, f'set_{name}', 'void', [('char const *', name)], is_definition=True, body=[(0, f'set_{name}( std::string{{ {name} }} );')])
+            i = add_method_declaration(ls, i, f'set_{name}', 'void', [(arg_type, name)])
+            i = add_method_declaration(ls, i, f'set_{name}', 'void', [(arg_type.replace('const', '&'), name)])
+            i = add_method_declaration(ls, i, f'set_{name}', 'void', [(arg_type.replace('vector', 'initializer_list').replace(' const&', ''), name + '_list')])
     return i
 
 def _add_setter_definition(ls: list[str], i: int, class_name: str, name: str, p: dict[str, Any], data: dict[str, Any], ctx: dict[str, Any]) -> int:
+    is_array : bool = _is_array(p)
     arg_type : str = _get_arg_type(p, data, ctx)
     property_type : str = p['type']
 
@@ -247,29 +357,48 @@ def _add_setter_definition(ls: list[str], i: int, class_name: str, name: str, p:
 
     body.append((0, f'if ( is_empty() ) throw std::runtime_error{{ "Cannot set value for property \\"{name}\\". Object is empty." }};'))
 
-    if property_type in ['module', 'settings']:
-        body.append((0, f'if ( {name}.is_empty() )'))
-        body.append((0, '{'))
-        body.append((1, f'reset_{name}();'))
-        body.append((0, '}'))
-        body.append((0, 'else'))
-        body.append((0, '{'))
-        body.append((1, f'data()->operator[]( "{name}" ) = *( {name}.data() );'))
-        body.append((0, '}'))
-    elif property_type in BASE_TYPES or property_type == 'enum':
-        body.append((0, f'data()->operator[]( "{name}" ) = {name};'))
-    else:
-        raise RuntimeError(f'Unexpected property type: {property_type}.')
+    if not is_array:
+        if property_type in ['module', 'settings']:
+            body.append((0, f'if ( {name}.is_empty() )'))
+            body.append((0, '{'))
+            body.append((1, f'reset_{name}();'))
+            body.append((0, '}'))
+            body.append((0, 'else'))
+            body.append((0, '{'))
+            body.append((1, f'data()->operator[]( "{name}" ) = *( {name}.data() );'))
+            body.append((0, '}'))
+        elif property_type in BASE_TYPES or property_type == 'enum':
+            body.append((0, f'data()->operator[]( "{name}" ) = {name};'))
+        else:
+            raise RuntimeError(f'Unexpected property type: {property_type}.')
 
-    if arg_type == 'std::string_view':
-        i = add_method_definition(ls, i, f'set_{name}', 'void', class_name, [('std::string const&', name)], body)
-        i = add_method_definition(ls, i, f'set_{name}', 'void', class_name, [('std::string &&', name)], body)
+        if arg_type == 'std::string_view':
+            i = add_method_definition(ls, i, f'set_{name}', 'void', class_name, [('std::string const&', name)], body)
+            i = add_method_definition(ls, i, f'set_{name}', 'void', class_name, [('std::string &&', name)], body)
+        else:
+            i = add_method_definition(ls, i, f'set_{name}', 'void', class_name, [(arg_type, name)], body)
+
     else:
+        if property_type in ['module', 'settings']:
+            body.append((0, f'data()->operator[]( "{name}" ) = nlohmann::json::array();'))
+            body.append((0, f'auto& {name}_arr =  data()->operator[]( "{name}" );'))
+            body.append((0, f'for ( auto el : {name} )'))
+            body.append((0, '{'))
+            body.append((1, f'{name}_arr.emplace_back( *( el.data() ) );'))
+            body.append((0, '}'))
+        elif property_type in BASE_TYPES or property_type == 'enum':
+            body.append((0, f'data()->operator[]( "{name}" ) = {name};'))
+        else:
+            raise RuntimeError(f'Unexpected property type: {property_type}.')
+
         i = add_method_definition(ls, i, f'set_{name}', 'void', class_name, [(arg_type, name)], body)
+        i = add_method_definition(ls, i, f'set_{name}', 'void', class_name, [(arg_type.replace('const', '&'), name)], body)
+        i = add_method_definition(ls, i, f'set_{name}', 'void', class_name, [(arg_type.replace('vector', 'initializer_list').replace(' const&', ''), name)], body)
 
     return i
 
 def _add_setter_test(ls: list[str], i: int, class_name: str, name: str, p: dict[str, Any], namespace: list[str], data: dict[str, Any], ctx: dict[str, Any]) -> int:
+    is_array : bool = _is_array(p)
     arg_type : str = _get_arg_type(p, data, ctx)
     property_type : str = p['type']
 
@@ -280,20 +409,36 @@ def _add_setter_test(ls: list[str], i: int, class_name: str, name: str, p: dict[
     i = add_line(ls, i, 'auto s_null = ' + '::'.join(namespace) + '::' + class_name + '{};')
     add_blank(ls)
 
-    if property_type in BASE_TYPES:
-        if arg_type == 'std::string_view':
-            i = add_line(ls, i, f'const auto sv = std::string_view{{ "sv" }};')
-            i = add_line(ls, i, f'const auto str = std::string{{ "str" }};')
-            i = add_line(ls, i, f'const auto cstr = "cstr";')
-        else:
-            i = add_line(ls, i, f'const auto value = {BASE_TYPES[property_type][1]};')
-    if property_type == 'enum':
-        i = add_line(ls, i, f'const auto value = {'::'.join(namespace)}::{to_pascal_case(p['enum']['name'])}::{to_pascal_case(p['enum']['values'][-1])};')
-    elif property_type in ['module', 'settings']:
-        # TODO - specific sets for specific setting classes (i.e. module)
-        i = add_line(ls, i, f'nlohmann::json vobj = nlohmann::json::object();')
-        i = add_line(ls, i, f'const auto value = vortex::{arg_type}{{ &vobj }};')
-        i = add_line(ls, i, f'const auto nvalue = vortex::{arg_type}{{}};')
+    if not is_array:
+        if property_type in BASE_TYPES:
+            if arg_type == 'std::string_view':
+                i = add_line(ls, i, f'const auto sv = std::string_view{{ "sv" }};')
+                i = add_line(ls, i, f'const auto str = std::string{{ "str" }};')
+                i = add_line(ls, i, f'const auto cstr = "cstr";')
+            else:
+                i = add_line(ls, i, f'const auto value = {BASE_TYPES[property_type][1]};')
+        if property_type == 'enum':
+            i = add_line(ls, i, f'const auto value = {'::'.join(namespace)}::{to_pascal_case(p['enum']['name'])}::{to_pascal_case(p['enum']['values'][-1])};')
+        elif property_type in ['module', 'settings']:
+            # TODO - specific sets for specific setting classes (i.e. module)
+            i = add_line(ls, i, f'nlohmann::json vobj = nlohmann::json::object();')
+            i = add_line(ls, i, f'const auto value = vortex::{arg_type}{{ &vobj }};')
+            i = add_line(ls, i, f'const auto nvalue = vortex::{arg_type}{{}};')
+    else:
+        list_of_values_str = ''
+        value_type : str = _get_return_type(p, data, ctx)
+        if property_type in BASE_TYPES:
+            list_of_values_str = '{ ' + BASE_TYPES[property_type][1] + ', ' + BASE_TYPES[property_type][1] + ', ' + BASE_TYPES[property_type][1] + ' }'
+        if property_type == 'enum':
+            enum_value_prefix : str = '::'.join(namespace) + '::' + to_pascal_case(p['enum']['name']) + '::'
+            list_of_values_str = '{ ' + ', '.join(f'{enum_value_prefix}{to_pascal_case(ename)}' for ename in p['enum']['values']) + ' }'
+        elif property_type in ['module', 'settings']:
+            # TODO - specific sets for specific setting classes (i.e. module)
+            i = add_line(ls, i, f'nlohmann::json vobj = nlohmann::json::object();')
+            value_str : str = f'vortex::{_get_arg_type(p, data, ctx, skip_array=True)}{{ &vobj }}'
+            list_of_values_str : str = '{ ' + ', '.join([value_str, value_str, value_str]) + ' }'
+            value_type = value_type.replace('vector< ', 'vector< vortex::')
+        i = add_line(ls, i, f'const auto value = {value_type}{list_of_values_str};')
     add_blank(ls)
 
     i = add_require(ls, i, f'!s.has_{name}_set()')
@@ -304,54 +449,83 @@ def _add_setter_test(ls: list[str], i: int, class_name: str, name: str, p: dict[
     i = add_require(ls, i, f's_null.reset_{name}()', suffix='nothrow')
     add_blank(ls)
 
-    if arg_type == 'std::string_view':
-        i = add_require(ls, i, f's_null.set_{name}( sv ), std::runtime_error', suffix='throws_as')
-        i = add_require(ls, i, f's_null.set_{name}( str ), std::runtime_error', suffix='throws_as')
-        i = add_require(ls, i, f's_null.set_{name}( cstr ), std::runtime_error', suffix='throws_as')
-        i = add_require(ls, i, f's_null.set_{name}( std::string{{ "mvstr" }} ), std::runtime_error', suffix='throws_as')
+    if not is_array:
+        if arg_type == 'std::string_view':
+            i = add_require(ls, i, f's_null.set_{name}( sv ), std::runtime_error', suffix='throws_as')
+            i = add_require(ls, i, f's_null.set_{name}( str ), std::runtime_error', suffix='throws_as')
+            i = add_require(ls, i, f's_null.set_{name}( cstr ), std::runtime_error', suffix='throws_as')
+            i = add_require(ls, i, f's_null.set_{name}( std::string{{ "mvstr" }} ), std::runtime_error', suffix='throws_as')
+        else:
+            i = add_require(ls, i, f's_null.set_{name}( value ), std::runtime_error', suffix='throws_as')
     else:
         i = add_require(ls, i, f's_null.set_{name}( value ), std::runtime_error', suffix='throws_as')
+        i = add_require(ls, i, f's_null.set_{name}( {value_type}{{ value }} ), std::runtime_error', suffix='throws_as')
+        i = add_require(ls, i, f's_null.set_{name}( {list_of_values_str} ), std::runtime_error', suffix='throws_as')
     add_blank(ls)
 
-    if arg_type == 'std::string_view':
-        i = add_line(ls, i, f's.set_{name}( sv );')
-        i = add_require(ls, i, f's.has_{name}_set()')
-        i = add_require(ls, i, f's.{name}() == "sv"')
-        add_blank(ls)
+    if not is_array:
+        if arg_type == 'std::string_view':
+            i = add_line(ls, i, f's.set_{name}( sv );')
+            i = add_require(ls, i, f's.has_{name}_set()')
+            i = add_require(ls, i, f's.{name}() == "sv"')
+            add_blank(ls)
 
-        i = add_line(ls, i, f's.set_{name}( str );')
-        i = add_require(ls, i, f's.has_{name}_set()')
-        i = add_require(ls, i, f's.{name}() == "str"')
-        add_blank(ls)
+            i = add_line(ls, i, f's.set_{name}( str );')
+            i = add_require(ls, i, f's.has_{name}_set()')
+            i = add_require(ls, i, f's.{name}() == "str"')
+            add_blank(ls)
 
-        i = add_line(ls, i, f's.set_{name}( cstr );')
-        i = add_require(ls, i, f's.has_{name}_set()')
-        i = add_require(ls, i, f's.{name}() == "cstr"')
-        add_blank(ls)
+            i = add_line(ls, i, f's.set_{name}( cstr );')
+            i = add_require(ls, i, f's.has_{name}_set()')
+            i = add_require(ls, i, f's.{name}() == "cstr"')
+            add_blank(ls)
 
-        i = add_line(ls, i, f's.set_{name}( std::string{{ "mvstr" }} );')
-        i = add_require(ls, i, f's.has_{name}_set()')
-        i = add_require(ls, i, f's.{name}() == "mvstr"')
-        add_blank(ls)
-    else:
-        i = add_line(ls, i, f's.set_{name}( value );')
-        i = add_require(ls, i, f's.has_{name}_set()')
-        if property_type in ['module', 'settings']:
-            i = add_require(ls, i, f'*( s.{name}().data() ) == nlohmann::json::object()')
-        elif property_type in ['f32', 'f64', 'real']:
-            i = add_require(ls, i, f's.{name}(), Catch::Matchers::WithinAbs( value, {FP_CMP_EPS} )', suffix='that')
+            i = add_line(ls, i, f's.set_{name}( std::string{{ "mvstr" }} );')
+            i = add_require(ls, i, f's.has_{name}_set()')
+            i = add_require(ls, i, f's.{name}() == "mvstr"')
+            add_blank(ls)
         else:
-            i = add_require(ls, i, f's.{name}() == value')
-        add_blank(ls)
+            i = add_line(ls, i, f's.set_{name}( value );')
+            i = add_require(ls, i, f's.has_{name}_set()')
+            if property_type in ['module', 'settings']:
+                i = add_require(ls, i, f'*( s.{name}().data() ) == nlohmann::json::object()')
+            elif property_type in ['f32', 'f64', 'real']:
+                i = add_require(ls, i, f's.{name}(), Catch::Matchers::WithinAbs( value, {FP_CMP_EPS} )', suffix='that')
+            else:
+                i = add_require(ls, i, f's.{name}() == value')
+            add_blank(ls)
 
-    if property_type in ['module', 'settings']:
-        i = add_line(ls, i, f's.set_{name}( nvalue );')
+        if property_type in ['module', 'settings']:
+            i = add_line(ls, i, f's.set_{name}( nvalue );')
+            i = add_require(ls, i, f'!s.has_{name}_set()')
+            add_blank(ls)
+            i = add_line(ls, i, f's.set_{name}( value );')
+            add_blank(ls)
+
+    else:
+        i = add_line(ls, i, f's.reset_{name}();')
         i = add_require(ls, i, f'!s.has_{name}_set()')
         add_blank(ls)
         i = add_line(ls, i, f's.set_{name}( value );')
+        i = add_require(ls, i, f's.has_{name}_set()')
+        i = add_require(ls, i, f's.{name}() == value')
         add_blank(ls)
 
+        i = add_line(ls, i, f's.reset_{name}();')
+        i = add_require(ls, i, f'!s.has_{name}_set()')
+        add_blank(ls)
+        i = add_line(ls, i, f's.set_{name}( {value_type}{{ value }} );')
+        i = add_require(ls, i, f's.has_{name}_set()')
+        i = add_require(ls, i, f's.{name}() == value')
+        add_blank(ls)
 
+        i = add_line(ls, i, f's.reset_{name}();')
+        i = add_require(ls, i, f'!s.has_{name}_set()')
+        add_blank(ls)
+        i = add_line(ls, i, f's.set_{name}( {list_of_values_str} );')
+        i = add_require(ls, i, f's.has_{name}_set()')
+        i = add_require(ls, i, f's.{name}() == value')
+        add_blank(ls)
 
     i = add_line(ls, i, f's.reset_{name}();')
     i = add_require(ls, i, f'!s.has_{name}_set()')
@@ -360,6 +534,9 @@ def _add_setter_test(ls: list[str], i: int, class_name: str, name: str, p: dict[
     i = end_test_case(ls, i)
 
     return i
+
+##### ARRAY-SPECIFIC PROPERTIES - SIMPLE #####
+
 
 
 ###########

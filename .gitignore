@@ -33,6 +33,7 @@
 
 # Custom
 build/*
+Testing/*
 CMakeUserPresets.json
 .vscode/*
 

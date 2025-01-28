@@ -180,6 +180,13 @@ std::ostream& operator<<( std::ostream& os, Parameters const& s )
     return s.stringify( os, 2, 0, os.flags() & std::ios_base::boolalpha );
 }
 
+bool operator==( Parameters const& lhs, Parameters const& rhs )
+{
+    return lhs.is_empty()
+        ? rhs.is_empty()
+        : ( !rhs.is_empty() && *lhs.data() == *rhs.data() );
+}
+
 // "N" property
 
 [[nodiscard]] i32 Parameters::N() const
@@ -187,7 +194,7 @@ std::ostream& operator<<( std::ostream& os, Parameters const& s )
     if ( is_empty() ) return default_N();
     auto it = data()->find( "N" );
     if ( it == data()->end() || it->is_null() ) return default_N();
-    return it->template get<i32>();
+    return it->template get< i32 >();
 }
 
 [[nodiscard]] bool Parameters::has_N_set() const noexcept
@@ -216,7 +223,7 @@ void Parameters::set_N( i32 N )
     if ( is_empty() ) return default_N_subdomain();
     auto it = data()->find( "N_subdomain" );
     if ( it == data()->end() || it->is_null() ) return default_N_subdomain();
-    return it->template get<i32>();
+    return it->template get< i32 >();
 }
 
 [[nodiscard]] bool Parameters::has_N_subdomain_set() const noexcept
@@ -245,7 +252,7 @@ void Parameters::set_N_subdomain( i32 N_subdomain )
     if ( is_empty() ) return default_Nt_max();
     auto it = data()->find( "Nt_max" );
     if ( it == data()->end() || it->is_null() ) return default_Nt_max();
-    return it->template get<i32>();
+    return it->template get< i32 >();
 }
 
 [[nodiscard]] bool Parameters::has_Nt_max_set() const noexcept
@@ -274,7 +281,7 @@ void Parameters::set_Nt_max( i32 Nt_max )
     if ( is_empty() ) return default_dt();
     auto it = data()->find( "dt" );
     if ( it == data()->end() || it->is_null() ) return default_dt();
-    return it->template get<real>();
+    return it->template get< real >();
 }
 
 [[nodiscard]] bool Parameters::has_dt_set() const noexcept
@@ -303,7 +310,7 @@ void Parameters::set_dt( real dt )
     if ( is_empty() ) return default_rnu();
     auto it = data()->find( "rnu" );
     if ( it == data()->end() || it->is_null() ) return default_rnu();
-    return it->template get<real>();
+    return it->template get< real >();
 }
 
 [[nodiscard]] bool Parameters::has_rnu_set() const noexcept
@@ -332,7 +339,7 @@ void Parameters::set_rnu( real rnu )
     if ( is_empty() ) return default_t_init();
     auto it = data()->find( "t_init" );
     if ( it == data()->end() || it->is_null() ) return default_t_init();
-    return it->template get<real>();
+    return it->template get< real >();
 }
 
 [[nodiscard]] bool Parameters::has_t_init_set() const noexcept
@@ -361,7 +368,7 @@ void Parameters::set_t_init( real t_init )
     if ( is_empty() ) return default_is_flow_generated();
     auto it = data()->find( "is_flow_generated" );
     if ( it == data()->end() || it->is_null() ) return default_is_flow_generated();
-    return it->template get<bool>();
+    return it->template get< bool >();
 }
 
 [[nodiscard]] bool Parameters::has_is_flow_generated_set() const noexcept
@@ -390,7 +397,7 @@ void Parameters::set_is_flow_generated( bool is_flow_generated )
     if ( is_empty() ) return default_deterministic_seed();
     auto it = data()->find( "deterministic_seed" );
     if ( it == data()->end() || it->is_null() ) return default_deterministic_seed();
-    return it->template get<u64>();
+    return it->template get< u64 >();
 }
 
 [[nodiscard]] bool Parameters::has_deterministic_seed_set() const noexcept
@@ -419,7 +426,7 @@ void Parameters::set_deterministic_seed( u64 deterministic_seed )
     if ( is_empty() ) return default_input_velo_index();
     auto it = data()->find( "input_velo_index" );
     if ( it == data()->end() || it->is_null() ) return default_input_velo_index();
-    return it->template get<i32>();
+    return it->template get< i32 >();
 }
 
 [[nodiscard]] bool Parameters::has_input_velo_index_set() const noexcept
@@ -448,7 +455,7 @@ void Parameters::set_input_velo_index( i32 input_velo_index )
     if ( is_empty() ) return default_forcing_type();
     auto it = data()->find( "forcing_type" );
     if ( it == data()->end() || it->is_null() ) return default_forcing_type();
-    return it->template get<ForcingType>();
+    return it->template get< ForcingType >();
 }
 
 [[nodiscard]] bool Parameters::has_forcing_type_set() const noexcept
@@ -477,7 +484,7 @@ void Parameters::set_forcing_type( ForcingType forcing_type )
     if ( is_empty() ) return default_deterministic_forcing_k_1();
     auto it = data()->find( "deterministic_forcing_k_1" );
     if ( it == data()->end() || it->is_null() ) return default_deterministic_forcing_k_1();
-    return it->template get<real>();
+    return it->template get< real >();
 }
 
 [[nodiscard]] bool Parameters::has_deterministic_forcing_k_1_set() const noexcept
@@ -506,7 +513,7 @@ void Parameters::set_deterministic_forcing_k_1( real deterministic_forcing_k_1 )
     if ( is_empty() ) return default_deterministic_forcing_k_2();
     auto it = data()->find( "deterministic_forcing_k_2" );
     if ( it == data()->end() || it->is_null() ) return default_deterministic_forcing_k_2();
-    return it->template get<real>();
+    return it->template get< real >();
 }
 
 [[nodiscard]] bool Parameters::has_deterministic_forcing_k_2_set() const noexcept
@@ -535,7 +542,7 @@ void Parameters::set_deterministic_forcing_k_2( real deterministic_forcing_k_2 )
     if ( is_empty() ) return default_stochastic_seed();
     auto it = data()->find( "stochastic_seed" );
     if ( it == data()->end() || it->is_null() ) return default_stochastic_seed();
-    return it->template get<u64>();
+    return it->template get< u64 >();
 }
 
 [[nodiscard]] bool Parameters::has_stochastic_seed_set() const noexcept
@@ -564,7 +571,7 @@ void Parameters::set_stochastic_seed( u64 stochastic_seed )
     if ( is_empty() ) return default_stats_output_interval();
     auto it = data()->find( "stats_output_interval" );
     if ( it == data()->end() || it->is_null() ) return default_stats_output_interval();
-    return it->template get<i32>();
+    return it->template get< i32 >();
 }
 
 [[nodiscard]] bool Parameters::has_stats_output_interval_set() const noexcept
@@ -593,7 +600,7 @@ void Parameters::set_stats_output_interval( i32 stats_output_interval )
     if ( is_empty() ) return default_spectrum_output_interval();
     auto it = data()->find( "spectrum_output_interval" );
     if ( it == data()->end() || it->is_null() ) return default_spectrum_output_interval();
-    return it->template get<i32>();
+    return it->template get< i32 >();
 }
 
 [[nodiscard]] bool Parameters::has_spectrum_output_interval_set() const noexcept
@@ -622,7 +629,7 @@ void Parameters::set_spectrum_output_interval( i32 spectrum_output_interval )
     if ( is_empty() ) return default_is_stats_output_extended();
     auto it = data()->find( "is_stats_output_extended" );
     if ( it == data()->end() || it->is_null() ) return default_is_stats_output_extended();
-    return it->template get<bool>();
+    return it->template get< bool >();
 }
 
 [[nodiscard]] bool Parameters::has_is_stats_output_extended_set() const noexcept
@@ -651,7 +658,7 @@ void Parameters::set_is_stats_output_extended( bool is_stats_output_extended )
     if ( is_empty() ) return default_rho_part();
     auto it = data()->find( "rho_part" );
     if ( it == data()->end() || it->is_null() ) return default_rho_part();
-    return it->template get<real>();
+    return it->template get< real >();
 }
 
 [[nodiscard]] bool Parameters::has_rho_part_set() const noexcept
@@ -680,7 +687,7 @@ void Parameters::set_rho_part( real rho_part )
     if ( is_empty() ) return default_rho_fluid();
     auto it = data()->find( "rho_fluid" );
     if ( it == data()->end() || it->is_null() ) return default_rho_fluid();
-    return it->template get<real>();
+    return it->template get< real >();
 }
 
 [[nodiscard]] bool Parameters::has_rho_fluid_set() const noexcept
@@ -709,7 +716,7 @@ void Parameters::set_rho_fluid( real rho_fluid )
     if ( is_empty() ) return default_eta_k_init();
     auto it = data()->find( "eta_k_init" );
     if ( it == data()->end() || it->is_null() ) return default_eta_k_init();
-    return it->template get<real>();
+    return it->template get< real >();
 }
 
 [[nodiscard]] bool Parameters::has_eta_k_init_set() const noexcept
@@ -738,7 +745,7 @@ void Parameters::set_eta_k_init( real eta_k_init )
     if ( is_empty() ) return default_tau_k_init();
     auto it = data()->find( "tau_k_init" );
     if ( it == data()->end() || it->is_null() ) return default_tau_k_init();
-    return it->template get<real>();
+    return it->template get< real >();
 }
 
 [[nodiscard]] bool Parameters::has_tau_k_init_set() const noexcept
@@ -767,7 +774,7 @@ void Parameters::set_tau_k_init( real tau_k_init )
     if ( is_empty() ) return default_shell_thickness();
     auto it = data()->find( "shell_thickness" );
     if ( it == data()->end() || it->is_null() ) return default_shell_thickness();
-    return it->template get<real>();
+    return it->template get< real >();
 }
 
 [[nodiscard]] bool Parameters::has_shell_thickness_set() const noexcept
@@ -796,7 +803,7 @@ void Parameters::set_shell_thickness( real shell_thickness )
     if ( is_empty() ) return default_epsilon_env();
     auto it = data()->find( "epsilon_env" );
     if ( it == data()->end() || it->is_null() ) return default_epsilon_env();
-    return it->template get<real>();
+    return it->template get< real >();
 }
 
 [[nodiscard]] bool Parameters::has_epsilon_env_set() const noexcept
@@ -825,7 +832,7 @@ void Parameters::set_epsilon_env( real epsilon_env )
     if ( is_empty() ) return default_nu_fluid();
     auto it = data()->find( "nu_fluid" );
     if ( it == data()->end() || it->is_null() ) return default_nu_fluid();
-    return it->template get<real>();
+    return it->template get< real >();
 }
 
 [[nodiscard]] bool Parameters::has_nu_fluid_set() const noexcept
@@ -854,7 +861,7 @@ void Parameters::set_nu_fluid( real nu_fluid )
     if ( is_empty() ) return default_gravity();
     auto it = data()->find( "gravity" );
     if ( it == data()->end() || it->is_null() ) return default_gravity();
-    return it->template get<real>();
+    return it->template get< real >();
 }
 
 [[nodiscard]] bool Parameters::has_gravity_set() const noexcept
@@ -883,7 +890,7 @@ void Parameters::set_gravity( real gravity )
     if ( is_empty() ) return default_is_part_generated();
     auto it = data()->find( "is_part_generated" );
     if ( it == data()->end() || it->is_null() ) return default_is_part_generated();
-    return it->template get<bool>();
+    return it->template get< bool >();
 }
 
 [[nodiscard]] bool Parameters::has_is_part_generated_set() const noexcept
@@ -912,7 +919,7 @@ void Parameters::set_is_part_generated( bool is_part_generated )
     if ( is_empty() ) return default_is_part_overlapping();
     auto it = data()->find( "is_part_overlapping" );
     if ( it == data()->end() || it->is_null() ) return default_is_part_overlapping();
-    return it->template get<bool>();
+    return it->template get< bool >();
 }
 
 [[nodiscard]] bool Parameters::has_is_part_overlapping_set() const noexcept
@@ -941,7 +948,7 @@ void Parameters::set_is_part_overlapping( bool is_part_overlapping )
     if ( is_empty() ) return default_is_part_hdi_enabled();
     auto it = data()->find( "is_part_hdi_enabled" );
     if ( it == data()->end() || it->is_null() ) return default_is_part_hdi_enabled();
-    return it->template get<bool>();
+    return it->template get< bool >();
 }
 
 [[nodiscard]] bool Parameters::has_is_part_hdi_enabled_set() const noexcept
@@ -970,7 +977,7 @@ void Parameters::set_is_part_hdi_enabled( bool is_part_hdi_enabled )
     if ( is_empty() ) return default_part_hdi_trunc_enabled();
     auto it = data()->find( "part_hdi_trunc_enabled" );
     if ( it == data()->end() || it->is_null() ) return default_part_hdi_trunc_enabled();
-    return it->template get<real>();
+    return it->template get< real >();
 }
 
 [[nodiscard]] bool Parameters::has_part_hdi_trunc_enabled_set() const noexcept
@@ -999,7 +1006,7 @@ void Parameters::set_part_hdi_trunc_enabled( real part_hdi_trunc_enabled )
     if ( is_empty() ) return default_N_part();
     auto it = data()->find( "N_part" );
     if ( it == data()->end() || it->is_null() ) return default_N_part();
-    return it->template get<i32>();
+    return it->template get< i32 >();
 }
 
 [[nodiscard]] bool Parameters::has_N_part_set() const noexcept
@@ -1028,7 +1035,7 @@ void Parameters::set_N_part( i32 N_part )
     if ( is_empty() ) return default_drag_type();
     auto it = data()->find( "drag_type" );
     if ( it == data()->end() || it->is_null() ) return default_drag_type();
-    return it->template get<DragType>();
+    return it->template get< DragType >();
 }
 
 [[nodiscard]] bool Parameters::has_drag_type_set() const noexcept
@@ -1057,7 +1064,7 @@ void Parameters::set_drag_type( DragType drag_type )
     if ( is_empty() ) return default_a();
     auto it = data()->find( "a" );
     if ( it == data()->end() || it->is_null() ) return default_a();
-    return it->template get<real>();
+    return it->template get< real >();
 }
 
 [[nodiscard]] bool Parameters::has_a_set() const noexcept

@@ -24,6 +24,46 @@ AnySettings& AnySettings::merge(nlohmann::json * other_data_p)
     return oss.str();
 }
 
+namespace
+{
+    void value_to_stream( nlohmann::json& value, std::ostream& os, int indent_size, int indent_level, bool display_all )
+    {
+        if ( value.is_object() )
+        {
+            os << '\n';
+            auto inner = AnySettings( &value );
+            inner.stringify( os, indent_size, indent_level + 1, display_all );
+        }
+        else if ( value.is_array() )
+        {
+            if ( value.empty() )
+            {
+                os << " <empty>\n";
+            }
+            else
+            {
+                os << '\n';
+                ++indent_level;
+                for ( auto& el : value )
+                {
+                    os << std::setw( indent_size * indent_level) << "" << "-";
+                    value_to_stream( el, os, indent_size, indent_level, display_all );
+                }
+            }
+
+        }
+        else if ( value.is_string() )
+        {
+            os << ' ' << value.template get_ref<std::string const&>() << '\n';
+        }
+        else
+        {
+            os << ' ' << value << '\n';
+        }
+
+    }
+}
+
 std::ostream& AnySettings::stringify( std::ostream& os, int indent_size, int indent_level, bool display_all ) const
 {
     if (is_empty() || data()->empty())
@@ -37,20 +77,7 @@ std::ostream& AnySettings::stringify( std::ostream& os, int indent_size, int ind
         if ( !display_all && item.value().is_null() ) continue;
 
         os << std::setw( indent_size * indent_level) << "" << item.key() << ':';
-        if (item.value().is_object())
-        {
-            auto inner = AnySettings( &item.value() );
-            os << '\n';
-            inner.stringify( os, indent_size, indent_level + 1, display_all );
-        }
-        else if( item.value().is_string() )
-        {
-            os << ' ' << item.value().template get_ref<std::string const&>() << '\n';
-        }
-        else
-        {
-            os << ' ' << item.value() << '\n';
-        }
+        value_to_stream( item.value(), os, indent_size, indent_level, display_all );
     }
 
     return os;
@@ -59,6 +86,13 @@ std::ostream& AnySettings::stringify( std::ostream& os, int indent_size, int ind
 std::ostream& operator<<( std::ostream& os, AnySettings const& settings )
 {
     return settings.stringify( os, 2, 0, os.flags() & std::ios_base::boolalpha );
+}
+
+bool operator==( AnySettings const& lhs, AnySettings const& rhs )
+{
+    return lhs.is_empty()
+        ? rhs.is_empty()
+        : ( !rhs.is_empty() && *lhs.data() == *rhs.data() );
 }
 
 }

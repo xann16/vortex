@@ -60,13 +60,41 @@ std::ostream& TestFixture::stringify( std::ostream& os, int indent_size, int ind
     }
     if ( display_all || has_test_cases_set() )
     {
-        os << std::setw( indent_size * indent_level ) << "" << "test_cases:\n";
-        test_cases().stringify( os, indent_size, indent_level + 1, display_all );
+        os << std::setw( indent_size * indent_level ) << "" << "test_cases:";
+        auto const& test_cases_arr = test_cases();
+        
+        if ( test_cases_arr.empty() )
+        {
+            os << " <empty>\n";
+        }
+        else
+        {
+            os << '\n';
+            for (auto const& el : test_cases_arr)
+            {
+                os << std::setw( indent_size * ( indent_level + 1 ) ) << "" << "- \n";
+                el.stringify( os, indent_size, indent_level + 2, display_all );
+            }
+        }
     }
     if ( display_all || has_test_stages_set() )
     {
-        os << std::setw( indent_size * indent_level ) << "" << "test_stages:\n";
-        test_stages().stringify( os, indent_size, indent_level + 1, display_all );
+        os << std::setw( indent_size * indent_level ) << "" << "test_stages:";
+        auto const& test_stages_arr = test_stages();
+        
+        if ( test_stages_arr.empty() )
+        {
+            os << " <empty>\n";
+        }
+        else
+        {
+            os << '\n';
+            for (auto const& el : test_stages_arr)
+            {
+                os << std::setw( indent_size * ( indent_level + 1 ) ) << "" << "- \n";
+                el.stringify( os, indent_size, indent_level + 2, display_all );
+            }
+        }
     }
     
     return os;
@@ -75,6 +103,13 @@ std::ostream& TestFixture::stringify( std::ostream& os, int indent_size, int ind
 std::ostream& operator<<( std::ostream& os, TestFixture const& s )
 {
     return s.stringify( os, 2, 0, os.flags() & std::ios_base::boolalpha );
+}
+
+bool operator==( TestFixture const& lhs, TestFixture const& rhs )
+{
+    return lhs.is_empty()
+        ? rhs.is_empty()
+        : ( !rhs.is_empty() && *lhs.data() == *rhs.data() );
 }
 
 // "name" property
@@ -183,12 +218,22 @@ void TestFixture::set_default_settings( core::settings::json::AnySettings defaul
 
 // "test_cases" property
 
-[[nodiscard]] runner::config::TestCase TestFixture::test_cases() const
+[[nodiscard]] std::vector< runner::config::TestCase > TestFixture::test_cases() const
 {
     if ( is_empty() ) return default_test_cases();
     auto it = data()->find( "test_cases" );
     if ( it == data()->end() || it->is_null() ) return default_test_cases();
-    return runner::config::TestCase{ &( *it ) };
+    
+    auto result = std::vector< runner::config::TestCase >{};
+    result.reserve( it->size() );
+    
+    auto value_mapping = []( auto& value )
+    {
+        return runner::config::TestCase{ &value };
+    };
+    
+    std::transform( it->begin(), it->end(), std::back_inserter( result ), value_mapping );
+    return result;
 }
 
 [[nodiscard]] bool TestFixture::has_test_cases_set() const noexcept
@@ -204,27 +249,55 @@ void TestFixture::reset_test_cases()
     data()->erase( "test_cases" );
 }
 
-void TestFixture::set_test_cases( runner::config::TestCase test_cases )
+void TestFixture::set_test_cases( std::vector< runner::config::TestCase > const& test_cases )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"test_cases\". Object is empty." };
-    if ( test_cases.is_empty() )
+    data()->operator[]( "test_cases" ) = nlohmann::json::array();
+    auto& test_cases_arr =  data()->operator[]( "test_cases" );
+    for ( auto el : test_cases )
     {
-        reset_test_cases();
+        test_cases_arr.emplace_back( *( el.data() ) );
     }
-    else
+}
+void TestFixture::set_test_cases( std::vector< runner::config::TestCase > && test_cases )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"test_cases\". Object is empty." };
+    data()->operator[]( "test_cases" ) = nlohmann::json::array();
+    auto& test_cases_arr =  data()->operator[]( "test_cases" );
+    for ( auto el : test_cases )
     {
-        data()->operator[]( "test_cases" ) = *( test_cases.data() );
+        test_cases_arr.emplace_back( *( el.data() ) );
+    }
+}
+void TestFixture::set_test_cases( std::initializer_list< runner::config::TestCase > test_cases )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"test_cases\". Object is empty." };
+    data()->operator[]( "test_cases" ) = nlohmann::json::array();
+    auto& test_cases_arr =  data()->operator[]( "test_cases" );
+    for ( auto el : test_cases )
+    {
+        test_cases_arr.emplace_back( *( el.data() ) );
     }
 }
 
 // "test_stages" property
 
-[[nodiscard]] runner::config::TestStage TestFixture::test_stages() const
+[[nodiscard]] std::vector< runner::config::TestStage > TestFixture::test_stages() const
 {
     if ( is_empty() ) return default_test_stages();
     auto it = data()->find( "test_stages" );
     if ( it == data()->end() || it->is_null() ) return default_test_stages();
-    return runner::config::TestStage{ &( *it ) };
+    
+    auto result = std::vector< runner::config::TestStage >{};
+    result.reserve( it->size() );
+    
+    auto value_mapping = []( auto& value )
+    {
+        return runner::config::TestStage{ &value };
+    };
+    
+    std::transform( it->begin(), it->end(), std::back_inserter( result ), value_mapping );
+    return result;
 }
 
 [[nodiscard]] bool TestFixture::has_test_stages_set() const noexcept
@@ -240,16 +313,34 @@ void TestFixture::reset_test_stages()
     data()->erase( "test_stages" );
 }
 
-void TestFixture::set_test_stages( runner::config::TestStage test_stages )
+void TestFixture::set_test_stages( std::vector< runner::config::TestStage > const& test_stages )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"test_stages\". Object is empty." };
-    if ( test_stages.is_empty() )
+    data()->operator[]( "test_stages" ) = nlohmann::json::array();
+    auto& test_stages_arr =  data()->operator[]( "test_stages" );
+    for ( auto el : test_stages )
     {
-        reset_test_stages();
+        test_stages_arr.emplace_back( *( el.data() ) );
     }
-    else
+}
+void TestFixture::set_test_stages( std::vector< runner::config::TestStage > && test_stages )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"test_stages\". Object is empty." };
+    data()->operator[]( "test_stages" ) = nlohmann::json::array();
+    auto& test_stages_arr =  data()->operator[]( "test_stages" );
+    for ( auto el : test_stages )
     {
-        data()->operator[]( "test_stages" ) = *( test_stages.data() );
+        test_stages_arr.emplace_back( *( el.data() ) );
+    }
+}
+void TestFixture::set_test_stages( std::initializer_list< runner::config::TestStage > test_stages )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"test_stages\". Object is empty." };
+    data()->operator[]( "test_stages" ) = nlohmann::json::array();
+    auto& test_stages_arr =  data()->operator[]( "test_stages" );
+    for ( auto el : test_stages )
+    {
+        test_stages_arr.emplace_back( *( el.data() ) );
     }
 }
 

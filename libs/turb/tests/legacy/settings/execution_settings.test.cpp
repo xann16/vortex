@@ -97,6 +97,12 @@ TEST_CASE( "ExecutionSettings - merge with empties", "[settings][.][!mayfail]" )
     REQUIRE( false );
 }
 
+TEST_CASE( "ExecutionSettings - equality and inequality operators", "[settings][.][!mayfail]" )
+{
+    // TODO - add merge tests for generated setting classes
+    REQUIRE( false );
+}
+
 // "job_name" property
 
 TEST_CASE( "ExecutionSettings - property: \"job_name\" - getter, default, has_set", "[settings]" )

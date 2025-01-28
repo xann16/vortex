@@ -56,6 +56,12 @@ public:
 
     friend std::ostream& operator<<( std::ostream& os, TestCase const& s );
 
+    friend bool operator==( TestCase const& lhs, TestCase const& rhs );
+    friend bool operator!=( TestCase const& lhs, TestCase const& rhs )
+    {
+        return !( lhs == rhs );
+    }
+
     // "name" property
     [[nodiscard]] std::string_view name() const;
     [[nodiscard]] bool has_name_set() const noexcept;
@@ -115,23 +121,16 @@ public:
     void set_parallel_strategy( ParallelStrategyType parallel_strategy );
 
     // "stages" property
-    [[nodiscard]] std::string_view stages() const;
+    [[nodiscard]] std::vector< std::string > stages() const;
     [[nodiscard]] bool has_stages_set() const noexcept;
-    [[nodiscard]] constexpr std::string_view default_stages() const noexcept
+    [[nodiscard]] std::vector< std::string > default_stages() const noexcept
     {
-        return std::string_view{};
+        return std::vector< std::string >{};
     }
     void reset_stages();
-    void set_stages( std::string const& stages );
-    void set_stages( std::string && stages );
-    void set_stages( std::string_view stages )
-    {
-        set_stages( std::string{ stages } );
-    }
-    void set_stages( char const * stages )
-    {
-        set_stages( std::string{ stages } );
-    }
+    void set_stages( std::vector< std::string > const& stages );
+    void set_stages( std::vector< std::string > && stages );
+    void set_stages( std::initializer_list< std::string > stages_list );
 
     // "process_count" property
     [[nodiscard]] i32 process_count() const;

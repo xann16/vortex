@@ -55,6 +55,12 @@ public:
 
     friend std::ostream& operator<<( std::ostream& os, TestStage const& s );
 
+    friend bool operator==( TestStage const& lhs, TestStage const& rhs );
+    friend bool operator!=( TestStage const& lhs, TestStage const& rhs )
+    {
+        return !( lhs == rhs );
+    }
+
     // "name" property
     [[nodiscard]] std::string_view name() const;
     [[nodiscard]] bool has_name_set() const noexcept;

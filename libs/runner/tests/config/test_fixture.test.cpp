@@ -97,6 +97,12 @@ TEST_CASE( "TestFixture - merge with empties", "[settings][.][!mayfail]" )
     REQUIRE( false );
 }
 
+TEST_CASE( "TestFixture - equality and inequality operators", "[settings][.][!mayfail]" )
+{
+    // TODO - add merge tests for generated setting classes
+    REQUIRE( false );
+}
+
 // "name" property
 
 TEST_CASE( "TestFixture - property: \"name\" - getter, default, has_set", "[settings]" )
@@ -221,7 +227,7 @@ TEST_CASE( "TestFixture - property: \"root_path\" - setter, reset", "[settings]"
 
 TEST_CASE( "TestFixture - property: \"default_settings\" - getter, default, has_set", "[settings]" )
 {
-    nlohmann::json obj = { { "default_settings", { { "x", "y" } } } };
+    nlohmann::json obj = { { "default_settings", { { "x", "y"} } } };
     auto s = vortex::runner::config::TestFixture{ &obj };
     auto s_null = vortex::runner::config::TestFixture{};
 
@@ -272,16 +278,22 @@ TEST_CASE( "TestFixture - property: \"default_settings\" - setter, reset", "[set
 
 TEST_CASE( "TestFixture - property: \"test_cases\" - getter, default, has_set", "[settings]" )
 {
-    nlohmann::json obj = { { "test_cases", { { "x", "y" } } } };
+    nlohmann::json obj = { { "test_cases", { { { "x", "y"} }, { { "x", "y"} }, { { "x", "y"} } } } };
     auto s = vortex::runner::config::TestFixture{ &obj };
     auto s_null = vortex::runner::config::TestFixture{};
 
     auto value = s.test_cases();
     auto default_value = s_null.test_cases();
 
-    REQUIRE( !value.is_empty() );
-    REQUIRE( value.data()->at( "x" ) == "y" );
-    REQUIRE( default_value.is_empty() );
+    REQUIRE( !value.empty() );
+    REQUIRE( value.size() == 3ull );
+    REQUIRE( !value[ 0 ].is_empty() );
+    REQUIRE( value[ 0 ].data()->at( "x" ) == "y" );
+    REQUIRE( !value[ 1 ].is_empty() );
+    REQUIRE( value[ 1 ].data()->at( "x" ) == "y" );
+    REQUIRE( !value[ 2 ].is_empty() );
+    REQUIRE( value[ 2 ].data()->at( "x" ) == "y" );
+    REQUIRE( default_value.empty() );
 
     REQUIRE( s.has_test_cases_set() );
     REQUIRE( !s_null.has_test_cases_set() );
@@ -294,8 +306,7 @@ TEST_CASE( "TestFixture - property: \"test_cases\" - setter, reset", "[settings]
     auto s_null = vortex::runner::config::TestFixture{};
 
     nlohmann::json vobj = nlohmann::json::object();
-    const auto value = vortex::runner::config::TestCase{ &vobj };
-    const auto nvalue = vortex::runner::config::TestCase{};
+    const auto value = std::vector< vortex::runner::config::TestCase >{ vortex::runner::config::TestCase{ &vobj }, vortex::runner::config::TestCase{ &vobj }, vortex::runner::config::TestCase{ &vobj } };
 
     REQUIRE( !s.has_test_cases_set() );
     REQUIRE( !s_null.has_test_cases_set() );
@@ -304,15 +315,29 @@ TEST_CASE( "TestFixture - property: \"test_cases\" - setter, reset", "[settings]
     REQUIRE_NOTHROW( s_null.reset_test_cases() );
 
     REQUIRE_THROWS_AS( s_null.set_test_cases( value ), std::runtime_error );
+    REQUIRE_THROWS_AS( s_null.set_test_cases( std::vector< vortex::runner::config::TestCase >{ value } ), std::runtime_error );
+    REQUIRE_THROWS_AS( s_null.set_test_cases( { vortex::runner::config::TestCase{ &vobj }, vortex::runner::config::TestCase{ &vobj }, vortex::runner::config::TestCase{ &vobj } } ), std::runtime_error );
 
-    s.set_test_cases( value );
-    REQUIRE( s.has_test_cases_set() );
-    REQUIRE( *( s.test_cases().data() ) == nlohmann::json::object() );
-
-    s.set_test_cases( nvalue );
+    s.reset_test_cases();
     REQUIRE( !s.has_test_cases_set() );
 
     s.set_test_cases( value );
+    REQUIRE( s.has_test_cases_set() );
+    REQUIRE( s.test_cases() == value );
+
+    s.reset_test_cases();
+    REQUIRE( !s.has_test_cases_set() );
+
+    s.set_test_cases( std::vector< vortex::runner::config::TestCase >{ value } );
+    REQUIRE( s.has_test_cases_set() );
+    REQUIRE( s.test_cases() == value );
+
+    s.reset_test_cases();
+    REQUIRE( !s.has_test_cases_set() );
+
+    s.set_test_cases( { vortex::runner::config::TestCase{ &vobj }, vortex::runner::config::TestCase{ &vobj }, vortex::runner::config::TestCase{ &vobj } } );
+    REQUIRE( s.has_test_cases_set() );
+    REQUIRE( s.test_cases() == value );
 
     s.reset_test_cases();
     REQUIRE( !s.has_test_cases_set() );
@@ -323,16 +348,22 @@ TEST_CASE( "TestFixture - property: \"test_cases\" - setter, reset", "[settings]
 
 TEST_CASE( "TestFixture - property: \"test_stages\" - getter, default, has_set", "[settings]" )
 {
-    nlohmann::json obj = { { "test_stages", { { "x", "y" } } } };
+    nlohmann::json obj = { { "test_stages", { { { "x", "y"} }, { { "x", "y"} }, { { "x", "y"} } } } };
     auto s = vortex::runner::config::TestFixture{ &obj };
     auto s_null = vortex::runner::config::TestFixture{};
 
     auto value = s.test_stages();
     auto default_value = s_null.test_stages();
 
-    REQUIRE( !value.is_empty() );
-    REQUIRE( value.data()->at( "x" ) == "y" );
-    REQUIRE( default_value.is_empty() );
+    REQUIRE( !value.empty() );
+    REQUIRE( value.size() == 3ull );
+    REQUIRE( !value[ 0 ].is_empty() );
+    REQUIRE( value[ 0 ].data()->at( "x" ) == "y" );
+    REQUIRE( !value[ 1 ].is_empty() );
+    REQUIRE( value[ 1 ].data()->at( "x" ) == "y" );
+    REQUIRE( !value[ 2 ].is_empty() );
+    REQUIRE( value[ 2 ].data()->at( "x" ) == "y" );
+    REQUIRE( default_value.empty() );
 
     REQUIRE( s.has_test_stages_set() );
     REQUIRE( !s_null.has_test_stages_set() );
@@ -345,8 +376,7 @@ TEST_CASE( "TestFixture - property: \"test_stages\" - setter, reset", "[settings
     auto s_null = vortex::runner::config::TestFixture{};
 
     nlohmann::json vobj = nlohmann::json::object();
-    const auto value = vortex::runner::config::TestStage{ &vobj };
-    const auto nvalue = vortex::runner::config::TestStage{};
+    const auto value = std::vector< vortex::runner::config::TestStage >{ vortex::runner::config::TestStage{ &vobj }, vortex::runner::config::TestStage{ &vobj }, vortex::runner::config::TestStage{ &vobj } };
 
     REQUIRE( !s.has_test_stages_set() );
     REQUIRE( !s_null.has_test_stages_set() );
@@ -355,15 +385,29 @@ TEST_CASE( "TestFixture - property: \"test_stages\" - setter, reset", "[settings
     REQUIRE_NOTHROW( s_null.reset_test_stages() );
 
     REQUIRE_THROWS_AS( s_null.set_test_stages( value ), std::runtime_error );
+    REQUIRE_THROWS_AS( s_null.set_test_stages( std::vector< vortex::runner::config::TestStage >{ value } ), std::runtime_error );
+    REQUIRE_THROWS_AS( s_null.set_test_stages( { vortex::runner::config::TestStage{ &vobj }, vortex::runner::config::TestStage{ &vobj }, vortex::runner::config::TestStage{ &vobj } } ), std::runtime_error );
 
-    s.set_test_stages( value );
-    REQUIRE( s.has_test_stages_set() );
-    REQUIRE( *( s.test_stages().data() ) == nlohmann::json::object() );
-
-    s.set_test_stages( nvalue );
+    s.reset_test_stages();
     REQUIRE( !s.has_test_stages_set() );
 
     s.set_test_stages( value );
+    REQUIRE( s.has_test_stages_set() );
+    REQUIRE( s.test_stages() == value );
+
+    s.reset_test_stages();
+    REQUIRE( !s.has_test_stages_set() );
+
+    s.set_test_stages( std::vector< vortex::runner::config::TestStage >{ value } );
+    REQUIRE( s.has_test_stages_set() );
+    REQUIRE( s.test_stages() == value );
+
+    s.reset_test_stages();
+    REQUIRE( !s.has_test_stages_set() );
+
+    s.set_test_stages( { vortex::runner::config::TestStage{ &vobj }, vortex::runner::config::TestStage{ &vobj }, vortex::runner::config::TestStage{ &vobj } } );
+    REQUIRE( s.has_test_stages_set() );
+    REQUIRE( s.test_stages() == value );
 
     s.reset_test_stages();
     REQUIRE( !s.has_test_stages_set() );

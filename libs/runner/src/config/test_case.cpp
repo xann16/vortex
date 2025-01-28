@@ -65,7 +65,21 @@ std::ostream& TestCase::stringify( std::ostream& os, int indent_size, int indent
     }
     if ( display_all || has_stages_set() )
     {
-        os << std::setw( indent_size * indent_level ) << "" << "stages: " << stages() << '\n';
+        os << std::setw( indent_size * indent_level ) << "" << "stages:";
+        auto const& stages_arr = stages();
+        
+        if ( stages_arr.empty() )
+        {
+            os << " <empty>\n";
+        }
+        else
+        {
+            os << '\n';
+            for (auto const& el : stages_arr)
+            {
+                os << std::setw( indent_size * ( indent_level + 1 ) ) << "" << "-  " << el << '\n';
+            }
+        }
     }
     if ( display_all || has_process_count_set() )
     {
@@ -78,6 +92,13 @@ std::ostream& TestCase::stringify( std::ostream& os, int indent_size, int indent
 std::ostream& operator<<( std::ostream& os, TestCase const& s )
 {
     return s.stringify( os, 2, 0, os.flags() & std::ios_base::boolalpha );
+}
+
+bool operator==( TestCase const& lhs, TestCase const& rhs )
+{
+    return lhs.is_empty()
+        ? rhs.is_empty()
+        : ( !rhs.is_empty() && *lhs.data() == *rhs.data() );
 }
 
 // "name" property
@@ -191,7 +212,7 @@ void TestCase::set_settings( core::settings::json::AnySettings settings )
     if ( is_empty() ) return default_parallel_strategy();
     auto it = data()->find( "parallel_strategy" );
     if ( it == data()->end() || it->is_null() ) return default_parallel_strategy();
-    return it->template get<ParallelStrategyType>();
+    return it->template get< ParallelStrategyType >();
 }
 
 [[nodiscard]] bool TestCase::has_parallel_strategy_set() const noexcept
@@ -215,12 +236,22 @@ void TestCase::set_parallel_strategy( ParallelStrategyType parallel_strategy )
 
 // "stages" property
 
-[[nodiscard]] std::string_view TestCase::stages() const
+[[nodiscard]] std::vector< std::string > TestCase::stages() const
 {
     if ( is_empty() ) return default_stages();
     auto it = data()->find( "stages" );
     if ( it == data()->end() || it->is_null() ) return default_stages();
-    return std::string_view{ it->template get_ref<std::string const&>() };
+    
+    auto result = std::vector< std::string >{};
+    result.reserve( it->size() );
+    
+    auto value_mapping = []( auto& value )
+    {
+        return  value.template get< std::string >();
+    };
+    
+    std::transform( it->begin(), it->end(), std::back_inserter( result ), value_mapping );
+    return result;
 }
 
 [[nodiscard]] bool TestCase::has_stages_set() const noexcept
@@ -236,12 +267,17 @@ void TestCase::reset_stages()
     data()->erase( "stages" );
 }
 
-void TestCase::set_stages( std::string const& stages )
+void TestCase::set_stages( std::vector< std::string > const& stages )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"stages\". Object is empty." };
     data()->operator[]( "stages" ) = stages;
 }
-void TestCase::set_stages( std::string && stages )
+void TestCase::set_stages( std::vector< std::string > && stages )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"stages\". Object is empty." };
+    data()->operator[]( "stages" ) = stages;
+}
+void TestCase::set_stages( std::initializer_list< std::string > stages )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"stages\". Object is empty." };
     data()->operator[]( "stages" ) = stages;
@@ -254,7 +290,7 @@ void TestCase::set_stages( std::string && stages )
     if ( is_empty() ) return default_process_count();
     auto it = data()->find( "process_count" );
     if ( it == data()->end() || it->is_null() ) return default_process_count();
-    return it->template get<i32>();
+    return it->template get< i32 >();
 }
 
 [[nodiscard]] bool TestCase::has_process_count_set() const noexcept

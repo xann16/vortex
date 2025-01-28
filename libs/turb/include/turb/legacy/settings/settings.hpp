@@ -58,6 +58,12 @@ public:
 
     friend std::ostream& operator<<( std::ostream& os, Settings const& s );
 
+    friend bool operator==( Settings const& lhs, Settings const& rhs );
+    friend bool operator!=( Settings const& lhs, Settings const& rhs )
+    {
+        return !( lhs == rhs );
+    }
+
     // "metadata" property
     [[nodiscard]] turb::legacy::settings::Metadata metadata() const;
     [[nodiscard]] bool has_metadata_set() const noexcept;

@@ -97,6 +97,12 @@ TEST_CASE( "Metadata - merge with empties", "[settings][.][!mayfail]" )
     REQUIRE( false );
 }
 
+TEST_CASE( "Metadata - equality and inequality operators", "[settings][.][!mayfail]" )
+{
+    // TODO - add merge tests for generated setting classes
+    REQUIRE( false );
+}
+
 // "sim_method" property
 
 TEST_CASE( "Metadata - property: \"sim_method\" - getter, default, has_set", "[settings]" )

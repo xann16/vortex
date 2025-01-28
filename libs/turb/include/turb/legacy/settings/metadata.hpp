@@ -59,6 +59,12 @@ public:
 
     friend std::ostream& operator<<( std::ostream& os, Metadata const& s );
 
+    friend bool operator==( Metadata const& lhs, Metadata const& rhs );
+    friend bool operator!=( Metadata const& lhs, Metadata const& rhs )
+    {
+        return !( lhs == rhs );
+    }
+
     // "sim_method" property
     [[nodiscard]] SimMethod sim_method() const;
     [[nodiscard]] bool has_sim_method_set() const noexcept;

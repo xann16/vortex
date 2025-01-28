@@ -57,6 +57,12 @@ public:
 
     friend std::ostream& operator<<( std::ostream& os, Parameters const& s );
 
+    friend bool operator==( Parameters const& lhs, Parameters const& rhs );
+    friend bool operator!=( Parameters const& lhs, Parameters const& rhs )
+    {
+        return !( lhs == rhs );
+    }
+
     // "N" property
     [[nodiscard]] i32 N() const;
     [[nodiscard]] bool has_N_set() const noexcept;

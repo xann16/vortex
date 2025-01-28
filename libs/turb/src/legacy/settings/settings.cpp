@@ -69,6 +69,13 @@ std::ostream& operator<<( std::ostream& os, Settings const& s )
     return s.stringify( os, 2, 0, os.flags() & std::ios_base::boolalpha );
 }
 
+bool operator==( Settings const& lhs, Settings const& rhs )
+{
+    return lhs.is_empty()
+        ? rhs.is_empty()
+        : ( !rhs.is_empty() && *lhs.data() == *rhs.data() );
+}
+
 // "metadata" property
 
 [[nodiscard]] turb::legacy::settings::Metadata Settings::metadata() const

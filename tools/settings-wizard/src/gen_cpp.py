@@ -1,4 +1,4 @@
-from cpp_utils import get_class_name, get_namespace, add_include, add_blank, add_line, add_block_comment, begin_test_case, end_test_case, add_require, begin_namespace, end_namespace, begin_class, end_class, add_access_qualifier, add_ctor_declaration, add_ctor_definition, add_method_definition, add_method_declaration, add_function_definition, add_data_field
+from cpp_utils import get_class_name, get_namespace, add_include, add_blank, add_line, add_block_comment, begin_test_case, end_test_case, add_require, begin_namespace, end_namespace, begin_class, end_class, add_access_qualifier, add_ctor_declaration, add_ctor_definition, add_method_definition, add_method_declaration, add_function_declaration, add_function_definition, add_data_field
 import gen_cpp_enums
 from gen_cpp_properties import add_property_public_declarations, add_property_definitions, add_property_unit_tests, get_stringify_body
 from gen_utils import create_file
@@ -157,6 +157,9 @@ def generate_dynamic_header_file(root_path: str, data: dict[str, Any], ctx: dict
     add_blank(ls)
     i = add_method_declaration(ls, i, 'operator<<', 'std::ostream&', [('std::ostream&', 'os'), (f'{class_name} const&', 's')], pre_qualifiers='friend')
     add_blank(ls)
+    i = add_method_declaration(ls, i, 'operator==', 'bool', [(f'{class_name} const&', 'lhs'), (f'{class_name} const&', 'rhs')], pre_qualifiers='friend')
+    i = add_function_declaration(ls, i, 'operator!=', 'bool', [(f'{class_name} const&', 'lhs'), (f'{class_name} const&', 'rhs')], pre_qualifiers='friend', is_definition=True, body=[(0, 'return !( lhs == rhs );')])
+    add_blank(ls)
 
     i = add_property_public_declarations(ls, i, data, ctx)
     add_blank(ls)
@@ -223,6 +226,14 @@ def generate_dynamic_source_file(root_path: str, data: dict[str, Any], ctx: dict
 
     op_ln : str = 'return s.stringify( os, 2, 0, os.flags() & std::ios_base::boolalpha );'
     i = add_function_definition(ls, i, 'operator<<', 'std::ostream&', [('std::ostream&', 'os'), (f'{class_name} const&', 's')], body=[(0, op_ln)])
+    add_blank(ls)
+
+    equal_body : list[(int, str)] = [
+        (0, 'return lhs.is_empty()'),
+        (1, '? rhs.is_empty()'),
+        (1, ': ( !rhs.is_empty() && *lhs.data() == *rhs.data() );')
+    ]
+    i = add_function_definition(ls, i, 'operator==', 'bool', [(f'{class_name} const&', 'lhs'), (f'{class_name} const&', 'rhs')], body=equal_body)
     add_blank(ls)
 
     i = add_property_definitions(ls, i, data, ctx)
@@ -341,6 +352,13 @@ def generate_dynamic_unit_test_file(root_path: str, data: dict[str, Any], ctx: d
     add_blank(ls)
 
     i = begin_test_case(ls, i, f'{class_name} - merge with empties', 'settings', '.', '!mayfail')
+    i = add_block_comment(ls, i, 'TODO - add merge tests for generated setting classes')
+    i = add_require(ls, i, 'false')
+    i = end_test_case(ls, i)
+
+    add_blank(ls)
+
+    i = begin_test_case(ls, i, f'{class_name} - equality and inequality operators', 'settings', '.', '!mayfail')
     i = add_block_comment(ls, i, 'TODO - add merge tests for generated setting classes')
     i = add_require(ls, i, 'false')
     i = end_test_case(ls, i)

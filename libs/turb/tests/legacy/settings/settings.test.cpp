@@ -97,11 +97,17 @@ TEST_CASE( "Settings - merge with empties", "[settings][.][!mayfail]" )
     REQUIRE( false );
 }
 
+TEST_CASE( "Settings - equality and inequality operators", "[settings][.][!mayfail]" )
+{
+    // TODO - add merge tests for generated setting classes
+    REQUIRE( false );
+}
+
 // "metadata" property
 
 TEST_CASE( "Settings - property: \"metadata\" - getter, default, has_set", "[settings]" )
 {
-    nlohmann::json obj = { { "metadata", { { "x", "y" } } } };
+    nlohmann::json obj = { { "metadata", { { "x", "y"} } } };
     auto s = vortex::turb::legacy::settings::Settings{ &obj };
     auto s_null = vortex::turb::legacy::settings::Settings{};
 
@@ -152,7 +158,7 @@ TEST_CASE( "Settings - property: \"metadata\" - setter, reset", "[settings]" )
 
 TEST_CASE( "Settings - property: \"parameters\" - getter, default, has_set", "[settings]" )
 {
-    nlohmann::json obj = { { "parameters", { { "x", "y" } } } };
+    nlohmann::json obj = { { "parameters", { { "x", "y"} } } };
     auto s = vortex::turb::legacy::settings::Settings{ &obj };
     auto s_null = vortex::turb::legacy::settings::Settings{};
 
@@ -203,7 +209,7 @@ TEST_CASE( "Settings - property: \"parameters\" - setter, reset", "[settings]" )
 
 TEST_CASE( "Settings - property: \"execution_settings\" - getter, default, has_set", "[settings]" )
 {
-    nlohmann::json obj = { { "execution_settings", { { "x", "y" } } } };
+    nlohmann::json obj = { { "execution_settings", { { "x", "y"} } } };
     auto s = vortex::turb::legacy::settings::Settings{ &obj };
     auto s_null = vortex::turb::legacy::settings::Settings{};
 

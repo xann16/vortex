@@ -97,6 +97,12 @@ TEST_CASE( "TestStage - merge with empties", "[settings][.][!mayfail]" )
     REQUIRE( false );
 }
 
+TEST_CASE( "TestStage - equality and inequality operators", "[settings][.][!mayfail]" )
+{
+    // TODO - add merge tests for generated setting classes
+    REQUIRE( false );
+}
+
 // "name" property
 
 TEST_CASE( "TestStage - property: \"name\" - getter, default, has_set", "[settings]" )
@@ -161,7 +167,7 @@ TEST_CASE( "TestStage - property: \"name\" - setter, reset", "[settings]" )
 
 TEST_CASE( "TestStage - property: \"settings\" - getter, default, has_set", "[settings]" )
 {
-    nlohmann::json obj = { { "settings", { { "x", "y" } } } };
+    nlohmann::json obj = { { "settings", { { "x", "y"} } } };
     auto s = vortex::runner::config::TestStage{ &obj };
     auto s_null = vortex::runner::config::TestStage{};
 

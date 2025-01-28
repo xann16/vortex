@@ -78,6 +78,13 @@ std::ostream& operator<<( std::ostream& os, ExecutionSettings const& s )
     return s.stringify( os, 2, 0, os.flags() & std::ios_base::boolalpha );
 }
 
+bool operator==( ExecutionSettings const& lhs, ExecutionSettings const& rhs )
+{
+    return lhs.is_empty()
+        ? rhs.is_empty()
+        : ( !rhs.is_empty() && *lhs.data() == *rhs.data() );
+}
+
 // "job_name" property
 
 [[nodiscard]] std::string_view ExecutionSettings::job_name() const
@@ -153,7 +160,7 @@ void ExecutionSettings::set_grant_no( std::string && grant_no )
     if ( is_empty() ) return default_cpu_node_count();
     auto it = data()->find( "cpu_node_count" );
     if ( it == data()->end() || it->is_null() ) return default_cpu_node_count();
-    return it->template get<i32>();
+    return it->template get< i32 >();
 }
 
 [[nodiscard]] bool ExecutionSettings::has_cpu_node_count_set() const noexcept
@@ -182,7 +189,7 @@ void ExecutionSettings::set_cpu_node_count( i32 cpu_node_count )
     if ( is_empty() ) return default_wct_limit();
     auto it = data()->find( "wct_limit" );
     if ( it == data()->end() || it->is_null() ) return default_wct_limit();
-    return it->template get<f64>();
+    return it->template get< f64 >();
 }
 
 [[nodiscard]] bool ExecutionSettings::has_wct_limit_set() const noexcept
@@ -211,7 +218,7 @@ void ExecutionSettings::set_wct_limit( f64 wct_limit )
     if ( is_empty() ) return default_process_count();
     auto it = data()->find( "process_count" );
     if ( it == data()->end() || it->is_null() ) return default_process_count();
-    return it->template get<i32>();
+    return it->template get< i32 >();
 }
 
 [[nodiscard]] bool ExecutionSettings::has_process_count_set() const noexcept
@@ -240,7 +247,7 @@ void ExecutionSettings::set_process_count( i32 process_count )
     if ( is_empty() ) return default_is_node_overcommit_enabled();
     auto it = data()->find( "is_node_overcommit_enabled" );
     if ( it == data()->end() || it->is_null() ) return default_is_node_overcommit_enabled();
-    return it->template get<bool>();
+    return it->template get< bool >();
 }
 
 [[nodiscard]] bool ExecutionSettings::has_is_node_overcommit_enabled_set() const noexcept

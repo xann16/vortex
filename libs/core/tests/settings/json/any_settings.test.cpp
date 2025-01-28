@@ -100,6 +100,51 @@ TEST_CASE("JSON Any Settings - conversion to string - extra indent level", "[set
     REQUIRE(ossfy_result == expected);
 }
 
+TEST_CASE("JSON Any Settings - conversion to string - simple array example", "[settings]")
+{
+    nlohmann::json obj = { { "x", { "y", "z" } } };
+    auto s = vortex::core::settings::json::AnySettings{ &obj };
+    auto ossfy = std::ostringstream{};
+
+    s.stringify(ossfy, 2, 0, false);
+
+    auto ossfy_result = ossfy.str();
+
+    const auto expected = "x:\n  - y\n  - z\n";
+
+    REQUIRE(ossfy_result == expected);
+}
+
+TEST_CASE("JSON Any Settings - conversion to string - empty array example", "[settings]")
+{
+    nlohmann::json obj = { { "x", nlohmann::json::array() } };
+    auto s = vortex::core::settings::json::AnySettings{ &obj };
+    auto ossfy = std::ostringstream{};
+
+    s.stringify(ossfy, 2, 0, false);
+
+    auto ossfy_result = ossfy.str();
+
+    const auto expected = "x: <empty>\n";
+
+    REQUIRE(ossfy_result == expected);
+}
+
+TEST_CASE("JSON Any Settings - conversion to string - array of objects example", "[settings]")
+{
+    nlohmann::json obj = { { "arr", { { { "aa", "x" }, { "ab", "y" } }, { { "ba", "z" }, { "bb", "w" } } } } };
+    auto s = vortex::core::settings::json::AnySettings{ &obj };
+    auto ossfy = std::ostringstream{};
+
+    s.stringify(ossfy, 2, 0, false);
+
+    auto ossfy_result = ossfy.str();
+
+    const auto expected = "arr:\n  -\n    aa: x\n    ab: y\n  -\n    ba: z\n    bb: w\n";
+
+    REQUIRE(ossfy_result == expected);
+}
+
 TEST_CASE("JSON Any Settings - conversion to string for empty", "[settings]")
 {
     auto s = vortex::core::settings::json::AnySettings{};
@@ -191,4 +236,47 @@ TEST_CASE("JSON Any Settings - merge with empties", "[settings]")
 
     REQUIRE( !full.is_empty() );
     REQUIRE( *(full.data()) == obj );
+}
+
+TEST_CASE("JSON Any Settings - equality and inequality operators", "[settings]")
+{
+    nlohmann::json obj_a = { { "x", "y" } };
+    nlohmann::json obj_b = { { "x", "y" } };
+    nlohmann::json obj_c = { { "x", "y" }, { "y", "x" }, };
+
+    auto a = vortex::core::settings::json::AnySettings{ &obj_a };
+    auto a_bis = vortex::core::settings::json::AnySettings{ &obj_a };
+    auto b = vortex::core::settings::json::AnySettings{ &obj_b };
+    auto c = vortex::core::settings::json::AnySettings{ &obj_c };
+
+    REQUIRE( a == a );
+    REQUIRE( a_bis == a_bis );
+    REQUIRE( b == b );
+    REQUIRE( c == c );
+
+    REQUIRE( a == a_bis );
+    REQUIRE( a == b );
+    REQUIRE( a != c );
+    REQUIRE( b != c );
+
+    REQUIRE( !( a != a_bis ) );
+    REQUIRE( !( a != b ) );
+    REQUIRE( !( a == c ) );
+    REQUIRE( !( b == c ) );
+}
+
+TEST_CASE("JSON Any Settings - equality and inequality operators with empties", "[settings]")
+{
+    nlohmann::json obj = { { "x", "y" } };
+
+    auto full = vortex::core::settings::json::AnySettings{ &obj };
+    auto empty = vortex::core::settings::json::AnySettings{};
+
+    REQUIRE( full != empty );
+    REQUIRE( empty != full );
+    REQUIRE( empty == empty );
+
+    REQUIRE( !( full == empty ) );
+    REQUIRE( !( empty == full ) );
+    REQUIRE( !( empty != empty ) );
 }
