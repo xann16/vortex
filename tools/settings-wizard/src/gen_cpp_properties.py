@@ -25,6 +25,12 @@ def _is_array(p: dict[str, Any]) -> bool:
     return 'is_array' in p and p['is_array']
 
 
+def _get_singular_name(name: str, p: dict[str, Any]) -> str:
+    if 'singular_name' in p and p['singular_name']:
+        return p['singular_name']
+    return name[:-1] if name.endswith('s') else (name + '_item')
+
+
 def _get_module_type(name: str, data: dict[str, Any], ctx: dict[str, Any]) -> str:
     from_path : str = [inc['from'] for inc in data['__includes__'] if name in inc['import']['modules']][0] if ('__includes__' in data) else ''
     import_metadata : dict[str, Any] = ctx['defs'][from_path]['__metadata__']
@@ -537,7 +543,242 @@ def _add_setter_test(ls: list[str], i: int, class_name: str, name: str, p: dict[
 
 ##### ARRAY-SPECIFIC PROPERTIES - SIMPLE #####
 
+def _add_array_is_empty_declaration(ls: list[str], i: int, name: str, p: dict[str, Any], data: dict[str, Any], ctx: dict[str, Any]) -> int:
+    prefix : str = 'are' if name.endswith('s') else 'is'
+    return add_method_declaration(ls, i, f'{prefix}_{name}_empty', 'bool', [], is_const=True, is_nodiscard=True, is_noexcept=True)
 
+def _add_array_is_empty_definition(ls: list[str], i: int, class_name: str, name: str, p: dict[str, Any], data: dict[str, Any], ctx: dict[str, Any]) -> int:
+    # TODO - consider non-zero sized defaults
+    prefix : str = 'are' if name.endswith('s') else 'is'
+
+    body : list[(int, str)] = []
+
+    body.append((0, f'if ( is_empty() ) return true;'))
+    body.append((0, f'return data()->at( "{name}" ).empty();'))
+
+    return add_method_definition(ls, i, f'{prefix}_{name}_empty', 'bool', class_name, [], body, is_const=True, is_nodiscard=True, is_noexcept=True)
+
+
+def _add_array_count_declaration(ls: list[str], i: int, name: str, p: dict[str, Any], data: dict[str, Any], ctx: dict[str, Any]) -> int:
+    return add_method_declaration(ls, i, f'{name}_count', 'std::size_t', [], is_const=True, is_nodiscard=True, is_noexcept=True)
+
+def _add_array_count_definition(ls: list[str], i: int, class_name: str, name: str, p: dict[str, Any], data: dict[str, Any], ctx: dict[str, Any]) -> int:
+    # TODO - consider non-zero sized defaults
+    body : list[(int, str)] = []
+
+    body.append((0, f'if ( is_empty() ) return 0ull;'))
+    body.append((0, f'return data()->at( "{name}" ).size();'))
+
+    return add_method_definition(ls, i, f'{name}_count', 'std::size_t', class_name, [], body, is_const=True, is_nodiscard=True, is_noexcept=True)
+
+
+def _add_array_clear_declaration(ls: list[str], i: int, name: str, p: dict[str, Any], data: dict[str, Any], ctx: dict[str, Any]) -> int:
+    return add_method_declaration(ls, i, f'clear_{name}', 'void', [])
+
+def _add_array_clear_definition(ls: list[str], i: int, class_name: str, name: str, p: dict[str, Any], data: dict[str, Any], ctx: dict[str, Any]) -> int:
+    # TODO - consider non-zero sized defaults
+    body : list[(int, str)] = []
+
+    body.append((0, f'if ( is_empty() ) return;'))
+    body.append((0, f'data()->at( "{name}" ).clear();'))
+
+    return add_method_definition(ls, i, f'clear_{name}', 'void', class_name, [], body)
+
+
+def _add_array_getter_declaration(ls: list[str], i: int, name: str, p: dict[str, Any], data: dict[str, Any], ctx: dict[str, Any]) -> int:
+    return_type : str = _get_return_type(p, data, ctx, skip_array=True)
+    return add_method_declaration(ls, i, f'{_get_singular_name(name, p)}_at', return_type, [('std::size_t', 'index')], is_const=True, is_nodiscard=True)
+
+def _add_array_getter_definition(ls: list[str], i: int, class_name: str, name: str, p: dict[str, Any], data: dict[str, Any], ctx: dict[str, Any]) -> int:
+    return_type : str = _get_return_type(p, data, ctx, skip_array=True)
+    property_type : str = p['type']
+
+    # TODO - consider non-zero sized defaults
+    body : list[(int, str)] = []
+
+    body.append((0, 'if ( is_empty() ) throw std::runtime_error{ "Item cannot be accessed. Parent object is empty." };'))
+    body.append((0, f'auto& json_value = data()->at( "{name}" ).at( index );'))
+
+    if property_type in ['module', 'settings']:
+        body.append((0, f'return {return_type}' + '{ &json_value };'))
+    elif property_type == 'enum':
+        body.append((0, f'return json_value.template get< {return_type} >();'))
+    elif property_type in BASE_TYPES:
+        if property_type == 'string' or property_type == 'path':
+            body.append((0, 'return std::string_view{' + f' json_value.template get_ref<std::string const&>() ' + '};'))
+        else:
+            body.append((0, f'return json_value.template get< {return_type} >();'))
+    else:
+        raise RuntimeError(f'Unexpected property type: {property_type}.')
+
+    return add_method_definition(ls, i, f'{_get_singular_name(name, p)}_at', return_type, class_name, [('std::size_t', 'index')], body, is_const=True, is_nodiscard=True)
+
+
+def _add_array_add_declaration(ls: list[str], i: int, name: str, p: dict[str, Any], data: dict[str, Any], ctx: dict[str, Any]) -> int:
+    arg_type : str = _get_arg_type(p, data, ctx, skip_array=True)
+    sg_name : str = _get_singular_name(name, p)
+
+    if arg_type == 'std::string_view':
+        i = add_method_declaration(ls, i, f'add_{sg_name}', 'void', [('std::string const&', sg_name)])
+        i = add_method_declaration(ls, i, f'add_{sg_name}', 'void', [('std::string &&', sg_name)])
+        i = add_method_declaration(ls, i, f'add_{sg_name}', 'void', [('std::string_view', sg_name)], is_definition=True, body=[(0, f'add_{sg_name}( std::string{{ {sg_name} }} );')])
+        i = add_method_declaration(ls, i, f'add_{sg_name}', 'void', [('char const *', sg_name)], is_definition=True, body=[(0, f'add_{sg_name}( std::string{{ {sg_name} }} );')])
+    else:
+        i = add_method_declaration(ls, i, f'add_{sg_name}', 'void', [(arg_type, sg_name)])
+
+    return i
+
+def _add_array_add_definition(ls: list[str], i: int, class_name: str, name: str, p: dict[str, Any], data: dict[str, Any], ctx: dict[str, Any]) -> int:
+    arg_type : str = _get_arg_type(p, data, ctx, skip_array=True)
+    property_type : str = p['type']
+    sg_name : str = _get_singular_name(name, p)
+
+    body : list[(int, str)] = []
+
+    body.append((0, 'if ( is_empty() ) throw std::runtime_error{ "Item cannot be added. Parent object is empty." };'))
+
+    if property_type in ['module', 'settings']:
+        body.append((0, f'if ( {sg_name}.is_empty() ) return;'))
+        body.append((0, f'data()->at( "{name}" ).emplace_back( *( {sg_name}.data() ) );'))
+    elif property_type in BASE_TYPES or property_type == 'enum':
+        body.append((0, f'data()->at( "{name}" ).emplace_back( {sg_name} );'))
+    else:
+        raise RuntimeError(f'Unexpected property type: {property_type}.')
+
+    if arg_type == 'std::string_view':
+        i = add_method_definition(ls, i, f'add_{sg_name}', 'void', class_name, [('std::string const&', sg_name)], body)
+        i = add_method_definition(ls, i, f'add_{sg_name}', 'void', class_name, [('std::string &&', sg_name)], body)
+    else:
+        i = add_method_definition(ls, i, f'add_{sg_name}', 'void', class_name, [(arg_type, sg_name)], body)
+
+    return i
+
+
+def _add_array_remove_declaration(ls: list[str], i: int, name: str, p: dict[str, Any], data: dict[str, Any], ctx: dict[str, Any]) -> int:
+    arg_type : str = _get_arg_type(p, data, ctx, skip_array=True)
+    property_type : str = p['type']
+    sg_name : str = _get_singular_name(name, p)
+
+    i = add_method_declaration(ls, i, f'remove_{sg_name}_at', 'void', [('std::size_t', 'index')])
+
+    if property_type in ['module', 'settings']:
+        return i
+
+    if arg_type == 'std::string_view':
+        i = add_method_declaration(ls, i, f'remove_{sg_name}', 'void', [('std::string const&', sg_name)])
+        i = add_method_declaration(ls, i, f'remove_{sg_name}', 'void', [('std::string &&', sg_name)])
+        i = add_method_declaration(ls, i, f'remove_{sg_name}', 'void', [('std::string_view', sg_name)], is_definition=True, body=[(0, f'remove_{sg_name}( std::string{{ {sg_name} }} );')])
+        i = add_method_declaration(ls, i, f'remove_{sg_name}', 'void', [('char const *', sg_name)], is_definition=True, body=[(0, f'remove_{sg_name}( std::string{{ {sg_name} }} );')])
+    else:
+        i = add_method_declaration(ls, i, f'remove_{sg_name}', 'void', [(arg_type, sg_name)])
+
+    return i
+
+
+def _add_array_remove_definition(ls: list[str], i: int, class_name: str, name: str, p: dict[str, Any], data: dict[str, Any], ctx: dict[str, Any]) -> int:
+    arg_type : str = _get_arg_type(p, data, ctx, skip_array=True)
+    property_type : str = p['type']
+    sg_name : str = _get_singular_name(name, p)
+
+    body_by_index : list[(int, str)] = []
+
+    body_by_index.append((0, 'if ( is_empty() ) return;'))
+    body_by_index.append((0, f'data()->at( "{name}" ).erase( index );'))
+
+    i = add_method_definition(ls, i, f'remove_{sg_name}_at', 'void', class_name, [('std::size_t', 'index')], body_by_index)
+    add_blank(ls)
+
+    if property_type in ['module', 'settings']:
+        return i
+
+    body_by_value : list[(int, str)] = []
+
+    body_by_value.append((0, 'if ( is_empty() ) return;'))
+    body_by_value.append((0, f'auto& arr = data()->at( "{name}" );'))
+    body_by_value.append((0, ''))
+    body_by_value.append((0, f'for ( auto it = arr.begin(); it != arr.end(); it++ )'))
+    body_by_value.append((0, '{'))
+    body_by_value.append((1, f'if (*it == {sg_name})'))
+    body_by_value.append((1, '{'))
+    body_by_value.append((2, 'arr.erase( it );'))
+    body_by_value.append((2, 'return;'))
+    body_by_value.append((1, '}'))
+    body_by_value.append((0, '}'))
+
+    if arg_type == 'std::string_view':
+        i = add_method_definition(ls, i, f'remove_{sg_name}', 'void', class_name, [('std::string const&', sg_name)], body_by_value)
+        add_blank(ls)
+        i = add_method_definition(ls, i, f'remove_{sg_name}', 'void', class_name, [('std::string &&', sg_name)], body_by_value)
+        add_blank(ls)
+    else:
+        i = add_method_definition(ls, i, f'remove_{sg_name}', 'void', class_name, [(arg_type, sg_name)], body_by_value)
+        add_blank(ls)
+
+    return i
+
+def _add_array_specific_tests(ls: list[str], i: int, class_name: str, name: str, p: dict[str, Any], namespace: list[str], data: dict[str, Any], ctx: dict[str, Any]) -> int:
+    return_type : str = _get_return_type(p, data, ctx)
+    value_arg_type : str = _get_arg_type(p, data, ctx, skip_array=True)
+    property_type : str = p['type']
+    sg_name : str = _get_singular_name(name, p)
+
+    i = begin_test_case(ls, i, f'{class_name} - property: \\\"{name}\\\" - array-specific - empty object', 'settings', '.', '!mayfail')
+    i = add_block_comment(ls, i, 'TODO - add test')
+    i = add_require(ls, i, 'false')
+    i = end_test_case(ls, i)
+
+    add_blank(ls)
+
+    i = begin_test_case(ls, i, f'{class_name} - property: \\\"{name}\\\" - array-specific', 'settings')
+
+    i = add_line(ls, i, 'auto s_null = ' + '::'.join(namespace) + '::' + class_name + '{};')
+    if property_type in BASE_TYPES:
+        if value_arg_type == 'std::string_view':
+            i = add_line(ls, i, f'const auto sv = std::string_view{{ "sv" }};')
+            i = add_line(ls, i, f'const auto str = std::string{{ "str" }};')
+            i = add_line(ls, i, f'const auto cstr = "cstr";')
+        else:
+            i = add_line(ls, i, f'const auto value = {BASE_TYPES[property_type][1]};')
+    if property_type == 'enum':
+        i = add_line(ls, i, f'const auto value = {'::'.join(namespace)}::{to_pascal_case(p['enum']['name'])}::{to_pascal_case(p['enum']['values'][-1])};')
+    elif property_type in ['module', 'settings']:
+        # TODO - specific sets for specific setting classes (i.e. module)
+        i = add_line(ls, i, f'nlohmann::json vobj = nlohmann::json::object();')
+        i = add_line(ls, i, f'const auto value = vortex::{value_arg_type}{{ &vobj }};')
+        i = add_line(ls, i, f'const auto nvalue = vortex::{value_arg_type}{{}};')
+    add_blank(ls)
+
+    i = add_require(ls, i, f's_null.{"are" if name.endswith("s") else "is"}_{name}_empty()')
+    i = add_require(ls, i, f's_null.{name}_count() == 0ull')
+    add_blank(ls)
+
+    i = add_require(ls, i, f's_null.{sg_name}_at( 0ull ), std::runtime_error', suffix='throws_as')
+    i = add_require(ls, i, f's_null.clear_{name}()', suffix='nothrow')
+    i = add_require(ls, i, f's_null.remove_{sg_name}_at( 0ull )', suffix='nothrow')
+    add_blank(ls)
+
+    if property_type in BASE_TYPES or property_type == 'enum':
+        if value_arg_type == 'std::string_view':
+            i = add_require(ls, i, f's_null.add_{sg_name}( sv ), std::runtime_error', suffix='throws_as')
+            i = add_require(ls, i, f's_null.add_{sg_name}( str ), std::runtime_error', suffix='throws_as')
+            i = add_require(ls, i, f's_null.add_{sg_name}( cstr ), std::runtime_error', suffix='throws_as')
+            i = add_require(ls, i, f's_null.add_{sg_name}( std::string{{ str }} ), std::runtime_error', suffix='throws_as')
+            add_blank(ls)
+            i = add_require(ls, i, f's_null.remove_{sg_name}( sv )', suffix='nothrow')
+            i = add_require(ls, i, f's_null.remove_{sg_name}( str )', suffix='nothrow')
+            i = add_require(ls, i, f's_null.remove_{sg_name}( cstr )', suffix='nothrow')
+            i = add_require(ls, i, f's_null.remove_{sg_name}( std::string{{ str }} )', suffix='nothrow')
+        else:
+            i = add_require(ls, i, f's_null.add_{sg_name}( value ), std::runtime_error', suffix='throws_as')
+            i = add_require(ls, i, f's_null.remove_{sg_name}( value )', suffix='nothrow')
+    elif property_type in ['module', 'settings']:
+        # TODO - specific sets for specific setting classes (i.e. module)
+        i = add_require(ls, i, f's_null.add_{sg_name}( value ), std::runtime_error', suffix='throws_as')
+        i = add_require(ls, i, f's_null.add_{sg_name}( nvalue ), std::runtime_error', suffix='throws_as')
+
+    i = end_test_case(ls, i)
+
+    return i
 
 ###########
 
@@ -550,6 +791,13 @@ def add_property_public_declarations(ls: list[str], i: int, data: dict[str, Any]
             i = _add_default_value_declaration(ls, i, name, prop, data, ctx)
             i = _add_reset_declaration(ls, i, name, prop, data, ctx)
             i = _add_setter_declaration(ls, i, name, prop, data, ctx)
+            if _is_array(prop):
+                i = _add_array_is_empty_declaration(ls, i, name, prop, data, ctx)
+                i = _add_array_count_declaration(ls, i, name, prop, data, ctx)
+                i = _add_array_clear_declaration(ls, i, name, prop, data, ctx)
+                i = _add_array_getter_declaration(ls, i, name, prop, data, ctx)
+                i = _add_array_add_declaration(ls, i, name, prop, data, ctx)
+                i = _add_array_remove_declaration(ls, i, name, prop, data, ctx)
             add_blank(ls)
     return i
 
@@ -568,6 +816,19 @@ def add_property_definitions(ls: list[str], i: int, data: dict[str, Any], ctx: d
             add_blank(ls)
             i = _add_setter_definition(ls, i, class_name, name, prop, data, ctx)
             add_blank(ls)
+            if _is_array(prop):
+                i = _add_array_is_empty_definition(ls, i, class_name, name, prop, data, ctx)
+                add_blank(ls)
+                i = _add_array_count_definition(ls, i, class_name, name, prop, data, ctx)
+                add_blank(ls)
+                i = _add_array_clear_definition(ls, i, class_name, name, prop, data, ctx)
+                add_blank(ls)
+                i = _add_array_getter_definition(ls, i, class_name, name, prop, data, ctx)
+                add_blank(ls)
+                i = _add_array_add_definition(ls, i, class_name, name, prop, data, ctx)
+                add_blank(ls)
+                i = _add_array_remove_definition(ls, i, class_name, name, prop, data, ctx)
+                add_blank(ls)
     return i
 
 def add_property_unit_tests(ls: list[str], i: int, data: dict[str, Any], ctx: dict[str, Any]) -> int:
@@ -582,4 +843,7 @@ def add_property_unit_tests(ls: list[str], i: int, data: dict[str, Any], ctx: di
             add_blank(ls)
             i = _add_setter_test(ls, i, class_name, name, prop, namespace, data, ctx)
             add_blank(ls)
+            if _is_array(prop):
+                i = _add_array_specific_tests(ls, i, class_name, name, prop, namespace, data, ctx)
+                add_blank(ls)
     return i

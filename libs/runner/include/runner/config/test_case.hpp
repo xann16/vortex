@@ -131,6 +131,31 @@ public:
     void set_stages( std::vector< std::string > const& stages );
     void set_stages( std::vector< std::string > && stages );
     void set_stages( std::initializer_list< std::string > stages_list );
+    [[nodiscard]] bool are_stages_empty() const noexcept;
+    [[nodiscard]] std::size_t stages_count() const noexcept;
+    void clear_stages();
+    [[nodiscard]] std::string_view stage_at( std::size_t index ) const;
+    void add_stage( std::string const& stage );
+    void add_stage( std::string && stage );
+    void add_stage( std::string_view stage )
+    {
+        add_stage( std::string{ stage } );
+    }
+    void add_stage( char const * stage )
+    {
+        add_stage( std::string{ stage } );
+    }
+    void remove_stage_at( std::size_t index );
+    void remove_stage( std::string const& stage );
+    void remove_stage( std::string && stage );
+    void remove_stage( std::string_view stage )
+    {
+        remove_stage( std::string{ stage } );
+    }
+    void remove_stage( char const * stage )
+    {
+        remove_stage( std::string{ stage } );
+    }
 
     // "process_count" property
     [[nodiscard]] i32 process_count() const;

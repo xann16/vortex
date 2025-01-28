@@ -122,6 +122,12 @@ public:
     void set_test_cases( std::vector< runner::config::TestCase > const& test_cases );
     void set_test_cases( std::vector< runner::config::TestCase > && test_cases );
     void set_test_cases( std::initializer_list< runner::config::TestCase > test_cases_list );
+    [[nodiscard]] bool are_test_cases_empty() const noexcept;
+    [[nodiscard]] std::size_t test_cases_count() const noexcept;
+    void clear_test_cases();
+    [[nodiscard]] runner::config::TestCase test_case_at( std::size_t index ) const;
+    void add_test_case( runner::config::TestCase test_case );
+    void remove_test_case_at( std::size_t index );
 
     // "test_stages" property
     [[nodiscard]] std::vector< runner::config::TestStage > test_stages() const;
@@ -134,6 +140,12 @@ public:
     void set_test_stages( std::vector< runner::config::TestStage > const& test_stages );
     void set_test_stages( std::vector< runner::config::TestStage > && test_stages );
     void set_test_stages( std::initializer_list< runner::config::TestStage > test_stages_list );
+    [[nodiscard]] bool are_test_stages_empty() const noexcept;
+    [[nodiscard]] std::size_t test_stages_count() const noexcept;
+    void clear_test_stages();
+    [[nodiscard]] runner::config::TestStage test_stage_at( std::size_t index ) const;
+    void add_test_stage( runner::config::TestStage test_stage );
+    void remove_test_stage_at( std::size_t index );
 
 
 private:

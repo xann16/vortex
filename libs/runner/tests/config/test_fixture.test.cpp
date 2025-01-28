@@ -344,6 +344,30 @@ TEST_CASE( "TestFixture - property: \"test_cases\" - setter, reset", "[settings]
 
 }
 
+TEST_CASE( "TestFixture - property: \"test_cases\" - array-specific - empty object", "[settings][.][!mayfail]" )
+{
+    // TODO - add test
+    REQUIRE( false );
+}
+
+TEST_CASE( "TestFixture - property: \"test_cases\" - array-specific", "[settings]" )
+{
+    auto s_null = vortex::runner::config::TestFixture{};
+    nlohmann::json vobj = nlohmann::json::object();
+    const auto value = vortex::runner::config::TestCase{ &vobj };
+    const auto nvalue = vortex::runner::config::TestCase{};
+
+    REQUIRE( s_null.are_test_cases_empty() );
+    REQUIRE( s_null.test_cases_count() == 0ull );
+
+    REQUIRE_THROWS_AS( s_null.test_case_at( 0ull ), std::runtime_error );
+    REQUIRE_NOTHROW( s_null.clear_test_cases() );
+    REQUIRE_NOTHROW( s_null.remove_test_case_at( 0ull ) );
+
+    REQUIRE_THROWS_AS( s_null.add_test_case( value ), std::runtime_error );
+    REQUIRE_THROWS_AS( s_null.add_test_case( nvalue ), std::runtime_error );
+}
+
 // "test_stages" property
 
 TEST_CASE( "TestFixture - property: \"test_stages\" - getter, default, has_set", "[settings]" )
@@ -412,6 +436,30 @@ TEST_CASE( "TestFixture - property: \"test_stages\" - setter, reset", "[settings
     s.reset_test_stages();
     REQUIRE( !s.has_test_stages_set() );
 
+}
+
+TEST_CASE( "TestFixture - property: \"test_stages\" - array-specific - empty object", "[settings][.][!mayfail]" )
+{
+    // TODO - add test
+    REQUIRE( false );
+}
+
+TEST_CASE( "TestFixture - property: \"test_stages\" - array-specific", "[settings]" )
+{
+    auto s_null = vortex::runner::config::TestFixture{};
+    nlohmann::json vobj = nlohmann::json::object();
+    const auto value = vortex::runner::config::TestStage{ &vobj };
+    const auto nvalue = vortex::runner::config::TestStage{};
+
+    REQUIRE( s_null.are_test_stages_empty() );
+    REQUIRE( s_null.test_stages_count() == 0ull );
+
+    REQUIRE_THROWS_AS( s_null.test_stage_at( 0ull ), std::runtime_error );
+    REQUIRE_NOTHROW( s_null.clear_test_stages() );
+    REQUIRE_NOTHROW( s_null.remove_test_stage_at( 0ull ) );
+
+    REQUIRE_THROWS_AS( s_null.add_test_stage( value ), std::runtime_error );
+    REQUIRE_THROWS_AS( s_null.add_test_stage( nvalue ), std::runtime_error );
 }
 
 

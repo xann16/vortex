@@ -280,6 +280,45 @@ void TestFixture::set_test_cases( std::initializer_list< runner::config::TestCas
     }
 }
 
+[[nodiscard]] bool TestFixture::are_test_cases_empty() const noexcept
+{
+    if ( is_empty() ) return true;
+    return data()->at( "test_cases" ).empty();
+}
+
+[[nodiscard]] std::size_t TestFixture::test_cases_count() const noexcept
+{
+    if ( is_empty() ) return 0ull;
+    return data()->at( "test_cases" ).size();
+}
+
+void TestFixture::clear_test_cases()
+{
+    if ( is_empty() ) return;
+    data()->at( "test_cases" ).clear();
+}
+
+[[nodiscard]] runner::config::TestCase TestFixture::test_case_at( std::size_t index ) const
+{
+    if ( is_empty() ) throw std::runtime_error{ "Item cannot be accessed. Parent object is empty." };
+    auto& json_value = data()->at( "test_cases" ).at( index );
+    return runner::config::TestCase{ &json_value };
+}
+
+void TestFixture::add_test_case( runner::config::TestCase test_case )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Item cannot be added. Parent object is empty." };
+    if ( test_case.is_empty() ) return;
+    data()->at( "test_cases" ).emplace_back( *( test_case.data() ) );
+}
+
+void TestFixture::remove_test_case_at( std::size_t index )
+{
+    if ( is_empty() ) return;
+    data()->at( "test_cases" ).erase( index );
+}
+
+
 // "test_stages" property
 
 [[nodiscard]] std::vector< runner::config::TestStage > TestFixture::test_stages() const
@@ -343,6 +382,45 @@ void TestFixture::set_test_stages( std::initializer_list< runner::config::TestSt
         test_stages_arr.emplace_back( *( el.data() ) );
     }
 }
+
+[[nodiscard]] bool TestFixture::are_test_stages_empty() const noexcept
+{
+    if ( is_empty() ) return true;
+    return data()->at( "test_stages" ).empty();
+}
+
+[[nodiscard]] std::size_t TestFixture::test_stages_count() const noexcept
+{
+    if ( is_empty() ) return 0ull;
+    return data()->at( "test_stages" ).size();
+}
+
+void TestFixture::clear_test_stages()
+{
+    if ( is_empty() ) return;
+    data()->at( "test_stages" ).clear();
+}
+
+[[nodiscard]] runner::config::TestStage TestFixture::test_stage_at( std::size_t index ) const
+{
+    if ( is_empty() ) throw std::runtime_error{ "Item cannot be accessed. Parent object is empty." };
+    auto& json_value = data()->at( "test_stages" ).at( index );
+    return runner::config::TestStage{ &json_value };
+}
+
+void TestFixture::add_test_stage( runner::config::TestStage test_stage )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Item cannot be added. Parent object is empty." };
+    if ( test_stage.is_empty() ) return;
+    data()->at( "test_stages" ).emplace_back( *( test_stage.data() ) );
+}
+
+void TestFixture::remove_test_stage_at( std::size_t index )
+{
+    if ( is_empty() ) return;
+    data()->at( "test_stages" ).erase( index );
+}
+
 
 
 } // end of namespace vortex::runner::config

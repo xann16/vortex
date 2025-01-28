@@ -382,6 +382,37 @@ TEST_CASE( "TestCase - property: \"stages\" - setter, reset", "[settings]" )
 
 }
 
+TEST_CASE( "TestCase - property: \"stages\" - array-specific - empty object", "[settings][.][!mayfail]" )
+{
+    // TODO - add test
+    REQUIRE( false );
+}
+
+TEST_CASE( "TestCase - property: \"stages\" - array-specific", "[settings]" )
+{
+    auto s_null = vortex::runner::config::TestCase{};
+    const auto sv = std::string_view{ "sv" };
+    const auto str = std::string{ "str" };
+    const auto cstr = "cstr";
+
+    REQUIRE( s_null.are_stages_empty() );
+    REQUIRE( s_null.stages_count() == 0ull );
+
+    REQUIRE_THROWS_AS( s_null.stage_at( 0ull ), std::runtime_error );
+    REQUIRE_NOTHROW( s_null.clear_stages() );
+    REQUIRE_NOTHROW( s_null.remove_stage_at( 0ull ) );
+
+    REQUIRE_THROWS_AS( s_null.add_stage( sv ), std::runtime_error );
+    REQUIRE_THROWS_AS( s_null.add_stage( str ), std::runtime_error );
+    REQUIRE_THROWS_AS( s_null.add_stage( cstr ), std::runtime_error );
+    REQUIRE_THROWS_AS( s_null.add_stage( std::string{ str } ), std::runtime_error );
+
+    REQUIRE_NOTHROW( s_null.remove_stage( sv ) );
+    REQUIRE_NOTHROW( s_null.remove_stage( str ) );
+    REQUIRE_NOTHROW( s_null.remove_stage( cstr ) );
+    REQUIRE_NOTHROW( s_null.remove_stage( std::string{ str } ) );
+}
+
 // "process_count" property
 
 TEST_CASE( "TestCase - property: \"process_count\" - getter, default, has_set", "[settings]" )

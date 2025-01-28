@@ -283,6 +283,79 @@ void TestCase::set_stages( std::initializer_list< std::string > stages )
     data()->operator[]( "stages" ) = stages;
 }
 
+[[nodiscard]] bool TestCase::are_stages_empty() const noexcept
+{
+    if ( is_empty() ) return true;
+    return data()->at( "stages" ).empty();
+}
+
+[[nodiscard]] std::size_t TestCase::stages_count() const noexcept
+{
+    if ( is_empty() ) return 0ull;
+    return data()->at( "stages" ).size();
+}
+
+void TestCase::clear_stages()
+{
+    if ( is_empty() ) return;
+    data()->at( "stages" ).clear();
+}
+
+[[nodiscard]] std::string_view TestCase::stage_at( std::size_t index ) const
+{
+    if ( is_empty() ) throw std::runtime_error{ "Item cannot be accessed. Parent object is empty." };
+    auto& json_value = data()->at( "stages" ).at( index );
+    return std::string_view{ json_value.template get_ref<std::string const&>() };
+}
+
+void TestCase::add_stage( std::string const& stage )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Item cannot be added. Parent object is empty." };
+    data()->at( "stages" ).emplace_back( stage );
+}
+void TestCase::add_stage( std::string && stage )
+{
+    if ( is_empty() ) throw std::runtime_error{ "Item cannot be added. Parent object is empty." };
+    data()->at( "stages" ).emplace_back( stage );
+}
+
+void TestCase::remove_stage_at( std::size_t index )
+{
+    if ( is_empty() ) return;
+    data()->at( "stages" ).erase( index );
+}
+
+void TestCase::remove_stage( std::string const& stage )
+{
+    if ( is_empty() ) return;
+    auto& arr = data()->at( "stages" );
+    
+    for ( auto it = arr.begin(); it != arr.end(); it++ )
+    {
+        if (*it == stage)
+        {
+            arr.erase( it );
+            return;
+        }
+    }
+}
+
+void TestCase::remove_stage( std::string && stage )
+{
+    if ( is_empty() ) return;
+    auto& arr = data()->at( "stages" );
+    
+    for ( auto it = arr.begin(); it != arr.end(); it++ )
+    {
+        if (*it == stage)
+        {
+            arr.erase( it );
+            return;
+        }
+    }
+}
+
+
 // "process_count" property
 
 [[nodiscard]] i32 TestCase::process_count() const
