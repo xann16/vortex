@@ -324,12 +324,9 @@ void TestCase::add_stage( std::string const& stage )
     auto it = data()->find( "stages" );
     if ( it == data()->end() || it->is_null() )
     {
-        data()->operator[]( "stages" ) = { stage };
+        data()->operator[]( "stages" ) = nullptr;
     }
-    else
-    {
-        it->emplace_back( stage );
-    }
+    data()->operator[]( "stages" ).emplace_back( stage );
 }
 void TestCase::add_stage( std::string && stage )
 {
@@ -337,12 +334,9 @@ void TestCase::add_stage( std::string && stage )
     auto it = data()->find( "stages" );
     if ( it == data()->end() || it->is_null() )
     {
-        data()->operator[]( "stages" ) = { stage };
+        data()->operator[]( "stages" ) = nullptr;
     }
-    else
-    {
-        it->emplace_back( stage );
-    }
+    data()->operator[]( "stages" ).emplace_back( stage );
 }
 
 void TestCase::remove_stage_at( std::size_t index )

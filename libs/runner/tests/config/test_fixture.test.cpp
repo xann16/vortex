@@ -344,7 +344,7 @@ TEST_CASE( "TestFixture - property: \"test_cases\" - setter, reset", "[settings]
 
 }
 
-TEST_CASE( "TestFixture - property: \"test_cases\" - array-specific - empty object", "[settings]" )
+TEST_CASE( "TestFixture - property: \"test_cases\" - array-specific", "[settings]" )
 {
     nlohmann::json obj = nlohmann::json::object();
     auto s = vortex::runner::config::TestFixture{ &obj };
@@ -421,7 +421,7 @@ TEST_CASE( "TestFixture - property: \"test_cases\" - array-specific - empty obje
     REQUIRE_NOTHROW( s.clear_test_cases() );
 }
 
-TEST_CASE( "TestFixture - property: \"test_cases\" - array-specific", "[settings]" )
+TEST_CASE( "TestFixture - property: \"test_cases\" - array-specific - empty object", "[settings]" )
 {
     auto s_null = vortex::runner::config::TestFixture{};
     nlohmann::json vobj = nlohmann::json::object();
@@ -509,7 +509,7 @@ TEST_CASE( "TestFixture - property: \"test_stages\" - setter, reset", "[settings
 
 }
 
-TEST_CASE( "TestFixture - property: \"test_stages\" - array-specific - empty object", "[settings]" )
+TEST_CASE( "TestFixture - property: \"test_stages\" - array-specific", "[settings]" )
 {
     nlohmann::json obj = nlohmann::json::object();
     auto s = vortex::runner::config::TestFixture{ &obj };
@@ -586,7 +586,7 @@ TEST_CASE( "TestFixture - property: \"test_stages\" - array-specific - empty obj
     REQUIRE_NOTHROW( s.clear_test_stages() );
 }
 
-TEST_CASE( "TestFixture - property: \"test_stages\" - array-specific", "[settings]" )
+TEST_CASE( "TestFixture - property: \"test_stages\" - array-specific - empty object", "[settings]" )
 {
     auto s_null = vortex::runner::config::TestFixture{};
     nlohmann::json vobj = nlohmann::json::object();

@@ -318,17 +318,13 @@ void TestFixture::clear_test_cases()
 void TestFixture::add_test_case( runner::config::TestCase test_case )
 {
     if ( is_empty() ) throw std::runtime_error{ "Item cannot be added. Parent object is empty." };
+    if ( test_case.is_empty() ) return;
     auto it = data()->find( "test_cases" );
     if ( it == data()->end() || it->is_null() )
     {
-        if ( test_case.is_empty() ) return;
-        data()->operator[]( "test_cases" ) = { *( test_case.data() ) };
+        data()->operator[]( "test_cases" ) = nullptr;
     }
-    else
-    {
-        if ( test_case.is_empty() ) return;
-        it->emplace_back( *( test_case.data() ) );
-    }
+    data()->operator[]( "test_cases" ).push_back( *( test_case.data() ) );
 }
 
 void TestFixture::remove_test_case_at( std::size_t index )
@@ -442,17 +438,13 @@ void TestFixture::clear_test_stages()
 void TestFixture::add_test_stage( runner::config::TestStage test_stage )
 {
     if ( is_empty() ) throw std::runtime_error{ "Item cannot be added. Parent object is empty." };
+    if ( test_stage.is_empty() ) return;
     auto it = data()->find( "test_stages" );
     if ( it == data()->end() || it->is_null() )
     {
-        if ( test_stage.is_empty() ) return;
-        data()->operator[]( "test_stages" ) = { *( test_stage.data() ) };
+        data()->operator[]( "test_stages" ) = nullptr;
     }
-    else
-    {
-        if ( test_stage.is_empty() ) return;
-        it->emplace_back( *( test_stage.data() ) );
-    }
+    data()->operator[]( "test_stages" ).push_back( *( test_stage.data() ) );
 }
 
 void TestFixture::remove_test_stage_at( std::size_t index )

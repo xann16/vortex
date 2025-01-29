@@ -382,7 +382,7 @@ TEST_CASE( "TestCase - property: \"stages\" - setter, reset", "[settings]" )
 
 }
 
-TEST_CASE( "TestCase - property: \"stages\" - array-specific - empty object", "[settings]" )
+TEST_CASE( "TestCase - property: \"stages\" - array-specific", "[settings]" )
 {
     nlohmann::json obj = nlohmann::json::object();
     auto s = vortex::runner::config::TestCase{ &obj };
@@ -490,7 +490,7 @@ TEST_CASE( "TestCase - property: \"stages\" - array-specific - empty object", "[
     REQUIRE( s.stages_count() == 0ull );
 }
 
-TEST_CASE( "TestCase - property: \"stages\" - array-specific", "[settings]" )
+TEST_CASE( "TestCase - property: \"stages\" - array-specific - empty object", "[settings]" )
 {
     auto s_null = vortex::runner::config::TestCase{};
     const auto sv = std::string_view{ "sv" };

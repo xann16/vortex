@@ -651,31 +651,21 @@ def _add_array_add_definition(ls: list[str], i: int, class_name: str, name: str,
     body : list[(int, str)] = []
 
     body.append((0, 'if ( is_empty() ) throw std::runtime_error{ "Item cannot be added. Parent object is empty." };'))
+    if property_type in ['module', 'settings']:
+        body.append((0, f'if ( {sg_name}.is_empty() ) return;'))
     body.append((0, f'auto it = data()->find( "{name}" );'))
     body.append((0, f'if ( it == data()->end() || it->is_null() )'))
     body.append((0, '{'))
+    body.append((1, f'data()->operator[]( "{name}" ) = nullptr;'))
+    body.append((0, '}'))
 
     if property_type in ['module', 'settings']:
-        body.append((1, f'if ( {sg_name}.is_empty() ) return;'))
-        body.append((1, f'data()->operator[]( "{name}" ) = {{ *( {sg_name}.data() ) }};'))
+        body.append((0, f'data()->operator[]( "{name}" ).push_back( *( {sg_name}.data() ) );'))
     elif property_type in BASE_TYPES or property_type == 'enum':
-        body.append((1, f'data()->operator[]( "{name}" ) = {{ {sg_name} }};'))
+        body.append((0, f'data()->operator[]( "{name}" ).emplace_back( {sg_name} );'))
     else:
         raise RuntimeError(f'Unexpected property type: {property_type}.')
 
-    body.append((0, '}'))
-    body.append((0, 'else'))
-    body.append((0, '{'))
-
-    if property_type in ['module', 'settings']:
-        body.append((1, f'if ( {sg_name}.is_empty() ) return;'))
-        body.append((1, f'it->emplace_back( *( {sg_name}.data() ) );'))
-    elif property_type in BASE_TYPES or property_type == 'enum':
-        body.append((1, f'it->emplace_back( {sg_name} );'))
-    else:
-        raise RuntimeError(f'Unexpected property type: {property_type}.')
-
-    body.append((0, '}'))
 
     if arg_type == 'std::string_view':
         i = add_method_definition(ls, i, f'add_{sg_name}', 'void', class_name, [('std::string const&', sg_name)], body)
@@ -757,7 +747,7 @@ def _add_array_specific_tests(ls: list[str], i: int, class_name: str, name: str,
     property_type : str = p['type']
     sg_name : str = _get_singular_name(name, p)
 
-    i = begin_test_case(ls, i, f'{class_name} - property: \\\"{name}\\\" - array-specific - empty object', 'settings')
+    i = begin_test_case(ls, i, f'{class_name} - property: \\\"{name}\\\" - array-specific', 'settings')
 
     i = add_line(ls, i, 'nlohmann::json obj = nlohmann::json::object();' )
     i = add_line(ls, i, 'auto s = ' + '::'.join(namespace) + '::' + class_name + '{ &obj };')
@@ -904,7 +894,7 @@ def _add_array_specific_tests(ls: list[str], i: int, class_name: str, name: str,
 
     add_blank(ls)
 
-    i = begin_test_case(ls, i, f'{class_name} - property: \\\"{name}\\\" - array-specific', 'settings')
+    i = begin_test_case(ls, i, f'{class_name} - property: \\\"{name}\\\" - array-specific - empty object', 'settings')
 
     i = add_line(ls, i, 'auto s_null = ' + '::'.join(namespace) + '::' + class_name + '{};')
     if property_type in BASE_TYPES:
