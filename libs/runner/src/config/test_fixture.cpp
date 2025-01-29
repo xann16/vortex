@@ -295,12 +295,22 @@ void TestFixture::set_test_cases( std::initializer_list< runner::config::TestCas
 void TestFixture::clear_test_cases()
 {
     if ( is_empty() ) return;
-    data()->at( "test_cases" ).clear();
+    auto it = data()->find( "test_cases" );
+    if ( it == data()->end() || it->is_null() )
+    {
+        data()->operator[]( "test_cases" ) = nlohmann::json::array();
+    }
+    else
+    {
+        it->clear();
+    }
 }
 
 [[nodiscard]] runner::config::TestCase TestFixture::test_case_at( std::size_t index ) const
 {
     if ( is_empty() ) throw std::runtime_error{ "Item cannot be accessed. Parent object is empty." };
+    auto it = data()->find( "test_cases" );
+    if ( it == data()->end() || it->is_null() ) return default_test_cases().at( index );
     auto& json_value = data()->at( "test_cases" ).at( index );
     return runner::config::TestCase{ &json_value };
 }
@@ -308,14 +318,26 @@ void TestFixture::clear_test_cases()
 void TestFixture::add_test_case( runner::config::TestCase test_case )
 {
     if ( is_empty() ) throw std::runtime_error{ "Item cannot be added. Parent object is empty." };
-    if ( test_case.is_empty() ) return;
-    data()->at( "test_cases" ).emplace_back( *( test_case.data() ) );
+    auto it = data()->find( "test_cases" );
+    if ( it == data()->end() || it->is_null() )
+    {
+        if ( test_case.is_empty() ) return;
+        it->emplace_back( *( test_case.data() ) );
+        data()->operator[]( "test_cases" ) = { *( test_case.data() ) };
+    }
+    else
+    {
+        if ( test_case.is_empty() ) return;
+        it->emplace_back( *( test_case.data() ) );
+    }
 }
 
 void TestFixture::remove_test_case_at( std::size_t index )
 {
     if ( is_empty() ) return;
-    data()->at( "test_cases" ).erase( index );
+    auto it = data()->find( "test_cases" );
+    if ( it == data()->end() || it->is_null() ) return;
+    it->erase( index );
 }
 
 
@@ -398,12 +420,22 @@ void TestFixture::set_test_stages( std::initializer_list< runner::config::TestSt
 void TestFixture::clear_test_stages()
 {
     if ( is_empty() ) return;
-    data()->at( "test_stages" ).clear();
+    auto it = data()->find( "test_stages" );
+    if ( it == data()->end() || it->is_null() )
+    {
+        data()->operator[]( "test_stages" ) = nlohmann::json::array();
+    }
+    else
+    {
+        it->clear();
+    }
 }
 
 [[nodiscard]] runner::config::TestStage TestFixture::test_stage_at( std::size_t index ) const
 {
     if ( is_empty() ) throw std::runtime_error{ "Item cannot be accessed. Parent object is empty." };
+    auto it = data()->find( "test_stages" );
+    if ( it == data()->end() || it->is_null() ) return default_test_stages().at( index );
     auto& json_value = data()->at( "test_stages" ).at( index );
     return runner::config::TestStage{ &json_value };
 }
@@ -411,14 +443,26 @@ void TestFixture::clear_test_stages()
 void TestFixture::add_test_stage( runner::config::TestStage test_stage )
 {
     if ( is_empty() ) throw std::runtime_error{ "Item cannot be added. Parent object is empty." };
-    if ( test_stage.is_empty() ) return;
-    data()->at( "test_stages" ).emplace_back( *( test_stage.data() ) );
+    auto it = data()->find( "test_stages" );
+    if ( it == data()->end() || it->is_null() )
+    {
+        if ( test_stage.is_empty() ) return;
+        it->emplace_back( *( test_stage.data() ) );
+        data()->operator[]( "test_stages" ) = { *( test_stage.data() ) };
+    }
+    else
+    {
+        if ( test_stage.is_empty() ) return;
+        it->emplace_back( *( test_stage.data() ) );
+    }
 }
 
 void TestFixture::remove_test_stage_at( std::size_t index )
 {
     if ( is_empty() ) return;
-    data()->at( "test_stages" ).erase( index );
+    auto it = data()->find( "test_stages" );
+    if ( it == data()->end() || it->is_null() ) return;
+    it->erase( index );
 }
 
 

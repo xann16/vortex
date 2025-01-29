@@ -344,10 +344,81 @@ TEST_CASE( "TestFixture - property: \"test_cases\" - setter, reset", "[settings]
 
 }
 
-TEST_CASE( "TestFixture - property: \"test_cases\" - array-specific - empty object", "[settings][.][!mayfail]" )
+TEST_CASE( "TestFixture - property: \"test_cases\" - array-specific - empty object", "[settings]" )
 {
-    // TODO - add test
-    REQUIRE( false );
+    nlohmann::json obj = nlohmann::json::object();
+    auto s = vortex::runner::config::TestFixture{ &obj };
+
+    nlohmann::json vobj = nlohmann::json::object();
+    nlohmann::json xobj = { { "x", "y" } };
+    const auto value = vortex::runner::config::TestCase{ &vobj };
+    const auto xvalue = vortex::runner::config::TestCase{ &xobj };
+    const auto nvalue = vortex::runner::config::TestCase{};
+
+    REQUIRE( !s.has_test_cases_set() );
+
+    s.clear_test_cases();
+
+    REQUIRE( s.has_test_cases_set() );
+    REQUIRE( s.are_test_cases_empty() );
+    REQUIRE( s.test_cases_count() == 0ull );
+
+    s.reset_test_cases();
+    REQUIRE( !s.has_test_cases_set() );
+
+    s.add_test_case( value );
+
+    REQUIRE( s.has_test_cases_set() );
+    REQUIRE( !s.are_test_cases_empty() );
+    REQUIRE( s.test_cases_count() == 1ull );
+    REQUIRE( s.test_case_at( 0 ) == value );
+
+    s.add_test_case( xvalue );
+
+    REQUIRE( s.has_test_cases_set() );
+    REQUIRE( !s.are_test_cases_empty() );
+    REQUIRE( s.test_cases_count() == 2ull );
+    REQUIRE( s.test_case_at( 0 ) == value );
+    REQUIRE( s.test_case_at( 1 ) == xvalue );
+
+    s.remove_test_case_at( 0 );
+
+    REQUIRE( s.has_test_cases_set() );
+    REQUIRE( !s.are_test_cases_empty() );
+    REQUIRE( s.test_cases_count() == 1ull );
+    REQUIRE( s.test_case_at( 0 ) == xvalue );
+
+    s.add_test_case( value );
+
+    REQUIRE( s.has_test_cases_set() );
+    REQUIRE( !s.are_test_cases_empty() );
+    REQUIRE( s.test_cases_count() == 2ull );
+    REQUIRE( s.test_case_at( 0 ) == xvalue );
+    REQUIRE( s.test_case_at( 1 ) == value );
+
+    s.remove_test_case_at( 0 );
+
+    REQUIRE( s.has_test_cases_set() );
+    REQUIRE( !s.are_test_cases_empty() );
+    REQUIRE( s.test_cases_count() == 1ull );
+    REQUIRE( s.test_case_at( 0 ) == value );
+
+    s.add_test_case( nvalue );
+
+    REQUIRE( s.has_test_cases_set() );
+    REQUIRE( !s.are_test_cases_empty() );
+    REQUIRE( s.test_cases_count() == 1ull );
+    REQUIRE( s.test_case_at( 0 ) == value );
+
+    s.clear_test_cases();
+
+    REQUIRE( s.has_test_cases_set() );
+    REQUIRE( s.are_test_cases_empty() );
+    REQUIRE( s.test_cases_count() == 0ull );
+
+    REQUIRE_THROWS_AS( s.test_case_at( 0 ), nlohmann::json::out_of_range );
+    REQUIRE_THROWS_AS( s.remove_test_case_at( 0 ), nlohmann::json::out_of_range );
+    REQUIRE_NOTHROW( s.clear_test_cases() );
 }
 
 TEST_CASE( "TestFixture - property: \"test_cases\" - array-specific", "[settings]" )
@@ -438,10 +509,81 @@ TEST_CASE( "TestFixture - property: \"test_stages\" - setter, reset", "[settings
 
 }
 
-TEST_CASE( "TestFixture - property: \"test_stages\" - array-specific - empty object", "[settings][.][!mayfail]" )
+TEST_CASE( "TestFixture - property: \"test_stages\" - array-specific - empty object", "[settings]" )
 {
-    // TODO - add test
-    REQUIRE( false );
+    nlohmann::json obj = nlohmann::json::object();
+    auto s = vortex::runner::config::TestFixture{ &obj };
+
+    nlohmann::json vobj = nlohmann::json::object();
+    nlohmann::json xobj = { { "x", "y" } };
+    const auto value = vortex::runner::config::TestStage{ &vobj };
+    const auto xvalue = vortex::runner::config::TestStage{ &xobj };
+    const auto nvalue = vortex::runner::config::TestStage{};
+
+    REQUIRE( !s.has_test_stages_set() );
+
+    s.clear_test_stages();
+
+    REQUIRE( s.has_test_stages_set() );
+    REQUIRE( s.are_test_stages_empty() );
+    REQUIRE( s.test_stages_count() == 0ull );
+
+    s.reset_test_stages();
+    REQUIRE( !s.has_test_stages_set() );
+
+    s.add_test_stage( value );
+
+    REQUIRE( s.has_test_stages_set() );
+    REQUIRE( !s.are_test_stages_empty() );
+    REQUIRE( s.test_stages_count() == 1ull );
+    REQUIRE( s.test_stage_at( 0 ) == value );
+
+    s.add_test_stage( xvalue );
+
+    REQUIRE( s.has_test_stages_set() );
+    REQUIRE( !s.are_test_stages_empty() );
+    REQUIRE( s.test_stages_count() == 2ull );
+    REQUIRE( s.test_stage_at( 0 ) == value );
+    REQUIRE( s.test_stage_at( 1 ) == xvalue );
+
+    s.remove_test_stage_at( 0 );
+
+    REQUIRE( s.has_test_stages_set() );
+    REQUIRE( !s.are_test_stages_empty() );
+    REQUIRE( s.test_stages_count() == 1ull );
+    REQUIRE( s.test_stage_at( 0 ) == xvalue );
+
+    s.add_test_stage( value );
+
+    REQUIRE( s.has_test_stages_set() );
+    REQUIRE( !s.are_test_stages_empty() );
+    REQUIRE( s.test_stages_count() == 2ull );
+    REQUIRE( s.test_stage_at( 0 ) == xvalue );
+    REQUIRE( s.test_stage_at( 1 ) == value );
+
+    s.remove_test_stage_at( 0 );
+
+    REQUIRE( s.has_test_stages_set() );
+    REQUIRE( !s.are_test_stages_empty() );
+    REQUIRE( s.test_stages_count() == 1ull );
+    REQUIRE( s.test_stage_at( 0 ) == value );
+
+    s.add_test_stage( nvalue );
+
+    REQUIRE( s.has_test_stages_set() );
+    REQUIRE( !s.are_test_stages_empty() );
+    REQUIRE( s.test_stages_count() == 1ull );
+    REQUIRE( s.test_stage_at( 0 ) == value );
+
+    s.clear_test_stages();
+
+    REQUIRE( s.has_test_stages_set() );
+    REQUIRE( s.are_test_stages_empty() );
+    REQUIRE( s.test_stages_count() == 0ull );
+
+    REQUIRE_THROWS_AS( s.test_stage_at( 0 ), nlohmann::json::out_of_range );
+    REQUIRE_THROWS_AS( s.remove_test_stage_at( 0 ), nlohmann::json::out_of_range );
+    REQUIRE_NOTHROW( s.clear_test_stages() );
 }
 
 TEST_CASE( "TestFixture - property: \"test_stages\" - array-specific", "[settings]" )

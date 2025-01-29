@@ -298,12 +298,22 @@ void TestCase::set_stages( std::initializer_list< std::string > stages )
 void TestCase::clear_stages()
 {
     if ( is_empty() ) return;
-    data()->at( "stages" ).clear();
+    auto it = data()->find( "stages" );
+    if ( it == data()->end() || it->is_null() )
+    {
+        data()->operator[]( "stages" ) = nlohmann::json::array();
+    }
+    else
+    {
+        it->clear();
+    }
 }
 
 [[nodiscard]] std::string_view TestCase::stage_at( std::size_t index ) const
 {
     if ( is_empty() ) throw std::runtime_error{ "Item cannot be accessed. Parent object is empty." };
+    auto it = data()->find( "stages" );
+    if ( it == data()->end() || it->is_null() ) return default_stages().at( index );
     auto& json_value = data()->at( "stages" ).at( index );
     return std::string_view{ json_value.template get_ref<std::string const&>() };
 }
@@ -311,30 +321,49 @@ void TestCase::clear_stages()
 void TestCase::add_stage( std::string const& stage )
 {
     if ( is_empty() ) throw std::runtime_error{ "Item cannot be added. Parent object is empty." };
-    data()->at( "stages" ).emplace_back( stage );
+    auto it = data()->find( "stages" );
+    if ( it == data()->end() || it->is_null() )
+    {
+        data()->operator[]( "stages" ) = { stage };
+    }
+    else
+    {
+        it->emplace_back( stage );
+    }
 }
 void TestCase::add_stage( std::string && stage )
 {
     if ( is_empty() ) throw std::runtime_error{ "Item cannot be added. Parent object is empty." };
-    data()->at( "stages" ).emplace_back( stage );
+    auto it = data()->find( "stages" );
+    if ( it == data()->end() || it->is_null() )
+    {
+        data()->operator[]( "stages" ) = { stage };
+    }
+    else
+    {
+        it->emplace_back( stage );
+    }
 }
 
 void TestCase::remove_stage_at( std::size_t index )
 {
     if ( is_empty() ) return;
-    data()->at( "stages" ).erase( index );
+    auto it = data()->find( "stages" );
+    if ( it == data()->end() || it->is_null() ) return;
+    it->erase( index );
 }
 
 void TestCase::remove_stage( std::string const& stage )
 {
     if ( is_empty() ) return;
-    auto& arr = data()->at( "stages" );
+    auto it = data()->find( "stages" );
+    if ( it == data()->end() || it->is_null() ) return;
     
-    for ( auto it = arr.begin(); it != arr.end(); it++ )
+    for ( auto arr_it = it->begin(); arr_it != it->end(); arr_it++ )
     {
-        if (*it == stage)
+        if (*arr_it == stage)
         {
-            arr.erase( it );
+            it->erase( arr_it );
             return;
         }
     }
@@ -343,13 +372,14 @@ void TestCase::remove_stage( std::string const& stage )
 void TestCase::remove_stage( std::string && stage )
 {
     if ( is_empty() ) return;
-    auto& arr = data()->at( "stages" );
+    auto it = data()->find( "stages" );
+    if ( it == data()->end() || it->is_null() ) return;
     
-    for ( auto it = arr.begin(); it != arr.end(); it++ )
+    for ( auto arr_it = it->begin(); arr_it != it->end(); arr_it++ )
     {
-        if (*it == stage)
+        if (*arr_it == stage)
         {
-            arr.erase( it );
+            it->erase( arr_it );
             return;
         }
     }

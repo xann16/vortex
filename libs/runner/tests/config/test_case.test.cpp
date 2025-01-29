@@ -382,10 +382,112 @@ TEST_CASE( "TestCase - property: \"stages\" - setter, reset", "[settings]" )
 
 }
 
-TEST_CASE( "TestCase - property: \"stages\" - array-specific - empty object", "[settings][.][!mayfail]" )
+TEST_CASE( "TestCase - property: \"stages\" - array-specific - empty object", "[settings]" )
 {
-    // TODO - add test
-    REQUIRE( false );
+    nlohmann::json obj = nlohmann::json::object();
+    auto s = vortex::runner::config::TestCase{ &obj };
+
+    const auto value = std::string{ "str" };
+    const auto xvalue = std::string{ "xstr" };
+    const auto sv = std::string_view{ "sv" };
+    const auto cstr = "cstr";
+
+    REQUIRE( !s.has_stages_set() );
+
+    s.clear_stages();
+
+    REQUIRE( s.has_stages_set() );
+    REQUIRE( s.are_stages_empty() );
+    REQUIRE( s.stages_count() == 0ull );
+
+    s.reset_stages();
+    REQUIRE( !s.has_stages_set() );
+
+    s.add_stage( value );
+
+    REQUIRE( s.has_stages_set() );
+    REQUIRE( !s.are_stages_empty() );
+    REQUIRE( s.stages_count() == 1ull );
+    REQUIRE( s.stage_at( 0 ) == value );
+
+    s.add_stage( xvalue );
+
+    REQUIRE( s.has_stages_set() );
+    REQUIRE( !s.are_stages_empty() );
+    REQUIRE( s.stages_count() == 2ull );
+    REQUIRE( s.stage_at( 0 ) == value );
+    REQUIRE( s.stage_at( 1 ) == xvalue );
+
+    s.remove_stage( value );
+
+    REQUIRE( s.has_stages_set() );
+    REQUIRE( !s.are_stages_empty() );
+    REQUIRE( s.stages_count() == 1ull );
+    REQUIRE( s.stage_at( 0 ) == xvalue );
+
+    s.add_stage( value );
+
+    REQUIRE( s.has_stages_set() );
+    REQUIRE( !s.are_stages_empty() );
+    REQUIRE( s.stages_count() == 2ull );
+    REQUIRE( s.stage_at( 0 ) == xvalue );
+    REQUIRE( s.stage_at( 1 ) == value );
+
+    s.remove_stage_at( 0 );
+
+    REQUIRE( s.has_stages_set() );
+    REQUIRE( !s.are_stages_empty() );
+    REQUIRE( s.stages_count() == 1ull );
+    REQUIRE( s.stage_at( 0 ) == value );
+
+    s.remove_stage( xvalue );
+
+    REQUIRE( s.has_stages_set() );
+    REQUIRE( !s.are_stages_empty() );
+    REQUIRE( s.stages_count() == 1ull );
+    REQUIRE( s.stage_at( 0 ) == value );
+
+    s.clear_stages();
+
+    REQUIRE( s.has_stages_set() );
+    REQUIRE( s.are_stages_empty() );
+    REQUIRE( s.stages_count() == 0ull );
+
+    REQUIRE_THROWS_AS( s.stage_at( 0 ), nlohmann::json::out_of_range );
+    REQUIRE_THROWS_AS( s.remove_stage_at( 0 ), nlohmann::json::out_of_range );
+    REQUIRE_NOTHROW( s.clear_stages() );
+    REQUIRE_NOTHROW( s.remove_stage( value ) );
+
+    s.add_stage( value );
+    REQUIRE( s.stages_count() == 1ull );
+    REQUIRE( s.stage_at( 0 ) == value );
+
+    s.add_stage( std::string{ xvalue } );
+    REQUIRE( s.stages_count() == 2ull );
+    REQUIRE( s.stage_at( 1 ) == xvalue );
+
+    s.add_stage( sv );
+    REQUIRE( s.stages_count() == 3ull );
+    REQUIRE( s.stage_at( 2 ) == sv );
+
+    s.add_stage( cstr );
+    REQUIRE( s.stages_count() == 4ull );
+    REQUIRE( s.stage_at( 3 ) == cstr );
+
+    s.remove_stage( value );
+    REQUIRE( s.stages_count() == 3ull );
+    REQUIRE( s.stage_at( 0 ) == xvalue );
+
+    s.remove_stage( std::string{ xvalue } );
+    REQUIRE( s.stages_count() == 2ull );
+    REQUIRE( s.stage_at( 0 ) == sv );
+
+    s.remove_stage( sv );
+    REQUIRE( s.stages_count() == 1ull );
+    REQUIRE( s.stage_at( 0 ) == cstr );
+
+    s.remove_stage( cstr );
+    REQUIRE( s.stages_count() == 0ull );
 }
 
 TEST_CASE( "TestCase - property: \"stages\" - array-specific", "[settings]" )

@@ -580,7 +580,15 @@ def _add_array_clear_definition(ls: list[str], i: int, class_name: str, name: st
     body : list[(int, str)] = []
 
     body.append((0, f'if ( is_empty() ) return;'))
-    body.append((0, f'data()->at( "{name}" ).clear();'))
+    body.append((0, f'auto it = data()->find( "{name}" );'))
+    body.append((0, f'if ( it == data()->end() || it->is_null() )'))
+    body.append((0, '{'))
+    body.append((1, f'data()->operator[]( "{name}" ) = nlohmann::json::array();'))
+    body.append((0, '}'))
+    body.append((0, 'else'))
+    body.append((0, '{'))
+    body.append((1, f'it->clear();'))
+    body.append((0, '}'))
 
     return add_method_definition(ls, i, f'clear_{name}', 'void', class_name, [], body)
 
@@ -597,6 +605,9 @@ def _add_array_getter_definition(ls: list[str], i: int, class_name: str, name: s
     body : list[(int, str)] = []
 
     body.append((0, 'if ( is_empty() ) throw std::runtime_error{ "Item cannot be accessed. Parent object is empty." };'))
+
+    body.append((0, f'auto it = data()->find( "{name}" );'))
+    body.append((0, f'if ( it == data()->end() || it->is_null() ) return default_{name}().at( index );'))
     body.append((0, f'auto& json_value = data()->at( "{name}" ).at( index );'))
 
     if property_type in ['module', 'settings']:
@@ -636,14 +647,32 @@ def _add_array_add_definition(ls: list[str], i: int, class_name: str, name: str,
     body : list[(int, str)] = []
 
     body.append((0, 'if ( is_empty() ) throw std::runtime_error{ "Item cannot be added. Parent object is empty." };'))
+    body.append((0, f'auto it = data()->find( "{name}" );'))
+    body.append((0, f'if ( it == data()->end() || it->is_null() )'))
+    body.append((0, '{'))
 
     if property_type in ['module', 'settings']:
-        body.append((0, f'if ( {sg_name}.is_empty() ) return;'))
-        body.append((0, f'data()->at( "{name}" ).emplace_back( *( {sg_name}.data() ) );'))
+        body.append((1, f'if ( {sg_name}.is_empty() ) return;'))
+        body.append((1, f'it->emplace_back( *( {sg_name}.data() ) );'))
+        body.append((1, f'data()->operator[]( "{name}" ) = {{ *( {sg_name}.data() ) }};'))
     elif property_type in BASE_TYPES or property_type == 'enum':
-        body.append((0, f'data()->at( "{name}" ).emplace_back( {sg_name} );'))
+        body.append((1, f'data()->operator[]( "{name}" ) = {{ {sg_name} }};'))
     else:
         raise RuntimeError(f'Unexpected property type: {property_type}.')
+
+    body.append((0, '}'))
+    body.append((0, 'else'))
+    body.append((0, '{'))
+
+    if property_type in ['module', 'settings']:
+        body.append((1, f'if ( {sg_name}.is_empty() ) return;'))
+        body.append((1, f'it->emplace_back( *( {sg_name}.data() ) );'))
+    elif property_type in BASE_TYPES or property_type == 'enum':
+        body.append((1, f'it->emplace_back( {sg_name} );'))
+    else:
+        raise RuntimeError(f'Unexpected property type: {property_type}.')
+
+    body.append((0, '}'))
 
     if arg_type == 'std::string_view':
         i = add_method_definition(ls, i, f'add_{sg_name}', 'void', class_name, [('std::string const&', sg_name)], body)
@@ -683,7 +712,9 @@ def _add_array_remove_definition(ls: list[str], i: int, class_name: str, name: s
     body_by_index : list[(int, str)] = []
 
     body_by_index.append((0, 'if ( is_empty() ) return;'))
-    body_by_index.append((0, f'data()->at( "{name}" ).erase( index );'))
+    body_by_index.append((0, f'auto it = data()->find( "{name}" );'))
+    body_by_index.append((0, f'if ( it == data()->end() || it->is_null() ) return;'))
+    body_by_index.append((0, f'it->erase( index );'))
 
     i = add_method_definition(ls, i, f'remove_{sg_name}_at', 'void', class_name, [('std::size_t', 'index')], body_by_index)
     add_blank(ls)
@@ -694,13 +725,14 @@ def _add_array_remove_definition(ls: list[str], i: int, class_name: str, name: s
     body_by_value : list[(int, str)] = []
 
     body_by_value.append((0, 'if ( is_empty() ) return;'))
-    body_by_value.append((0, f'auto& arr = data()->at( "{name}" );'))
+    body_by_value.append((0, f'auto it = data()->find( "{name}" );'))
+    body_by_value.append((0, f'if ( it == data()->end() || it->is_null() ) return;'))
     body_by_value.append((0, ''))
-    body_by_value.append((0, f'for ( auto it = arr.begin(); it != arr.end(); it++ )'))
+    body_by_value.append((0, f'for ( auto arr_it = it->begin(); arr_it != it->end(); arr_it++ )'))
     body_by_value.append((0, '{'))
-    body_by_value.append((1, f'if (*it == {sg_name})'))
+    body_by_value.append((1, f'if (*arr_it == {sg_name})'))
     body_by_value.append((1, '{'))
-    body_by_value.append((2, 'arr.erase( it );'))
+    body_by_value.append((2, 'it->erase( arr_it );'))
     body_by_value.append((2, 'return;'))
     body_by_value.append((1, '}'))
     body_by_value.append((0, '}'))
@@ -722,9 +754,149 @@ def _add_array_specific_tests(ls: list[str], i: int, class_name: str, name: str,
     property_type : str = p['type']
     sg_name : str = _get_singular_name(name, p)
 
-    i = begin_test_case(ls, i, f'{class_name} - property: \\\"{name}\\\" - array-specific - empty object', 'settings', '.', '!mayfail')
-    i = add_block_comment(ls, i, 'TODO - add test')
-    i = add_require(ls, i, 'false')
+    i = begin_test_case(ls, i, f'{class_name} - property: \\\"{name}\\\" - array-specific - empty object', 'settings')
+
+    i = add_line(ls, i, 'nlohmann::json obj = nlohmann::json::object();' )
+    i = add_line(ls, i, 'auto s = ' + '::'.join(namespace) + '::' + class_name + '{ &obj };')
+    add_blank(ls)
+
+    if property_type in BASE_TYPES:
+        if value_arg_type == 'std::string_view':
+            i = add_line(ls, i, f'const auto value = std::string{{ "str" }};')
+            i = add_line(ls, i, f'const auto xvalue = std::string{{ "xstr" }};')
+            i = add_line(ls, i, f'const auto sv = std::string_view{{ "sv" }};')
+            i = add_line(ls, i, f'const auto cstr = "cstr";')
+        else:
+            i = add_line(ls, i, f'const auto value = {BASE_TYPES[property_type][1]};')
+            if property_type == 'bool':
+                i = add_line(ls, i, f'const auto xvalue = true;')
+            else:
+                i = add_line(ls, i, f'const auto xvalue = {BASE_TYPES[property_type][1]} + {BASE_TYPES[property_type][1]};')
+    if property_type == 'enum':
+        i = add_line(ls, i, f'const auto value = {'::'.join(namespace)}::{to_pascal_case(p['enum']['name'])}::{to_pascal_case(p['enum']['values'][-1])};')
+        i = add_line(ls, i, f'const auto xvalue = {'::'.join(namespace)}::{to_pascal_case(p['enum']['name'])}::{to_pascal_case(p['enum']['values'][-2])};')
+    elif property_type in ['module', 'settings']:
+        # TODO - specific sets for specific setting classes (i.e. module)
+        i = add_line(ls, i, f'nlohmann::json vobj = nlohmann::json::object();')
+        i = add_line(ls, i, 'nlohmann::json xobj = { { "x", "y" } };')
+        i = add_line(ls, i, f'const auto value = vortex::{value_arg_type}{{ &vobj }};')
+        i = add_line(ls, i, f'const auto xvalue = vortex::{value_arg_type}{{ &xobj }};')
+        i = add_line(ls, i, f'const auto nvalue = vortex::{value_arg_type}{{}};')
+    add_blank(ls)
+
+    i = add_require(ls, i, f'!s.has_{name}_set()')
+    add_blank(ls)
+    i = add_line(ls, i, f's.clear_{name}();')
+    add_blank(ls)
+    i = add_require(ls, i, f's.has_{name}_set()')
+    i = add_require(ls, i, f's.{"are" if name.endswith("s") else "is"}_{name}_empty()')
+    i = add_require(ls, i, f's.{name}_count() == 0ull')
+    add_blank(ls)
+    i = add_line(ls, i, f's.reset_{name}();')
+    i = add_require(ls, i, f'!s.has_{name}_set()')
+    add_blank(ls)
+
+    i = add_line(ls, i, f's.add_{sg_name}( value );')
+    add_blank(ls)
+    i = add_require(ls, i, f's.has_{name}_set()')
+    i = add_require(ls, i, f'!s.{"are" if name.endswith("s") else "is"}_{name}_empty()')
+    i = add_require(ls, i, f's.{name}_count() == 1ull')
+    i = add_require(ls, i, f's.{sg_name}_at( 0 ) == value')
+    add_blank(ls)
+    i = add_line(ls, i, f's.add_{sg_name}( xvalue );')
+    add_blank(ls)
+    i = add_require(ls, i, f's.has_{name}_set()')
+    i = add_require(ls, i, f'!s.{"are" if name.endswith("s") else "is"}_{name}_empty()')
+    i = add_require(ls, i, f's.{name}_count() == 2ull')
+    i = add_require(ls, i, f's.{sg_name}_at( 0 ) == value')
+    i = add_require(ls, i, f's.{sg_name}_at( 1 ) == xvalue')
+    add_blank(ls)
+    if property_type in ['module', 'settings']:
+        i = add_line(ls, i, f's.remove_{sg_name}_at( 0 );')
+    else:
+        i = add_line(ls, i, f's.remove_{sg_name}( value );')
+    add_blank(ls)
+    i = add_require(ls, i, f's.has_{name}_set()')
+    i = add_require(ls, i, f'!s.{"are" if name.endswith("s") else "is"}_{name}_empty()')
+    i = add_require(ls, i, f's.{name}_count() == 1ull')
+    i = add_require(ls, i, f's.{sg_name}_at( 0 ) == xvalue')
+    add_blank(ls)
+    i = add_line(ls, i, f's.add_{sg_name}( value );')
+    add_blank(ls)
+    i = add_require(ls, i, f's.has_{name}_set()')
+    i = add_require(ls, i, f'!s.{"are" if name.endswith("s") else "is"}_{name}_empty()')
+    i = add_require(ls, i, f's.{name}_count() == 2ull')
+    i = add_require(ls, i, f's.{sg_name}_at( 0 ) == xvalue')
+    i = add_require(ls, i, f's.{sg_name}_at( 1 ) == value')
+    add_blank(ls)
+    i = add_line(ls, i, f's.remove_{sg_name}_at( 0 );')
+    add_blank(ls)
+    i = add_require(ls, i, f's.has_{name}_set()')
+    i = add_require(ls, i, f'!s.{"are" if name.endswith("s") else "is"}_{name}_empty()')
+    i = add_require(ls, i, f's.{name}_count() == 1ull')
+    i = add_require(ls, i, f's.{sg_name}_at( 0 ) == value')
+    add_blank(ls)
+    if property_type not in ['module', 'settings']:
+        i = add_line(ls, i, f's.remove_{sg_name}( xvalue );')
+        add_blank(ls)
+        i = add_require(ls, i, f's.has_{name}_set()')
+        i = add_require(ls, i, f'!s.{"are" if name.endswith("s") else "is"}_{name}_empty()')
+        i = add_require(ls, i, f's.{name}_count() == 1ull')
+        i = add_require(ls, i, f's.{sg_name}_at( 0 ) == value')
+        add_blank(ls)
+    else:
+        i = add_line(ls, i, f's.add_{sg_name}( nvalue );')
+        add_blank(ls)
+        i = add_require(ls, i, f's.has_{name}_set()')
+        i = add_require(ls, i, f'!s.{"are" if name.endswith("s") else "is"}_{name}_empty()')
+        i = add_require(ls, i, f's.{name}_count() == 1ull')
+        i = add_require(ls, i, f's.{sg_name}_at( 0 ) == value')
+        add_blank(ls)
+    i = add_line(ls, i, f's.clear_{name}();')
+    add_blank(ls)
+    i = add_require(ls, i, f's.has_{name}_set()')
+    i = add_require(ls, i, f's.{"are" if name.endswith("s") else "is"}_{name}_empty()')
+    i = add_require(ls, i, f's.{name}_count() == 0ull')
+    add_blank(ls)
+    i = add_require(ls, i, f's.{sg_name}_at( 0 ), nlohmann::json::out_of_range', 'throws_as')
+    i = add_require(ls, i, f's.remove_{sg_name}_at( 0 ), nlohmann::json::out_of_range', 'throws_as')
+    i = add_require(ls, i, f's.clear_{name}()', 'nothrow')
+    if property_type not in ['module', 'settings']:
+        i = add_require(ls, i, f's.remove_{sg_name}( value )', 'nothrow')
+
+    if value_arg_type == 'std::string_view':
+        add_blank(ls)
+        i = add_line(ls, i, f's.add_{sg_name}( value );')
+        i = add_require(ls, i, f's.{name}_count() == 1ull')
+        i = add_require(ls, i, f's.{sg_name}_at( 0 ) == value')
+        add_blank(ls)
+        i = add_line(ls, i, f's.add_{sg_name}( std::string{{ xvalue }} );')
+        i = add_require(ls, i, f's.{name}_count() == 2ull')
+        i = add_require(ls, i, f's.{sg_name}_at( 1 ) == xvalue')
+        add_blank(ls)
+        i = add_line(ls, i, f's.add_{sg_name}( sv );')
+        i = add_require(ls, i, f's.{name}_count() == 3ull')
+        i = add_require(ls, i, f's.{sg_name}_at( 2 ) == sv')
+        add_blank(ls)
+        i = add_line(ls, i, f's.add_{sg_name}( cstr );')
+        i = add_require(ls, i, f's.{name}_count() == 4ull')
+        i = add_require(ls, i, f's.{sg_name}_at( 3 ) == cstr')
+        add_blank(ls)
+        i = add_line(ls, i, f's.remove_{sg_name}( value );')
+        i = add_require(ls, i, f's.{name}_count() == 3ull')
+        i = add_require(ls, i, f's.{sg_name}_at( 0 ) == xvalue')
+        add_blank(ls)
+        i = add_line(ls, i, f's.remove_{sg_name}( std::string{{ xvalue }} );')
+        i = add_require(ls, i, f's.{name}_count() == 2ull')
+        i = add_require(ls, i, f's.{sg_name}_at( 0 ) == sv')
+        add_blank(ls)
+        i = add_line(ls, i, f's.remove_{sg_name}( sv );')
+        i = add_require(ls, i, f's.{name}_count() == 1ull')
+        i = add_require(ls, i, f's.{sg_name}_at( 0 ) == cstr')
+        add_blank(ls)
+        i = add_line(ls, i, f's.remove_{sg_name}( cstr );')
+        i = add_require(ls, i, f's.{name}_count() == 0ull')
+
     i = end_test_case(ls, i)
 
     add_blank(ls)
