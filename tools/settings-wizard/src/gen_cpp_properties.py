@@ -21,9 +21,24 @@ BASE_TYPES = {
 }
 
 
+def get_required_list(data: dict[str, Any], ctx: dict[str, Any]) -> list[str, Any]:
+    return [ item for item in data.items() if (not item[0].startswith('__') and is_required(item[1], data, ctx)) ]
+
+def is_required(p: dict[str, Any], data: dict[str, Any], ctx: dict[str, Any]) -> bool:
+    if 'is_required' in p and p['is_required']:
+        return True
+    if 'is_array' in p and p['is_array'] and ( 'default' not in p or not p['default'] ):
+        return False
+    if p['type'] == 'module':
+        module_key : str = [entry['from'] for entry in data['__includes__'] if p['module']['name'] in entry['import']['modules']][0]
+        return has_module_required(ctx['defs'][module_key], ctx)
+    return False
+
+def has_module_required(data: dict[str, Any], ctx: dict[str, Any]) -> bool:
+    return any(get_required_list(data, ctx))
+
 def _is_array(p: dict[str, Any]) -> bool:
     return 'is_array' in p and p['is_array']
-
 
 def _get_singular_name(name: str, p: dict[str, Any]) -> str:
     if 'singular_name' in p and p['singular_name']:

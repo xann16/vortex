@@ -46,9 +46,9 @@ def end_namespace(ls: list[str], i: int, *args, undo_indent=False) -> None:
     comment = f' // end of namespace {"::".join(str(arg) for arg in args)}' if args else ''
     return close_brace(ls, i, undo_indent=undo_indent, suffix=comment)
 
-def begin_class(ls: list[str], i: int, class_name: str, base_classes: list[str] | None = None) -> None:
+def begin_class(ls: list[str], i: int, class_name: str, base_classes: list[str] | None = None, is_struct=False) -> None:
     bases : str = (' : public ' + ', '.join(base_classes)) if base_classes else ''
-    i = add_line(ls, i, f'class {class_name}' + bases)
+    i = add_line(ls, i, f'{"struct" if is_struct else "class"} {class_name}' + bases)
     return open_brace(ls, i)
 
 def end_class(ls: list[str], i: int, class_name: str) -> None:

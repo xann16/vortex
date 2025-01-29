@@ -5,7 +5,6 @@ from gen_utils import create_file
 import os
 from typing import Any
 
-
 def get_header_path(data: dict[str, Any], suffix: str = '', root_path: str | None = None, ctx='cwd') -> str:
     package_name : str = data['__metadata__']['package'].lstrip('*')
     module_name : str = data['__metadata__']['module']
@@ -102,7 +101,6 @@ def generate_required_enum_classes(root_path: str, data: dict[str, Any], ctx: di
         if 'type' in prop_data and prop_data['type'] == 'enum':
             enum_data: dict[str, Any] = prop_data['enum']
             gen_cpp_enums.generate_enum(root_path, data, enum_data, ctx)
-
 
 
 def generate_dynamic_header_file(root_path: str, data: dict[str, Any], ctx: dict[str, Any]) -> None:
