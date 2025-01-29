@@ -68,7 +68,7 @@ public:
     [[nodiscard]] bool has_N_set() const noexcept;
     [[nodiscard]] constexpr i32 default_N() const noexcept
     {
-        return i32{};
+        return 16;
     }
     void reset_N();
     void set_N( i32 N );
@@ -76,9 +76,9 @@ public:
     // "N_subdomain" property
     [[nodiscard]] i32 N_subdomain() const;
     [[nodiscard]] bool has_N_subdomain_set() const noexcept;
-    [[nodiscard]] i32 default_N_subdomain() const noexcept
+    [[nodiscard]] constexpr i32 default_N_subdomain() const noexcept
     {
-        return N();
+        return 1;
     }
     void reset_N_subdomain();
     void set_N_subdomain( i32 N_subdomain );
@@ -88,7 +88,7 @@ public:
     [[nodiscard]] bool has_Nt_max_set() const noexcept;
     [[nodiscard]] constexpr i32 default_Nt_max() const noexcept
     {
-        return i32{};
+        return 1;
     }
     void reset_Nt_max();
     void set_Nt_max( i32 Nt_max );
@@ -98,7 +98,7 @@ public:
     [[nodiscard]] bool has_dt_set() const noexcept;
     [[nodiscard]] constexpr real default_dt() const noexcept
     {
-        return real{};
+        return 0.001;
     }
     void reset_dt();
     void set_dt( real dt );
@@ -108,7 +108,7 @@ public:
     [[nodiscard]] bool has_rnu_set() const noexcept;
     [[nodiscard]] constexpr real default_rnu() const noexcept
     {
-        return real{};
+        return 0.1;
     }
     void reset_rnu();
     void set_rnu( real rnu );
@@ -128,7 +128,7 @@ public:
     [[nodiscard]] bool has_is_flow_generated_set() const noexcept;
     [[nodiscard]] constexpr bool default_is_flow_generated() const noexcept
     {
-        return bool{};
+        return true;
     }
     void reset_is_flow_generated();
     void set_is_flow_generated( bool is_flow_generated );
@@ -168,7 +168,7 @@ public:
     [[nodiscard]] bool has_deterministic_forcing_k_1_set() const noexcept;
     [[nodiscard]] constexpr real default_deterministic_forcing_k_1() const noexcept
     {
-        return real{};
+        return 1.0;
     }
     void reset_deterministic_forcing_k_1();
     void set_deterministic_forcing_k_1( real deterministic_forcing_k_1 );
@@ -178,7 +178,7 @@ public:
     [[nodiscard]] bool has_deterministic_forcing_k_2_set() const noexcept;
     [[nodiscard]] constexpr real default_deterministic_forcing_k_2() const noexcept
     {
-        return real{};
+        return 1.0;
     }
     void reset_deterministic_forcing_k_2();
     void set_deterministic_forcing_k_2( real deterministic_forcing_k_2 );
@@ -198,7 +198,7 @@ public:
     [[nodiscard]] bool has_stats_output_interval_set() const noexcept;
     [[nodiscard]] constexpr i32 default_stats_output_interval() const noexcept
     {
-        return i32{};
+        return 1;
     }
     void reset_stats_output_interval();
     void set_stats_output_interval( i32 stats_output_interval );
@@ -208,7 +208,7 @@ public:
     [[nodiscard]] bool has_spectrum_output_interval_set() const noexcept;
     [[nodiscard]] constexpr i32 default_spectrum_output_interval() const noexcept
     {
-        return i32{};
+        return 1;
     }
     void reset_spectrum_output_interval();
     void set_spectrum_output_interval( i32 spectrum_output_interval );
@@ -228,7 +228,7 @@ public:
     [[nodiscard]] bool has_rho_part_set() const noexcept;
     [[nodiscard]] constexpr real default_rho_part() const noexcept
     {
-        return real{};
+        return 1.0;
     }
     void reset_rho_part();
     void set_rho_part( real rho_part );
@@ -238,7 +238,7 @@ public:
     [[nodiscard]] bool has_rho_fluid_set() const noexcept;
     [[nodiscard]] constexpr real default_rho_fluid() const noexcept
     {
-        return real{};
+        return 0.001;
     }
     void reset_rho_fluid();
     void set_rho_fluid( real rho_fluid );
@@ -248,7 +248,7 @@ public:
     [[nodiscard]] bool has_eta_k_init_set() const noexcept;
     [[nodiscard]] constexpr real default_eta_k_init() const noexcept
     {
-        return real{};
+        return 1.0;
     }
     void reset_eta_k_init();
     void set_eta_k_init( real eta_k_init );
@@ -258,7 +258,7 @@ public:
     [[nodiscard]] bool has_tau_k_init_set() const noexcept;
     [[nodiscard]] constexpr real default_tau_k_init() const noexcept
     {
-        return real{};
+        return 1.0;
     }
     void reset_tau_k_init();
     void set_tau_k_init( real tau_k_init );
@@ -268,7 +268,7 @@ public:
     [[nodiscard]] bool has_shell_thickness_set() const noexcept;
     [[nodiscard]] constexpr real default_shell_thickness() const noexcept
     {
-        return real{};
+        return 1.0;
     }
     void reset_shell_thickness();
     void set_shell_thickness( real shell_thickness );
@@ -278,7 +278,7 @@ public:
     [[nodiscard]] bool has_epsilon_env_set() const noexcept;
     [[nodiscard]] constexpr real default_epsilon_env() const noexcept
     {
-        return real{};
+        return 1.0;
     }
     void reset_epsilon_env();
     void set_epsilon_env( real epsilon_env );
@@ -288,7 +288,7 @@ public:
     [[nodiscard]] bool has_nu_fluid_set() const noexcept;
     [[nodiscard]] constexpr real default_nu_fluid() const noexcept
     {
-        return real{};
+        return 1.0;
     }
     void reset_nu_fluid();
     void set_nu_fluid( real nu_fluid );
@@ -298,7 +298,7 @@ public:
     [[nodiscard]] bool has_gravity_set() const noexcept;
     [[nodiscard]] constexpr real default_gravity() const noexcept
     {
-        return real{};
+        return 9.8;
     }
     void reset_gravity();
     void set_gravity( real gravity );
@@ -368,7 +368,7 @@ public:
     [[nodiscard]] bool has_a_set() const noexcept;
     [[nodiscard]] constexpr real default_a() const noexcept
     {
-        return real{};
+        return 30.0;
     }
     void reset_a();
     void set_a( real a );

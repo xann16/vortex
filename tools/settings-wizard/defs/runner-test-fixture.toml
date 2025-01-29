@@ -3,6 +3,7 @@ module = "test_fixture"
 package = "runner"
 namespace = ["config"]
 skip_static_generation = true
+settings.providers = [ "json" ]
 languages = ["cpp"]
 
 
@@ -17,6 +18,7 @@ import.modules = [ "test_stage" ]
 
 [name]
 type = "string"
+is_required = true
 
 [root_path]
 type = "path"

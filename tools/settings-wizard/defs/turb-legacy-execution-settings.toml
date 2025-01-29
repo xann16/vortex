@@ -6,6 +6,7 @@ namespace = [ "legacy", "settings" ]
 
 [job_name]
 type = "string"
+default = "undefined"
 
 [grant_no]
 type = "string"

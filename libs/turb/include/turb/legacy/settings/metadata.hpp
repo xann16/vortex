@@ -150,7 +150,7 @@ public:
     [[nodiscard]] bool has_src_flow_path_set() const noexcept;
     [[nodiscard]] constexpr std::string_view default_src_flow_path() const noexcept
     {
-        return std::string_view{};
+        return ".";
     }
     void reset_src_flow_path();
     void set_src_flow_path( std::string const& src_flow_path );
@@ -169,7 +169,7 @@ public:
     [[nodiscard]] bool has_src_part_path_set() const noexcept;
     [[nodiscard]] constexpr std::string_view default_src_part_path() const noexcept
     {
-        return std::string_view{};
+        return ".";
     }
     void reset_src_part_path();
     void set_src_part_path( std::string const& src_part_path );

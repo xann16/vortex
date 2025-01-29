@@ -115,7 +115,7 @@ TEST_CASE( "ExecutionSettings - property: \"job_name\" - getter, default, has_se
     auto default_value = s_null.job_name();
 
     REQUIRE( value == "stest" );
-    REQUIRE( default_value == std::string_view{} );
+    REQUIRE( default_value == "undefined" );
 
     REQUIRE( s.has_job_name_set() );
     REQUIRE( !s_null.has_job_name_set() );

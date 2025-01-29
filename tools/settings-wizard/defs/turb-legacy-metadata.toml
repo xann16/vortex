@@ -40,9 +40,11 @@ default = 1
 
 [src_flow_path]
 type = "path"
+default = '.'
 
 [src_part_path]
 type = "path"
+default = '.'
 
 [part_output_delay]
 type = "i32"

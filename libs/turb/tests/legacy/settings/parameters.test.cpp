@@ -115,7 +115,7 @@ TEST_CASE( "Parameters - property: \"N\" - getter, default, has_set", "[settings
     auto default_value = s_null.N();
 
     REQUIRE( static_cast< vortex::i32 >( value ) == -2l );
-    REQUIRE( static_cast< vortex::i32 >( default_value ) == vortex::i32{} );
+    REQUIRE( static_cast< vortex::i32 >( default_value ) == 16 );
 
     REQUIRE( s.has_N_set() );
     REQUIRE( !s_null.has_N_set() );
@@ -158,7 +158,7 @@ TEST_CASE( "Parameters - property: \"N_subdomain\" - getter, default, has_set", 
     auto default_value = s_null.N_subdomain();
 
     REQUIRE( static_cast< vortex::i32 >( value ) == -2l );
-    REQUIRE( static_cast< vortex::i32 >( default_value ) == s_null.N() );
+    REQUIRE( static_cast< vortex::i32 >( default_value ) == 1 );
 
     REQUIRE( s.has_N_subdomain_set() );
     REQUIRE( !s_null.has_N_subdomain_set() );
@@ -201,7 +201,7 @@ TEST_CASE( "Parameters - property: \"Nt_max\" - getter, default, has_set", "[set
     auto default_value = s_null.Nt_max();
 
     REQUIRE( static_cast< vortex::i32 >( value ) == -2l );
-    REQUIRE( static_cast< vortex::i32 >( default_value ) == vortex::i32{} );
+    REQUIRE( static_cast< vortex::i32 >( default_value ) == 1 );
 
     REQUIRE( s.has_Nt_max_set() );
     REQUIRE( !s_null.has_Nt_max_set() );
@@ -244,7 +244,7 @@ TEST_CASE( "Parameters - property: \"dt\" - getter, default, has_set", "[setting
     auto default_value = s_null.dt();
 
     REQUIRE_THAT( static_cast< vortex::real >( value ), Catch::Matchers::WithinAbs( 0.3, 1e-05 ) );
-    REQUIRE_THAT( static_cast< vortex::real >( default_value ), Catch::Matchers::WithinAbs( vortex::real{}, 1e-05 ) );
+    REQUIRE_THAT( static_cast< vortex::real >( default_value ), Catch::Matchers::WithinAbs( 0.001, 1e-05 ) );
 
     REQUIRE( s.has_dt_set() );
     REQUIRE( !s_null.has_dt_set() );
@@ -287,7 +287,7 @@ TEST_CASE( "Parameters - property: \"rnu\" - getter, default, has_set", "[settin
     auto default_value = s_null.rnu();
 
     REQUIRE_THAT( static_cast< vortex::real >( value ), Catch::Matchers::WithinAbs( 0.3, 1e-05 ) );
-    REQUIRE_THAT( static_cast< vortex::real >( default_value ), Catch::Matchers::WithinAbs( vortex::real{}, 1e-05 ) );
+    REQUIRE_THAT( static_cast< vortex::real >( default_value ), Catch::Matchers::WithinAbs( 0.1, 1e-05 ) );
 
     REQUIRE( s.has_rnu_set() );
     REQUIRE( !s_null.has_rnu_set() );
@@ -373,7 +373,7 @@ TEST_CASE( "Parameters - property: \"is_flow_generated\" - getter, default, has_
     auto default_value = s_null.is_flow_generated();
 
     REQUIRE( value == true );
-    REQUIRE( default_value == bool{} );
+    REQUIRE( default_value == true );
 
     REQUIRE( s.has_is_flow_generated_set() );
     REQUIRE( !s_null.has_is_flow_generated_set() );
@@ -545,7 +545,7 @@ TEST_CASE( "Parameters - property: \"deterministic_forcing_k_1\" - getter, defau
     auto default_value = s_null.deterministic_forcing_k_1();
 
     REQUIRE_THAT( static_cast< vortex::real >( value ), Catch::Matchers::WithinAbs( 0.3, 1e-05 ) );
-    REQUIRE_THAT( static_cast< vortex::real >( default_value ), Catch::Matchers::WithinAbs( vortex::real{}, 1e-05 ) );
+    REQUIRE_THAT( static_cast< vortex::real >( default_value ), Catch::Matchers::WithinAbs( 1.0, 1e-05 ) );
 
     REQUIRE( s.has_deterministic_forcing_k_1_set() );
     REQUIRE( !s_null.has_deterministic_forcing_k_1_set() );
@@ -588,7 +588,7 @@ TEST_CASE( "Parameters - property: \"deterministic_forcing_k_2\" - getter, defau
     auto default_value = s_null.deterministic_forcing_k_2();
 
     REQUIRE_THAT( static_cast< vortex::real >( value ), Catch::Matchers::WithinAbs( 0.3, 1e-05 ) );
-    REQUIRE_THAT( static_cast< vortex::real >( default_value ), Catch::Matchers::WithinAbs( vortex::real{}, 1e-05 ) );
+    REQUIRE_THAT( static_cast< vortex::real >( default_value ), Catch::Matchers::WithinAbs( 1.0, 1e-05 ) );
 
     REQUIRE( s.has_deterministic_forcing_k_2_set() );
     REQUIRE( !s_null.has_deterministic_forcing_k_2_set() );
@@ -674,7 +674,7 @@ TEST_CASE( "Parameters - property: \"stats_output_interval\" - getter, default, 
     auto default_value = s_null.stats_output_interval();
 
     REQUIRE( static_cast< vortex::i32 >( value ) == -2l );
-    REQUIRE( static_cast< vortex::i32 >( default_value ) == vortex::i32{} );
+    REQUIRE( static_cast< vortex::i32 >( default_value ) == 1 );
 
     REQUIRE( s.has_stats_output_interval_set() );
     REQUIRE( !s_null.has_stats_output_interval_set() );
@@ -717,7 +717,7 @@ TEST_CASE( "Parameters - property: \"spectrum_output_interval\" - getter, defaul
     auto default_value = s_null.spectrum_output_interval();
 
     REQUIRE( static_cast< vortex::i32 >( value ) == -2l );
-    REQUIRE( static_cast< vortex::i32 >( default_value ) == vortex::i32{} );
+    REQUIRE( static_cast< vortex::i32 >( default_value ) == 1 );
 
     REQUIRE( s.has_spectrum_output_interval_set() );
     REQUIRE( !s_null.has_spectrum_output_interval_set() );
@@ -803,7 +803,7 @@ TEST_CASE( "Parameters - property: \"rho_part\" - getter, default, has_set", "[s
     auto default_value = s_null.rho_part();
 
     REQUIRE_THAT( static_cast< vortex::real >( value ), Catch::Matchers::WithinAbs( 0.3, 1e-05 ) );
-    REQUIRE_THAT( static_cast< vortex::real >( default_value ), Catch::Matchers::WithinAbs( vortex::real{}, 1e-05 ) );
+    REQUIRE_THAT( static_cast< vortex::real >( default_value ), Catch::Matchers::WithinAbs( 1.0, 1e-05 ) );
 
     REQUIRE( s.has_rho_part_set() );
     REQUIRE( !s_null.has_rho_part_set() );
@@ -846,7 +846,7 @@ TEST_CASE( "Parameters - property: \"rho_fluid\" - getter, default, has_set", "[
     auto default_value = s_null.rho_fluid();
 
     REQUIRE_THAT( static_cast< vortex::real >( value ), Catch::Matchers::WithinAbs( 0.3, 1e-05 ) );
-    REQUIRE_THAT( static_cast< vortex::real >( default_value ), Catch::Matchers::WithinAbs( vortex::real{}, 1e-05 ) );
+    REQUIRE_THAT( static_cast< vortex::real >( default_value ), Catch::Matchers::WithinAbs( 0.001, 1e-05 ) );
 
     REQUIRE( s.has_rho_fluid_set() );
     REQUIRE( !s_null.has_rho_fluid_set() );
@@ -889,7 +889,7 @@ TEST_CASE( "Parameters - property: \"eta_k_init\" - getter, default, has_set", "
     auto default_value = s_null.eta_k_init();
 
     REQUIRE_THAT( static_cast< vortex::real >( value ), Catch::Matchers::WithinAbs( 0.3, 1e-05 ) );
-    REQUIRE_THAT( static_cast< vortex::real >( default_value ), Catch::Matchers::WithinAbs( vortex::real{}, 1e-05 ) );
+    REQUIRE_THAT( static_cast< vortex::real >( default_value ), Catch::Matchers::WithinAbs( 1.0, 1e-05 ) );
 
     REQUIRE( s.has_eta_k_init_set() );
     REQUIRE( !s_null.has_eta_k_init_set() );
@@ -932,7 +932,7 @@ TEST_CASE( "Parameters - property: \"tau_k_init\" - getter, default, has_set", "
     auto default_value = s_null.tau_k_init();
 
     REQUIRE_THAT( static_cast< vortex::real >( value ), Catch::Matchers::WithinAbs( 0.3, 1e-05 ) );
-    REQUIRE_THAT( static_cast< vortex::real >( default_value ), Catch::Matchers::WithinAbs( vortex::real{}, 1e-05 ) );
+    REQUIRE_THAT( static_cast< vortex::real >( default_value ), Catch::Matchers::WithinAbs( 1.0, 1e-05 ) );
 
     REQUIRE( s.has_tau_k_init_set() );
     REQUIRE( !s_null.has_tau_k_init_set() );
@@ -975,7 +975,7 @@ TEST_CASE( "Parameters - property: \"shell_thickness\" - getter, default, has_se
     auto default_value = s_null.shell_thickness();
 
     REQUIRE_THAT( static_cast< vortex::real >( value ), Catch::Matchers::WithinAbs( 0.3, 1e-05 ) );
-    REQUIRE_THAT( static_cast< vortex::real >( default_value ), Catch::Matchers::WithinAbs( vortex::real{}, 1e-05 ) );
+    REQUIRE_THAT( static_cast< vortex::real >( default_value ), Catch::Matchers::WithinAbs( 1.0, 1e-05 ) );
 
     REQUIRE( s.has_shell_thickness_set() );
     REQUIRE( !s_null.has_shell_thickness_set() );
@@ -1018,7 +1018,7 @@ TEST_CASE( "Parameters - property: \"epsilon_env\" - getter, default, has_set", 
     auto default_value = s_null.epsilon_env();
 
     REQUIRE_THAT( static_cast< vortex::real >( value ), Catch::Matchers::WithinAbs( 0.3, 1e-05 ) );
-    REQUIRE_THAT( static_cast< vortex::real >( default_value ), Catch::Matchers::WithinAbs( vortex::real{}, 1e-05 ) );
+    REQUIRE_THAT( static_cast< vortex::real >( default_value ), Catch::Matchers::WithinAbs( 1.0, 1e-05 ) );
 
     REQUIRE( s.has_epsilon_env_set() );
     REQUIRE( !s_null.has_epsilon_env_set() );
@@ -1061,7 +1061,7 @@ TEST_CASE( "Parameters - property: \"nu_fluid\" - getter, default, has_set", "[s
     auto default_value = s_null.nu_fluid();
 
     REQUIRE_THAT( static_cast< vortex::real >( value ), Catch::Matchers::WithinAbs( 0.3, 1e-05 ) );
-    REQUIRE_THAT( static_cast< vortex::real >( default_value ), Catch::Matchers::WithinAbs( vortex::real{}, 1e-05 ) );
+    REQUIRE_THAT( static_cast< vortex::real >( default_value ), Catch::Matchers::WithinAbs( 1.0, 1e-05 ) );
 
     REQUIRE( s.has_nu_fluid_set() );
     REQUIRE( !s_null.has_nu_fluid_set() );
@@ -1104,7 +1104,7 @@ TEST_CASE( "Parameters - property: \"gravity\" - getter, default, has_set", "[se
     auto default_value = s_null.gravity();
 
     REQUIRE_THAT( static_cast< vortex::real >( value ), Catch::Matchers::WithinAbs( 0.3, 1e-05 ) );
-    REQUIRE_THAT( static_cast< vortex::real >( default_value ), Catch::Matchers::WithinAbs( vortex::real{}, 1e-05 ) );
+    REQUIRE_THAT( static_cast< vortex::real >( default_value ), Catch::Matchers::WithinAbs( 9.8, 1e-05 ) );
 
     REQUIRE( s.has_gravity_set() );
     REQUIRE( !s_null.has_gravity_set() );
@@ -1405,7 +1405,7 @@ TEST_CASE( "Parameters - property: \"a\" - getter, default, has_set", "[settings
     auto default_value = s_null.a();
 
     REQUIRE_THAT( static_cast< vortex::real >( value ), Catch::Matchers::WithinAbs( 0.3, 1e-05 ) );
-    REQUIRE_THAT( static_cast< vortex::real >( default_value ), Catch::Matchers::WithinAbs( vortex::real{}, 1e-05 ) );
+    REQUIRE_THAT( static_cast< vortex::real >( default_value ), Catch::Matchers::WithinAbs( 30.0, 1e-05 ) );
 
     REQUIRE( s.has_a_set() );
     REQUIRE( !s_null.has_a_set() );

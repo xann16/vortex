@@ -66,7 +66,7 @@ public:
     [[nodiscard]] bool has_job_name_set() const noexcept;
     [[nodiscard]] constexpr std::string_view default_job_name() const noexcept
     {
-        return std::string_view{};
+        return "undefined";
     }
     void reset_job_name();
     void set_job_name( std::string const& job_name );

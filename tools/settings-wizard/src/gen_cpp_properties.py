@@ -78,9 +78,6 @@ def _get_default_value(name: str, p: dict[str, Any], data: dict[str, Any], ctx: 
     property_type : str = p['type']
     default_value : Any = p['default'] if 'default' in p else None
 
-    if isinstance(default_value, str) and default_value.startswith('@'):
-        return f'{default_value.lstrip('@')}()'
-
     if property_type in ['module', 'settings']:
         return _get_return_type(p, data, ctx) + '{}'
     elif property_type == 'enum':
@@ -90,7 +87,14 @@ def _get_default_value(name: str, p: dict[str, Any], data: dict[str, Any], ctx: 
             default_value = None
         return _get_return_type(p, data, ctx) + '::' + to_pascal_case(enum_values[0] if not default_value else default_value)
     elif property_type in BASE_TYPES:
-        default_str : str = '' if default_value is None else (f'"{default_value}"' if (property_type == 'string' or property_type == 'path') else str(default_value))
+        default_str : str = ''
+        if default_value is not None:
+            if property_type in ['string', 'path']:
+                default_str = f'"{default_value}"'
+            elif property_type == 'boolean':
+                default_str = 'true' if default_value else 'false'
+            else:
+                default_str = str(default_value)
         return default_str if default_value is not None else (_get_return_type(p, data, ctx) + '{}')
     else:
         raise RuntimeError(f'Unexpected property type: {property_type}.')
@@ -653,7 +657,6 @@ def _add_array_add_definition(ls: list[str], i: int, class_name: str, name: str,
 
     if property_type in ['module', 'settings']:
         body.append((1, f'if ( {sg_name}.is_empty() ) return;'))
-        body.append((1, f'it->emplace_back( *( {sg_name}.data() ) );'))
         body.append((1, f'data()->operator[]( "{name}" ) = {{ *( {sg_name}.data() ) }};'))
     elif property_type in BASE_TYPES or property_type == 'enum':
         body.append((1, f'data()->operator[]( "{name}" ) = {{ {sg_name} }};'))

@@ -322,7 +322,6 @@ void TestFixture::add_test_case( runner::config::TestCase test_case )
     if ( it == data()->end() || it->is_null() )
     {
         if ( test_case.is_empty() ) return;
-        it->emplace_back( *( test_case.data() ) );
         data()->operator[]( "test_cases" ) = { *( test_case.data() ) };
     }
     else
@@ -447,7 +446,6 @@ void TestFixture::add_test_stage( runner::config::TestStage test_stage )
     if ( it == data()->end() || it->is_null() )
     {
         if ( test_stage.is_empty() ) return;
-        it->emplace_back( *( test_stage.data() ) );
         data()->operator[]( "test_stages" ) = { *( test_stage.data() ) };
     }
     else

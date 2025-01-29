@@ -12,6 +12,7 @@ set(HEADERS
     include/runner/config/enums/parallel_strategy_type_json_integration.hpp
     include/runner/config/test_case.hpp
     include/runner/config/test_fixture.hpp
+    include/runner/config/providers/json_settings_provider.hpp
     # end of vxsw managed section
 )
 set(SOURCES
@@ -22,6 +23,7 @@ set(SOURCES
     src/config/enums/parallel_strategy_type.cpp
     src/config/test_case.cpp
     src/config/test_fixture.cpp
+    src/config/providers/json_settings_provider.cpp
     # end of vxsw managed section
 )
 set(TESTS
@@ -32,6 +34,7 @@ set(TESTS
     tests/config/enums/parallel_strategy_type.test.cpp
     tests/config/test_case.test.cpp
     tests/config/test_fixture.test.cpp
+    tests/config/providers/json_settings_provider.test.cpp
     # end of vxsw managed section
 )
 

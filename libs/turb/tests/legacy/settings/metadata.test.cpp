@@ -459,7 +459,7 @@ TEST_CASE( "Metadata - property: \"src_flow_path\" - getter, default, has_set", 
     auto default_value = s_null.src_flow_path();
 
     REQUIRE( value == "ptest" );
-    REQUIRE( default_value == std::string_view{} );
+    REQUIRE( default_value == "." );
 
     REQUIRE( s.has_src_flow_path_set() );
     REQUIRE( !s_null.has_src_flow_path_set() );
@@ -519,7 +519,7 @@ TEST_CASE( "Metadata - property: \"src_part_path\" - getter, default, has_set", 
     auto default_value = s_null.src_part_path();
 
     REQUIRE( value == "ptest" );
-    REQUIRE( default_value == std::string_view{} );
+    REQUIRE( default_value == "." );
 
     REQUIRE( s.has_src_part_path_set() );
     REQUIRE( !s_null.has_src_part_path_set() );

@@ -6,25 +6,30 @@ namespace = [ "legacy", "settings" ]
 
 [N]
 type = "i32"
+default = 16
 
 [N_subdomain]
 type = "i32"
-default = "@N"
+default = 1
 
 [Nt_max]
 type = "i32"
+default = 1
 
 [dt]
 type = "real"
+default = 0.001
 
 [rnu]
 type = "real"
+default = 0.1
 
 [t_init]
 type = "real"
 
 [is_flow_generated]
 type = "boolean"
+default = true
 
 [deterministic_seed]
 type = "u64"
@@ -39,45 +44,57 @@ enum.values = ["deterministic", "stochastic"]
 
 [deterministic_forcing_k_1]
 type = "real"
+default = 1.0
 
 [deterministic_forcing_k_2]
 type = "real"
+default = 1.0
 
 [stochastic_seed]
 type = "u64"
 
 [stats_output_interval]
 type = "i32"
+default = 1
 
 [spectrum_output_interval]
 type = "i32"
+default = 1
 
 [is_stats_output_extended]
 type = "boolean"
 
 [rho_part]
 type = "real"
+default = 1.0
 
 [rho_fluid]
 type = "real"
+default = 0.001
 
 [eta_k_init]
 type = "real"
+default = 1.0
 
 [tau_k_init]
 type = "real"
+default = 1.0
 
 [shell_thickness]
 type = "real"
+default = 1.0
 
 [epsilon_env]
 type = "real"
+default = 1.0
 
 [nu_fluid]
 type = "real"
+default = 1.0
 
 [gravity]
 type = "real"
+default = 9.8
 
 [is_part_generated]
 type = "boolean"
@@ -101,3 +118,4 @@ enum.values = ["stokes", "nonlinear"]
 
 [a]
 type = "real"
+default = 30.0
