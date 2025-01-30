@@ -259,20 +259,20 @@ def populate_cmake_data(data: dict[str, Any], enum_data: dict[str, Any], ctx : d
     namespace : list[str] = _get_namespace(data)
 
     if package_name not in ctx['cmake']:
-        ctx['cmake'][package_name] : dict[str, dict[str, Any]] = {}
+        ctx['cmake'][package_name] = {}
     pkg_data = ctx['cmake'][package_name]
 
     if 'headers' not in pkg_data:
-        pkg_data['headers'] : dict[str, Any] = []
+        pkg_data['headers'] = []
     pkg_data['headers'].append(get_header_path(enum_data['name'], package_name, namespace, ctx='cmake'))
     pkg_data['headers'].append(get_header_path(enum_data['name'], package_name, namespace, ctx='cmake', suffix=JSON_INTEGRATION_SUFFIX))
 
     if 'sources' not in pkg_data:
-        pkg_data['sources'] : dict[str, Any] = []
+        pkg_data['sources'] = []
     pkg_data['sources'].append(get_source_path(enum_data['name'], package_name, namespace, ctx='cmake'))
 
     if 'tests' not in pkg_data:
-        pkg_data['tests'] : dict[str, Any] = []
+        pkg_data['tests'] = []
     pkg_data['tests'].append(get_unit_test_path(enum_data['name'], package_name, namespace, ctx='cmake'))
 
 

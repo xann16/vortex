@@ -188,19 +188,19 @@ def populate_cmake_data(package_name: str, ctx : dict[str, Any]) -> None:
     namespace : list[str] = _get_provider_namespace(package_name, ctx)
 
     if package_name not in ctx['cmake']:
-        ctx['cmake'][package_name] : dict[str, dict[str, Any]] = {}
+        ctx['cmake'][package_name] = {}
     pkg_data = ctx['cmake'][package_name]
 
     if 'headers' not in pkg_data:
-        pkg_data['headers'] : dict[str, Any] = []
+        pkg_data['headers'] = []
     pkg_data['headers'].append(get_header_path(package_name, namespace, ctx='cmake'))
 
     if 'sources' not in pkg_data:
-        pkg_data['sources'] : dict[str, Any] = []
+        pkg_data['sources'] = []
     pkg_data['sources'].append(get_source_path(package_name, namespace, ctx='cmake'))
 
     if 'tests' not in pkg_data:
-        pkg_data['tests'] : dict[str, Any] = []
+        pkg_data['tests'] = []
     pkg_data['tests'].append(get_unit_test_path(package_name, namespace, ctx='cmake'))
 
 

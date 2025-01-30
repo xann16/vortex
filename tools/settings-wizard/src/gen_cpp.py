@@ -53,19 +53,19 @@ def get_unit_test_path(data: dict[str, Any], suffix: str = '', root_path: str | 
 def populate_cmake_data(data: dict[str, Any], ctx : dict[str, Any]) -> None:
     package_name : str = data['__metadata__']['package'].lstrip('*')
     if package_name not in ctx['cmake']:
-        ctx['cmake'][package_name] : dict[str, dict[str, Any]] = {}
+        ctx['cmake'][package_name] = {}
     pkg_data = ctx['cmake'][package_name]
 
     if 'headers' not in pkg_data:
-        pkg_data['headers'] : dict[str, Any] = []
+        pkg_data['headers'] = []
     pkg_data['headers'].append(get_header_path(data, ctx='cmake'))
 
     if 'sources' not in pkg_data:
-        pkg_data['sources'] : dict[str, Any] = []
+        pkg_data['sources'] = []
     pkg_data['sources'].append(get_source_path(data, ctx='cmake'))
 
     if 'tests' not in pkg_data:
-        pkg_data['tests'] : dict[str, Any] = []
+        pkg_data['tests'] = []
     pkg_data['tests'].append(get_unit_test_path(data, ctx='cmake'))
 
 
@@ -76,7 +76,7 @@ def add_provider_data(data: dict[str, Any], ctx : dict[str, Any]) -> None:
     provider_types : list[str] = data['__metadata__']['settings']['providers']
     package_name : str = data['__metadata__']['package'].lstrip('*')
     if package_name not in ctx['providers']:
-        ctx['providers'][package_name] : dict[str, dict[str, Any]] = []
+        ctx['providers'][package_name] = []
     pkg_data = ctx['providers'][package_name]
 
     pkg_data.append(data)
