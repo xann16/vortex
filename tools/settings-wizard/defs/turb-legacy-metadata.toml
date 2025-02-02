@@ -34,9 +34,12 @@ default = 2.5
 requires = [ "nonneg" ]
 
 [target_Phi]
+type = "real"
 requires = [ "nonneg" ]
 
 [superpart_factor]
+type = "real"
+default = "1.0"
 requires = [ "range(min=1.0)" ]
 
 [src_flow_path]

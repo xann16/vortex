@@ -68,7 +68,7 @@ public:
     [[nodiscard]] bool has_N_set() const noexcept;
     [[nodiscard]] constexpr i32 default_N() const noexcept
     {
-        return 16;
+        return 8;
     }
     void reset_N();
     void set_N( i32 N );
@@ -108,7 +108,7 @@ public:
     [[nodiscard]] bool has_rnu_set() const noexcept;
     [[nodiscard]] constexpr real default_rnu() const noexcept
     {
-        return 0.1;
+        return real{};
     }
     void reset_rnu();
     void set_rnu( real rnu );
@@ -198,7 +198,7 @@ public:
     [[nodiscard]] bool has_stats_output_interval_set() const noexcept;
     [[nodiscard]] constexpr i32 default_stats_output_interval() const noexcept
     {
-        return 1;
+        return i32{};
     }
     void reset_stats_output_interval();
     void set_stats_output_interval( i32 stats_output_interval );
@@ -208,7 +208,7 @@ public:
     [[nodiscard]] bool has_spectrum_output_interval_set() const noexcept;
     [[nodiscard]] constexpr i32 default_spectrum_output_interval() const noexcept
     {
-        return 1;
+        return i32{};
     }
     void reset_spectrum_output_interval();
     void set_spectrum_output_interval( i32 spectrum_output_interval );
@@ -228,7 +228,7 @@ public:
     [[nodiscard]] bool has_rho_part_set() const noexcept;
     [[nodiscard]] constexpr real default_rho_part() const noexcept
     {
-        return 1.0;
+        return real{};
     }
     void reset_rho_part();
     void set_rho_part( real rho_part );
@@ -238,7 +238,7 @@ public:
     [[nodiscard]] bool has_rho_fluid_set() const noexcept;
     [[nodiscard]] constexpr real default_rho_fluid() const noexcept
     {
-        return 0.001;
+        return real{};
     }
     void reset_rho_fluid();
     void set_rho_fluid( real rho_fluid );
@@ -278,7 +278,7 @@ public:
     [[nodiscard]] bool has_epsilon_env_set() const noexcept;
     [[nodiscard]] constexpr real default_epsilon_env() const noexcept
     {
-        return 1.0;
+        return real{};
     }
     void reset_epsilon_env();
     void set_epsilon_env( real epsilon_env );
@@ -288,7 +288,7 @@ public:
     [[nodiscard]] bool has_nu_fluid_set() const noexcept;
     [[nodiscard]] constexpr real default_nu_fluid() const noexcept
     {
-        return 1.0;
+        return real{};
     }
     void reset_nu_fluid();
     void set_nu_fluid( real nu_fluid );
@@ -298,7 +298,7 @@ public:
     [[nodiscard]] bool has_gravity_set() const noexcept;
     [[nodiscard]] constexpr real default_gravity() const noexcept
     {
-        return 9.8;
+        return real{};
     }
     void reset_gravity();
     void set_gravity( real gravity );
@@ -368,7 +368,7 @@ public:
     [[nodiscard]] bool has_a_set() const noexcept;
     [[nodiscard]] constexpr real default_a() const noexcept
     {
-        return 30.0;
+        return real{};
     }
     void reset_a();
     void set_a( real a );

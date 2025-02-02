@@ -140,7 +140,7 @@ public:
     [[nodiscard]] bool has_superpart_factor_set() const noexcept;
     [[nodiscard]] constexpr real default_superpart_factor() const noexcept
     {
-        return 1;
+        return 1.0;
     }
     void reset_superpart_factor();
     void set_superpart_factor( real superpart_factor );

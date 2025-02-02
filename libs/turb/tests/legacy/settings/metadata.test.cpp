@@ -416,7 +416,7 @@ TEST_CASE( "Metadata - property: \"superpart_factor\" - getter, default, has_set
     auto default_value = s_null.superpart_factor();
 
     REQUIRE_THAT( static_cast< vortex::real >( value ), Catch::Matchers::WithinAbs( 0.3, 1e-05 ) );
-    REQUIRE_THAT( static_cast< vortex::real >( default_value ), Catch::Matchers::WithinAbs( 1, 1e-05 ) );
+    REQUIRE_THAT( static_cast< vortex::real >( default_value ), Catch::Matchers::WithinAbs( 1.0, 1e-05 ) );
 
     REQUIRE( s.has_superpart_factor_set() );
     REQUIRE( !s_null.has_superpart_factor_set() );
