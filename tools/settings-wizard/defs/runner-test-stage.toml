@@ -8,7 +8,7 @@ languages = ["cpp"]
 
 [name]
 type = "string"
-is_required = true
+requires = [ "*is_set", "nonempty" ]
 
 [settings]
 type = "settings"

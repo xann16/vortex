@@ -18,11 +18,12 @@ import.modules = [ "test_stage" ]
 
 [name]
 type = "string"
-is_required = true
+requires = [ "*is_set", "nonempty" ]
 
 [root_path]
 type = "path"
 default = '.'
+requires = [ "nonempty" ]
 
 [default_settings]
 type = "settings"
@@ -31,8 +32,10 @@ type = "settings"
 type = "module"
 is_array = true
 module.name = "test_case"
+requires = [ "unique({{.name}})" ]
 
 [test_stages]
 type = "module"
 is_array = true
 module.name = "test_stage"
+requires = [ "unique({{.name}})" ]

@@ -6,23 +6,27 @@ namespace = [ "legacy", "settings" ]
 
 [N]
 type = "i32"
-default = 16
+default = 8
+requires = [ "range(min=8), is_pow2" ]
 
 [N_subdomain]
 type = "i32"
 default = 1
+requires = [ "positive, is_pow2" ]
 
 [Nt_max]
 type = "i32"
 default = 1
+requires = [ "positive" ]
 
 [dt]
 type = "real"
 default = 0.001
+requires = [ "positive" ]
 
 [rnu]
 type = "real"
-default = 0.1
+requires = [ "nonneg" ]
 
 [t_init]
 type = "real"
@@ -36,6 +40,7 @@ type = "u64"
 
 [input_velo_index]
 type = "i32"
+requires = [ "positive" ]
 
 [forcing_type]
 type = "enum"
@@ -45,56 +50,60 @@ enum.values = ["deterministic", "stochastic"]
 [deterministic_forcing_k_1]
 type = "real"
 default = 1.0
+requires = [ "nonneg" ]
 
 [deterministic_forcing_k_2]
 type = "real"
 default = 1.0
+requires = [ "nonneg" ]
 
 [stochastic_seed]
 type = "u64"
 
 [stats_output_interval]
 type = "i32"
-default = 1
+requires = [ "nonneg" ]
 
 [spectrum_output_interval]
 type = "i32"
-default = 1
+requires = [ "nonneg" ]
 
 [is_stats_output_extended]
 type = "boolean"
 
 [rho_part]
 type = "real"
-default = 1.0
+requires = [ "nonneg" ]
 
 [rho_fluid]
 type = "real"
-default = 0.001
+requires = [ "nonneg" ]
 
 [eta_k_init]
 type = "real"
 default = 1.0
+requires = [ "positive" ]
 
 [tau_k_init]
 type = "real"
 default = 1.0
+requires = [ "positive" ]
 
 [shell_thickness]
 type = "real"
 default = 1.0
+requires = [ "positive" ]
 
 [epsilon_env]
 type = "real"
-default = 1.0
+requires = [ "nonneg" ]
 
 [nu_fluid]
 type = "real"
-default = 1.0
+requires = [ "nonneg" ]
 
 [gravity]
 type = "real"
-default = 9.8
 
 [is_part_generated]
 type = "boolean"
@@ -107,9 +116,11 @@ type = "boolean"
 
 [part_hdi_trunc_enabled]
 type = "real"
+requires = [ "nonneg" ]
 
 [N_part]
 type = "i32"
+requires = [ "nonneg" ]
 
 [drag_type]
 type = "enum"
@@ -118,4 +129,4 @@ enum.values = ["stokes", "nonlinear"]
 
 [a]
 type = "real"
-default = 30.0
+requires = [ "positive" ]

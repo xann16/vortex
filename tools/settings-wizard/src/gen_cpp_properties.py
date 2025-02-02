@@ -25,7 +25,7 @@ def get_required_list(data: dict[str, Any], ctx: dict[str, Any]) -> list[str, An
     return [ item for item in data.items() if (not item[0].startswith('__') and is_required(item[1], data, ctx)) ]
 
 def is_required(p: dict[str, Any], data: dict[str, Any], ctx: dict[str, Any]) -> bool:
-    if 'is_required' in p and p['is_required']:
+    if 'requires' in p and ('is_set' in p['requires'] or '*is_set' in p['requires']):
         return True
     if 'is_array' in p and p['is_array'] and ( 'default' not in p or not p['default'] ):
         return False

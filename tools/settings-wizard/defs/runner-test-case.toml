@@ -8,10 +8,11 @@ languages = ["cpp"]
 
 [name]
 type = "string"
-is_required = true
+requires = [ "*is_set", "nonempty" ]
 
 [template_name]
 type = "string"
+requires = [ "#nonempty"]
 
 [settings]
 type = "settings"
@@ -24,7 +25,9 @@ enum.values = [ "mmx", "mxx", "xxx" ]
 [stages]
 type = "string"
 is_array = true
+requres = [ "unique" ]
 
 [process_count]
 type = "i32"
 default = 1
+requires = [ "range(min=1)" ]

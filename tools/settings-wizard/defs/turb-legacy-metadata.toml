@@ -26,28 +26,32 @@ enum.values = ["pnn", "pic"]
 
 [k_filter]
 type = "i32"
+requires = [ "nonneg" ]
 
 [C_K]
 type = "real"
 default = 2.5
+requires = [ "nonneg" ]
 
 [target_Phi]
-type = "real"
+requires = [ "nonneg" ]
 
 [superpart_factor]
-type = "real"
-default = 1
+requires = [ "range(min=1.0)" ]
 
 [src_flow_path]
 type = "path"
 default = '.'
+requires = [ "nonempty" ]
 
 [src_part_path]
 type = "path"
 default = '.'
+requires = [ "nonempty" ]
 
 [part_output_delay]
 type = "i32"
+requires = [ "nonneg" ]
 
 [is_perf_full_profile_enabled]
 type = "boolean"
@@ -60,9 +64,12 @@ type = "boolean"
 
 [perf_full_start]
 type = "i32"
+requires = [ "nonneg" ]
 
 [perf_full_end]
 type = "i32"
+requires = [ "nonneg" ]
 
 [part_perf_interval]
 type = "i32"
+requires = [ "nonneg" ]
