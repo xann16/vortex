@@ -40,14 +40,14 @@ public:
         return core::settings::json::AnySettings{ data() };
     }
 
-    ExecutionSettings& merge( nlohmann::json * other_data_p );
-    ExecutionSettings& merge( core::settings::json::AnySettings const& other )
+    ExecutionSettings& update_with( nlohmann::json * other_data_p );
+    ExecutionSettings& update_with( core::settings::json::AnySettings const& other )
     {
-        return merge( other.data() );
+        return update_with( other.data() );
     }
-    ExecutionSettings& merge( ExecutionSettings const& other )
+    ExecutionSettings& update_with( ExecutionSettings const& other )
     {
-        return merge( other.data() );
+        return update_with( other.data() );
     }
 
     [[nodiscard]] std::string to_string() const;

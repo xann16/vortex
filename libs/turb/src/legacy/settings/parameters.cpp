@@ -23,11 +23,11 @@ Parameters::Parameters( nlohmann::json * data_p )
     // add initial validation
 }
 
-Parameters& Parameters::merge( nlohmann::json * other_data_p )
+Parameters& Parameters::update_with( nlohmann::json * other_data_p )
 {
     if (!is_empty() && other_data_p != nullptr)
     {
-        data()->merge_patch( *other_data_p );
+        as_any().update_with( other_data_p );
     }
     return *this;
 }

@@ -41,14 +41,14 @@ public:
         return core::settings::json::AnySettings{ data() };
     }
 
-    TestCase& merge( nlohmann::json * other_data_p );
-    TestCase& merge( core::settings::json::AnySettings const& other )
+    TestCase& update_with( nlohmann::json * other_data_p );
+    TestCase& update_with( core::settings::json::AnySettings const& other )
     {
-        return merge( other.data() );
+        return update_with( other.data() );
     }
-    TestCase& merge( TestCase const& other )
+    TestCase& update_with( TestCase const& other )
     {
-        return merge( other.data() );
+        return update_with( other.data() );
     }
 
     [[nodiscard]] std::string to_string() const;

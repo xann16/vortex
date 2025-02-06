@@ -146,9 +146,9 @@ def generate_dynamic_header_file(root_path: str, data: dict[str, Any], ctx: dict
     i = add_method_declaration(ls, i, 'is_empty', 'bool', [], body=[(0, 'return data() == nullptr;')], is_definition=True, is_noexcept=True, is_const=True, is_nodiscard=True)
     i = add_method_declaration(ls, i, 'as_any', 'core::settings::json::AnySettings', [], body=[(0, 'return core::settings::json::AnySettings{ data() };')], is_definition=True, is_noexcept=True, is_const=True, is_nodiscard=True)
     add_blank(ls)
-    i = add_method_declaration(ls, i, 'merge', f'{class_name}&', [('nlohmann::json *', 'other_data_p')])
-    i = add_method_declaration(ls, i, 'merge', f'{class_name}&', [('core::settings::json::AnySettings const&', 'other')], body=[(0, 'return merge( other.data() );')], is_definition=True)
-    i = add_method_declaration(ls, i, 'merge', f'{class_name}&', [(f'{class_name} const&', 'other')], body=[(0, 'return merge( other.data() );')], is_definition=True)
+    i = add_method_declaration(ls, i, 'update_with', f'{class_name}&', [('nlohmann::json *', 'other_data_p')])
+    i = add_method_declaration(ls, i, 'update_with', f'{class_name}&', [('core::settings::json::AnySettings const&', 'other')], body=[(0, 'return update_with( other.data() );')], is_definition=True)
+    i = add_method_declaration(ls, i, 'update_with', f'{class_name}&', [(f'{class_name} const&', 'other')], body=[(0, 'return update_with( other.data() );')], is_definition=True)
     add_blank(ls)
     i = add_method_declaration(ls, i, 'to_string', 'std::string', [], is_const=True, is_nodiscard=True)
     i = add_method_declaration(ls, i, 'stringify', 'std::ostream&', [('std::ostream&', 'os'), ('int', 'indent_size'), ('int', 'indent_level'), ('bool', 'display_all')], is_const=True)
@@ -201,14 +201,14 @@ def generate_dynamic_source_file(root_path: str, data: dict[str, Any], ctx: dict
     i = add_ctor_definition(ls, i, class_name, [('nlohmann::json *', 'data_p', None, None)], body=[(0, '// add initial validation')])
     add_blank(ls)
 
-    merge_body : list[(int, str)] = [
+    update_body : list[(int, str)] = [
         (0, 'if (!is_empty() && other_data_p != nullptr)'),
         (0, '{'),
-        (1, 'data()->merge_patch( *other_data_p );'),
+        (1, 'as_any().update_with( other_data_p );'),
         (0, '}'),
         (0, 'return *this;'),
     ]
-    i = add_method_definition(ls, i, 'merge', f'{class_name}&', class_name, [('nlohmann::json *', 'other_data_p')], body=merge_body)
+    i = add_method_definition(ls, i, 'update_with', f'{class_name}&', class_name, [('nlohmann::json *', 'other_data_p')], body=update_body)
     add_blank(ls)
 
     to_string_body : list[(int, str)] = [

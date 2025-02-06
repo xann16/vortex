@@ -42,14 +42,14 @@ public:
         return core::settings::json::AnySettings{ data() };
     }
 
-    Parameters& merge( nlohmann::json * other_data_p );
-    Parameters& merge( core::settings::json::AnySettings const& other )
+    Parameters& update_with( nlohmann::json * other_data_p );
+    Parameters& update_with( core::settings::json::AnySettings const& other )
     {
-        return merge( other.data() );
+        return update_with( other.data() );
     }
-    Parameters& merge( Parameters const& other )
+    Parameters& update_with( Parameters const& other )
     {
-        return merge( other.data() );
+        return update_with( other.data() );
     }
 
     [[nodiscard]] std::string to_string() const;

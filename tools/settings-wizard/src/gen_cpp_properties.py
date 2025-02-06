@@ -149,6 +149,7 @@ def _get_value_stingification(name: str, property_type: str, is_array: bool, ind
 
     return result
 
+
 def get_stringify_body(data: list[str]) -> list[(int, str)]:
     result : list[(int, str)] = []
 
