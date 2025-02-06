@@ -89,8 +89,7 @@ bool operator==( TestStage const& lhs, TestStage const& rhs )
 
 void TestStage::reset_name()
 {
-    if ( is_empty() ) return;
-    data()->erase( "name" );
+    throw std::runtime_error{ "Property 'name' is required. It cannot be reset." };
 }
 
 void TestStage::set_name( std::string const& name )

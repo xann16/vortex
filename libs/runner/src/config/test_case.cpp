@@ -120,8 +120,7 @@ bool operator==( TestCase const& lhs, TestCase const& rhs )
 
 void TestCase::reset_name()
 {
-    if ( is_empty() ) return;
-    data()->erase( "name" );
+    throw std::runtime_error{ "Property 'name' is required. It cannot be reset." };
 }
 
 void TestCase::set_name( std::string const& name )

@@ -18,7 +18,8 @@ import.modules = [ "test_stage" ]
 
 [name]
 type = "string"
-requires = [ "*is_set", "nonempty" ]
+requires = [ "nonempty" ]
+is_required = true
 
 [root_path]
 type = "path"

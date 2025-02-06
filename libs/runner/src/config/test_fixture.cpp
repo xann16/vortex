@@ -131,8 +131,7 @@ bool operator==( TestFixture const& lhs, TestFixture const& rhs )
 
 void TestFixture::reset_name()
 {
-    if ( is_empty() ) return;
-    data()->erase( "name" );
+    throw std::runtime_error{ "Property 'name' is required. It cannot be reset." };
 }
 
 void TestFixture::set_name( std::string const& name )
@@ -335,6 +334,11 @@ void TestFixture::remove_test_case_at( std::size_t index )
     it->erase( index );
 }
 
+void TestFixture::remove_test_case( runner::config::TestCase )
+{
+    throw std::runtime_error{ "Remove method not implemented for arrays of settings objects." };
+}
+
 
 // "test_stages" property
 
@@ -453,6 +457,11 @@ void TestFixture::remove_test_stage_at( std::size_t index )
     auto it = data()->find( "test_stages" );
     if ( it == data()->end() || it->is_null() ) return;
     it->erase( index );
+}
+
+void TestFixture::remove_test_stage( runner::config::TestStage )
+{
+    throw std::runtime_error{ "Remove method not implemented for arrays of settings objects." };
 }
 
 

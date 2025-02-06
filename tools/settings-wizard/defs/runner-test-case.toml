@@ -8,7 +8,8 @@ languages = ["cpp"]
 
 [name]
 type = "string"
-requires = [ "*is_set", "nonempty" ]
+requires = [ "nonempty" ]
+is_required = true
 
 [template_name]
 type = "string"

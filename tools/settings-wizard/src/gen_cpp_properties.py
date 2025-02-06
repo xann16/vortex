@@ -25,7 +25,7 @@ def get_required_list(data: dict[str, Any], ctx: dict[str, Any]) -> list[str, An
     return [ item for item in data.items() if (not item[0].startswith('__') and is_required(item[1], data, ctx)) ]
 
 def is_required(p: dict[str, Any], data: dict[str, Any], ctx: dict[str, Any]) -> bool:
-    if 'requires' in p and ('is_set' in p['requires'] or '*is_set' in p['requires']):
+    if 'is_required' in p and p['is_required']:
         return True
     if 'is_array' in p and p['is_array'] and ( 'default' not in p or not p['default'] ):
         return False
@@ -351,7 +351,13 @@ def _add_reset_declaration(ls: list[str], i: int, name: str, p: dict[str, Any], 
     return add_method_declaration(ls, i, f'reset_{name}', 'void', [])
 
 def _add_reset_definition(ls: list[str], i: int, class_name: str, name: str, p: dict[str, Any], data: dict[str, Any], ctx: dict[str, Any]) -> int:
-    return add_method_definition(ls, i, f'reset_{name}', 'void', class_name, [], [(0, f'if ( is_empty() ) return;'), (0, f'data()->erase( "{name}" );')])
+    body : list[(int, str)] = []
+    if is_required(p, data, ctx):
+        body.append((0, f'throw std::runtime_error{{ "Property \'{name}\' is required. It cannot be reset." }};'))
+    else:
+        body.append((0, 'if ( is_empty() ) return;'))
+        body.append((0, f'data()->erase( "{name}" );'))
+    return add_method_definition(ls, i, f'reset_{name}', 'void', class_name, [], body)
 
 ### SETTERS
 
@@ -424,6 +430,7 @@ def _add_setter_definition(ls: list[str], i: int, class_name: str, name: str, p:
 
 def _add_setter_test(ls: list[str], i: int, class_name: str, name: str, p: dict[str, Any], namespace: list[str], data: dict[str, Any], ctx: dict[str, Any]) -> int:
     is_array : bool = _is_array(p)
+    is_req : bool = is_required(p, data, ctx)
     arg_type : str = _get_arg_type(p, data, ctx)
     property_type : str = p['type']
 
@@ -470,8 +477,12 @@ def _add_setter_test(ls: list[str], i: int, class_name: str, name: str, p: dict[
     i = add_require(ls, i, f'!s_null.has_{name}_set()')
     add_blank(ls)
 
-    i = add_require(ls, i, f's.reset_{name}()', suffix='nothrow')
-    i = add_require(ls, i, f's_null.reset_{name}()', suffix='nothrow')
+    if is_req:
+        i = add_require(ls, i, f's.reset_{name}(), std::runtime_error', suffix='throws_as')
+        i = add_require(ls, i, f's_null.reset_{name}(), std::runtime_error', suffix='throws_as')
+    else:
+        i = add_require(ls, i, f's.reset_{name}()', suffix='nothrow')
+        i = add_require(ls, i, f's_null.reset_{name}()', suffix='nothrow')
     add_blank(ls)
 
     if not is_array:
@@ -528,33 +539,37 @@ def _add_setter_test(ls: list[str], i: int, class_name: str, name: str, p: dict[
             add_blank(ls)
 
     else:
-        i = add_line(ls, i, f's.reset_{name}();')
-        i = add_require(ls, i, f'!s.has_{name}_set()')
-        add_blank(ls)
+        if not is_req:
+            i = add_line(ls, i, f's.reset_{name}();')
+            i = add_require(ls, i, f'!s.has_{name}_set()')
+            add_blank(ls)
         i = add_line(ls, i, f's.set_{name}( value );')
         i = add_require(ls, i, f's.has_{name}_set()')
         i = add_require(ls, i, f's.{name}() == value')
         add_blank(ls)
 
-        i = add_line(ls, i, f's.reset_{name}();')
-        i = add_require(ls, i, f'!s.has_{name}_set()')
-        add_blank(ls)
+        if not is_req:
+            i = add_line(ls, i, f's.reset_{name}();')
+            i = add_require(ls, i, f'!s.has_{name}_set()')
+            add_blank(ls)
         i = add_line(ls, i, f's.set_{name}( {value_type}{{ value }} );')
         i = add_require(ls, i, f's.has_{name}_set()')
         i = add_require(ls, i, f's.{name}() == value')
         add_blank(ls)
 
-        i = add_line(ls, i, f's.reset_{name}();')
-        i = add_require(ls, i, f'!s.has_{name}_set()')
-        add_blank(ls)
+        if not is_req:
+            i = add_line(ls, i, f's.reset_{name}();')
+            i = add_require(ls, i, f'!s.has_{name}_set()')
+            add_blank(ls)
         i = add_line(ls, i, f's.set_{name}( {list_of_values_str} );')
         i = add_require(ls, i, f's.has_{name}_set()')
         i = add_require(ls, i, f's.{name}() == value')
         add_blank(ls)
 
-    i = add_line(ls, i, f's.reset_{name}();')
-    i = add_require(ls, i, f'!s.has_{name}_set()')
-    add_blank(ls)
+    if not is_req:
+        i = add_line(ls, i, f's.reset_{name}();')
+        i = add_require(ls, i, f'!s.has_{name}_set()')
+        add_blank(ls)
 
     i = end_test_case(ls, i)
 
@@ -698,16 +713,13 @@ def _add_array_remove_declaration(ls: list[str], i: int, name: str, p: dict[str,
 
     i = add_method_declaration(ls, i, f'remove_{sg_name}_at', 'void', [('std::size_t', 'index')])
 
-    if property_type in ['module', 'settings']:
-        return i
-
     if arg_type == 'std::string_view':
         i = add_method_declaration(ls, i, f'remove_{sg_name}', 'void', [('std::string const&', sg_name)])
         i = add_method_declaration(ls, i, f'remove_{sg_name}', 'void', [('std::string &&', sg_name)])
         i = add_method_declaration(ls, i, f'remove_{sg_name}', 'void', [('std::string_view', sg_name)], is_definition=True, body=[(0, f'remove_{sg_name}( std::string{{ {sg_name} }} );')])
         i = add_method_declaration(ls, i, f'remove_{sg_name}', 'void', [('char const *', sg_name)], is_definition=True, body=[(0, f'remove_{sg_name}( std::string{{ {sg_name} }} );')])
     else:
-        i = add_method_declaration(ls, i, f'remove_{sg_name}', 'void', [(arg_type, sg_name)])
+        i = add_method_declaration(ls, i, f'remove_{sg_name}', 'void', [(arg_type, '' if property_type in ['module', 'settings'] else sg_name)])
 
     return i
 
@@ -727,23 +739,24 @@ def _add_array_remove_definition(ls: list[str], i: int, class_name: str, name: s
     i = add_method_definition(ls, i, f'remove_{sg_name}_at', 'void', class_name, [('std::size_t', 'index')], body_by_index)
     add_blank(ls)
 
-    if property_type in ['module', 'settings']:
-        return i
 
     body_by_value : list[(int, str)] = []
 
-    body_by_value.append((0, 'if ( is_empty() ) return;'))
-    body_by_value.append((0, f'auto it = data()->find( "{name}" );'))
-    body_by_value.append((0, f'if ( it == data()->end() || it->is_null() ) return;'))
-    body_by_value.append((0, ''))
-    body_by_value.append((0, f'for ( auto arr_it = it->begin(); arr_it != it->end(); arr_it++ )'))
-    body_by_value.append((0, '{'))
-    body_by_value.append((1, f'if (*arr_it == {sg_name})'))
-    body_by_value.append((1, '{'))
-    body_by_value.append((2, 'it->erase( arr_it );'))
-    body_by_value.append((2, 'return;'))
-    body_by_value.append((1, '}'))
-    body_by_value.append((0, '}'))
+    if property_type in ['module', 'settings']:
+        body_by_value.append((0, 'throw std::runtime_error{ "Remove method not implemented for arrays of settings objects." };'))
+    else:
+        body_by_value.append((0, 'if ( is_empty() ) return;'))
+        body_by_value.append((0, f'auto it = data()->find( "{name}" );'))
+        body_by_value.append((0, f'if ( it == data()->end() || it->is_null() ) return;'))
+        body_by_value.append((0, ''))
+        body_by_value.append((0, f'for ( auto arr_it = it->begin(); arr_it != it->end(); arr_it++ )'))
+        body_by_value.append((0, '{'))
+        body_by_value.append((1, f'if (*arr_it == {sg_name})'))
+        body_by_value.append((1, '{'))
+        body_by_value.append((2, 'it->erase( arr_it );'))
+        body_by_value.append((2, 'return;'))
+        body_by_value.append((1, '}'))
+        body_by_value.append((0, '}'))
 
     if arg_type == 'std::string_view':
         i = add_method_definition(ls, i, f'remove_{sg_name}', 'void', class_name, [('std::string const&', sg_name)], body_by_value)
@@ -751,13 +764,12 @@ def _add_array_remove_definition(ls: list[str], i: int, class_name: str, name: s
         i = add_method_definition(ls, i, f'remove_{sg_name}', 'void', class_name, [('std::string &&', sg_name)], body_by_value)
         add_blank(ls)
     else:
-        i = add_method_definition(ls, i, f'remove_{sg_name}', 'void', class_name, [(arg_type, sg_name)], body_by_value)
+        i = add_method_definition(ls, i, f'remove_{sg_name}', 'void', class_name, [(arg_type, '' if property_type in ['module', 'settings'] else sg_name)], body_by_value)
         add_blank(ls)
 
     return i
 
 def _add_array_specific_tests(ls: list[str], i: int, class_name: str, name: str, p: dict[str, Any], namespace: list[str], data: dict[str, Any], ctx: dict[str, Any]) -> int:
-    return_type : str = _get_return_type(p, data, ctx)
     value_arg_type : str = _get_arg_type(p, data, ctx, skip_array=True)
     property_type : str = p['type']
     sg_name : str = _get_singular_name(name, p)
@@ -800,9 +812,10 @@ def _add_array_specific_tests(ls: list[str], i: int, class_name: str, name: str,
     i = add_require(ls, i, f's.{"are" if name.endswith("s") else "is"}_{name}_empty()')
     i = add_require(ls, i, f's.{name}_count() == 0ull')
     add_blank(ls)
-    i = add_line(ls, i, f's.reset_{name}();')
-    i = add_require(ls, i, f'!s.has_{name}_set()')
-    add_blank(ls)
+    if not is_required(p, data, ctx):
+        i = add_line(ls, i, f's.reset_{name}();')
+        i = add_require(ls, i, f'!s.has_{name}_set()')
+        add_blank(ls)
 
     i = add_line(ls, i, f's.add_{sg_name}( value );')
     add_blank(ls)
@@ -853,6 +866,8 @@ def _add_array_specific_tests(ls: list[str], i: int, class_name: str, name: str,
         i = add_require(ls, i, f's.{sg_name}_at( 0 ) == value')
         add_blank(ls)
     else:
+        i = add_require(ls, i, f's.remove_{sg_name}( xvalue ), std::runtime_error', suffix='throws_as')
+        add_blank(ls)
         i = add_line(ls, i, f's.add_{sg_name}( nvalue );')
         add_blank(ls)
         i = add_require(ls, i, f's.has_{name}_set()')

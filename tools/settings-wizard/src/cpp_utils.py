@@ -78,14 +78,14 @@ def _add_ctor_body(ls: list[str], i: int, signature: str, args: list[(str, str, 
     return close_brace(ls, i)
 
 def add_ctor_declaration(ls: list[str], i: int, class_name: str, args: list[(str, str, str | None, str | None)], body: list[(int, str)] | None = None, is_explicit: bool = False, is_definition: bool = False, is_noexcept: bool = False) -> int:
-    args_list : list[str] = [f'{data_type} {name}' for data_type, name, _, _ in args]
+    args_list : list[str] = [f'{data_type} {name}'.rstrip() for data_type, name, _, _ in args]
     signature : str = ('explicit ' if is_explicit else '') + class_name + '( ' + ', '.join(args_list) + ' )' + (' noexcept' if is_noexcept else '')
     if not is_definition:
         return add_line(ls, i, signature + ';')
     return _add_ctor_body(ls, i, signature, args, body)
 
 def add_ctor_definition(ls: list[str], i: int, class_name: str, args: list[(str, str, str | None, str | None)], body: list[(int, str)], is_noexcept: bool = False) -> int:
-    args_list : list[str] = [f'{data_type} {name}' for data_type, name, _, _ in args]
+    args_list : list[str] = [f'{data_type} {name}'.rstrip() for data_type, name, _, _ in args]
     signature : str = class_name + '::' + class_name + '( ' + ', '.join(args_list) + ' )' + (' noexcept' if is_noexcept else '')
     return _add_ctor_body(ls, i, signature, args, body)
 
@@ -133,7 +133,7 @@ def _add_method_body(ls: list[str], i: int, signature: str, body: list[(int, str
     return close_brace(ls, i)
 
 def add_method_declaration(ls: list[str], i: int, method_name: str, return_type: str, args: list[(str, str)], body: list[(int, str)] | None = None, is_definition: bool = False, is_const: bool = False, is_noexcept: bool = False, is_nodiscard: bool = False, pre_qualifiers: str = '') -> int:
-    args_list : list[str] = [f'{data_type} {name}' for data_type, name in args]
+    args_list : list[str] = [f'{data_type} {name}'.rstrip() for data_type, name in args]
     args : str = ', '.join(args_list)
     signature : str = ('[[nodiscard]] ' if is_nodiscard else '') + (f'{pre_qualifiers} ' if pre_qualifiers else '') + f'{return_type} {method_name}(' + (f' {args} ' if args else '') + ')' + (' const' if is_const else '') + (' noexcept' if is_noexcept else '')
     if not is_definition:
@@ -141,7 +141,7 @@ def add_method_declaration(ls: list[str], i: int, method_name: str, return_type:
     return _add_method_body(ls, i, signature, body)
 
 def add_method_definition(ls: list[str], i: int, method_name: str, return_type: str, class_name: str, args: list[(str, str)], body: list[(int, str)], is_const: bool = False, is_noexcept: bool = False, is_nodiscard: bool = False) -> int:
-    args_list : list[str] = [f'{data_type} {name}' for data_type, name in args]
+    args_list : list[str] = [f'{data_type} {name}'.rstrip() for data_type, name in args]
     args : str = ', '.join(args_list)
     signature : str = ('[[nodiscard]] ' if is_nodiscard else '') + f'{return_type} {(class_name + "::") if class_name else ""}{method_name}(' + (f' {args} ' if args else '') + ')' + (' const' if is_const else '') + (' noexcept' if is_noexcept else '')
     return _add_method_body(ls, i, signature, body)

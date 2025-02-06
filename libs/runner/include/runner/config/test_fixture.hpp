@@ -128,6 +128,7 @@ public:
     [[nodiscard]] runner::config::TestCase test_case_at( std::size_t index ) const;
     void add_test_case( runner::config::TestCase test_case );
     void remove_test_case_at( std::size_t index );
+    void remove_test_case( runner::config::TestCase );
 
     // "test_stages" property
     [[nodiscard]] std::vector< runner::config::TestStage > test_stages() const;
@@ -146,6 +147,7 @@ public:
     [[nodiscard]] runner::config::TestStage test_stage_at( std::size_t index ) const;
     void add_test_stage( runner::config::TestStage test_stage );
     void remove_test_stage_at( std::size_t index );
+    void remove_test_stage( runner::config::TestStage );
 
 
 private:

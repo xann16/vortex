@@ -134,8 +134,8 @@ TEST_CASE( "TestCase - property: \"name\" - setter, reset", "[settings]" )
     REQUIRE( !s.has_name_set() );
     REQUIRE( !s_null.has_name_set() );
 
-    REQUIRE_NOTHROW( s.reset_name() );
-    REQUIRE_NOTHROW( s_null.reset_name() );
+    REQUIRE_THROWS_AS( s.reset_name(), std::runtime_error );
+    REQUIRE_THROWS_AS( s_null.reset_name(), std::runtime_error );
 
     REQUIRE_THROWS_AS( s_null.set_name( sv ), std::runtime_error );
     REQUIRE_THROWS_AS( s_null.set_name( str ), std::runtime_error );
@@ -157,9 +157,6 @@ TEST_CASE( "TestCase - property: \"name\" - setter, reset", "[settings]" )
     s.set_name( std::string{ "mvstr" } );
     REQUIRE( s.has_name_set() );
     REQUIRE( s.name() == "mvstr" );
-
-    s.reset_name();
-    REQUIRE( !s.has_name_set() );
 
 }
 

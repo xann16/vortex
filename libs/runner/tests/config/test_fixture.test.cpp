@@ -134,8 +134,8 @@ TEST_CASE( "TestFixture - property: \"name\" - setter, reset", "[settings]" )
     REQUIRE( !s.has_name_set() );
     REQUIRE( !s_null.has_name_set() );
 
-    REQUIRE_NOTHROW( s.reset_name() );
-    REQUIRE_NOTHROW( s_null.reset_name() );
+    REQUIRE_THROWS_AS( s.reset_name(), std::runtime_error );
+    REQUIRE_THROWS_AS( s_null.reset_name(), std::runtime_error );
 
     REQUIRE_THROWS_AS( s_null.set_name( sv ), std::runtime_error );
     REQUIRE_THROWS_AS( s_null.set_name( str ), std::runtime_error );
@@ -157,9 +157,6 @@ TEST_CASE( "TestFixture - property: \"name\" - setter, reset", "[settings]" )
     s.set_name( std::string{ "mvstr" } );
     REQUIRE( s.has_name_set() );
     REQUIRE( s.name() == "mvstr" );
-
-    s.reset_name();
-    REQUIRE( !s.has_name_set() );
 
 }
 
@@ -403,6 +400,8 @@ TEST_CASE( "TestFixture - property: \"test_cases\" - array-specific", "[settings
     REQUIRE( s.test_cases_count() == 1ull );
     REQUIRE( s.test_case_at( 0 ) == value );
 
+    REQUIRE_THROWS_AS( s.remove_test_case( xvalue ), std::runtime_error );
+
     s.add_test_case( nvalue );
 
     REQUIRE( s.has_test_cases_set() );
@@ -567,6 +566,8 @@ TEST_CASE( "TestFixture - property: \"test_stages\" - array-specific", "[setting
     REQUIRE( !s.are_test_stages_empty() );
     REQUIRE( s.test_stages_count() == 1ull );
     REQUIRE( s.test_stage_at( 0 ) == value );
+
+    REQUIRE_THROWS_AS( s.remove_test_stage( xvalue ), std::runtime_error );
 
     s.add_test_stage( nvalue );
 

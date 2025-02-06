@@ -39,7 +39,7 @@ requires = [ "nonneg" ]
 
 [superpart_factor]
 type = "real"
-default = "1.0"
+default = 1.0
 requires = [ "range(min=1.0)" ]
 
 [src_flow_path]
