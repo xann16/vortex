@@ -17,10 +17,10 @@ public:
     [[nodiscard]] bool is_empty() const noexcept { return data() == nullptr; }
     [[nodiscard]] nlohmann::json * data() const noexcept { return m_data_p; }
 
-    AnySettings& merge(nlohmann::json * other_data_p);
-    AnySettings& merge(AnySettings const& other)
+    AnySettings& update_with(nlohmann::json * other_data_p);
+    AnySettings& update_with(AnySettings const& other)
     {
-        return merge(other.data());
+        return update_with( other.data() );
     }
 
     [[nodiscard]] std::string to_string() const;

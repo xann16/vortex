@@ -160,66 +160,77 @@ TEST_CASE("JSON Any Settings - conversion to string for empty", "[settings]")
     REQUIRE(str_result == expected);
 }
 
-TEST_CASE("JSON Any Settings - merge", "[settings]")
+TEST_CASE("JSON Any Settings - update", "[settings]")
 {
     nlohmann::json obj =
     {
         { "str", "test" },
         { "obj", { { "x", "y" } } },
-        { "int", 1 }
+        { "int", 1 },
+        { "arr", { "a", "b" } }
     };
-    nlohmann::json patch =
+    nlohmann::json update =
     {
         { "str", "release" },
         { "obj", { { "y", "x" } } },
-        { "bool", true }
+        { "bool", true },
+        { "arr", { "c" } }
     };
     auto s = vortex::core::settings::json::AnySettings{ &obj };
-    auto p = vortex::core::settings::json::AnySettings{ &patch };
+    auto upd = vortex::core::settings::json::AnySettings{ &update };
 
-    s.merge( p );
+    REQUIRE( s.data()->is_object() );
+    REQUIRE( upd.data()->is_object() );
+
+    s.update_with( upd );
 
     nlohmann::json expected =
     {
         { "str", "release" },
         { "obj", { { "x", "y" }, { "y", "x" } } },
         { "int", 1 },
-        { "bool", true }
+        { "bool", true },
+        { "arr", { "c" } }
     };
 
-    REQUIRE(*(s.data()) == expected);
+    REQUIRE( *(s.data()) == expected );
 }
 
-TEST_CASE("JSON Any Settings - merge with removal", "[settings]")
+TEST_CASE("JSON Any Settings - update with null values", "[settings]")
 {
     nlohmann::json obj =
     {
         { "str", "test" },
         { "obj", { { "x", "y" } } },
-        { "obj_to_remove", { { "y", "x" } } },
-        { "int", 1 }
+        { "obj2", { { "y", "x" } } },
+        { "int", 1 },
+        { "arr", { "a", "b" } }
     };
-    nlohmann::json patch =
+    nlohmann::json update =
     {
         { "str", "release" },
         { "obj", { { "x", nullptr } } },
-        { "obj_to_remove", nullptr },
-        { "int", nullptr }
+        { "obj2", nullptr },
+        { "int", nullptr },
+        { "arr", { "c", nullptr, nullptr } }
     };
     auto s = vortex::core::settings::json::AnySettings{ &obj };
 
-    s.merge( &patch );
+    s.update_with( &update );
 
     nlohmann::json expected =
     {
         { "str", "release" },
-        { "obj", nlohmann::json::object() }
+        { "obj", { { "x", "y" } } },
+        { "obj2", { { "y", "x" } } },
+        { "int", 1 },
+        { "arr", { "c" } }
     };
 
-    REQUIRE(*(s.data()) == expected);
+    REQUIRE( *(s.data()) == expected );
 }
 
-TEST_CASE("JSON Any Settings - merge with empties", "[settings]")
+TEST_CASE("JSON Any Settings - update with empties", "[settings]")
 {
     nlohmann::json obj = { { "x", "y" } };
     auto empty = vortex::core::settings::json::AnySettings{};
@@ -228,11 +239,11 @@ TEST_CASE("JSON Any Settings - merge with empties", "[settings]")
     REQUIRE( empty.is_empty() );
     REQUIRE( !full.is_empty() );
 
-    empty.merge( full );
+    empty.update_with( full );
 
     REQUIRE( empty.is_empty() );
 
-    full.merge( empty );
+    full.update_with( empty );
 
     REQUIRE( !full.is_empty() );
     REQUIRE( *(full.data()) == obj );
