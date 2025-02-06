@@ -7,21 +7,21 @@ namespace = [ "legacy", "settings" ]
 [job_name]
 type = "string"
 default = "default_job"
-requires = [ "nonemty" ]
+requires = [ "nonempty" ]
 
 [grant_no]
 type = "string"
-requires = [ "#nonempty" ]
+requires = [ "nonempty" ]
 
 [cpu_node_count]
 type = "i32"
 default = 1
-requires=[ "range(min=1,max=${CPU_NODE_COUNT_MAX:null}" ]
+requires=[ "range(min=1,max={{ #CPU_NODE_COUNT_MAX }}" ]
 
 [wct_limit]
 type = "f64"
 default = "60.0"
-requires=[ "range(min=5.0,max=${WCT_LIMIT_MAX:null}" ]
+requires=[ "range(min=5.0,max={{ #WCT_LIMIT_MAX }}" ]
 
 [process_count]
 type = "i32"
