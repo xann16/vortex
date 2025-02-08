@@ -1,6 +1,7 @@
 from cpp_utils import get_class_name, get_namespace, add_include, add_blank, add_line, add_block_comment, begin_test_case, end_test_case, add_require, begin_namespace, end_namespace, begin_class, end_class, add_access_qualifier, add_ctor_declaration, add_ctor_definition, add_method_definition, add_method_declaration, add_function_declaration, add_function_definition, add_data_field
 import gen_cpp_enums
-from gen_cpp_properties import add_property_public_declarations, add_property_definitions, add_property_unit_tests, get_stringify_body
+from gen_cpp_properties import add_property_public_declarations, add_property_private_declarations, add_property_definitions, add_property_unit_tests, get_stringify_body, add_pre_validate_all_definition
+from gen_cpp_validation import generate_post_validate_all_body
 from gen_utils import create_file
 import os
 from typing import Any
@@ -153,6 +154,8 @@ def generate_dynamic_header_file(root_path: str, data: dict[str, Any], ctx: dict
     i = add_method_declaration(ls, i, 'to_string', 'std::string', [], is_const=True, is_nodiscard=True)
     i = add_method_declaration(ls, i, 'stringify', 'std::ostream&', [('std::ostream&', 'os'), ('int', 'indent_size'), ('int', 'indent_level'), ('bool', 'display_all')], is_const=True)
     add_blank(ls)
+    i = add_method_declaration(ls, i, 'validate', 'void', [])
+    add_blank(ls)
     i = add_method_declaration(ls, i, 'operator<<', 'std::ostream&', [('std::ostream&', 'os'), (f'{class_name} const&', 's')], pre_qualifiers='friend')
     add_blank(ls)
     i = add_method_declaration(ls, i, 'operator==', 'bool', [(f'{class_name} const&', 'lhs'), (f'{class_name} const&', 'rhs')], pre_qualifiers='friend')
@@ -160,6 +163,10 @@ def generate_dynamic_header_file(root_path: str, data: dict[str, Any], ctx: dict
     add_blank(ls)
 
     i = add_property_public_declarations(ls, i, data, ctx)
+    add_blank(ls)
+
+    i = add_access_qualifier(ls, i, 'private')
+    i = add_property_private_declarations(ls, i, data, ctx)
     add_blank(ls)
 
     i = add_access_qualifier(ls, i, 'private')
@@ -220,6 +227,12 @@ def generate_dynamic_source_file(root_path: str, data: dict[str, Any], ctx: dict
     add_blank(ls)
 
     i = add_method_definition(ls, i, 'stringify', 'std::ostream&', class_name, [('std::ostream&', 'os'), ('int', 'indent_size'), ('int', 'indent_level'), ('bool', 'display_all')], body=get_stringify_body(data), is_const=True)
+    add_blank(ls)
+
+    i = add_method_definition(ls, i, 'validate', 'void', class_name, [], body=generate_post_validate_all_body(data, ctx))
+    add_blank(ls)
+
+    i = add_pre_validate_all_definition(ls, i, class_name, data, ctx)
     add_blank(ls)
 
     op_ln : str = 'return s.stringify( os, 2, 0, os.flags() & std::ios_base::boolalpha );'

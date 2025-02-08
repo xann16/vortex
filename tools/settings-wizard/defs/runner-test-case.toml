@@ -13,7 +13,7 @@ is_required = true
 
 [template_name]
 type = "string"
-requires = [ "#nonempty"]
+requires = [ "nonempty" ]
 
 [settings]
 type = "settings"
@@ -26,9 +26,9 @@ enum.values = [ "mmx", "mxx", "xxx" ]
 [stages]
 type = "string"
 is_array = true
-requres = [ "unique" ]
+requres = [ "unique", "*range(max=@{process_count},mapping=@{settings.execution_settings_process_count})" ]
 
 [process_count]
 type = "i32"
 default = 1
-requires = [ "range(min=1)" ]
+requires = [ "range(min=1)", "*range(min=@{settings.execution_settings.process_count})" ]

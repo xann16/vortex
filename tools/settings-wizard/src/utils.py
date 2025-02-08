@@ -36,3 +36,47 @@ def load_defs(root_path: str) -> dict[str, dict[str, Any]]:
                 result[key] = data
 
     return result
+
+# TEMP
+_GLOBALS = {}
+
+def get_global(key: str, fallback_value: Any = None):
+    return _GLOBALS[key] if key in _GLOBALS else fallback_value
+
+
+def try_parse_expr(input: Any) -> Any:
+    if input is None or not isinstance(input, str) or len(input) < 3:
+        return input
+
+    trimmed_input : str = input.strip()
+    init : str = trimmed_input[0:1]
+    result : dict[str, Any] | None = None
+
+    if init == '{{':
+        # TODO : Full expressions - not implemented yet
+        print("WARNING: Full expressions, i.e. {{ ... }} notation, not implemented yet.")
+    elif init == '@{':
+        if trimmed_input[-1] != '}':
+            raise Exception( "Expression parse error: Missing '}' for closing of matching '@{'." )
+        result = { "expr": "property" }
+    elif init == '#{':
+        if trimmed_input[-1] != '}':
+            raise Exception( "Expression parse error: Missing '}' for closing of matching '#{'." )
+        result = { "expr": "global" }
+    elif init == '${':
+        if trimmed_input[-1] != '}':
+            raise Exception( "Expression parse error: Missing '}' for closing of matching '${'." )
+        result = { "expr": "env" }
+
+    if result is not None:
+        if trimmed_input[-1] == '!':
+            result['is_required'] = True
+            result['target'] = trimmed_input[:-1].strip()
+        else:
+            tokens : list[str] = trimmed_input[2:-1].split(':', 1)
+            result['target'] = tokens[0].strip()
+            if len(tokens) > 1:
+                result['fallback_value'] = tokens[1]
+        return result
+
+    return input

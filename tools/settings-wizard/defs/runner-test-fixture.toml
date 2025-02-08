@@ -33,10 +33,10 @@ type = "settings"
 type = "module"
 is_array = true
 module.name = "test_case"
-requires = [ "unique(property_mapping=name)" ]
+requires = [ "unique(mapping=@{name})" ]
 
 [test_stages]
 type = "module"
 is_array = true
 module.name = "test_stage"
-requires = [ "unique(property_mapping=name)" ]
+requires = [ "unique(mapping=@{name})" ]

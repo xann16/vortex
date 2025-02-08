@@ -1,4 +1,5 @@
-from cpp_utils import get_class_name, get_namespace, begin_namespace, end_namespace, add_blank, add_line, add_block_comment, add_method_declaration, add_method_definition, begin_test_case, end_test_case, add_require
+from cpp_utils import get_class_name, get_namespace, begin_namespace, end_namespace, add_blank, add_line, add_block_comment, add_method_declaration, add_method_definition, add_function_definition, begin_test_case, end_test_case, add_require
+from gen_cpp_validation import generate_pre_validate_property_body
 from gen_utils import to_pascal_case
 from typing import Any
 
@@ -978,6 +979,68 @@ def _add_array_specific_tests(ls: list[str], i: int, class_name: str, name: str,
 
 ###########
 
+
+def _add_property_pre_validate_declarations(ls: list[str], i: int, name: str, p: dict[str, Any], data: dict[str, Any], ctx: dict[str, Any]) -> int:
+    is_array : bool = 'is_array' in p and p['is_array']
+
+    if is_array:
+        arg_type : str = _get_arg_type(p, data, ctx)
+        prefix : str = '' if generate_pre_validate_property_body(name, p, data, ctx, array_ctx=True)[0] else 'static'
+        i = add_method_declaration(ls, i, 'pre_validate_' + name, 'void', [(arg_type, name)], pre_qualifiers=prefix)
+        elem_name : str = _get_singular_name(name, p)
+        elem_arg_type : str = _get_arg_type(p, data, ctx, skip_array=True)
+        elem_prefix : str = '' if generate_pre_validate_property_body(name, p, data, ctx)[0] else 'static'
+        i = add_method_declaration(ls, i, 'pre_validate_' + elem_name, 'void', [(elem_arg_type, elem_name)], pre_qualifiers=elem_prefix)
+    else:
+        arg_type : str = _get_arg_type(p, data, ctx)
+        prefix : str = '' if generate_pre_validate_property_body(name, p, data, ctx)[0] else 'static'
+        i = add_method_declaration(ls, i, 'pre_validate_' + name, 'void', [(arg_type, name)], pre_qualifiers=prefix)
+
+    return i
+
+def _add_property_pre_validate_definition(ls: list[str], i: int, class_name: str, name: str, p: dict[str, Any], data: dict[str, Any], ctx: dict[str, Any]) -> int:
+    is_array : bool = 'is_array' in p and p['is_array']
+
+    if is_array:
+        arg_type : str = _get_arg_type(p, data, ctx)
+        is_member, body = generate_pre_validate_property_body(name, p, data, ctx, array_ctx=True)
+        if is_member:
+            i = add_method_definition(ls, i, 'pre_validate_' + name, 'void', class_name, [(arg_type, name)], body)
+        else:
+            i = add_function_definition(ls, i, 'pre_validate_' + name, 'void', [(arg_type, name)], body)
+        add_blank(ls)
+
+        elem_name : str = _get_singular_name(name, p)
+        elem_arg_type : str = _get_arg_type(p, data, ctx, skip_array=True)
+        is_elem_member, elem_body = generate_pre_validate_property_body(name, p, data, ctx)
+        if is_elem_member:
+            i = add_method_definition(ls, i, 'pre_validate_' + elem_name, 'void', class_name, [(elem_arg_type, elem_name)], elem_body)
+        else:
+            i = add_function_definition(ls, i, 'pre_validate_' + elem_name, 'void', [(elem_arg_type, elem_name)], elem_body)
+    else:
+        arg_type : str = _get_arg_type(p, data, ctx)
+        is_member, body = generate_pre_validate_property_body(name, p, data, ctx)
+        if is_member:
+            i = add_method_definition(ls, i, 'pre_validate_' + name, 'void', class_name, [(arg_type, name)], body)
+        else:
+            i = add_function_definition(ls, i, 'pre_validate_' + name, 'void', [(arg_type, name)], body)
+
+    return i
+
+def add_pre_validate_all_definition(ls: list[str], i: int, class_name: str, data: dict[str, Any], ctx: dict[str, Any]) -> int:
+    body : list[(int, str)] = []
+
+    for name, prop in data:
+        if not name.startswith('__'):
+            body.append((0, f'if (is_{name}_set())'))
+            body.append((0, '{'))
+            body.append((1, f'pre_validate_{name}( {name}() );'))
+            body.append((0, '}'))
+
+    return add_method_definition(ls, i, 'pre_validate_all', 'void', class_name, [], body=body)
+
+###########
+
 def add_property_public_declarations(ls: list[str], i: int, data: dict[str, Any], ctx: dict[str, Any]) -> int:
     for name, prop in data.items():
         if not name.startswith('__'):
@@ -995,6 +1058,13 @@ def add_property_public_declarations(ls: list[str], i: int, data: dict[str, Any]
                 i = _add_array_add_declaration(ls, i, name, prop, data, ctx)
                 i = _add_array_remove_declaration(ls, i, name, prop, data, ctx)
             add_blank(ls)
+    return i
+
+def add_property_private_declarations(ls: list[str], i: int, data: dict[str, Any], ctx: dict[str, Any]) -> int:
+    i = add_method_declaration(ls, i, 'pre_validate_all', 'void', [])
+    for name, prop in data.items():
+        if not name.startswith('__'):
+            i = _add_property_pre_validate_declarations(ls, i, name, prop, data, ctx)
     return i
 
 def add_property_definitions(ls: list[str], i: int, data: dict[str, Any], ctx: dict[str, Any]) -> int:
@@ -1025,6 +1095,8 @@ def add_property_definitions(ls: list[str], i: int, data: dict[str, Any], ctx: d
                 add_blank(ls)
                 i = _add_array_remove_definition(ls, i, class_name, name, prop, data, ctx)
                 add_blank(ls)
+            i = _add_property_pre_validate_definition(ls, i, class_name, name, prop, data, ctx)
+            add_blank(ls)
     return i
 
 def add_property_unit_tests(ls: list[str], i: int, data: dict[str, Any], ctx: dict[str, Any]) -> int:

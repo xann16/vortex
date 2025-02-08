@@ -7,12 +7,12 @@ namespace = [ "legacy", "settings" ]
 [N]
 type = "i32"
 default = 8
-requires = [ "range(min=8), is_pow2" ]
+requires = [ "range(min=8)", "is_pow2" ]
 
 [N_subdomain]
 type = "i32"
 default = 1
-requires = [ "positive, is_pow2" ]
+requires = [ "positive", "is_pow2", "*range(max=@{N})" ]
 
 [Nt_max]
 type = "i32"
