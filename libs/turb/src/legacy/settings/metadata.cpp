@@ -237,6 +237,7 @@ void Metadata::reset_sim_method()
 void Metadata::set_sim_method( SimMethod sim_method )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"sim_method\". Object is empty." };
+    pre_validate_sim_method( sim_method );
     data()->operator[]( "sim_method" ) = sim_method;
 }
 
@@ -269,6 +270,7 @@ void Metadata::reset_particle_mode()
 void Metadata::set_particle_mode( ParticleMode particle_mode )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"particle_mode\". Object is empty." };
+    pre_validate_particle_mode( particle_mode );
     data()->operator[]( "particle_mode" ) = particle_mode;
 }
 
@@ -301,6 +303,7 @@ void Metadata::reset_gravity_type()
 void Metadata::set_gravity_type( GravityMode gravity_type )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"gravity_type\". Object is empty." };
+    pre_validate_gravity_type( gravity_type );
     data()->operator[]( "gravity_type" ) = gravity_type;
 }
 
@@ -333,6 +336,7 @@ void Metadata::reset_particle_kernel_type()
 void Metadata::set_particle_kernel_type( ParticleTwcKernelType particle_kernel_type )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"particle_kernel_type\". Object is empty." };
+    pre_validate_particle_kernel_type( particle_kernel_type );
     data()->operator[]( "particle_kernel_type" ) = particle_kernel_type;
 }
 
@@ -365,6 +369,7 @@ void Metadata::reset_k_filter()
 void Metadata::set_k_filter( i32 k_filter )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"k_filter\". Object is empty." };
+    pre_validate_k_filter( k_filter );
     data()->operator[]( "k_filter" ) = k_filter;
 }
 
@@ -399,6 +404,7 @@ void Metadata::reset_C_K()
 void Metadata::set_C_K( real C_K )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"C_K\". Object is empty." };
+    pre_validate_C_K( C_K );
     data()->operator[]( "C_K" ) = C_K;
 }
 
@@ -438,6 +444,7 @@ void Metadata::reset_target_Phi()
 void Metadata::set_target_Phi( real target_Phi )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"target_Phi\". Object is empty." };
+    pre_validate_target_Phi( target_Phi );
     data()->operator[]( "target_Phi" ) = target_Phi;
 }
 
@@ -477,6 +484,7 @@ void Metadata::reset_superpart_factor()
 void Metadata::set_superpart_factor( real superpart_factor )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"superpart_factor\". Object is empty." };
+    pre_validate_superpart_factor( superpart_factor );
     data()->operator[]( "superpart_factor" ) = superpart_factor;
 }
 
@@ -516,11 +524,13 @@ void Metadata::reset_src_flow_path()
 void Metadata::set_src_flow_path( std::string const& src_flow_path )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"src_flow_path\". Object is empty." };
+    pre_validate_src_flow_path( src_flow_path );
     data()->operator[]( "src_flow_path" ) = src_flow_path;
 }
 void Metadata::set_src_flow_path( std::string && src_flow_path )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"src_flow_path\". Object is empty." };
+    pre_validate_src_flow_path( src_flow_path );
     data()->operator[]( "src_flow_path" ) = src_flow_path;
 }
 
@@ -559,11 +569,13 @@ void Metadata::reset_src_part_path()
 void Metadata::set_src_part_path( std::string const& src_part_path )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"src_part_path\". Object is empty." };
+    pre_validate_src_part_path( src_part_path );
     data()->operator[]( "src_part_path" ) = src_part_path;
 }
 void Metadata::set_src_part_path( std::string && src_part_path )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"src_part_path\". Object is empty." };
+    pre_validate_src_part_path( src_part_path );
     data()->operator[]( "src_part_path" ) = src_part_path;
 }
 
@@ -602,6 +614,7 @@ void Metadata::reset_part_output_delay()
 void Metadata::set_part_output_delay( i32 part_output_delay )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"part_output_delay\". Object is empty." };
+    pre_validate_part_output_delay( part_output_delay );
     data()->operator[]( "part_output_delay" ) = part_output_delay;
 }
 
@@ -636,6 +649,7 @@ void Metadata::reset_is_perf_full_profile_enabled()
 void Metadata::set_is_perf_full_profile_enabled( bool is_perf_full_profile_enabled )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"is_perf_full_profile_enabled\". Object is empty." };
+    pre_validate_is_perf_full_profile_enabled( is_perf_full_profile_enabled );
     data()->operator[]( "is_perf_full_profile_enabled" ) = is_perf_full_profile_enabled;
 }
 
@@ -668,6 +682,7 @@ void Metadata::reset_is_perf_simple_enabled()
 void Metadata::set_is_perf_simple_enabled( bool is_perf_simple_enabled )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"is_perf_simple_enabled\". Object is empty." };
+    pre_validate_is_perf_simple_enabled( is_perf_simple_enabled );
     data()->operator[]( "is_perf_simple_enabled" ) = is_perf_simple_enabled;
 }
 
@@ -700,6 +715,7 @@ void Metadata::reset_is_perf_part_dist_enabled()
 void Metadata::set_is_perf_part_dist_enabled( bool is_perf_part_dist_enabled )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"is_perf_part_dist_enabled\". Object is empty." };
+    pre_validate_is_perf_part_dist_enabled( is_perf_part_dist_enabled );
     data()->operator[]( "is_perf_part_dist_enabled" ) = is_perf_part_dist_enabled;
 }
 
@@ -732,6 +748,7 @@ void Metadata::reset_perf_full_start()
 void Metadata::set_perf_full_start( i32 perf_full_start )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"perf_full_start\". Object is empty." };
+    pre_validate_perf_full_start( perf_full_start );
     data()->operator[]( "perf_full_start" ) = perf_full_start;
 }
 
@@ -766,6 +783,7 @@ void Metadata::reset_perf_full_end()
 void Metadata::set_perf_full_end( i32 perf_full_end )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"perf_full_end\". Object is empty." };
+    pre_validate_perf_full_end( perf_full_end );
     data()->operator[]( "perf_full_end" ) = perf_full_end;
 }
 
@@ -800,6 +818,7 @@ void Metadata::reset_part_perf_interval()
 void Metadata::set_part_perf_interval( i32 part_perf_interval )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"part_perf_interval\". Object is empty." };
+    pre_validate_part_perf_interval( part_perf_interval );
     data()->operator[]( "part_perf_interval" ) = part_perf_interval;
 }
 

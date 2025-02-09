@@ -302,8 +302,10 @@ TEST_CASE( "TestFixture - property: \"test_cases\" - setter, reset", "[settings]
     auto s = vortex::runner::config::TestFixture{ &obj };
     auto s_null = vortex::runner::config::TestFixture{};
 
-    nlohmann::json vobj = nlohmann::json::object();
-    const auto value = std::vector< vortex::runner::config::TestCase >{ vortex::runner::config::TestCase{ &vobj }, vortex::runner::config::TestCase{ &vobj }, vortex::runner::config::TestCase{ &vobj } };
+    nlohmann::json vobj = { { "name", "v" } };
+    nlohmann::json wobj = { { "name", "w" } };
+    nlohmann::json zobj = { { "name", "z" } };
+    const auto value = std::vector< vortex::runner::config::TestCase >{ vortex::runner::config::TestCase{ &vobj }, vortex::runner::config::TestCase{ &wobj }, vortex::runner::config::TestCase{ &zobj } };
 
     REQUIRE( !s.has_test_cases_set() );
     REQUIRE( !s_null.has_test_cases_set() );
@@ -313,7 +315,7 @@ TEST_CASE( "TestFixture - property: \"test_cases\" - setter, reset", "[settings]
 
     REQUIRE_THROWS_AS( s_null.set_test_cases( value ), std::runtime_error );
     REQUIRE_THROWS_AS( s_null.set_test_cases( std::vector< vortex::runner::config::TestCase >{ value } ), std::runtime_error );
-    REQUIRE_THROWS_AS( s_null.set_test_cases( { vortex::runner::config::TestCase{ &vobj }, vortex::runner::config::TestCase{ &vobj }, vortex::runner::config::TestCase{ &vobj } } ), std::runtime_error );
+    REQUIRE_THROWS_AS( s_null.set_test_cases( { vortex::runner::config::TestCase{ &vobj }, vortex::runner::config::TestCase{ &wobj }, vortex::runner::config::TestCase{ &zobj } } ), std::runtime_error );
 
     s.reset_test_cases();
     REQUIRE( !s.has_test_cases_set() );
@@ -332,7 +334,7 @@ TEST_CASE( "TestFixture - property: \"test_cases\" - setter, reset", "[settings]
     s.reset_test_cases();
     REQUIRE( !s.has_test_cases_set() );
 
-    s.set_test_cases( { vortex::runner::config::TestCase{ &vobj }, vortex::runner::config::TestCase{ &vobj }, vortex::runner::config::TestCase{ &vobj } } );
+    s.set_test_cases( { vortex::runner::config::TestCase{ &vobj }, vortex::runner::config::TestCase{ &wobj }, vortex::runner::config::TestCase{ &zobj } } );
     REQUIRE( s.has_test_cases_set() );
     REQUIRE( s.test_cases() == value );
 
@@ -469,8 +471,10 @@ TEST_CASE( "TestFixture - property: \"test_stages\" - setter, reset", "[settings
     auto s = vortex::runner::config::TestFixture{ &obj };
     auto s_null = vortex::runner::config::TestFixture{};
 
-    nlohmann::json vobj = nlohmann::json::object();
-    const auto value = std::vector< vortex::runner::config::TestStage >{ vortex::runner::config::TestStage{ &vobj }, vortex::runner::config::TestStage{ &vobj }, vortex::runner::config::TestStage{ &vobj } };
+    nlohmann::json vobj = { { "name", "v" } };
+    nlohmann::json wobj = { { "name", "w" } };
+    nlohmann::json zobj = { { "name", "z" } };
+    const auto value = std::vector< vortex::runner::config::TestStage >{ vortex::runner::config::TestStage{ &vobj }, vortex::runner::config::TestStage{ &wobj }, vortex::runner::config::TestStage{ &zobj } };
 
     REQUIRE( !s.has_test_stages_set() );
     REQUIRE( !s_null.has_test_stages_set() );
@@ -480,7 +484,7 @@ TEST_CASE( "TestFixture - property: \"test_stages\" - setter, reset", "[settings
 
     REQUIRE_THROWS_AS( s_null.set_test_stages( value ), std::runtime_error );
     REQUIRE_THROWS_AS( s_null.set_test_stages( std::vector< vortex::runner::config::TestStage >{ value } ), std::runtime_error );
-    REQUIRE_THROWS_AS( s_null.set_test_stages( { vortex::runner::config::TestStage{ &vobj }, vortex::runner::config::TestStage{ &vobj }, vortex::runner::config::TestStage{ &vobj } } ), std::runtime_error );
+    REQUIRE_THROWS_AS( s_null.set_test_stages( { vortex::runner::config::TestStage{ &vobj }, vortex::runner::config::TestStage{ &wobj }, vortex::runner::config::TestStage{ &zobj } } ), std::runtime_error );
 
     s.reset_test_stages();
     REQUIRE( !s.has_test_stages_set() );
@@ -499,7 +503,7 @@ TEST_CASE( "TestFixture - property: \"test_stages\" - setter, reset", "[settings
     s.reset_test_stages();
     REQUIRE( !s.has_test_stages_set() );
 
-    s.set_test_stages( { vortex::runner::config::TestStage{ &vobj }, vortex::runner::config::TestStage{ &vobj }, vortex::runner::config::TestStage{ &vobj } } );
+    s.set_test_stages( { vortex::runner::config::TestStage{ &vobj }, vortex::runner::config::TestStage{ &wobj }, vortex::runner::config::TestStage{ &zobj } } );
     REQUIRE( s.has_test_stages_set() );
     REQUIRE( s.test_stages() == value );
 

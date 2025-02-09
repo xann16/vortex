@@ -119,11 +119,13 @@ void TestStage::reset_name()
 void TestStage::set_name( std::string const& name )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"name\". Object is empty." };
+    pre_validate_name( name );
     data()->operator[]( "name" ) = name;
 }
 void TestStage::set_name( std::string && name )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"name\". Object is empty." };
+    pre_validate_name( name );
     data()->operator[]( "name" ) = name;
 }
 
@@ -162,6 +164,7 @@ void TestStage::reset_settings()
 void TestStage::set_settings( core::settings::json::AnySettings settings )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"settings\". Object is empty." };
+    pre_validate_settings( settings );
     if ( settings.is_empty() )
     {
         reset_settings();

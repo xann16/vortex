@@ -140,6 +140,7 @@ void Settings::reset_metadata()
 void Settings::set_metadata( turb::legacy::settings::Metadata metadata )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"metadata\". Object is empty." };
+    pre_validate_metadata( metadata );
     if ( metadata.is_empty() )
     {
         reset_metadata();
@@ -179,6 +180,7 @@ void Settings::reset_parameters()
 void Settings::set_parameters( turb::legacy::settings::Parameters parameters )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"parameters\". Object is empty." };
+    pre_validate_parameters( parameters );
     if ( parameters.is_empty() )
     {
         reset_parameters();
@@ -218,6 +220,7 @@ void Settings::reset_execution_settings()
 void Settings::set_execution_settings( turb::legacy::settings::ExecutionSettings execution_settings )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"execution_settings\". Object is empty." };
+    pre_validate_execution_settings( execution_settings );
     if ( execution_settings.is_empty() )
     {
         reset_execution_settings();

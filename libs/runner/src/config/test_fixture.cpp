@@ -189,11 +189,13 @@ void TestFixture::reset_name()
 void TestFixture::set_name( std::string const& name )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"name\". Object is empty." };
+    pre_validate_name( name );
     data()->operator[]( "name" ) = name;
 }
 void TestFixture::set_name( std::string && name )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"name\". Object is empty." };
+    pre_validate_name( name );
     data()->operator[]( "name" ) = name;
 }
 
@@ -232,11 +234,13 @@ void TestFixture::reset_root_path()
 void TestFixture::set_root_path( std::string const& root_path )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"root_path\". Object is empty." };
+    pre_validate_root_path( root_path );
     data()->operator[]( "root_path" ) = root_path;
 }
 void TestFixture::set_root_path( std::string && root_path )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"root_path\". Object is empty." };
+    pre_validate_root_path( root_path );
     data()->operator[]( "root_path" ) = root_path;
 }
 
@@ -275,6 +279,7 @@ void TestFixture::reset_default_settings()
 void TestFixture::set_default_settings( core::settings::json::AnySettings default_settings )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"default_settings\". Object is empty." };
+    pre_validate_default_settings( default_settings );
     if ( default_settings.is_empty() )
     {
         reset_default_settings();
@@ -324,6 +329,7 @@ void TestFixture::reset_test_cases()
 void TestFixture::set_test_cases( std::vector< runner::config::TestCase > const& test_cases )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"test_cases\". Object is empty." };
+    pre_validate_test_cases( test_cases );
     data()->operator[]( "test_cases" ) = nlohmann::json::array();
     auto& test_cases_arr =  data()->operator[]( "test_cases" );
     for ( auto el : test_cases )
@@ -334,6 +340,7 @@ void TestFixture::set_test_cases( std::vector< runner::config::TestCase > const&
 void TestFixture::set_test_cases( std::vector< runner::config::TestCase > && test_cases )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"test_cases\". Object is empty." };
+    pre_validate_test_cases( test_cases );
     data()->operator[]( "test_cases" ) = nlohmann::json::array();
     auto& test_cases_arr =  data()->operator[]( "test_cases" );
     for ( auto el : test_cases )
@@ -344,6 +351,7 @@ void TestFixture::set_test_cases( std::vector< runner::config::TestCase > && tes
 void TestFixture::set_test_cases( std::initializer_list< runner::config::TestCase > test_cases )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"test_cases\". Object is empty." };
+    pre_validate_test_cases( test_cases );
     data()->operator[]( "test_cases" ) = nlohmann::json::array();
     auto& test_cases_arr =  data()->operator[]( "test_cases" );
     for ( auto el : test_cases )
@@ -391,6 +399,7 @@ void TestFixture::add_test_case( runner::config::TestCase test_case )
 {
     if ( is_empty() ) throw std::runtime_error{ "Item cannot be added. Parent object is empty." };
     if ( test_case.is_empty() ) return;
+    pre_validate_test_case( test_case );
     auto it = data()->find( "test_cases" );
     if ( it == data()->end() || it->is_null() )
     {
@@ -482,6 +491,7 @@ void TestFixture::reset_test_stages()
 void TestFixture::set_test_stages( std::vector< runner::config::TestStage > const& test_stages )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"test_stages\". Object is empty." };
+    pre_validate_test_stages( test_stages );
     data()->operator[]( "test_stages" ) = nlohmann::json::array();
     auto& test_stages_arr =  data()->operator[]( "test_stages" );
     for ( auto el : test_stages )
@@ -492,6 +502,7 @@ void TestFixture::set_test_stages( std::vector< runner::config::TestStage > cons
 void TestFixture::set_test_stages( std::vector< runner::config::TestStage > && test_stages )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"test_stages\". Object is empty." };
+    pre_validate_test_stages( test_stages );
     data()->operator[]( "test_stages" ) = nlohmann::json::array();
     auto& test_stages_arr =  data()->operator[]( "test_stages" );
     for ( auto el : test_stages )
@@ -502,6 +513,7 @@ void TestFixture::set_test_stages( std::vector< runner::config::TestStage > && t
 void TestFixture::set_test_stages( std::initializer_list< runner::config::TestStage > test_stages )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"test_stages\". Object is empty." };
+    pre_validate_test_stages( test_stages );
     data()->operator[]( "test_stages" ) = nlohmann::json::array();
     auto& test_stages_arr =  data()->operator[]( "test_stages" );
     for ( auto el : test_stages )
@@ -549,6 +561,7 @@ void TestFixture::add_test_stage( runner::config::TestStage test_stage )
 {
     if ( is_empty() ) throw std::runtime_error{ "Item cannot be added. Parent object is empty." };
     if ( test_stage.is_empty() ) return;
+    pre_validate_test_stage( test_stage );
     auto it = data()->find( "test_stages" );
     if ( it == data()->end() || it->is_null() )
     {

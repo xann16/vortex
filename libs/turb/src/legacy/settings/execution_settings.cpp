@@ -145,11 +145,13 @@ void ExecutionSettings::reset_job_name()
 void ExecutionSettings::set_job_name( std::string const& job_name )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"job_name\". Object is empty." };
+    pre_validate_job_name( job_name );
     data()->operator[]( "job_name" ) = job_name;
 }
 void ExecutionSettings::set_job_name( std::string && job_name )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"job_name\". Object is empty." };
+    pre_validate_job_name( job_name );
     data()->operator[]( "job_name" ) = job_name;
 }
 
@@ -188,11 +190,13 @@ void ExecutionSettings::reset_grant_no()
 void ExecutionSettings::set_grant_no( std::string const& grant_no )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"grant_no\". Object is empty." };
+    pre_validate_grant_no( grant_no );
     data()->operator[]( "grant_no" ) = grant_no;
 }
 void ExecutionSettings::set_grant_no( std::string && grant_no )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"grant_no\". Object is empty." };
+    pre_validate_grant_no( grant_no );
     data()->operator[]( "grant_no" ) = grant_no;
 }
 
@@ -231,6 +235,7 @@ void ExecutionSettings::reset_cpu_node_count()
 void ExecutionSettings::set_cpu_node_count( i32 cpu_node_count )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"cpu_node_count\". Object is empty." };
+    pre_validate_cpu_node_count( cpu_node_count );
     data()->operator[]( "cpu_node_count" ) = cpu_node_count;
 }
 
@@ -270,6 +275,7 @@ void ExecutionSettings::reset_wct_limit()
 void ExecutionSettings::set_wct_limit( f64 wct_limit )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"wct_limit\". Object is empty." };
+    pre_validate_wct_limit( wct_limit );
     data()->operator[]( "wct_limit" ) = wct_limit;
 }
 
@@ -309,6 +315,7 @@ void ExecutionSettings::reset_process_count()
 void ExecutionSettings::set_process_count( i32 process_count )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"process_count\". Object is empty." };
+    pre_validate_process_count( process_count );
     data()->operator[]( "process_count" ) = process_count;
 }
 
@@ -348,6 +355,7 @@ void ExecutionSettings::reset_is_node_overcommit_enabled()
 void ExecutionSettings::set_is_node_overcommit_enabled( bool is_node_overcommit_enabled )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"is_node_overcommit_enabled\". Object is empty." };
+    pre_validate_is_node_overcommit_enabled( is_node_overcommit_enabled );
     data()->operator[]( "is_node_overcommit_enabled" ) = is_node_overcommit_enabled;
 }
 

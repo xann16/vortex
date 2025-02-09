@@ -389,6 +389,7 @@ def _add_setter_definition(ls: list[str], i: int, class_name: str, name: str, p:
     body : list[(int, str)] = []
 
     body.append((0, f'if ( is_empty() ) throw std::runtime_error{{ "Cannot set value for property \\"{name}\\". Object is empty." }};'))
+    body.append((0, f'pre_validate_{name}( {name} );'))
 
     if not is_array:
         if property_type in ['module', 'settings']:
@@ -462,15 +463,17 @@ def _add_setter_test(ls: list[str], i: int, class_name: str, name: str, p: dict[
         list_of_values_str = ''
         value_type : str = _get_return_type(p, data, ctx)
         if property_type in BASE_TYPES:
-            list_of_values_str = '{ ' + BASE_TYPES[property_type][1] + ', ' + BASE_TYPES[property_type][1] + ', ' + BASE_TYPES[property_type][1] + ' }'
+            list_of_values_str = '{ ' + BASE_TYPES[property_type][1] + ', ' + BASE_TYPES[property_type][2] + ', ' + BASE_TYPES[property_type][3] + ' }'
         if property_type == 'enum':
             enum_value_prefix : str = '::'.join(namespace) + '::' + to_pascal_case(p['enum']['name']) + '::'
             list_of_values_str = '{ ' + ', '.join(f'{enum_value_prefix}{to_pascal_case(ename)}' for ename in p['enum']['values']) + ' }'
         elif property_type in ['module', 'settings']:
             # TODO - specific sets for specific setting classes (i.e. module)
-            i = add_line(ls, i, f'nlohmann::json vobj = nlohmann::json::object();')
-            value_str : str = f'vortex::{_get_arg_type(p, data, ctx, skip_array=True)}{{ &vobj }}'
-            list_of_values_str : str = '{ ' + ', '.join([value_str, value_str, value_str]) + ' }'
+            i = add_line(ls, i, 'nlohmann::json vobj = { { "name", "v" } };')
+            i = add_line(ls, i, 'nlohmann::json wobj = { { "name", "w" } };')
+            i = add_line(ls, i, 'nlohmann::json zobj = { { "name", "z" } };')
+            value_str : str = f'vortex::{_get_arg_type(p, data, ctx, skip_array=True)}{{ &[[[XXX]]]obj }}'
+            list_of_values_str : str = '{ ' + ', '.join([value_str.replace('[[[XXX]]]', letter) for letter in ["v", "w", "z"]]) + ' }'
             value_type = value_type.replace('vector< ', 'vector< vortex::')
         i = add_line(ls, i, f'const auto value = {value_type}{list_of_values_str};')
     add_blank(ls)
@@ -685,6 +688,7 @@ def _add_array_add_definition(ls: list[str], i: int, class_name: str, name: str,
     body.append((0, 'if ( is_empty() ) throw std::runtime_error{ "Item cannot be added. Parent object is empty." };'))
     if property_type in ['module', 'settings']:
         body.append((0, f'if ( {sg_name}.is_empty() ) return;'))
+    body.append((0, f'pre_validate_{sg_name}( {sg_name} );'))
     body.append((0, f'auto it = data()->find( "{name}" );'))
     body.append((0, f'if ( it == data()->end() || it->is_null() )'))
     body.append((0, '{'))

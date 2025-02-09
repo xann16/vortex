@@ -341,7 +341,7 @@ TEST_CASE( "TestCase - property: \"stages\" - setter, reset", "[settings]" )
     auto s = vortex::runner::config::TestCase{ &obj };
     auto s_null = vortex::runner::config::TestCase{};
 
-    const auto value = std::vector< std::string >{ "stest", "stest", "stest" };
+    const auto value = std::vector< std::string >{ "stest", "ttest", "utest" };
 
     REQUIRE( !s.has_stages_set() );
     REQUIRE( !s_null.has_stages_set() );
@@ -351,7 +351,7 @@ TEST_CASE( "TestCase - property: \"stages\" - setter, reset", "[settings]" )
 
     REQUIRE_THROWS_AS( s_null.set_stages( value ), std::runtime_error );
     REQUIRE_THROWS_AS( s_null.set_stages( std::vector< std::string >{ value } ), std::runtime_error );
-    REQUIRE_THROWS_AS( s_null.set_stages( { "stest", "stest", "stest" } ), std::runtime_error );
+    REQUIRE_THROWS_AS( s_null.set_stages( { "stest", "ttest", "utest" } ), std::runtime_error );
 
     s.reset_stages();
     REQUIRE( !s.has_stages_set() );
@@ -370,7 +370,7 @@ TEST_CASE( "TestCase - property: \"stages\" - setter, reset", "[settings]" )
     s.reset_stages();
     REQUIRE( !s.has_stages_set() );
 
-    s.set_stages( { "stest", "stest", "stest" } );
+    s.set_stages( { "stest", "ttest", "utest" } );
     REQUIRE( s.has_stages_set() );
     REQUIRE( s.stages() == value );
 

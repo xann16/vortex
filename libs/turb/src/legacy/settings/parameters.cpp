@@ -358,6 +358,7 @@ void Parameters::reset_N()
 void Parameters::set_N( i32 N )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"N\". Object is empty." };
+    pre_validate_N( N );
     data()->operator[]( "N" ) = N;
 }
 
@@ -403,6 +404,7 @@ void Parameters::reset_N_subdomain()
 void Parameters::set_N_subdomain( i32 N_subdomain )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"N_subdomain\". Object is empty." };
+    pre_validate_N_subdomain( N_subdomain );
     data()->operator[]( "N_subdomain" ) = N_subdomain;
 }
 
@@ -448,6 +450,7 @@ void Parameters::reset_Nt_max()
 void Parameters::set_Nt_max( i32 Nt_max )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"Nt_max\". Object is empty." };
+    pre_validate_Nt_max( Nt_max );
     data()->operator[]( "Nt_max" ) = Nt_max;
 }
 
@@ -487,6 +490,7 @@ void Parameters::reset_dt()
 void Parameters::set_dt( real dt )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"dt\". Object is empty." };
+    pre_validate_dt( dt );
     data()->operator[]( "dt" ) = dt;
 }
 
@@ -526,6 +530,7 @@ void Parameters::reset_rnu()
 void Parameters::set_rnu( real rnu )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"rnu\". Object is empty." };
+    pre_validate_rnu( rnu );
     data()->operator[]( "rnu" ) = rnu;
 }
 
@@ -565,6 +570,7 @@ void Parameters::reset_t_init()
 void Parameters::set_t_init( real t_init )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"t_init\". Object is empty." };
+    pre_validate_t_init( t_init );
     data()->operator[]( "t_init" ) = t_init;
 }
 
@@ -597,6 +603,7 @@ void Parameters::reset_is_flow_generated()
 void Parameters::set_is_flow_generated( bool is_flow_generated )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"is_flow_generated\". Object is empty." };
+    pre_validate_is_flow_generated( is_flow_generated );
     data()->operator[]( "is_flow_generated" ) = is_flow_generated;
 }
 
@@ -629,6 +636,7 @@ void Parameters::reset_deterministic_seed()
 void Parameters::set_deterministic_seed( u64 deterministic_seed )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"deterministic_seed\". Object is empty." };
+    pre_validate_deterministic_seed( deterministic_seed );
     data()->operator[]( "deterministic_seed" ) = deterministic_seed;
 }
 
@@ -661,6 +669,7 @@ void Parameters::reset_input_velo_index()
 void Parameters::set_input_velo_index( i32 input_velo_index )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"input_velo_index\". Object is empty." };
+    pre_validate_input_velo_index( input_velo_index );
     data()->operator[]( "input_velo_index" ) = input_velo_index;
 }
 
@@ -700,6 +709,7 @@ void Parameters::reset_forcing_type()
 void Parameters::set_forcing_type( ForcingType forcing_type )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"forcing_type\". Object is empty." };
+    pre_validate_forcing_type( forcing_type );
     data()->operator[]( "forcing_type" ) = forcing_type;
 }
 
@@ -732,6 +742,7 @@ void Parameters::reset_deterministic_forcing_k_1()
 void Parameters::set_deterministic_forcing_k_1( real deterministic_forcing_k_1 )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"deterministic_forcing_k_1\". Object is empty." };
+    pre_validate_deterministic_forcing_k_1( deterministic_forcing_k_1 );
     data()->operator[]( "deterministic_forcing_k_1" ) = deterministic_forcing_k_1;
 }
 
@@ -771,6 +782,7 @@ void Parameters::reset_deterministic_forcing_k_2()
 void Parameters::set_deterministic_forcing_k_2( real deterministic_forcing_k_2 )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"deterministic_forcing_k_2\". Object is empty." };
+    pre_validate_deterministic_forcing_k_2( deterministic_forcing_k_2 );
     data()->operator[]( "deterministic_forcing_k_2" ) = deterministic_forcing_k_2;
 }
 
@@ -810,6 +822,7 @@ void Parameters::reset_stochastic_seed()
 void Parameters::set_stochastic_seed( u64 stochastic_seed )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"stochastic_seed\". Object is empty." };
+    pre_validate_stochastic_seed( stochastic_seed );
     data()->operator[]( "stochastic_seed" ) = stochastic_seed;
 }
 
@@ -842,6 +855,7 @@ void Parameters::reset_stats_output_interval()
 void Parameters::set_stats_output_interval( i32 stats_output_interval )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"stats_output_interval\". Object is empty." };
+    pre_validate_stats_output_interval( stats_output_interval );
     data()->operator[]( "stats_output_interval" ) = stats_output_interval;
 }
 
@@ -876,6 +890,7 @@ void Parameters::reset_spectrum_output_interval()
 void Parameters::set_spectrum_output_interval( i32 spectrum_output_interval )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"spectrum_output_interval\". Object is empty." };
+    pre_validate_spectrum_output_interval( spectrum_output_interval );
     data()->operator[]( "spectrum_output_interval" ) = spectrum_output_interval;
 }
 
@@ -910,6 +925,7 @@ void Parameters::reset_is_stats_output_extended()
 void Parameters::set_is_stats_output_extended( bool is_stats_output_extended )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"is_stats_output_extended\". Object is empty." };
+    pre_validate_is_stats_output_extended( is_stats_output_extended );
     data()->operator[]( "is_stats_output_extended" ) = is_stats_output_extended;
 }
 
@@ -942,6 +958,7 @@ void Parameters::reset_rho_part()
 void Parameters::set_rho_part( real rho_part )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"rho_part\". Object is empty." };
+    pre_validate_rho_part( rho_part );
     data()->operator[]( "rho_part" ) = rho_part;
 }
 
@@ -981,6 +998,7 @@ void Parameters::reset_rho_fluid()
 void Parameters::set_rho_fluid( real rho_fluid )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"rho_fluid\". Object is empty." };
+    pre_validate_rho_fluid( rho_fluid );
     data()->operator[]( "rho_fluid" ) = rho_fluid;
 }
 
@@ -1020,6 +1038,7 @@ void Parameters::reset_eta_k_init()
 void Parameters::set_eta_k_init( real eta_k_init )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"eta_k_init\". Object is empty." };
+    pre_validate_eta_k_init( eta_k_init );
     data()->operator[]( "eta_k_init" ) = eta_k_init;
 }
 
@@ -1059,6 +1078,7 @@ void Parameters::reset_tau_k_init()
 void Parameters::set_tau_k_init( real tau_k_init )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"tau_k_init\". Object is empty." };
+    pre_validate_tau_k_init( tau_k_init );
     data()->operator[]( "tau_k_init" ) = tau_k_init;
 }
 
@@ -1098,6 +1118,7 @@ void Parameters::reset_shell_thickness()
 void Parameters::set_shell_thickness( real shell_thickness )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"shell_thickness\". Object is empty." };
+    pre_validate_shell_thickness( shell_thickness );
     data()->operator[]( "shell_thickness" ) = shell_thickness;
 }
 
@@ -1137,6 +1158,7 @@ void Parameters::reset_epsilon_env()
 void Parameters::set_epsilon_env( real epsilon_env )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"epsilon_env\". Object is empty." };
+    pre_validate_epsilon_env( epsilon_env );
     data()->operator[]( "epsilon_env" ) = epsilon_env;
 }
 
@@ -1176,6 +1198,7 @@ void Parameters::reset_nu_fluid()
 void Parameters::set_nu_fluid( real nu_fluid )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"nu_fluid\". Object is empty." };
+    pre_validate_nu_fluid( nu_fluid );
     data()->operator[]( "nu_fluid" ) = nu_fluid;
 }
 
@@ -1215,6 +1238,7 @@ void Parameters::reset_gravity()
 void Parameters::set_gravity( real gravity )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"gravity\". Object is empty." };
+    pre_validate_gravity( gravity );
     data()->operator[]( "gravity" ) = gravity;
 }
 
@@ -1247,6 +1271,7 @@ void Parameters::reset_is_part_generated()
 void Parameters::set_is_part_generated( bool is_part_generated )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"is_part_generated\". Object is empty." };
+    pre_validate_is_part_generated( is_part_generated );
     data()->operator[]( "is_part_generated" ) = is_part_generated;
 }
 
@@ -1279,6 +1304,7 @@ void Parameters::reset_is_part_overlapping()
 void Parameters::set_is_part_overlapping( bool is_part_overlapping )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"is_part_overlapping\". Object is empty." };
+    pre_validate_is_part_overlapping( is_part_overlapping );
     data()->operator[]( "is_part_overlapping" ) = is_part_overlapping;
 }
 
@@ -1311,6 +1337,7 @@ void Parameters::reset_is_part_hdi_enabled()
 void Parameters::set_is_part_hdi_enabled( bool is_part_hdi_enabled )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"is_part_hdi_enabled\". Object is empty." };
+    pre_validate_is_part_hdi_enabled( is_part_hdi_enabled );
     data()->operator[]( "is_part_hdi_enabled" ) = is_part_hdi_enabled;
 }
 
@@ -1343,6 +1370,7 @@ void Parameters::reset_part_hdi_trunc_enabled()
 void Parameters::set_part_hdi_trunc_enabled( real part_hdi_trunc_enabled )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"part_hdi_trunc_enabled\". Object is empty." };
+    pre_validate_part_hdi_trunc_enabled( part_hdi_trunc_enabled );
     data()->operator[]( "part_hdi_trunc_enabled" ) = part_hdi_trunc_enabled;
 }
 
@@ -1382,6 +1410,7 @@ void Parameters::reset_N_part()
 void Parameters::set_N_part( i32 N_part )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"N_part\". Object is empty." };
+    pre_validate_N_part( N_part );
     data()->operator[]( "N_part" ) = N_part;
 }
 
@@ -1416,6 +1445,7 @@ void Parameters::reset_drag_type()
 void Parameters::set_drag_type( DragType drag_type )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"drag_type\". Object is empty." };
+    pre_validate_drag_type( drag_type );
     data()->operator[]( "drag_type" ) = drag_type;
 }
 
@@ -1448,6 +1478,7 @@ void Parameters::reset_a()
 void Parameters::set_a( real a )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"a\". Object is empty." };
+    pre_validate_a( a );
     data()->operator[]( "a" ) = a;
 }
 

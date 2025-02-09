@@ -166,11 +166,13 @@ void TestCase::reset_name()
 void TestCase::set_name( std::string const& name )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"name\". Object is empty." };
+    pre_validate_name( name );
     data()->operator[]( "name" ) = name;
 }
 void TestCase::set_name( std::string && name )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"name\". Object is empty." };
+    pre_validate_name( name );
     data()->operator[]( "name" ) = name;
 }
 
@@ -209,11 +211,13 @@ void TestCase::reset_template_name()
 void TestCase::set_template_name( std::string const& template_name )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"template_name\". Object is empty." };
+    pre_validate_template_name( template_name );
     data()->operator[]( "template_name" ) = template_name;
 }
 void TestCase::set_template_name( std::string && template_name )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"template_name\". Object is empty." };
+    pre_validate_template_name( template_name );
     data()->operator[]( "template_name" ) = template_name;
 }
 
@@ -252,6 +256,7 @@ void TestCase::reset_settings()
 void TestCase::set_settings( core::settings::json::AnySettings settings )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"settings\". Object is empty." };
+    pre_validate_settings( settings );
     if ( settings.is_empty() )
     {
         reset_settings();
@@ -291,6 +296,7 @@ void TestCase::reset_parallel_strategy()
 void TestCase::set_parallel_strategy( ParallelStrategyType parallel_strategy )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"parallel_strategy\". Object is empty." };
+    pre_validate_parallel_strategy( parallel_strategy );
     data()->operator[]( "parallel_strategy" ) = parallel_strategy;
 }
 
@@ -333,16 +339,19 @@ void TestCase::reset_stages()
 void TestCase::set_stages( std::vector< std::string > const& stages )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"stages\". Object is empty." };
+    pre_validate_stages( stages );
     data()->operator[]( "stages" ) = stages;
 }
 void TestCase::set_stages( std::vector< std::string > && stages )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"stages\". Object is empty." };
+    pre_validate_stages( stages );
     data()->operator[]( "stages" ) = stages;
 }
 void TestCase::set_stages( std::initializer_list< std::string > stages )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"stages\". Object is empty." };
+    pre_validate_stages( stages );
     data()->operator[]( "stages" ) = stages;
 }
 
@@ -384,6 +393,7 @@ void TestCase::clear_stages()
 void TestCase::add_stage( std::string const& stage )
 {
     if ( is_empty() ) throw std::runtime_error{ "Item cannot be added. Parent object is empty." };
+    pre_validate_stage( stage );
     auto it = data()->find( "stages" );
     if ( it == data()->end() || it->is_null() )
     {
@@ -394,6 +404,7 @@ void TestCase::add_stage( std::string const& stage )
 void TestCase::add_stage( std::string && stage )
 {
     if ( is_empty() ) throw std::runtime_error{ "Item cannot be added. Parent object is empty." };
+    pre_validate_stage( stage );
     auto it = data()->find( "stages" );
     if ( it == data()->end() || it->is_null() )
     {
@@ -475,6 +486,7 @@ void TestCase::reset_process_count()
 void TestCase::set_process_count( i32 process_count )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"process_count\". Object is empty." };
+    pre_validate_process_count( process_count );
     data()->operator[]( "process_count" ) = process_count;
 }
 
