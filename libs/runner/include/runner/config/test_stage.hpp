@@ -53,6 +53,8 @@ public:
     [[nodiscard]] std::string to_string() const;
     std::ostream& stringify( std::ostream& os, int indent_size, int indent_level, bool display_all ) const;
 
+    void validate();
+
     friend std::ostream& operator<<( std::ostream& os, TestStage const& s );
 
     friend bool operator==( TestStage const& lhs, TestStage const& rhs );
@@ -90,6 +92,11 @@ public:
     void reset_settings();
     void set_settings( core::settings::json::AnySettings settings );
 
+
+private:
+    void pre_validate_all();
+    static void pre_validate_name( [[maybe_unused]] std::string_view name );
+    static void pre_validate_settings( [[maybe_unused]] core::settings::json::AnySettings settings );
 
 private:
     nlohmann::json * m_data_p = nullptr;

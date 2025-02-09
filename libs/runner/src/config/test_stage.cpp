@@ -58,6 +58,27 @@ std::ostream& TestStage::stringify( std::ostream& os, int indent_size, int inden
     return os;
 }
 
+void TestStage::validate()
+{
+    if ( !has_name_set() )
+    {
+        throw std::runtime_error{ "Validation failed for property 'name': Required property is not specified." };
+    }
+    
+}
+
+void TestStage::pre_validate_all()
+{
+    if ( has_name_set() )
+    {
+        pre_validate_name( name() );
+    }
+    if ( has_settings_set() )
+    {
+        pre_validate_settings( settings() );
+    }
+}
+
 std::ostream& operator<<( std::ostream& os, TestStage const& s )
 {
     return s.stringify( os, 2, 0, os.flags() & std::ios_base::boolalpha );
@@ -103,6 +124,15 @@ void TestStage::set_name( std::string && name )
     data()->operator[]( "name" ) = name;
 }
 
+void TestStage::pre_validate_name( [[maybe_unused]] std::string_view name )
+{
+    if ( name.empty() )
+    {
+        throw std::runtime_error{ "Validation failed for property 'name': Value is empty." };
+    }
+    
+}
+
 // "settings" property
 
 [[nodiscard]] core::settings::json::AnySettings TestStage::settings() const
@@ -138,6 +168,9 @@ void TestStage::set_settings( core::settings::json::AnySettings settings )
         data()->operator[]( "settings" ) = *( settings.data() );
     }
 }
+
+void TestStage::pre_validate_settings( [[maybe_unused]] core::settings::json::AnySettings settings )
+{}
 
 
 } // end of namespace vortex::runner::config

@@ -89,6 +89,43 @@ std::ostream& TestCase::stringify( std::ostream& os, int indent_size, int indent
     return os;
 }
 
+void TestCase::validate()
+{
+    if ( !has_name_set() )
+    {
+        throw std::runtime_error{ "Validation failed for property 'name': Required property is not specified." };
+    }
+    
+}
+
+void TestCase::pre_validate_all()
+{
+    if ( has_name_set() )
+    {
+        pre_validate_name( name() );
+    }
+    if ( has_template_name_set() )
+    {
+        pre_validate_template_name( template_name() );
+    }
+    if ( has_settings_set() )
+    {
+        pre_validate_settings( settings() );
+    }
+    if ( has_parallel_strategy_set() )
+    {
+        pre_validate_parallel_strategy( parallel_strategy() );
+    }
+    if ( has_stages_set() )
+    {
+        pre_validate_stages( stages() );
+    }
+    if ( has_process_count_set() )
+    {
+        pre_validate_process_count( process_count() );
+    }
+}
+
 std::ostream& operator<<( std::ostream& os, TestCase const& s )
 {
     return s.stringify( os, 2, 0, os.flags() & std::ios_base::boolalpha );
@@ -134,6 +171,15 @@ void TestCase::set_name( std::string && name )
     data()->operator[]( "name" ) = name;
 }
 
+void TestCase::pre_validate_name( [[maybe_unused]] std::string_view name )
+{
+    if ( name.empty() )
+    {
+        throw std::runtime_error{ "Validation failed for property 'name': Value is empty." };
+    }
+    
+}
+
 // "template_name" property
 
 [[nodiscard]] std::string_view TestCase::template_name() const
@@ -166,6 +212,15 @@ void TestCase::set_template_name( std::string && template_name )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"template_name\". Object is empty." };
     data()->operator[]( "template_name" ) = template_name;
+}
+
+void TestCase::pre_validate_template_name( [[maybe_unused]] std::string_view template_name )
+{
+    if ( template_name.empty() )
+    {
+        throw std::runtime_error{ "Validation failed for property 'template_name': Value is empty." };
+    }
+    
 }
 
 // "settings" property
@@ -204,6 +259,9 @@ void TestCase::set_settings( core::settings::json::AnySettings settings )
     }
 }
 
+void TestCase::pre_validate_settings( [[maybe_unused]] core::settings::json::AnySettings settings )
+{}
+
 // "parallel_strategy" property
 
 [[nodiscard]] ParallelStrategyType TestCase::parallel_strategy() const
@@ -232,6 +290,9 @@ void TestCase::set_parallel_strategy( ParallelStrategyType parallel_strategy )
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"parallel_strategy\". Object is empty." };
     data()->operator[]( "parallel_strategy" ) = parallel_strategy;
 }
+
+void TestCase::pre_validate_parallel_strategy( [[maybe_unused]] ParallelStrategyType parallel_strategy )
+{}
 
 // "stages" property
 
@@ -379,6 +440,12 @@ void TestCase::remove_stage( std::string && stage )
 }
 
 
+void TestCase::pre_validate_stages( [[maybe_unused]] std::vector< std::string > const& stages )
+{}
+
+void TestCase::pre_validate_stage( [[maybe_unused]] std::string_view stage )
+{}
+
 // "process_count" property
 
 [[nodiscard]] i32 TestCase::process_count() const
@@ -406,6 +473,16 @@ void TestCase::set_process_count( i32 process_count )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"process_count\". Object is empty." };
     data()->operator[]( "process_count" ) = process_count;
+}
+
+void TestCase::pre_validate_process_count( [[maybe_unused]] i32 process_count )
+{
+    auto value = process_count;
+    if ( value < 1 )
+    {
+        throw std::runtime_error{ "Validation failed for property 'process_count': Value is not within required range." };
+    }
+    
 }
 
 

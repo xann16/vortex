@@ -73,6 +73,37 @@ std::ostream& ExecutionSettings::stringify( std::ostream& os, int indent_size, i
     return os;
 }
 
+void ExecutionSettings::validate()
+{}
+
+void ExecutionSettings::pre_validate_all()
+{
+    if ( has_job_name_set() )
+    {
+        pre_validate_job_name( job_name() );
+    }
+    if ( has_grant_no_set() )
+    {
+        pre_validate_grant_no( grant_no() );
+    }
+    if ( has_cpu_node_count_set() )
+    {
+        pre_validate_cpu_node_count( cpu_node_count() );
+    }
+    if ( has_wct_limit_set() )
+    {
+        pre_validate_wct_limit( wct_limit() );
+    }
+    if ( has_process_count_set() )
+    {
+        pre_validate_process_count( process_count() );
+    }
+    if ( has_is_node_overcommit_enabled_set() )
+    {
+        pre_validate_is_node_overcommit_enabled( is_node_overcommit_enabled() );
+    }
+}
+
 std::ostream& operator<<( std::ostream& os, ExecutionSettings const& s )
 {
     return s.stringify( os, 2, 0, os.flags() & std::ios_base::boolalpha );
@@ -119,6 +150,15 @@ void ExecutionSettings::set_job_name( std::string && job_name )
     data()->operator[]( "job_name" ) = job_name;
 }
 
+void ExecutionSettings::pre_validate_job_name( [[maybe_unused]] std::string_view job_name )
+{
+    if ( job_name.empty() )
+    {
+        throw std::runtime_error{ "Validation failed for property 'job_name': Value is empty." };
+    }
+    
+}
+
 // "grant_no" property
 
 [[nodiscard]] std::string_view ExecutionSettings::grant_no() const
@@ -153,6 +193,15 @@ void ExecutionSettings::set_grant_no( std::string && grant_no )
     data()->operator[]( "grant_no" ) = grant_no;
 }
 
+void ExecutionSettings::pre_validate_grant_no( [[maybe_unused]] std::string_view grant_no )
+{
+    if ( grant_no.empty() )
+    {
+        throw std::runtime_error{ "Validation failed for property 'grant_no': Value is empty." };
+    }
+    
+}
+
 // "cpu_node_count" property
 
 [[nodiscard]] i32 ExecutionSettings::cpu_node_count() const
@@ -180,6 +229,16 @@ void ExecutionSettings::set_cpu_node_count( i32 cpu_node_count )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"cpu_node_count\". Object is empty." };
     data()->operator[]( "cpu_node_count" ) = cpu_node_count;
+}
+
+void ExecutionSettings::pre_validate_cpu_node_count( [[maybe_unused]] i32 cpu_node_count )
+{
+    auto value = cpu_node_count;
+    if ( value < 1 )
+    {
+        throw std::runtime_error{ "Validation failed for property 'cpu_node_count': Value is not within required range." };
+    }
+    
 }
 
 // "wct_limit" property
@@ -211,6 +270,16 @@ void ExecutionSettings::set_wct_limit( f64 wct_limit )
     data()->operator[]( "wct_limit" ) = wct_limit;
 }
 
+void ExecutionSettings::pre_validate_wct_limit( [[maybe_unused]] f64 wct_limit )
+{
+    auto value = wct_limit;
+    if ( value < 5.0 )
+    {
+        throw std::runtime_error{ "Validation failed for property 'wct_limit': Value is not within required range." };
+    }
+    
+}
+
 // "process_count" property
 
 [[nodiscard]] i32 ExecutionSettings::process_count() const
@@ -238,6 +307,16 @@ void ExecutionSettings::set_process_count( i32 process_count )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"process_count\". Object is empty." };
     data()->operator[]( "process_count" ) = process_count;
+}
+
+void ExecutionSettings::pre_validate_process_count( [[maybe_unused]] i32 process_count )
+{
+    auto value = process_count;
+    if ( value < 1 )
+    {
+        throw std::runtime_error{ "Validation failed for property 'process_count': Value is not within required range." };
+    }
+    
 }
 
 // "is_node_overcommit_enabled" property
@@ -268,6 +347,9 @@ void ExecutionSettings::set_is_node_overcommit_enabled( bool is_node_overcommit_
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"is_node_overcommit_enabled\". Object is empty." };
     data()->operator[]( "is_node_overcommit_enabled" ) = is_node_overcommit_enabled;
 }
+
+void ExecutionSettings::pre_validate_is_node_overcommit_enabled( [[maybe_unused]] bool is_node_overcommit_enabled )
+{}
 
 
 } // end of namespace vortex::turb::legacy::settings

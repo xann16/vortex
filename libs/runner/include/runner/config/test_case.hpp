@@ -54,6 +54,8 @@ public:
     [[nodiscard]] std::string to_string() const;
     std::ostream& stringify( std::ostream& os, int indent_size, int indent_level, bool display_all ) const;
 
+    void validate();
+
     friend std::ostream& operator<<( std::ostream& os, TestCase const& s );
 
     friend bool operator==( TestCase const& lhs, TestCase const& rhs );
@@ -167,6 +169,16 @@ public:
     void reset_process_count();
     void set_process_count( i32 process_count );
 
+
+private:
+    void pre_validate_all();
+    static void pre_validate_name( [[maybe_unused]] std::string_view name );
+    static void pre_validate_template_name( [[maybe_unused]] std::string_view template_name );
+    static void pre_validate_settings( [[maybe_unused]] core::settings::json::AnySettings settings );
+    static void pre_validate_parallel_strategy( [[maybe_unused]] ParallelStrategyType parallel_strategy );
+    static void pre_validate_stages( [[maybe_unused]] std::vector< std::string > const& stages );
+    static void pre_validate_stage( [[maybe_unused]] std::string_view stage );
+    static void pre_validate_process_count( [[maybe_unused]] i32 process_count );
 
 private:
     nlohmann::json * m_data_p = nullptr;

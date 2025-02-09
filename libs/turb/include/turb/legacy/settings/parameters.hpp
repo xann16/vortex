@@ -55,6 +55,8 @@ public:
     [[nodiscard]] std::string to_string() const;
     std::ostream& stringify( std::ostream& os, int indent_size, int indent_level, bool display_all ) const;
 
+    void validate();
+
     friend std::ostream& operator<<( std::ostream& os, Parameters const& s );
 
     friend bool operator==( Parameters const& lhs, Parameters const& rhs );
@@ -373,6 +375,40 @@ public:
     void reset_a();
     void set_a( real a );
 
+
+private:
+    void pre_validate_all();
+    static void pre_validate_N( [[maybe_unused]] i32 N );
+    static void pre_validate_N_subdomain( [[maybe_unused]] i32 N_subdomain );
+    static void pre_validate_Nt_max( [[maybe_unused]] i32 Nt_max );
+    static void pre_validate_dt( [[maybe_unused]] real dt );
+    static void pre_validate_rnu( [[maybe_unused]] real rnu );
+    static void pre_validate_t_init( [[maybe_unused]] real t_init );
+    static void pre_validate_is_flow_generated( [[maybe_unused]] bool is_flow_generated );
+    static void pre_validate_deterministic_seed( [[maybe_unused]] u64 deterministic_seed );
+    static void pre_validate_input_velo_index( [[maybe_unused]] i32 input_velo_index );
+    static void pre_validate_forcing_type( [[maybe_unused]] ForcingType forcing_type );
+    static void pre_validate_deterministic_forcing_k_1( [[maybe_unused]] real deterministic_forcing_k_1 );
+    static void pre_validate_deterministic_forcing_k_2( [[maybe_unused]] real deterministic_forcing_k_2 );
+    static void pre_validate_stochastic_seed( [[maybe_unused]] u64 stochastic_seed );
+    static void pre_validate_stats_output_interval( [[maybe_unused]] i32 stats_output_interval );
+    static void pre_validate_spectrum_output_interval( [[maybe_unused]] i32 spectrum_output_interval );
+    static void pre_validate_is_stats_output_extended( [[maybe_unused]] bool is_stats_output_extended );
+    static void pre_validate_rho_part( [[maybe_unused]] real rho_part );
+    static void pre_validate_rho_fluid( [[maybe_unused]] real rho_fluid );
+    static void pre_validate_eta_k_init( [[maybe_unused]] real eta_k_init );
+    static void pre_validate_tau_k_init( [[maybe_unused]] real tau_k_init );
+    static void pre_validate_shell_thickness( [[maybe_unused]] real shell_thickness );
+    static void pre_validate_epsilon_env( [[maybe_unused]] real epsilon_env );
+    static void pre_validate_nu_fluid( [[maybe_unused]] real nu_fluid );
+    static void pre_validate_gravity( [[maybe_unused]] real gravity );
+    static void pre_validate_is_part_generated( [[maybe_unused]] bool is_part_generated );
+    static void pre_validate_is_part_overlapping( [[maybe_unused]] bool is_part_overlapping );
+    static void pre_validate_is_part_hdi_enabled( [[maybe_unused]] bool is_part_hdi_enabled );
+    static void pre_validate_part_hdi_trunc_enabled( [[maybe_unused]] real part_hdi_trunc_enabled );
+    static void pre_validate_N_part( [[maybe_unused]] i32 N_part );
+    static void pre_validate_drag_type( [[maybe_unused]] DragType drag_type );
+    static void pre_validate_a( [[maybe_unused]] real a );
 
 private:
     nlohmann::json * m_data_p = nullptr;

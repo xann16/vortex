@@ -175,6 +175,148 @@ std::ostream& Parameters::stringify( std::ostream& os, int indent_size, int inde
     return os;
 }
 
+void Parameters::validate()
+{
+    if ( has_N_subdomain_set() )
+    {
+        auto N_subdomain_value = N_subdomain();
+        auto value = N_subdomain_value;
+        if ( value > N() )
+        {
+            throw std::runtime_error{ "Validation failed for property 'N_subdomain': Value is not within required range." };
+        }
+    }
+    
+}
+
+void Parameters::pre_validate_all()
+{
+    if ( has_N_set() )
+    {
+        pre_validate_N( N() );
+    }
+    if ( has_N_subdomain_set() )
+    {
+        pre_validate_N_subdomain( N_subdomain() );
+    }
+    if ( has_Nt_max_set() )
+    {
+        pre_validate_Nt_max( Nt_max() );
+    }
+    if ( has_dt_set() )
+    {
+        pre_validate_dt( dt() );
+    }
+    if ( has_rnu_set() )
+    {
+        pre_validate_rnu( rnu() );
+    }
+    if ( has_t_init_set() )
+    {
+        pre_validate_t_init( t_init() );
+    }
+    if ( has_is_flow_generated_set() )
+    {
+        pre_validate_is_flow_generated( is_flow_generated() );
+    }
+    if ( has_deterministic_seed_set() )
+    {
+        pre_validate_deterministic_seed( deterministic_seed() );
+    }
+    if ( has_input_velo_index_set() )
+    {
+        pre_validate_input_velo_index( input_velo_index() );
+    }
+    if ( has_forcing_type_set() )
+    {
+        pre_validate_forcing_type( forcing_type() );
+    }
+    if ( has_deterministic_forcing_k_1_set() )
+    {
+        pre_validate_deterministic_forcing_k_1( deterministic_forcing_k_1() );
+    }
+    if ( has_deterministic_forcing_k_2_set() )
+    {
+        pre_validate_deterministic_forcing_k_2( deterministic_forcing_k_2() );
+    }
+    if ( has_stochastic_seed_set() )
+    {
+        pre_validate_stochastic_seed( stochastic_seed() );
+    }
+    if ( has_stats_output_interval_set() )
+    {
+        pre_validate_stats_output_interval( stats_output_interval() );
+    }
+    if ( has_spectrum_output_interval_set() )
+    {
+        pre_validate_spectrum_output_interval( spectrum_output_interval() );
+    }
+    if ( has_is_stats_output_extended_set() )
+    {
+        pre_validate_is_stats_output_extended( is_stats_output_extended() );
+    }
+    if ( has_rho_part_set() )
+    {
+        pre_validate_rho_part( rho_part() );
+    }
+    if ( has_rho_fluid_set() )
+    {
+        pre_validate_rho_fluid( rho_fluid() );
+    }
+    if ( has_eta_k_init_set() )
+    {
+        pre_validate_eta_k_init( eta_k_init() );
+    }
+    if ( has_tau_k_init_set() )
+    {
+        pre_validate_tau_k_init( tau_k_init() );
+    }
+    if ( has_shell_thickness_set() )
+    {
+        pre_validate_shell_thickness( shell_thickness() );
+    }
+    if ( has_epsilon_env_set() )
+    {
+        pre_validate_epsilon_env( epsilon_env() );
+    }
+    if ( has_nu_fluid_set() )
+    {
+        pre_validate_nu_fluid( nu_fluid() );
+    }
+    if ( has_gravity_set() )
+    {
+        pre_validate_gravity( gravity() );
+    }
+    if ( has_is_part_generated_set() )
+    {
+        pre_validate_is_part_generated( is_part_generated() );
+    }
+    if ( has_is_part_overlapping_set() )
+    {
+        pre_validate_is_part_overlapping( is_part_overlapping() );
+    }
+    if ( has_is_part_hdi_enabled_set() )
+    {
+        pre_validate_is_part_hdi_enabled( is_part_hdi_enabled() );
+    }
+    if ( has_part_hdi_trunc_enabled_set() )
+    {
+        pre_validate_part_hdi_trunc_enabled( part_hdi_trunc_enabled() );
+    }
+    if ( has_N_part_set() )
+    {
+        pre_validate_N_part( N_part() );
+    }
+    if ( has_drag_type_set() )
+    {
+        pre_validate_drag_type( drag_type() );
+    }
+    if ( has_a_set() )
+    {
+        pre_validate_a( a() );
+    }
+}
+
 std::ostream& operator<<( std::ostream& os, Parameters const& s )
 {
     return s.stringify( os, 2, 0, os.flags() & std::ios_base::boolalpha );
@@ -216,6 +358,22 @@ void Parameters::set_N( i32 N )
     data()->operator[]( "N" ) = N;
 }
 
+void Parameters::pre_validate_N( [[maybe_unused]] i32 N )
+{
+    auto value = N;
+    if ( value < 8 )
+    {
+        throw std::runtime_error{ "Validation failed for property 'N': Value is not within required range." };
+    }
+    
+    auto v = N;
+    if ( v == 0 || ( v & ( v - 1 ) ) != 0 )
+    {
+        throw std::runtime_error{ "Validation failed for property 'N': Value is not a power of 2." };
+    }
+    
+}
+
 // "N_subdomain" property
 
 [[nodiscard]] i32 Parameters::N_subdomain() const
@@ -243,6 +401,22 @@ void Parameters::set_N_subdomain( i32 N_subdomain )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"N_subdomain\". Object is empty." };
     data()->operator[]( "N_subdomain" ) = N_subdomain;
+}
+
+void Parameters::pre_validate_N_subdomain( [[maybe_unused]] i32 N_subdomain )
+{
+    auto value = N_subdomain;
+    if ( value < 1 )
+    {
+        throw std::runtime_error{ "Validation failed for property 'N_subdomain': Value is not within required range." };
+    }
+    
+    auto v = N_subdomain;
+    if ( v == 0 || ( v & ( v - 1 ) ) != 0 )
+    {
+        throw std::runtime_error{ "Validation failed for property 'N_subdomain': Value is not a power of 2." };
+    }
+    
 }
 
 // "Nt_max" property
@@ -274,6 +448,16 @@ void Parameters::set_Nt_max( i32 Nt_max )
     data()->operator[]( "Nt_max" ) = Nt_max;
 }
 
+void Parameters::pre_validate_Nt_max( [[maybe_unused]] i32 Nt_max )
+{
+    auto value = Nt_max;
+    if ( value < 1 )
+    {
+        throw std::runtime_error{ "Validation failed for property 'Nt_max': Value is not within required range." };
+    }
+    
+}
+
 // "dt" property
 
 [[nodiscard]] real Parameters::dt() const
@@ -301,6 +485,16 @@ void Parameters::set_dt( real dt )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"dt\". Object is empty." };
     data()->operator[]( "dt" ) = dt;
+}
+
+void Parameters::pre_validate_dt( [[maybe_unused]] real dt )
+{
+    auto value = dt;
+    if ( value < 0.0 )
+    {
+        throw std::runtime_error{ "Validation failed for property 'dt': Value is not within required range." };
+    }
+    
 }
 
 // "rnu" property
@@ -332,6 +526,16 @@ void Parameters::set_rnu( real rnu )
     data()->operator[]( "rnu" ) = rnu;
 }
 
+void Parameters::pre_validate_rnu( [[maybe_unused]] real rnu )
+{
+    auto value = rnu;
+    if ( value < 0.0 )
+    {
+        throw std::runtime_error{ "Validation failed for property 'rnu': Value is not within required range." };
+    }
+    
+}
+
 // "t_init" property
 
 [[nodiscard]] real Parameters::t_init() const
@@ -360,6 +564,9 @@ void Parameters::set_t_init( real t_init )
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"t_init\". Object is empty." };
     data()->operator[]( "t_init" ) = t_init;
 }
+
+void Parameters::pre_validate_t_init( [[maybe_unused]] real t_init )
+{}
 
 // "is_flow_generated" property
 
@@ -390,6 +597,9 @@ void Parameters::set_is_flow_generated( bool is_flow_generated )
     data()->operator[]( "is_flow_generated" ) = is_flow_generated;
 }
 
+void Parameters::pre_validate_is_flow_generated( [[maybe_unused]] bool is_flow_generated )
+{}
+
 // "deterministic_seed" property
 
 [[nodiscard]] u64 Parameters::deterministic_seed() const
@@ -419,6 +629,9 @@ void Parameters::set_deterministic_seed( u64 deterministic_seed )
     data()->operator[]( "deterministic_seed" ) = deterministic_seed;
 }
 
+void Parameters::pre_validate_deterministic_seed( [[maybe_unused]] u64 deterministic_seed )
+{}
+
 // "input_velo_index" property
 
 [[nodiscard]] i32 Parameters::input_velo_index() const
@@ -446,6 +659,16 @@ void Parameters::set_input_velo_index( i32 input_velo_index )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"input_velo_index\". Object is empty." };
     data()->operator[]( "input_velo_index" ) = input_velo_index;
+}
+
+void Parameters::pre_validate_input_velo_index( [[maybe_unused]] i32 input_velo_index )
+{
+    auto value = input_velo_index;
+    if ( value < 1 )
+    {
+        throw std::runtime_error{ "Validation failed for property 'input_velo_index': Value is not within required range." };
+    }
+    
 }
 
 // "forcing_type" property
@@ -477,6 +700,9 @@ void Parameters::set_forcing_type( ForcingType forcing_type )
     data()->operator[]( "forcing_type" ) = forcing_type;
 }
 
+void Parameters::pre_validate_forcing_type( [[maybe_unused]] ForcingType forcing_type )
+{}
+
 // "deterministic_forcing_k_1" property
 
 [[nodiscard]] real Parameters::deterministic_forcing_k_1() const
@@ -504,6 +730,16 @@ void Parameters::set_deterministic_forcing_k_1( real deterministic_forcing_k_1 )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"deterministic_forcing_k_1\". Object is empty." };
     data()->operator[]( "deterministic_forcing_k_1" ) = deterministic_forcing_k_1;
+}
+
+void Parameters::pre_validate_deterministic_forcing_k_1( [[maybe_unused]] real deterministic_forcing_k_1 )
+{
+    auto value = deterministic_forcing_k_1;
+    if ( value < 0.0 )
+    {
+        throw std::runtime_error{ "Validation failed for property 'deterministic_forcing_k_1': Value is not within required range." };
+    }
+    
 }
 
 // "deterministic_forcing_k_2" property
@@ -535,6 +771,16 @@ void Parameters::set_deterministic_forcing_k_2( real deterministic_forcing_k_2 )
     data()->operator[]( "deterministic_forcing_k_2" ) = deterministic_forcing_k_2;
 }
 
+void Parameters::pre_validate_deterministic_forcing_k_2( [[maybe_unused]] real deterministic_forcing_k_2 )
+{
+    auto value = deterministic_forcing_k_2;
+    if ( value < 0.0 )
+    {
+        throw std::runtime_error{ "Validation failed for property 'deterministic_forcing_k_2': Value is not within required range." };
+    }
+    
+}
+
 // "stochastic_seed" property
 
 [[nodiscard]] u64 Parameters::stochastic_seed() const
@@ -564,6 +810,9 @@ void Parameters::set_stochastic_seed( u64 stochastic_seed )
     data()->operator[]( "stochastic_seed" ) = stochastic_seed;
 }
 
+void Parameters::pre_validate_stochastic_seed( [[maybe_unused]] u64 stochastic_seed )
+{}
+
 // "stats_output_interval" property
 
 [[nodiscard]] i32 Parameters::stats_output_interval() const
@@ -591,6 +840,11 @@ void Parameters::set_stats_output_interval( i32 stats_output_interval )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"stats_output_interval\". Object is empty." };
     data()->operator[]( "stats_output_interval" ) = stats_output_interval;
+}
+
+void Parameters::pre_validate_stats_output_interval( [[maybe_unused]] i32 stats_output_interval )
+{
+    
 }
 
 // "spectrum_output_interval" property
@@ -622,6 +876,11 @@ void Parameters::set_spectrum_output_interval( i32 spectrum_output_interval )
     data()->operator[]( "spectrum_output_interval" ) = spectrum_output_interval;
 }
 
+void Parameters::pre_validate_spectrum_output_interval( [[maybe_unused]] i32 spectrum_output_interval )
+{
+    
+}
+
 // "is_stats_output_extended" property
 
 [[nodiscard]] bool Parameters::is_stats_output_extended() const
@@ -651,6 +910,9 @@ void Parameters::set_is_stats_output_extended( bool is_stats_output_extended )
     data()->operator[]( "is_stats_output_extended" ) = is_stats_output_extended;
 }
 
+void Parameters::pre_validate_is_stats_output_extended( [[maybe_unused]] bool is_stats_output_extended )
+{}
+
 // "rho_part" property
 
 [[nodiscard]] real Parameters::rho_part() const
@@ -678,6 +940,16 @@ void Parameters::set_rho_part( real rho_part )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"rho_part\". Object is empty." };
     data()->operator[]( "rho_part" ) = rho_part;
+}
+
+void Parameters::pre_validate_rho_part( [[maybe_unused]] real rho_part )
+{
+    auto value = rho_part;
+    if ( value < 0.0 )
+    {
+        throw std::runtime_error{ "Validation failed for property 'rho_part': Value is not within required range." };
+    }
+    
 }
 
 // "rho_fluid" property
@@ -709,6 +981,16 @@ void Parameters::set_rho_fluid( real rho_fluid )
     data()->operator[]( "rho_fluid" ) = rho_fluid;
 }
 
+void Parameters::pre_validate_rho_fluid( [[maybe_unused]] real rho_fluid )
+{
+    auto value = rho_fluid;
+    if ( value < 0.0 )
+    {
+        throw std::runtime_error{ "Validation failed for property 'rho_fluid': Value is not within required range." };
+    }
+    
+}
+
 // "eta_k_init" property
 
 [[nodiscard]] real Parameters::eta_k_init() const
@@ -736,6 +1018,16 @@ void Parameters::set_eta_k_init( real eta_k_init )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"eta_k_init\". Object is empty." };
     data()->operator[]( "eta_k_init" ) = eta_k_init;
+}
+
+void Parameters::pre_validate_eta_k_init( [[maybe_unused]] real eta_k_init )
+{
+    auto value = eta_k_init;
+    if ( value < 0.0 )
+    {
+        throw std::runtime_error{ "Validation failed for property 'eta_k_init': Value is not within required range." };
+    }
+    
 }
 
 // "tau_k_init" property
@@ -767,6 +1059,16 @@ void Parameters::set_tau_k_init( real tau_k_init )
     data()->operator[]( "tau_k_init" ) = tau_k_init;
 }
 
+void Parameters::pre_validate_tau_k_init( [[maybe_unused]] real tau_k_init )
+{
+    auto value = tau_k_init;
+    if ( value < 0.0 )
+    {
+        throw std::runtime_error{ "Validation failed for property 'tau_k_init': Value is not within required range." };
+    }
+    
+}
+
 // "shell_thickness" property
 
 [[nodiscard]] real Parameters::shell_thickness() const
@@ -794,6 +1096,16 @@ void Parameters::set_shell_thickness( real shell_thickness )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"shell_thickness\". Object is empty." };
     data()->operator[]( "shell_thickness" ) = shell_thickness;
+}
+
+void Parameters::pre_validate_shell_thickness( [[maybe_unused]] real shell_thickness )
+{
+    auto value = shell_thickness;
+    if ( value < 0.0 )
+    {
+        throw std::runtime_error{ "Validation failed for property 'shell_thickness': Value is not within required range." };
+    }
+    
 }
 
 // "epsilon_env" property
@@ -825,6 +1137,16 @@ void Parameters::set_epsilon_env( real epsilon_env )
     data()->operator[]( "epsilon_env" ) = epsilon_env;
 }
 
+void Parameters::pre_validate_epsilon_env( [[maybe_unused]] real epsilon_env )
+{
+    auto value = epsilon_env;
+    if ( value < 0.0 )
+    {
+        throw std::runtime_error{ "Validation failed for property 'epsilon_env': Value is not within required range." };
+    }
+    
+}
+
 // "nu_fluid" property
 
 [[nodiscard]] real Parameters::nu_fluid() const
@@ -852,6 +1174,16 @@ void Parameters::set_nu_fluid( real nu_fluid )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"nu_fluid\". Object is empty." };
     data()->operator[]( "nu_fluid" ) = nu_fluid;
+}
+
+void Parameters::pre_validate_nu_fluid( [[maybe_unused]] real nu_fluid )
+{
+    auto value = nu_fluid;
+    if ( value < 0.0 )
+    {
+        throw std::runtime_error{ "Validation failed for property 'nu_fluid': Value is not within required range." };
+    }
+    
 }
 
 // "gravity" property
@@ -883,6 +1215,9 @@ void Parameters::set_gravity( real gravity )
     data()->operator[]( "gravity" ) = gravity;
 }
 
+void Parameters::pre_validate_gravity( [[maybe_unused]] real gravity )
+{}
+
 // "is_part_generated" property
 
 [[nodiscard]] bool Parameters::is_part_generated() const
@@ -911,6 +1246,9 @@ void Parameters::set_is_part_generated( bool is_part_generated )
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"is_part_generated\". Object is empty." };
     data()->operator[]( "is_part_generated" ) = is_part_generated;
 }
+
+void Parameters::pre_validate_is_part_generated( [[maybe_unused]] bool is_part_generated )
+{}
 
 // "is_part_overlapping" property
 
@@ -941,6 +1279,9 @@ void Parameters::set_is_part_overlapping( bool is_part_overlapping )
     data()->operator[]( "is_part_overlapping" ) = is_part_overlapping;
 }
 
+void Parameters::pre_validate_is_part_overlapping( [[maybe_unused]] bool is_part_overlapping )
+{}
+
 // "is_part_hdi_enabled" property
 
 [[nodiscard]] bool Parameters::is_part_hdi_enabled() const
@@ -970,6 +1311,9 @@ void Parameters::set_is_part_hdi_enabled( bool is_part_hdi_enabled )
     data()->operator[]( "is_part_hdi_enabled" ) = is_part_hdi_enabled;
 }
 
+void Parameters::pre_validate_is_part_hdi_enabled( [[maybe_unused]] bool is_part_hdi_enabled )
+{}
+
 // "part_hdi_trunc_enabled" property
 
 [[nodiscard]] real Parameters::part_hdi_trunc_enabled() const
@@ -997,6 +1341,16 @@ void Parameters::set_part_hdi_trunc_enabled( real part_hdi_trunc_enabled )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"part_hdi_trunc_enabled\". Object is empty." };
     data()->operator[]( "part_hdi_trunc_enabled" ) = part_hdi_trunc_enabled;
+}
+
+void Parameters::pre_validate_part_hdi_trunc_enabled( [[maybe_unused]] real part_hdi_trunc_enabled )
+{
+    auto value = part_hdi_trunc_enabled;
+    if ( value < 0.0 )
+    {
+        throw std::runtime_error{ "Validation failed for property 'part_hdi_trunc_enabled': Value is not within required range." };
+    }
+    
 }
 
 // "N_part" property
@@ -1028,6 +1382,11 @@ void Parameters::set_N_part( i32 N_part )
     data()->operator[]( "N_part" ) = N_part;
 }
 
+void Parameters::pre_validate_N_part( [[maybe_unused]] i32 N_part )
+{
+    
+}
+
 // "drag_type" property
 
 [[nodiscard]] DragType Parameters::drag_type() const
@@ -1057,6 +1416,9 @@ void Parameters::set_drag_type( DragType drag_type )
     data()->operator[]( "drag_type" ) = drag_type;
 }
 
+void Parameters::pre_validate_drag_type( [[maybe_unused]] DragType drag_type )
+{}
+
 // "a" property
 
 [[nodiscard]] real Parameters::a() const
@@ -1084,6 +1446,16 @@ void Parameters::set_a( real a )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"a\". Object is empty." };
     data()->operator[]( "a" ) = a;
+}
+
+void Parameters::pre_validate_a( [[maybe_unused]] real a )
+{
+    auto value = a;
+    if ( value < 0.0 )
+    {
+        throw std::runtime_error{ "Validation failed for property 'a': Value is not within required range." };
+    }
+    
 }
 
 

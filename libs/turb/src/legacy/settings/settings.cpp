@@ -64,6 +64,41 @@ std::ostream& Settings::stringify( std::ostream& os, int indent_size, int indent
     return os;
 }
 
+void Settings::validate()
+{
+    if ( has_metadata_set() )
+    {
+        metadata().validate();
+    }
+    
+    if ( has_parameters_set() )
+    {
+        parameters().validate();
+    }
+    
+    if ( has_execution_settings_set() )
+    {
+        execution_settings().validate();
+    }
+    
+}
+
+void Settings::pre_validate_all()
+{
+    if ( has_metadata_set() )
+    {
+        pre_validate_metadata( metadata() );
+    }
+    if ( has_parameters_set() )
+    {
+        pre_validate_parameters( parameters() );
+    }
+    if ( has_execution_settings_set() )
+    {
+        pre_validate_execution_settings( execution_settings() );
+    }
+}
+
 std::ostream& operator<<( std::ostream& os, Settings const& s )
 {
     return s.stringify( os, 2, 0, os.flags() & std::ios_base::boolalpha );
@@ -112,6 +147,9 @@ void Settings::set_metadata( turb::legacy::settings::Metadata metadata )
     }
 }
 
+void Settings::pre_validate_metadata( [[maybe_unused]] turb::legacy::settings::Metadata metadata )
+{}
+
 // "parameters" property
 
 [[nodiscard]] turb::legacy::settings::Parameters Settings::parameters() const
@@ -148,6 +186,9 @@ void Settings::set_parameters( turb::legacy::settings::Parameters parameters )
     }
 }
 
+void Settings::pre_validate_parameters( [[maybe_unused]] turb::legacy::settings::Parameters parameters )
+{}
+
 // "execution_settings" property
 
 [[nodiscard]] turb::legacy::settings::ExecutionSettings Settings::execution_settings() const
@@ -183,6 +224,9 @@ void Settings::set_execution_settings( turb::legacy::settings::ExecutionSettings
         data()->operator[]( "execution_settings" ) = *( execution_settings.data() );
     }
 }
+
+void Settings::pre_validate_execution_settings( [[maybe_unused]] turb::legacy::settings::ExecutionSettings execution_settings )
+{}
 
 
 } // end of namespace vortex::turb::legacy::settings

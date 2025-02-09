@@ -49,9 +49,8 @@ def try_parse_expr(input: Any) -> Any:
         return input
 
     trimmed_input : str = input.strip()
-    init : str = trimmed_input[0:1]
+    init : str = trimmed_input[0:2]
     result : dict[str, Any] | None = None
-
     if init == '{{':
         # TODO : Full expressions - not implemented yet
         print("WARNING: Full expressions, i.e. {{ ... }} notation, not implemented yet.")

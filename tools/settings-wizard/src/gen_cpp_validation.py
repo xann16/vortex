@@ -21,14 +21,14 @@ def _get_validated_value_name(base_name: str, v: dict[str, Any], force_getter: b
         # TODO: currently only properties are supported as mappings and are not validated (+ fallback values)
         if not isinstance(mapping, dict) or 'expr' not in mapping or mapping['expr'] != 'property':
             raise Exception("Vaildator: 'mapping' parameter must be a property expression.")
-        result += '.' + '.'.join([token + '()' for token in mapping['target']])
+        result += '.' + '.'.join([token + '()' for token in mapping['target'].split('.')])
 
     return result
 
-def _generate_validator_is_set(name: str, v: dict[str, Any], p: dict[str, Any], data: dict[str, Any], ctx: dict[str, Any], array_ctx: bool = False, force_getter: bool = False) -> Tuple[bool, list[(int, str)]]
+def _generate_validator_is_set(name: str, v: dict[str, Any], p: dict[str, Any], data: dict[str, Any], ctx: dict[str, Any], array_ctx: bool = False, force_getter: bool = False) -> Tuple[bool, list[(int, str)]]:
     body: list[(int, str)] = []
 
-    body.append((0, f"if ( !is_{name}_set() )"))
+    body.append((0, f"if ( !has_{name}_set() )"))
     body.append((0, "{"))
     body.append((1, _get_exception_text(name, 'Required property is not specified')))
     body.append((0, "}"))
@@ -51,7 +51,7 @@ def _generate_validator_nonempty(name: str, v: dict[str, Any], p: dict[str, Any]
         body.append((0, f'if ( std::any_of( std::begin( {name} ), std::end( {name} ), []( auto {sg_name} ){{ return {_get_validated_value_name(sg_name, v)}.empty() }} ) )'))
         body.append((0, '{'))
         body.append((1, _get_exception_text(name, 'Array contains empty elements')))
-        body.append((0, '}'))
+        body.append((0, '};'))
     else:
         body.append((0, f'if ( {_get_validated_value_name(name, v)}.empty() )'))
         body.append((0, '{'))
@@ -70,7 +70,7 @@ def _generate_validator_range(name: str, v: dict[str, Any], p: dict[str, Any], d
     max_str : str | None = None if 'args' not in v or 'max' not in v['args'] else v['args']['max']
     is_inclusive : bool = True if 'args' not in v or 'inclusive' not in v['args'] else v['args']['inclusive']
 
-    min_val = int | float | str | None = None
+    min_val : int | float | str | None = None
     if min_str is not None:
         min_tmp : str | dict[str, Any] = try_parse_expr(min_str)
         # currently only parameter expressions are supported
@@ -81,7 +81,7 @@ def _generate_validator_range(name: str, v: dict[str, Any], p: dict[str, Any], d
         elif isinstance(min_tmp, str):
             min_val = float(min_str) if property_type in ['real', 'f32', 'f64'] else int(min_str)
 
-    max_val = int | float | str | None = None
+    max_val : int | float | str | None = None
     if max_str is not None:
         max_tmp : str | dict[str, Any] = try_parse_expr(max_str)
         # currently only parameter expressions are supported
@@ -116,21 +116,22 @@ def _generate_validator_range(name: str, v: dict[str, Any], p: dict[str, Any], d
     is_member : bool = force_getter
 
     if force_getter:
-        body.append((0, f'auto {name} = {name}();'))
+        body.append((0, f'auto {name}_value = {name}();'))
+    var_name: str = name + "_value" if force_getter else name
     if array_ctx:
         sg_name : str = _get_singular_name(name, p)
         body.append((0, f'auto check = []( auto {sg_name} )'))
         body.append((0, '{'))
-        body.append((1, f'auto value = {_get_validated_value_name(sg_name, v)};'))
+        body.append((1, f'auto value = {_get_validated_value_name(var_name, v)};'))
         body.append((1, f'return {condition.strip()};'))
-        body.append((0, '}'))
-        body.append((0, f'if ( std::any_of( std::begin( {name} ), std::end( {name} ), check )'))
+        body.append((0, '};'))
+        body.append((0, f'if ( std::any_of( std::begin( {var_name} ), std::end( {var_name} ), check )'))
         body.append((0, '{'))
         body.append((1, _get_exception_text(name, f'Array contains elements that fall out of required range')))
         body.append((0, '}'))
     else:
-        body.append((0, f'auto val = {_get_validated_value_name(name, v)};'))
-        body.append((0, f'if ( {condition} )'))
+        body.append((0, f'auto value = {_get_validated_value_name(var_name, v)};'))
+        body.append((0, f'if ({condition})'))
         body.append((0, '{'))
         body.append((1, _get_exception_text(name, f'Value is not within required range')))
         body.append((0, '}'))
@@ -142,38 +143,38 @@ def _generate_validator_positive(name: str, v: dict[str, Any], p: dict[str, Any]
     new_v = deepcopy(v)
     new_v['validator'] = 'range'
     if p['type'] in ['real', 'f32', 'f64']:
-        new_v['min'] = '0.0'
-        new_v['inclusive'] = 'false'
+        new_v['args']['min'] = '0.0'
+        new_v['args']['inclusive'] = 'false'
     else:
-        new_v['min'] = '1'
+        new_v['args']['min'] = '1'
     return _generate_validator_range(name, new_v, p, data, ctx, array_ctx, force_getter)
 
 def _generate_validator_nonneg(name: str, v: dict[str, Any], p: dict[str, Any], data: dict[str, Any], ctx: dict[str, Any], array_ctx: bool = False, force_getter: bool = False) -> Tuple[bool, list[(int, str)]]:
     new_v = deepcopy(v)
     new_v['validator'] = 'range'
     if p['type'] in ['real', 'f32', 'f64']:
-        new_v['min'] = '0.0'
+        new_v['args']['min'] = '0.0'
     else:
-        new_v['min'] = '0'
+        new_v['args']['min'] = '0'
     return _generate_validator_range(name, new_v, p, data, ctx, array_ctx, force_getter)
 
 def _generate_validator_negative(name: str, v: dict[str, Any], p: dict[str, Any], data: dict[str, Any], ctx: dict[str, Any], array_ctx: bool = False, force_getter: bool = False) -> Tuple[bool, list[(int, str)]]:
     new_v = deepcopy(v)
     new_v['validator'] = 'range'
     if p['type'] in ['real', 'f32', 'f64']:
-        new_v['max'] = '0.0'
-        new_v['inclusive'] = 'false'
+        new_v['args']['max'] = '0.0'
+        new_v['args']['inclusive'] = 'false'
     else:
-        new_v['max'] = '-1'
+        new_v['args']['max'] = '-1'
     return _generate_validator_range(name, new_v, p, data, ctx, array_ctx, force_getter)
 
 def _generate_validator_nonpos(name: str, v: dict[str, Any], p: dict[str, Any], data: dict[str, Any], ctx: dict[str, Any], array_ctx: bool = False, force_getter: bool = False) -> Tuple[bool, list[(int, str)]]:
     new_v = deepcopy(v)
     new_v['validator'] = 'range'
     if p['type'] in ['real', 'f32', 'f64']:
-        new_v['max'] = '0.0'
+        new_v['args']['max'] = '0.0'
     else:
-        new_v['max'] = '0'
+        new_v['args']['max'] = '0'
     return _generate_validator_range(name, new_v, p, data, ctx, array_ctx, force_getter)
 
 def _generate_validator_unique(name: str, v: dict[str, Any], p: dict[str, Any], data: dict[str, Any], ctx: dict[str, Any], array_ctx: bool = False, force_getter: bool = False) -> Tuple[bool, list[(int, str)]]:
@@ -181,8 +182,6 @@ def _generate_validator_unique(name: str, v: dict[str, Any], p: dict[str, Any], 
 
     if 'is_array' not in p or not p['is_array']:
         raise Exception(f"Property '{name}': 'unique' validator may only be used with array types.")
-    if 'args' in
-
 
     body: list[(int, str)] = []
     is_member : bool = force_getter
@@ -191,20 +190,30 @@ def _generate_validator_unique(name: str, v: dict[str, Any], p: dict[str, Any], 
         body.append((0, f'auto {name} = {name}();'))
     if array_ctx:
         sg_name : str = _get_singular_name(name, p)
-        body.append((0, f'auto predicate = []( auto const& lhs, auto const& rhs )'))
+        body.append((0, f'auto arr = {name};'))
+        body.append((0, f'auto eq_predicate = []( auto const& lhs, auto const& rhs )'))
         body.append((0, '{'))
         body.append((1, f'return {_get_validated_value_name("lhs", v)} == {_get_validated_value_name("rhs", v)};'))
-        body.append((0, '}'))
-        body.append((0, f'std::sort( std::begin( {name} ), std::end( {name} ) );'))
-        body.append((0, f'if ( std::adjacent_find( std::begin( {name} ), std::end( {name} ), predicate ) != std::end( {name} ) )'))
+        body.append((0, '};'))
+        body.append((0, f'auto cmp_predicate = []( auto const& lhs, auto const& rhs )'))
+        body.append((0, '{'))
+        body.append((1, f'return {_get_validated_value_name("lhs", v)} < {_get_validated_value_name("rhs", v)};'))
+        body.append((0, '};'))
+        body.append((0, f'std::sort( std::begin( arr ), std::end( arr ), cmp_predicate );'))
+        body.append((0, f'if ( std::adjacent_find( std::begin( arr ), std::end( arr ), eq_predicate ) != std::end( arr ) )'))
         body.append((0, '{'))
         body.append((1, _get_exception_text(name, 'Array contains duplicates')))
         body.append((0, '}'))
     else:
         # NOTE: currently only works for arrays with names ending in 's'
         is_member = True
-        body.append((0, f'auto arr = {name}s();'))
-        body.append((0, f'if ( arr.find( {name} ) != std::end( arr ) )'))
+        sg_name : str = _get_singular_name(name, p)
+        body.append((0, f'auto arr = {name}();'))
+        body.append((0, f'auto predicate = [ &{sg_name} ]( auto const& value )'))
+        body.append((0, '{'))
+        body.append((1, f'return {_get_validated_value_name(sg_name, v)} == {_get_validated_value_name("value", v)};'))
+        body.append((0, '};'))
+        body.append((0, f'if ( std::find_if( std::begin( arr ), std::end( arr ), predicate ) != std::end( arr ) )'))
         body.append((0, '{'))
         body.append((1, _get_exception_text(name, 'Value already exists in array')))
         body.append((0, '}'))
@@ -228,7 +237,7 @@ def _generate_validator_is_pow2(name: str, v: dict[str, Any], p: dict[str, Any],
         body.append((0, '{'))
         body.append((1, f'auto v = {_get_validated_value_name(sg_name, v)};'))
         body.append((1, f'return v == 0 || ( v & ( v - 1 ) ) != 0;'))
-        body.append((0, '}'))
+        body.append((0, '};'))
         body.append((0, f'if ( std::any_of( std::begin( {name} ), std::end( {name} ), check )'))
         body.append((0, '{'))
         body.append((1, _get_exception_text(name, 'Array contains elements that are not powers of 2')))
@@ -262,7 +271,7 @@ def _try_parse_validator(input: Any):
     if not isinstance(input, str):
         raise Exception( "Invalid type for validator item: must be either explicit object or string representation." )
 
-    result : dict[str, Any] = { "params": {} }
+    result : dict[str, Any] = { "args": {} }
     str_repr : str = input.strip()
 
     result['is_post'] = str_repr[0] == '*'
@@ -281,41 +290,60 @@ def _try_parse_validator(input: Any):
             arg_tokens : list[str] = arg_str.strip().split('=', 1)
             if len(arg_tokens) != 2:
                 raise Exception( f"Invalid parameter format in {validator_type}. Must be 'key=value'." )
-            result['args'][arg_tokens[0].strip] = try_parse_expr(arg_tokens[1].strip())
+            result['args'][arg_tokens[0].strip()] = try_parse_expr(arg_tokens[1].strip())
     return result
 
 def _preprocess_property_validator_list(p: dict[str, Any]) -> list[dict[str,Any]]:
-    result = [_try_parse_validator(validator) for validator in p['requires']] if 'requires' in p and p['requires'] else []
-    if 'is_required' in p and p['is_required']:
-        result.append( { "validator": "is_set", "is_post": True } )
-    return result
+    return [_try_parse_validator(validator) for validator in p['requires']] if 'requires' in p and p['requires'] else []
 
 def generate_post_validate_all_body(data: dict[str,Any], ctx: dict[str,Any]) -> list[(int, str)]:
-    body : list[(int, str)] = body
+    body : list[(int, str)] = []
 
-    for name, prop in data:
+    for name, prop in data.items():
         if name.startswith('__'):
             continue
+        if 'is_required' in prop and prop['is_required']:
+            body.append((0, f'if ( !has_{name}_set() )'))
+            body.append((0, '{'))
+            body.append((1, f'throw std::runtime_error{{ "Validation failed for property \'{name}\': Required property is not specified." }};'))
+            body.append((0, '}'))
+            body.append((0, ''))
+        body_part : list[(int, str)] = []
         for v in _preprocess_property_validator_list(prop):
             if 'is_post' not in v or not v['is_post']:
                 continue
-            validator_type : str = v['type']
+            validator_type : str = v['validator']
             if validator_type not in VALIDATORS:
                 raise Exception( f"Unknown validator type in property '{name}': {validator_type}." )
-        body.extend(VALIDATORS[validator_type](name, v, prop, data, ctx, array_ctx=('is_array' in prop and prop['is_array']), force_getter=True)[1])
-        body.append((0, ''))
+            body_part.extend(VALIDATORS[validator_type](name, v, prop, data, ctx, array_ctx=('is_array' in prop and prop['is_array']), force_getter=True)[1])
+
+        if (any(body_part) or prop['type'] == 'module'):
+            body.append((0, f'if ( has_{name}_set() )'))
+            body.append((0, '{'))
+            if prop['type'] == 'module':
+                if 'is_array' in prop and prop['is_array']:
+                    sg_name : str = _get_singular_name(name, prop)
+                    body.append((1, f'for ( auto {sg_name} : {name}() )'))
+                    body.append((1, '{'))
+                    body.append((2, f'{sg_name}.validate();'))
+                    body.append((1, '}'))
+                else:
+                    body.append((1, f'{name}().validate();'))
+            body.extend([(i + 1, line) for i, line in body_part])
+            body.append((0, '}'))
+            body.append((0, ''))
 
     return body
 
 
 def generate_pre_validate_property_body(name: str, p: dict[str,Any], data: dict[str,Any], ctx: dict[str,Any], array_ctx: bool = False) -> Tuple[bool, list[(int, str)]]:
     is_member : bool = False
-    body : list[(int, str)] = body
+    body : list[(int, str)] = []
 
     for v in _preprocess_property_validator_list(p):
         if 'is_post' in v and v['is_post']:
             continue
-        validator_type : str = v['type']
+        validator_type : str = v['validator']
         if validator_type not in VALIDATORS:
             raise Exception( f"Unknown vaidator type in propert '{name}': {validator_type}." )
         requires_member_data, part_body = VALIDATORS[validator_type](name, v, p, data, ctx, array_ctx)

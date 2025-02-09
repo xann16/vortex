@@ -56,6 +56,8 @@ public:
     [[nodiscard]] std::string to_string() const;
     std::ostream& stringify( std::ostream& os, int indent_size, int indent_level, bool display_all ) const;
 
+    void validate();
+
     friend std::ostream& operator<<( std::ostream& os, Settings const& s );
 
     friend bool operator==( Settings const& lhs, Settings const& rhs );
@@ -94,6 +96,12 @@ public:
     void reset_execution_settings();
     void set_execution_settings( turb::legacy::settings::ExecutionSettings execution_settings );
 
+
+private:
+    void pre_validate_all();
+    static void pre_validate_metadata( [[maybe_unused]] turb::legacy::settings::Metadata metadata );
+    static void pre_validate_parameters( [[maybe_unused]] turb::legacy::settings::Parameters parameters );
+    static void pre_validate_execution_settings( [[maybe_unused]] turb::legacy::settings::ExecutionSettings execution_settings );
 
 private:
     nlohmann::json * m_data_p = nullptr;

@@ -121,6 +121,81 @@ std::ostream& Metadata::stringify( std::ostream& os, int indent_size, int indent
     return os;
 }
 
+void Metadata::validate()
+{}
+
+void Metadata::pre_validate_all()
+{
+    if ( has_sim_method_set() )
+    {
+        pre_validate_sim_method( sim_method() );
+    }
+    if ( has_particle_mode_set() )
+    {
+        pre_validate_particle_mode( particle_mode() );
+    }
+    if ( has_gravity_type_set() )
+    {
+        pre_validate_gravity_type( gravity_type() );
+    }
+    if ( has_particle_kernel_type_set() )
+    {
+        pre_validate_particle_kernel_type( particle_kernel_type() );
+    }
+    if ( has_k_filter_set() )
+    {
+        pre_validate_k_filter( k_filter() );
+    }
+    if ( has_C_K_set() )
+    {
+        pre_validate_C_K( C_K() );
+    }
+    if ( has_target_Phi_set() )
+    {
+        pre_validate_target_Phi( target_Phi() );
+    }
+    if ( has_superpart_factor_set() )
+    {
+        pre_validate_superpart_factor( superpart_factor() );
+    }
+    if ( has_src_flow_path_set() )
+    {
+        pre_validate_src_flow_path( src_flow_path() );
+    }
+    if ( has_src_part_path_set() )
+    {
+        pre_validate_src_part_path( src_part_path() );
+    }
+    if ( has_part_output_delay_set() )
+    {
+        pre_validate_part_output_delay( part_output_delay() );
+    }
+    if ( has_is_perf_full_profile_enabled_set() )
+    {
+        pre_validate_is_perf_full_profile_enabled( is_perf_full_profile_enabled() );
+    }
+    if ( has_is_perf_simple_enabled_set() )
+    {
+        pre_validate_is_perf_simple_enabled( is_perf_simple_enabled() );
+    }
+    if ( has_is_perf_part_dist_enabled_set() )
+    {
+        pre_validate_is_perf_part_dist_enabled( is_perf_part_dist_enabled() );
+    }
+    if ( has_perf_full_start_set() )
+    {
+        pre_validate_perf_full_start( perf_full_start() );
+    }
+    if ( has_perf_full_end_set() )
+    {
+        pre_validate_perf_full_end( perf_full_end() );
+    }
+    if ( has_part_perf_interval_set() )
+    {
+        pre_validate_part_perf_interval( part_perf_interval() );
+    }
+}
+
 std::ostream& operator<<( std::ostream& os, Metadata const& s )
 {
     return s.stringify( os, 2, 0, os.flags() & std::ios_base::boolalpha );
@@ -162,6 +237,9 @@ void Metadata::set_sim_method( SimMethod sim_method )
     data()->operator[]( "sim_method" ) = sim_method;
 }
 
+void Metadata::pre_validate_sim_method( [[maybe_unused]] SimMethod sim_method )
+{}
+
 // "particle_mode" property
 
 [[nodiscard]] ParticleMode Metadata::particle_mode() const
@@ -190,6 +268,9 @@ void Metadata::set_particle_mode( ParticleMode particle_mode )
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"particle_mode\". Object is empty." };
     data()->operator[]( "particle_mode" ) = particle_mode;
 }
+
+void Metadata::pre_validate_particle_mode( [[maybe_unused]] ParticleMode particle_mode )
+{}
 
 // "gravity_type" property
 
@@ -220,6 +301,9 @@ void Metadata::set_gravity_type( GravityMode gravity_type )
     data()->operator[]( "gravity_type" ) = gravity_type;
 }
 
+void Metadata::pre_validate_gravity_type( [[maybe_unused]] GravityMode gravity_type )
+{}
+
 // "particle_kernel_type" property
 
 [[nodiscard]] ParticleTwcKernelType Metadata::particle_kernel_type() const
@@ -249,6 +333,9 @@ void Metadata::set_particle_kernel_type( ParticleTwcKernelType particle_kernel_t
     data()->operator[]( "particle_kernel_type" ) = particle_kernel_type;
 }
 
+void Metadata::pre_validate_particle_kernel_type( [[maybe_unused]] ParticleTwcKernelType particle_kernel_type )
+{}
+
 // "k_filter" property
 
 [[nodiscard]] i32 Metadata::k_filter() const
@@ -276,6 +363,11 @@ void Metadata::set_k_filter( i32 k_filter )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"k_filter\". Object is empty." };
     data()->operator[]( "k_filter" ) = k_filter;
+}
+
+void Metadata::pre_validate_k_filter( [[maybe_unused]] i32 k_filter )
+{
+    
 }
 
 // "C_K" property
@@ -307,6 +399,16 @@ void Metadata::set_C_K( real C_K )
     data()->operator[]( "C_K" ) = C_K;
 }
 
+void Metadata::pre_validate_C_K( [[maybe_unused]] real C_K )
+{
+    auto value = C_K;
+    if ( value < 0.0 )
+    {
+        throw std::runtime_error{ "Validation failed for property 'C_K': Value is not within required range." };
+    }
+    
+}
+
 // "target_Phi" property
 
 [[nodiscard]] real Metadata::target_Phi() const
@@ -336,6 +438,16 @@ void Metadata::set_target_Phi( real target_Phi )
     data()->operator[]( "target_Phi" ) = target_Phi;
 }
 
+void Metadata::pre_validate_target_Phi( [[maybe_unused]] real target_Phi )
+{
+    auto value = target_Phi;
+    if ( value < 0.0 )
+    {
+        throw std::runtime_error{ "Validation failed for property 'target_Phi': Value is not within required range." };
+    }
+    
+}
+
 // "superpart_factor" property
 
 [[nodiscard]] real Metadata::superpart_factor() const
@@ -363,6 +475,16 @@ void Metadata::set_superpart_factor( real superpart_factor )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"superpart_factor\". Object is empty." };
     data()->operator[]( "superpart_factor" ) = superpart_factor;
+}
+
+void Metadata::pre_validate_superpart_factor( [[maybe_unused]] real superpart_factor )
+{
+    auto value = superpart_factor;
+    if ( value < 1.0 )
+    {
+        throw std::runtime_error{ "Validation failed for property 'superpart_factor': Value is not within required range." };
+    }
+    
 }
 
 // "src_flow_path" property
@@ -399,6 +521,15 @@ void Metadata::set_src_flow_path( std::string && src_flow_path )
     data()->operator[]( "src_flow_path" ) = src_flow_path;
 }
 
+void Metadata::pre_validate_src_flow_path( [[maybe_unused]] std::string_view src_flow_path )
+{
+    if ( src_flow_path.empty() )
+    {
+        throw std::runtime_error{ "Validation failed for property 'src_flow_path': Value is empty." };
+    }
+    
+}
+
 // "src_part_path" property
 
 [[nodiscard]] std::string_view Metadata::src_part_path() const
@@ -433,6 +564,15 @@ void Metadata::set_src_part_path( std::string && src_part_path )
     data()->operator[]( "src_part_path" ) = src_part_path;
 }
 
+void Metadata::pre_validate_src_part_path( [[maybe_unused]] std::string_view src_part_path )
+{
+    if ( src_part_path.empty() )
+    {
+        throw std::runtime_error{ "Validation failed for property 'src_part_path': Value is empty." };
+    }
+    
+}
+
 // "part_output_delay" property
 
 [[nodiscard]] i32 Metadata::part_output_delay() const
@@ -460,6 +600,11 @@ void Metadata::set_part_output_delay( i32 part_output_delay )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"part_output_delay\". Object is empty." };
     data()->operator[]( "part_output_delay" ) = part_output_delay;
+}
+
+void Metadata::pre_validate_part_output_delay( [[maybe_unused]] i32 part_output_delay )
+{
+    
 }
 
 // "is_perf_full_profile_enabled" property
@@ -491,6 +636,9 @@ void Metadata::set_is_perf_full_profile_enabled( bool is_perf_full_profile_enabl
     data()->operator[]( "is_perf_full_profile_enabled" ) = is_perf_full_profile_enabled;
 }
 
+void Metadata::pre_validate_is_perf_full_profile_enabled( [[maybe_unused]] bool is_perf_full_profile_enabled )
+{}
+
 // "is_perf_simple_enabled" property
 
 [[nodiscard]] bool Metadata::is_perf_simple_enabled() const
@@ -519,6 +667,9 @@ void Metadata::set_is_perf_simple_enabled( bool is_perf_simple_enabled )
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"is_perf_simple_enabled\". Object is empty." };
     data()->operator[]( "is_perf_simple_enabled" ) = is_perf_simple_enabled;
 }
+
+void Metadata::pre_validate_is_perf_simple_enabled( [[maybe_unused]] bool is_perf_simple_enabled )
+{}
 
 // "is_perf_part_dist_enabled" property
 
@@ -549,6 +700,9 @@ void Metadata::set_is_perf_part_dist_enabled( bool is_perf_part_dist_enabled )
     data()->operator[]( "is_perf_part_dist_enabled" ) = is_perf_part_dist_enabled;
 }
 
+void Metadata::pre_validate_is_perf_part_dist_enabled( [[maybe_unused]] bool is_perf_part_dist_enabled )
+{}
+
 // "perf_full_start" property
 
 [[nodiscard]] i32 Metadata::perf_full_start() const
@@ -576,6 +730,11 @@ void Metadata::set_perf_full_start( i32 perf_full_start )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"perf_full_start\". Object is empty." };
     data()->operator[]( "perf_full_start" ) = perf_full_start;
+}
+
+void Metadata::pre_validate_perf_full_start( [[maybe_unused]] i32 perf_full_start )
+{
+    
 }
 
 // "perf_full_end" property
@@ -607,6 +766,11 @@ void Metadata::set_perf_full_end( i32 perf_full_end )
     data()->operator[]( "perf_full_end" ) = perf_full_end;
 }
 
+void Metadata::pre_validate_perf_full_end( [[maybe_unused]] i32 perf_full_end )
+{
+    
+}
+
 // "part_perf_interval" property
 
 [[nodiscard]] i32 Metadata::part_perf_interval() const
@@ -634,6 +798,11 @@ void Metadata::set_part_perf_interval( i32 part_perf_interval )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"part_perf_interval\". Object is empty." };
     data()->operator[]( "part_perf_interval" ) = part_perf_interval;
+}
+
+void Metadata::pre_validate_part_perf_interval( [[maybe_unused]] i32 part_perf_interval )
+{
+    
 }
 
 

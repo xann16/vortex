@@ -57,6 +57,8 @@ public:
     [[nodiscard]] std::string to_string() const;
     std::ostream& stringify( std::ostream& os, int indent_size, int indent_level, bool display_all ) const;
 
+    void validate();
+
     friend std::ostream& operator<<( std::ostream& os, Metadata const& s );
 
     friend bool operator==( Metadata const& lhs, Metadata const& rhs );
@@ -253,6 +255,26 @@ public:
     void reset_part_perf_interval();
     void set_part_perf_interval( i32 part_perf_interval );
 
+
+private:
+    void pre_validate_all();
+    static void pre_validate_sim_method( [[maybe_unused]] SimMethod sim_method );
+    static void pre_validate_particle_mode( [[maybe_unused]] ParticleMode particle_mode );
+    static void pre_validate_gravity_type( [[maybe_unused]] GravityMode gravity_type );
+    static void pre_validate_particle_kernel_type( [[maybe_unused]] ParticleTwcKernelType particle_kernel_type );
+    static void pre_validate_k_filter( [[maybe_unused]] i32 k_filter );
+    static void pre_validate_C_K( [[maybe_unused]] real C_K );
+    static void pre_validate_target_Phi( [[maybe_unused]] real target_Phi );
+    static void pre_validate_superpart_factor( [[maybe_unused]] real superpart_factor );
+    static void pre_validate_src_flow_path( [[maybe_unused]] std::string_view src_flow_path );
+    static void pre_validate_src_part_path( [[maybe_unused]] std::string_view src_part_path );
+    static void pre_validate_part_output_delay( [[maybe_unused]] i32 part_output_delay );
+    static void pre_validate_is_perf_full_profile_enabled( [[maybe_unused]] bool is_perf_full_profile_enabled );
+    static void pre_validate_is_perf_simple_enabled( [[maybe_unused]] bool is_perf_simple_enabled );
+    static void pre_validate_is_perf_part_dist_enabled( [[maybe_unused]] bool is_perf_part_dist_enabled );
+    static void pre_validate_perf_full_start( [[maybe_unused]] i32 perf_full_start );
+    static void pre_validate_perf_full_end( [[maybe_unused]] i32 perf_full_end );
+    static void pre_validate_part_perf_interval( [[maybe_unused]] i32 part_perf_interval );
 
 private:
     nlohmann::json * m_data_p = nullptr;

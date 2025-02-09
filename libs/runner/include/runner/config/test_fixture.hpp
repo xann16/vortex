@@ -55,6 +55,8 @@ public:
     [[nodiscard]] std::string to_string() const;
     std::ostream& stringify( std::ostream& os, int indent_size, int indent_level, bool display_all ) const;
 
+    void validate();
+
     friend std::ostream& operator<<( std::ostream& os, TestFixture const& s );
 
     friend bool operator==( TestFixture const& lhs, TestFixture const& rhs );
@@ -149,6 +151,16 @@ public:
     void remove_test_stage_at( std::size_t index );
     void remove_test_stage( runner::config::TestStage );
 
+
+private:
+    void pre_validate_all();
+    static void pre_validate_name( [[maybe_unused]] std::string_view name );
+    static void pre_validate_root_path( [[maybe_unused]] std::string_view root_path );
+    static void pre_validate_default_settings( [[maybe_unused]] core::settings::json::AnySettings default_settings );
+    static void pre_validate_test_cases( [[maybe_unused]] std::vector< runner::config::TestCase > const& test_cases );
+    void pre_validate_test_case( [[maybe_unused]] runner::config::TestCase test_case );
+    static void pre_validate_test_stages( [[maybe_unused]] std::vector< runner::config::TestStage > const& test_stages );
+    void pre_validate_test_stage( [[maybe_unused]] runner::config::TestStage test_stage );
 
 private:
     nlohmann::json * m_data_p = nullptr;

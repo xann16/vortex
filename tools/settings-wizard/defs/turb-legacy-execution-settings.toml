@@ -16,12 +16,12 @@ requires = [ "nonempty" ]
 [cpu_node_count]
 type = "i32"
 default = 1
-requires=[ "range(min=1,max=#{CPU_NODE_COUNT_MAX}" ]
+requires=[ "range(min=1,max=#{CPU_NODE_COUNT_MAX})" ]
 
 [wct_limit]
 type = "f64"
 default = "60.0"
-requires=[ "range(min=5.0,max=#{WCT_LIMIT_MAX}" ]
+requires=[ "range(min=5.0,max=#{WCT_LIMIT_MAX})" ]
 
 [process_count]
 type = "i32"

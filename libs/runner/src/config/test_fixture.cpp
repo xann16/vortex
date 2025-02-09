@@ -100,6 +100,55 @@ std::ostream& TestFixture::stringify( std::ostream& os, int indent_size, int ind
     return os;
 }
 
+void TestFixture::validate()
+{
+    if ( !has_name_set() )
+    {
+        throw std::runtime_error{ "Validation failed for property 'name': Required property is not specified." };
+    }
+    
+    if ( has_test_cases_set() )
+    {
+        for ( auto test_case : test_cases() )
+        {
+            test_case.validate();
+        }
+    }
+    
+    if ( has_test_stages_set() )
+    {
+        for ( auto test_stage : test_stages() )
+        {
+            test_stage.validate();
+        }
+    }
+    
+}
+
+void TestFixture::pre_validate_all()
+{
+    if ( has_name_set() )
+    {
+        pre_validate_name( name() );
+    }
+    if ( has_root_path_set() )
+    {
+        pre_validate_root_path( root_path() );
+    }
+    if ( has_default_settings_set() )
+    {
+        pre_validate_default_settings( default_settings() );
+    }
+    if ( has_test_cases_set() )
+    {
+        pre_validate_test_cases( test_cases() );
+    }
+    if ( has_test_stages_set() )
+    {
+        pre_validate_test_stages( test_stages() );
+    }
+}
+
 std::ostream& operator<<( std::ostream& os, TestFixture const& s )
 {
     return s.stringify( os, 2, 0, os.flags() & std::ios_base::boolalpha );
@@ -145,6 +194,15 @@ void TestFixture::set_name( std::string && name )
     data()->operator[]( "name" ) = name;
 }
 
+void TestFixture::pre_validate_name( [[maybe_unused]] std::string_view name )
+{
+    if ( name.empty() )
+    {
+        throw std::runtime_error{ "Validation failed for property 'name': Value is empty." };
+    }
+    
+}
+
 // "root_path" property
 
 [[nodiscard]] std::string_view TestFixture::root_path() const
@@ -177,6 +235,15 @@ void TestFixture::set_root_path( std::string && root_path )
 {
     if ( is_empty() ) throw std::runtime_error{ "Cannot set value for property \"root_path\". Object is empty." };
     data()->operator[]( "root_path" ) = root_path;
+}
+
+void TestFixture::pre_validate_root_path( [[maybe_unused]] std::string_view root_path )
+{
+    if ( root_path.empty() )
+    {
+        throw std::runtime_error{ "Validation failed for property 'root_path': Value is empty." };
+    }
+    
 }
 
 // "default_settings" property
@@ -214,6 +281,9 @@ void TestFixture::set_default_settings( core::settings::json::AnySettings defaul
         data()->operator[]( "default_settings" ) = *( default_settings.data() );
     }
 }
+
+void TestFixture::pre_validate_default_settings( [[maybe_unused]] core::settings::json::AnySettings default_settings )
+{}
 
 // "test_cases" property
 
@@ -340,6 +410,39 @@ void TestFixture::remove_test_case( runner::config::TestCase )
 }
 
 
+void TestFixture::pre_validate_test_cases( [[maybe_unused]] std::vector< runner::config::TestCase > const& test_cases )
+{
+    auto arr = test_cases;
+    auto eq_predicate = []( auto const& lhs, auto const& rhs )
+    {
+        return lhs.name() == rhs.name();
+    };
+    auto cmp_predicate = []( auto const& lhs, auto const& rhs )
+    {
+        return lhs.name() < rhs.name();
+    };
+    std::sort( std::begin( arr ), std::end( arr ), cmp_predicate );
+    if ( std::adjacent_find( std::begin( arr ), std::end( arr ), eq_predicate ) != std::end( arr ) )
+    {
+        throw std::runtime_error{ "Validation failed for property 'test_cases': Array contains duplicates." };
+    }
+    
+}
+
+void TestFixture::pre_validate_test_case( [[maybe_unused]] runner::config::TestCase test_case )
+{
+    auto arr = test_cases();
+    auto predicate = [ &test_case ]( auto const& value )
+    {
+        return test_case.name() == value.name();
+    };
+    if ( std::find_if( std::begin( arr ), std::end( arr ), predicate ) != std::end( arr ) )
+    {
+        throw std::runtime_error{ "Validation failed for property 'test_cases': Value already exists in array." };
+    }
+    
+}
+
 // "test_stages" property
 
 [[nodiscard]] std::vector< runner::config::TestStage > TestFixture::test_stages() const
@@ -464,6 +567,39 @@ void TestFixture::remove_test_stage( runner::config::TestStage )
     throw std::runtime_error{ "Remove method not implemented for arrays of settings objects." };
 }
 
+
+void TestFixture::pre_validate_test_stages( [[maybe_unused]] std::vector< runner::config::TestStage > const& test_stages )
+{
+    auto arr = test_stages;
+    auto eq_predicate = []( auto const& lhs, auto const& rhs )
+    {
+        return lhs.name() == rhs.name();
+    };
+    auto cmp_predicate = []( auto const& lhs, auto const& rhs )
+    {
+        return lhs.name() < rhs.name();
+    };
+    std::sort( std::begin( arr ), std::end( arr ), cmp_predicate );
+    if ( std::adjacent_find( std::begin( arr ), std::end( arr ), eq_predicate ) != std::end( arr ) )
+    {
+        throw std::runtime_error{ "Validation failed for property 'test_stages': Array contains duplicates." };
+    }
+    
+}
+
+void TestFixture::pre_validate_test_stage( [[maybe_unused]] runner::config::TestStage test_stage )
+{
+    auto arr = test_stages();
+    auto predicate = [ &test_stage ]( auto const& value )
+    {
+        return test_stage.name() == value.name();
+    };
+    if ( std::find_if( std::begin( arr ), std::end( arr ), predicate ) != std::end( arr ) )
+    {
+        throw std::runtime_error{ "Validation failed for property 'test_stages': Value already exists in array." };
+    }
+    
+}
 
 
 } // end of namespace vortex::runner::config

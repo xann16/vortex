@@ -53,6 +53,8 @@ public:
     [[nodiscard]] std::string to_string() const;
     std::ostream& stringify( std::ostream& os, int indent_size, int indent_level, bool display_all ) const;
 
+    void validate();
+
     friend std::ostream& operator<<( std::ostream& os, ExecutionSettings const& s );
 
     friend bool operator==( ExecutionSettings const& lhs, ExecutionSettings const& rhs );
@@ -139,6 +141,15 @@ public:
     void reset_is_node_overcommit_enabled();
     void set_is_node_overcommit_enabled( bool is_node_overcommit_enabled );
 
+
+private:
+    void pre_validate_all();
+    static void pre_validate_job_name( [[maybe_unused]] std::string_view job_name );
+    static void pre_validate_grant_no( [[maybe_unused]] std::string_view grant_no );
+    static void pre_validate_cpu_node_count( [[maybe_unused]] i32 cpu_node_count );
+    static void pre_validate_wct_limit( [[maybe_unused]] f64 wct_limit );
+    static void pre_validate_process_count( [[maybe_unused]] i32 process_count );
+    static void pre_validate_is_node_overcommit_enabled( [[maybe_unused]] bool is_node_overcommit_enabled );
 
 private:
     nlohmann::json * m_data_p = nullptr;
