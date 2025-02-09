@@ -107,7 +107,7 @@ TEST_CASE( "Settings - equality and inequality operators", "[settings][.][!mayfa
 
 TEST_CASE( "Settings - property: \"metadata\" - getter, default, has_set", "[settings]" )
 {
-    nlohmann::json obj = { { "metadata", { { "x", "y"} } } };
+    nlohmann::json obj = { { "metadata", { { "name", "x"} } } };
     auto s = vortex::turb::legacy::settings::Settings{ &obj };
     auto s_null = vortex::turb::legacy::settings::Settings{};
 
@@ -115,7 +115,7 @@ TEST_CASE( "Settings - property: \"metadata\" - getter, default, has_set", "[set
     auto default_value = s_null.metadata();
 
     REQUIRE( !value.is_empty() );
-    REQUIRE( value.data()->at( "x" ) == "y" );
+    REQUIRE( value.data()->at( "name" ) == "x" );
     REQUIRE( default_value.is_empty() );
 
     REQUIRE( s.has_metadata_set() );
@@ -158,7 +158,7 @@ TEST_CASE( "Settings - property: \"metadata\" - setter, reset", "[settings]" )
 
 TEST_CASE( "Settings - property: \"parameters\" - getter, default, has_set", "[settings]" )
 {
-    nlohmann::json obj = { { "parameters", { { "x", "y"} } } };
+    nlohmann::json obj = { { "parameters", { { "name", "x"} } } };
     auto s = vortex::turb::legacy::settings::Settings{ &obj };
     auto s_null = vortex::turb::legacy::settings::Settings{};
 
@@ -166,7 +166,7 @@ TEST_CASE( "Settings - property: \"parameters\" - getter, default, has_set", "[s
     auto default_value = s_null.parameters();
 
     REQUIRE( !value.is_empty() );
-    REQUIRE( value.data()->at( "x" ) == "y" );
+    REQUIRE( value.data()->at( "name" ) == "x" );
     REQUIRE( default_value.is_empty() );
 
     REQUIRE( s.has_parameters_set() );
@@ -209,7 +209,7 @@ TEST_CASE( "Settings - property: \"parameters\" - setter, reset", "[settings]" )
 
 TEST_CASE( "Settings - property: \"execution_settings\" - getter, default, has_set", "[settings]" )
 {
-    nlohmann::json obj = { { "execution_settings", { { "x", "y"} } } };
+    nlohmann::json obj = { { "execution_settings", { { "name", "x"} } } };
     auto s = vortex::turb::legacy::settings::Settings{ &obj };
     auto s_null = vortex::turb::legacy::settings::Settings{};
 
@@ -217,7 +217,7 @@ TEST_CASE( "Settings - property: \"execution_settings\" - getter, default, has_s
     auto default_value = s_null.execution_settings();
 
     REQUIRE( !value.is_empty() );
-    REQUIRE( value.data()->at( "x" ) == "y" );
+    REQUIRE( value.data()->at( "name" ) == "x" );
     REQUIRE( default_value.is_empty() );
 
     REQUIRE( s.has_execution_settings_set() );

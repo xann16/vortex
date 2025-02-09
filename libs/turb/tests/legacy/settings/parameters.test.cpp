@@ -107,14 +107,14 @@ TEST_CASE( "Parameters - equality and inequality operators", "[settings][.][!may
 
 TEST_CASE( "Parameters - property: \"N\" - getter, default, has_set", "[settings]" )
 {
-    nlohmann::json obj = { { "N", -2l } };
+    nlohmann::json obj = { { "N", 8l } };
     auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{};
 
     auto value = s.N();
     auto default_value = s_null.N();
 
-    REQUIRE( static_cast< vortex::i32 >( value ) == -2l );
+    REQUIRE( static_cast< vortex::i32 >( value ) == 8l );
     REQUIRE( static_cast< vortex::i32 >( default_value ) == 8 );
 
     REQUIRE( s.has_N_set() );
@@ -127,7 +127,7 @@ TEST_CASE( "Parameters - property: \"N\" - setter, reset", "[settings]" )
     auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{};
 
-    const auto value = -2l;
+    const auto value = 8l;
 
     REQUIRE( !s.has_N_set() );
     REQUIRE( !s_null.has_N_set() );
@@ -150,14 +150,14 @@ TEST_CASE( "Parameters - property: \"N\" - setter, reset", "[settings]" )
 
 TEST_CASE( "Parameters - property: \"N_subdomain\" - getter, default, has_set", "[settings]" )
 {
-    nlohmann::json obj = { { "N_subdomain", -2l } };
+    nlohmann::json obj = { { "N_subdomain", 8l } };
     auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{};
 
     auto value = s.N_subdomain();
     auto default_value = s_null.N_subdomain();
 
-    REQUIRE( static_cast< vortex::i32 >( value ) == -2l );
+    REQUIRE( static_cast< vortex::i32 >( value ) == 8l );
     REQUIRE( static_cast< vortex::i32 >( default_value ) == 1 );
 
     REQUIRE( s.has_N_subdomain_set() );
@@ -170,7 +170,7 @@ TEST_CASE( "Parameters - property: \"N_subdomain\" - setter, reset", "[settings]
     auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{};
 
-    const auto value = -2l;
+    const auto value = 8l;
 
     REQUIRE( !s.has_N_subdomain_set() );
     REQUIRE( !s_null.has_N_subdomain_set() );
@@ -193,14 +193,14 @@ TEST_CASE( "Parameters - property: \"N_subdomain\" - setter, reset", "[settings]
 
 TEST_CASE( "Parameters - property: \"Nt_max\" - getter, default, has_set", "[settings]" )
 {
-    nlohmann::json obj = { { "Nt_max", -2l } };
+    nlohmann::json obj = { { "Nt_max", 8l } };
     auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{};
 
     auto value = s.Nt_max();
     auto default_value = s_null.Nt_max();
 
-    REQUIRE( static_cast< vortex::i32 >( value ) == -2l );
+    REQUIRE( static_cast< vortex::i32 >( value ) == 8l );
     REQUIRE( static_cast< vortex::i32 >( default_value ) == 1 );
 
     REQUIRE( s.has_Nt_max_set() );
@@ -213,7 +213,7 @@ TEST_CASE( "Parameters - property: \"Nt_max\" - setter, reset", "[settings]" )
     auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{};
 
-    const auto value = -2l;
+    const auto value = 8l;
 
     REQUIRE( !s.has_Nt_max_set() );
     REQUIRE( !s_null.has_Nt_max_set() );
@@ -236,14 +236,14 @@ TEST_CASE( "Parameters - property: \"Nt_max\" - setter, reset", "[settings]" )
 
 TEST_CASE( "Parameters - property: \"dt\" - getter, default, has_set", "[settings]" )
 {
-    nlohmann::json obj = { { "dt", 0.3 } };
+    nlohmann::json obj = { { "dt", 8.3 } };
     auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{};
 
     auto value = s.dt();
     auto default_value = s_null.dt();
 
-    REQUIRE_THAT( static_cast< vortex::real >( value ), Catch::Matchers::WithinAbs( 0.3, 1e-05 ) );
+    REQUIRE_THAT( static_cast< vortex::real >( value ), Catch::Matchers::WithinAbs( 8.3, 1e-05 ) );
     REQUIRE_THAT( static_cast< vortex::real >( default_value ), Catch::Matchers::WithinAbs( 0.001, 1e-05 ) );
 
     REQUIRE( s.has_dt_set() );
@@ -256,7 +256,7 @@ TEST_CASE( "Parameters - property: \"dt\" - setter, reset", "[settings]" )
     auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{};
 
-    const auto value = 0.3;
+    const auto value = 8.3;
 
     REQUIRE( !s.has_dt_set() );
     REQUIRE( !s_null.has_dt_set() );
@@ -279,14 +279,14 @@ TEST_CASE( "Parameters - property: \"dt\" - setter, reset", "[settings]" )
 
 TEST_CASE( "Parameters - property: \"rnu\" - getter, default, has_set", "[settings]" )
 {
-    nlohmann::json obj = { { "rnu", 0.3 } };
+    nlohmann::json obj = { { "rnu", 8.3 } };
     auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{};
 
     auto value = s.rnu();
     auto default_value = s_null.rnu();
 
-    REQUIRE_THAT( static_cast< vortex::real >( value ), Catch::Matchers::WithinAbs( 0.3, 1e-05 ) );
+    REQUIRE_THAT( static_cast< vortex::real >( value ), Catch::Matchers::WithinAbs( 8.3, 1e-05 ) );
     REQUIRE_THAT( static_cast< vortex::real >( default_value ), Catch::Matchers::WithinAbs( vortex::real{}, 1e-05 ) );
 
     REQUIRE( s.has_rnu_set() );
@@ -299,7 +299,7 @@ TEST_CASE( "Parameters - property: \"rnu\" - setter, reset", "[settings]" )
     auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{};
 
-    const auto value = 0.3;
+    const auto value = 8.3;
 
     REQUIRE( !s.has_rnu_set() );
     REQUIRE( !s_null.has_rnu_set() );
@@ -322,14 +322,14 @@ TEST_CASE( "Parameters - property: \"rnu\" - setter, reset", "[settings]" )
 
 TEST_CASE( "Parameters - property: \"t_init\" - getter, default, has_set", "[settings]" )
 {
-    nlohmann::json obj = { { "t_init", 0.3 } };
+    nlohmann::json obj = { { "t_init", 8.3 } };
     auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{};
 
     auto value = s.t_init();
     auto default_value = s_null.t_init();
 
-    REQUIRE_THAT( static_cast< vortex::real >( value ), Catch::Matchers::WithinAbs( 0.3, 1e-05 ) );
+    REQUIRE_THAT( static_cast< vortex::real >( value ), Catch::Matchers::WithinAbs( 8.3, 1e-05 ) );
     REQUIRE_THAT( static_cast< vortex::real >( default_value ), Catch::Matchers::WithinAbs( vortex::real{}, 1e-05 ) );
 
     REQUIRE( s.has_t_init_set() );
@@ -342,7 +342,7 @@ TEST_CASE( "Parameters - property: \"t_init\" - setter, reset", "[settings]" )
     auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{};
 
-    const auto value = 0.3;
+    const auto value = 8.3;
 
     REQUIRE( !s.has_t_init_set() );
     REQUIRE( !s_null.has_t_init_set() );
@@ -451,14 +451,14 @@ TEST_CASE( "Parameters - property: \"deterministic_seed\" - setter, reset", "[se
 
 TEST_CASE( "Parameters - property: \"input_velo_index\" - getter, default, has_set", "[settings]" )
 {
-    nlohmann::json obj = { { "input_velo_index", -2l } };
+    nlohmann::json obj = { { "input_velo_index", 8l } };
     auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{};
 
     auto value = s.input_velo_index();
     auto default_value = s_null.input_velo_index();
 
-    REQUIRE( static_cast< vortex::i32 >( value ) == -2l );
+    REQUIRE( static_cast< vortex::i32 >( value ) == 8l );
     REQUIRE( static_cast< vortex::i32 >( default_value ) == vortex::i32{} );
 
     REQUIRE( s.has_input_velo_index_set() );
@@ -471,7 +471,7 @@ TEST_CASE( "Parameters - property: \"input_velo_index\" - setter, reset", "[sett
     auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{};
 
-    const auto value = -2l;
+    const auto value = 8l;
 
     REQUIRE( !s.has_input_velo_index_set() );
     REQUIRE( !s_null.has_input_velo_index_set() );
@@ -537,14 +537,14 @@ TEST_CASE( "Parameters - property: \"forcing_type\" - setter, reset", "[settings
 
 TEST_CASE( "Parameters - property: \"deterministic_forcing_k_1\" - getter, default, has_set", "[settings]" )
 {
-    nlohmann::json obj = { { "deterministic_forcing_k_1", 0.3 } };
+    nlohmann::json obj = { { "deterministic_forcing_k_1", 8.3 } };
     auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{};
 
     auto value = s.deterministic_forcing_k_1();
     auto default_value = s_null.deterministic_forcing_k_1();
 
-    REQUIRE_THAT( static_cast< vortex::real >( value ), Catch::Matchers::WithinAbs( 0.3, 1e-05 ) );
+    REQUIRE_THAT( static_cast< vortex::real >( value ), Catch::Matchers::WithinAbs( 8.3, 1e-05 ) );
     REQUIRE_THAT( static_cast< vortex::real >( default_value ), Catch::Matchers::WithinAbs( 1.0, 1e-05 ) );
 
     REQUIRE( s.has_deterministic_forcing_k_1_set() );
@@ -557,7 +557,7 @@ TEST_CASE( "Parameters - property: \"deterministic_forcing_k_1\" - setter, reset
     auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{};
 
-    const auto value = 0.3;
+    const auto value = 8.3;
 
     REQUIRE( !s.has_deterministic_forcing_k_1_set() );
     REQUIRE( !s_null.has_deterministic_forcing_k_1_set() );
@@ -580,14 +580,14 @@ TEST_CASE( "Parameters - property: \"deterministic_forcing_k_1\" - setter, reset
 
 TEST_CASE( "Parameters - property: \"deterministic_forcing_k_2\" - getter, default, has_set", "[settings]" )
 {
-    nlohmann::json obj = { { "deterministic_forcing_k_2", 0.3 } };
+    nlohmann::json obj = { { "deterministic_forcing_k_2", 8.3 } };
     auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{};
 
     auto value = s.deterministic_forcing_k_2();
     auto default_value = s_null.deterministic_forcing_k_2();
 
-    REQUIRE_THAT( static_cast< vortex::real >( value ), Catch::Matchers::WithinAbs( 0.3, 1e-05 ) );
+    REQUIRE_THAT( static_cast< vortex::real >( value ), Catch::Matchers::WithinAbs( 8.3, 1e-05 ) );
     REQUIRE_THAT( static_cast< vortex::real >( default_value ), Catch::Matchers::WithinAbs( 1.0, 1e-05 ) );
 
     REQUIRE( s.has_deterministic_forcing_k_2_set() );
@@ -600,7 +600,7 @@ TEST_CASE( "Parameters - property: \"deterministic_forcing_k_2\" - setter, reset
     auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{};
 
-    const auto value = 0.3;
+    const auto value = 8.3;
 
     REQUIRE( !s.has_deterministic_forcing_k_2_set() );
     REQUIRE( !s_null.has_deterministic_forcing_k_2_set() );
@@ -666,14 +666,14 @@ TEST_CASE( "Parameters - property: \"stochastic_seed\" - setter, reset", "[setti
 
 TEST_CASE( "Parameters - property: \"stats_output_interval\" - getter, default, has_set", "[settings]" )
 {
-    nlohmann::json obj = { { "stats_output_interval", -2l } };
+    nlohmann::json obj = { { "stats_output_interval", 8l } };
     auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{};
 
     auto value = s.stats_output_interval();
     auto default_value = s_null.stats_output_interval();
 
-    REQUIRE( static_cast< vortex::i32 >( value ) == -2l );
+    REQUIRE( static_cast< vortex::i32 >( value ) == 8l );
     REQUIRE( static_cast< vortex::i32 >( default_value ) == vortex::i32{} );
 
     REQUIRE( s.has_stats_output_interval_set() );
@@ -686,7 +686,7 @@ TEST_CASE( "Parameters - property: \"stats_output_interval\" - setter, reset", "
     auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{};
 
-    const auto value = -2l;
+    const auto value = 8l;
 
     REQUIRE( !s.has_stats_output_interval_set() );
     REQUIRE( !s_null.has_stats_output_interval_set() );
@@ -709,14 +709,14 @@ TEST_CASE( "Parameters - property: \"stats_output_interval\" - setter, reset", "
 
 TEST_CASE( "Parameters - property: \"spectrum_output_interval\" - getter, default, has_set", "[settings]" )
 {
-    nlohmann::json obj = { { "spectrum_output_interval", -2l } };
+    nlohmann::json obj = { { "spectrum_output_interval", 8l } };
     auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{};
 
     auto value = s.spectrum_output_interval();
     auto default_value = s_null.spectrum_output_interval();
 
-    REQUIRE( static_cast< vortex::i32 >( value ) == -2l );
+    REQUIRE( static_cast< vortex::i32 >( value ) == 8l );
     REQUIRE( static_cast< vortex::i32 >( default_value ) == vortex::i32{} );
 
     REQUIRE( s.has_spectrum_output_interval_set() );
@@ -729,7 +729,7 @@ TEST_CASE( "Parameters - property: \"spectrum_output_interval\" - setter, reset"
     auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{};
 
-    const auto value = -2l;
+    const auto value = 8l;
 
     REQUIRE( !s.has_spectrum_output_interval_set() );
     REQUIRE( !s_null.has_spectrum_output_interval_set() );
@@ -795,14 +795,14 @@ TEST_CASE( "Parameters - property: \"is_stats_output_extended\" - setter, reset"
 
 TEST_CASE( "Parameters - property: \"rho_part\" - getter, default, has_set", "[settings]" )
 {
-    nlohmann::json obj = { { "rho_part", 0.3 } };
+    nlohmann::json obj = { { "rho_part", 8.3 } };
     auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{};
 
     auto value = s.rho_part();
     auto default_value = s_null.rho_part();
 
-    REQUIRE_THAT( static_cast< vortex::real >( value ), Catch::Matchers::WithinAbs( 0.3, 1e-05 ) );
+    REQUIRE_THAT( static_cast< vortex::real >( value ), Catch::Matchers::WithinAbs( 8.3, 1e-05 ) );
     REQUIRE_THAT( static_cast< vortex::real >( default_value ), Catch::Matchers::WithinAbs( vortex::real{}, 1e-05 ) );
 
     REQUIRE( s.has_rho_part_set() );
@@ -815,7 +815,7 @@ TEST_CASE( "Parameters - property: \"rho_part\" - setter, reset", "[settings]" )
     auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{};
 
-    const auto value = 0.3;
+    const auto value = 8.3;
 
     REQUIRE( !s.has_rho_part_set() );
     REQUIRE( !s_null.has_rho_part_set() );
@@ -838,14 +838,14 @@ TEST_CASE( "Parameters - property: \"rho_part\" - setter, reset", "[settings]" )
 
 TEST_CASE( "Parameters - property: \"rho_fluid\" - getter, default, has_set", "[settings]" )
 {
-    nlohmann::json obj = { { "rho_fluid", 0.3 } };
+    nlohmann::json obj = { { "rho_fluid", 8.3 } };
     auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{};
 
     auto value = s.rho_fluid();
     auto default_value = s_null.rho_fluid();
 
-    REQUIRE_THAT( static_cast< vortex::real >( value ), Catch::Matchers::WithinAbs( 0.3, 1e-05 ) );
+    REQUIRE_THAT( static_cast< vortex::real >( value ), Catch::Matchers::WithinAbs( 8.3, 1e-05 ) );
     REQUIRE_THAT( static_cast< vortex::real >( default_value ), Catch::Matchers::WithinAbs( vortex::real{}, 1e-05 ) );
 
     REQUIRE( s.has_rho_fluid_set() );
@@ -858,7 +858,7 @@ TEST_CASE( "Parameters - property: \"rho_fluid\" - setter, reset", "[settings]" 
     auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{};
 
-    const auto value = 0.3;
+    const auto value = 8.3;
 
     REQUIRE( !s.has_rho_fluid_set() );
     REQUIRE( !s_null.has_rho_fluid_set() );
@@ -881,14 +881,14 @@ TEST_CASE( "Parameters - property: \"rho_fluid\" - setter, reset", "[settings]" 
 
 TEST_CASE( "Parameters - property: \"eta_k_init\" - getter, default, has_set", "[settings]" )
 {
-    nlohmann::json obj = { { "eta_k_init", 0.3 } };
+    nlohmann::json obj = { { "eta_k_init", 8.3 } };
     auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{};
 
     auto value = s.eta_k_init();
     auto default_value = s_null.eta_k_init();
 
-    REQUIRE_THAT( static_cast< vortex::real >( value ), Catch::Matchers::WithinAbs( 0.3, 1e-05 ) );
+    REQUIRE_THAT( static_cast< vortex::real >( value ), Catch::Matchers::WithinAbs( 8.3, 1e-05 ) );
     REQUIRE_THAT( static_cast< vortex::real >( default_value ), Catch::Matchers::WithinAbs( 1.0, 1e-05 ) );
 
     REQUIRE( s.has_eta_k_init_set() );
@@ -901,7 +901,7 @@ TEST_CASE( "Parameters - property: \"eta_k_init\" - setter, reset", "[settings]"
     auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{};
 
-    const auto value = 0.3;
+    const auto value = 8.3;
 
     REQUIRE( !s.has_eta_k_init_set() );
     REQUIRE( !s_null.has_eta_k_init_set() );
@@ -924,14 +924,14 @@ TEST_CASE( "Parameters - property: \"eta_k_init\" - setter, reset", "[settings]"
 
 TEST_CASE( "Parameters - property: \"tau_k_init\" - getter, default, has_set", "[settings]" )
 {
-    nlohmann::json obj = { { "tau_k_init", 0.3 } };
+    nlohmann::json obj = { { "tau_k_init", 8.3 } };
     auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{};
 
     auto value = s.tau_k_init();
     auto default_value = s_null.tau_k_init();
 
-    REQUIRE_THAT( static_cast< vortex::real >( value ), Catch::Matchers::WithinAbs( 0.3, 1e-05 ) );
+    REQUIRE_THAT( static_cast< vortex::real >( value ), Catch::Matchers::WithinAbs( 8.3, 1e-05 ) );
     REQUIRE_THAT( static_cast< vortex::real >( default_value ), Catch::Matchers::WithinAbs( 1.0, 1e-05 ) );
 
     REQUIRE( s.has_tau_k_init_set() );
@@ -944,7 +944,7 @@ TEST_CASE( "Parameters - property: \"tau_k_init\" - setter, reset", "[settings]"
     auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{};
 
-    const auto value = 0.3;
+    const auto value = 8.3;
 
     REQUIRE( !s.has_tau_k_init_set() );
     REQUIRE( !s_null.has_tau_k_init_set() );
@@ -967,14 +967,14 @@ TEST_CASE( "Parameters - property: \"tau_k_init\" - setter, reset", "[settings]"
 
 TEST_CASE( "Parameters - property: \"shell_thickness\" - getter, default, has_set", "[settings]" )
 {
-    nlohmann::json obj = { { "shell_thickness", 0.3 } };
+    nlohmann::json obj = { { "shell_thickness", 8.3 } };
     auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{};
 
     auto value = s.shell_thickness();
     auto default_value = s_null.shell_thickness();
 
-    REQUIRE_THAT( static_cast< vortex::real >( value ), Catch::Matchers::WithinAbs( 0.3, 1e-05 ) );
+    REQUIRE_THAT( static_cast< vortex::real >( value ), Catch::Matchers::WithinAbs( 8.3, 1e-05 ) );
     REQUIRE_THAT( static_cast< vortex::real >( default_value ), Catch::Matchers::WithinAbs( 1.0, 1e-05 ) );
 
     REQUIRE( s.has_shell_thickness_set() );
@@ -987,7 +987,7 @@ TEST_CASE( "Parameters - property: \"shell_thickness\" - setter, reset", "[setti
     auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{};
 
-    const auto value = 0.3;
+    const auto value = 8.3;
 
     REQUIRE( !s.has_shell_thickness_set() );
     REQUIRE( !s_null.has_shell_thickness_set() );
@@ -1010,14 +1010,14 @@ TEST_CASE( "Parameters - property: \"shell_thickness\" - setter, reset", "[setti
 
 TEST_CASE( "Parameters - property: \"epsilon_env\" - getter, default, has_set", "[settings]" )
 {
-    nlohmann::json obj = { { "epsilon_env", 0.3 } };
+    nlohmann::json obj = { { "epsilon_env", 8.3 } };
     auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{};
 
     auto value = s.epsilon_env();
     auto default_value = s_null.epsilon_env();
 
-    REQUIRE_THAT( static_cast< vortex::real >( value ), Catch::Matchers::WithinAbs( 0.3, 1e-05 ) );
+    REQUIRE_THAT( static_cast< vortex::real >( value ), Catch::Matchers::WithinAbs( 8.3, 1e-05 ) );
     REQUIRE_THAT( static_cast< vortex::real >( default_value ), Catch::Matchers::WithinAbs( vortex::real{}, 1e-05 ) );
 
     REQUIRE( s.has_epsilon_env_set() );
@@ -1030,7 +1030,7 @@ TEST_CASE( "Parameters - property: \"epsilon_env\" - setter, reset", "[settings]
     auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{};
 
-    const auto value = 0.3;
+    const auto value = 8.3;
 
     REQUIRE( !s.has_epsilon_env_set() );
     REQUIRE( !s_null.has_epsilon_env_set() );
@@ -1053,14 +1053,14 @@ TEST_CASE( "Parameters - property: \"epsilon_env\" - setter, reset", "[settings]
 
 TEST_CASE( "Parameters - property: \"nu_fluid\" - getter, default, has_set", "[settings]" )
 {
-    nlohmann::json obj = { { "nu_fluid", 0.3 } };
+    nlohmann::json obj = { { "nu_fluid", 8.3 } };
     auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{};
 
     auto value = s.nu_fluid();
     auto default_value = s_null.nu_fluid();
 
-    REQUIRE_THAT( static_cast< vortex::real >( value ), Catch::Matchers::WithinAbs( 0.3, 1e-05 ) );
+    REQUIRE_THAT( static_cast< vortex::real >( value ), Catch::Matchers::WithinAbs( 8.3, 1e-05 ) );
     REQUIRE_THAT( static_cast< vortex::real >( default_value ), Catch::Matchers::WithinAbs( vortex::real{}, 1e-05 ) );
 
     REQUIRE( s.has_nu_fluid_set() );
@@ -1073,7 +1073,7 @@ TEST_CASE( "Parameters - property: \"nu_fluid\" - setter, reset", "[settings]" )
     auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{};
 
-    const auto value = 0.3;
+    const auto value = 8.3;
 
     REQUIRE( !s.has_nu_fluid_set() );
     REQUIRE( !s_null.has_nu_fluid_set() );
@@ -1096,14 +1096,14 @@ TEST_CASE( "Parameters - property: \"nu_fluid\" - setter, reset", "[settings]" )
 
 TEST_CASE( "Parameters - property: \"gravity\" - getter, default, has_set", "[settings]" )
 {
-    nlohmann::json obj = { { "gravity", 0.3 } };
+    nlohmann::json obj = { { "gravity", 8.3 } };
     auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{};
 
     auto value = s.gravity();
     auto default_value = s_null.gravity();
 
-    REQUIRE_THAT( static_cast< vortex::real >( value ), Catch::Matchers::WithinAbs( 0.3, 1e-05 ) );
+    REQUIRE_THAT( static_cast< vortex::real >( value ), Catch::Matchers::WithinAbs( 8.3, 1e-05 ) );
     REQUIRE_THAT( static_cast< vortex::real >( default_value ), Catch::Matchers::WithinAbs( vortex::real{}, 1e-05 ) );
 
     REQUIRE( s.has_gravity_set() );
@@ -1116,7 +1116,7 @@ TEST_CASE( "Parameters - property: \"gravity\" - setter, reset", "[settings]" )
     auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{};
 
-    const auto value = 0.3;
+    const auto value = 8.3;
 
     REQUIRE( !s.has_gravity_set() );
     REQUIRE( !s_null.has_gravity_set() );
@@ -1268,14 +1268,14 @@ TEST_CASE( "Parameters - property: \"is_part_hdi_enabled\" - setter, reset", "[s
 
 TEST_CASE( "Parameters - property: \"part_hdi_trunc_enabled\" - getter, default, has_set", "[settings]" )
 {
-    nlohmann::json obj = { { "part_hdi_trunc_enabled", 0.3 } };
+    nlohmann::json obj = { { "part_hdi_trunc_enabled", 8.3 } };
     auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{};
 
     auto value = s.part_hdi_trunc_enabled();
     auto default_value = s_null.part_hdi_trunc_enabled();
 
-    REQUIRE_THAT( static_cast< vortex::real >( value ), Catch::Matchers::WithinAbs( 0.3, 1e-05 ) );
+    REQUIRE_THAT( static_cast< vortex::real >( value ), Catch::Matchers::WithinAbs( 8.3, 1e-05 ) );
     REQUIRE_THAT( static_cast< vortex::real >( default_value ), Catch::Matchers::WithinAbs( vortex::real{}, 1e-05 ) );
 
     REQUIRE( s.has_part_hdi_trunc_enabled_set() );
@@ -1288,7 +1288,7 @@ TEST_CASE( "Parameters - property: \"part_hdi_trunc_enabled\" - setter, reset", 
     auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{};
 
-    const auto value = 0.3;
+    const auto value = 8.3;
 
     REQUIRE( !s.has_part_hdi_trunc_enabled_set() );
     REQUIRE( !s_null.has_part_hdi_trunc_enabled_set() );
@@ -1311,14 +1311,14 @@ TEST_CASE( "Parameters - property: \"part_hdi_trunc_enabled\" - setter, reset", 
 
 TEST_CASE( "Parameters - property: \"N_part\" - getter, default, has_set", "[settings]" )
 {
-    nlohmann::json obj = { { "N_part", -2l } };
+    nlohmann::json obj = { { "N_part", 8l } };
     auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{};
 
     auto value = s.N_part();
     auto default_value = s_null.N_part();
 
-    REQUIRE( static_cast< vortex::i32 >( value ) == -2l );
+    REQUIRE( static_cast< vortex::i32 >( value ) == 8l );
     REQUIRE( static_cast< vortex::i32 >( default_value ) == vortex::i32{} );
 
     REQUIRE( s.has_N_part_set() );
@@ -1331,7 +1331,7 @@ TEST_CASE( "Parameters - property: \"N_part\" - setter, reset", "[settings]" )
     auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{};
 
-    const auto value = -2l;
+    const auto value = 8l;
 
     REQUIRE( !s.has_N_part_set() );
     REQUIRE( !s_null.has_N_part_set() );
@@ -1397,14 +1397,14 @@ TEST_CASE( "Parameters - property: \"drag_type\" - setter, reset", "[settings]" 
 
 TEST_CASE( "Parameters - property: \"a\" - getter, default, has_set", "[settings]" )
 {
-    nlohmann::json obj = { { "a", 0.3 } };
+    nlohmann::json obj = { { "a", 8.3 } };
     auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{};
 
     auto value = s.a();
     auto default_value = s_null.a();
 
-    REQUIRE_THAT( static_cast< vortex::real >( value ), Catch::Matchers::WithinAbs( 0.3, 1e-05 ) );
+    REQUIRE_THAT( static_cast< vortex::real >( value ), Catch::Matchers::WithinAbs( 8.3, 1e-05 ) );
     REQUIRE_THAT( static_cast< vortex::real >( default_value ), Catch::Matchers::WithinAbs( vortex::real{}, 1e-05 ) );
 
     REQUIRE( s.has_a_set() );
@@ -1417,7 +1417,7 @@ TEST_CASE( "Parameters - property: \"a\" - setter, reset", "[settings]" )
     auto s = vortex::turb::legacy::settings::Parameters{ &obj };
     auto s_null = vortex::turb::legacy::settings::Parameters{};
 
-    const auto value = 0.3;
+    const auto value = 8.3;
 
     REQUIRE( !s.has_a_set() );
     REQUIRE( !s_null.has_a_set() );

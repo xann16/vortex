@@ -20,7 +20,7 @@ namespace vortex::turb::legacy::settings
 Parameters::Parameters( nlohmann::json * data_p )
 :   m_data_p( data_p )
 {
-    // add initial validation
+    pre_validate_all();
 }
 
 Parameters& Parameters::update_with( nlohmann::json * other_data_p )
@@ -28,6 +28,7 @@ Parameters& Parameters::update_with( nlohmann::json * other_data_p )
     if (!is_empty() && other_data_p != nullptr)
     {
         as_any().update_with( other_data_p );
+        pre_validate_all();
     }
     return *this;
 }
@@ -191,6 +192,8 @@ void Parameters::validate()
 
 void Parameters::pre_validate_all()
 {
+    if ( is_empty() ) return;
+    
     if ( has_N_set() )
     {
         pre_validate_N( N() );

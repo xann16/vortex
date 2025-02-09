@@ -5,20 +5,20 @@ from typing import Any
 
 FP_CMP_EPS = 0.00001
 BASE_TYPES = {
-    'boolean': ('bool',             'true'),
-    'i8':      ('i8',               '-4'),
-    'i16':     ('i16',              '-3'),
-    'i32':     ('i32',              '-2l'),
-    'i64':     ('i64',              '-1ll'),
-    'u8':      ('u8',               '1u'),
-    'u16':     ('u16',              '2u'),
-    'u32':     ('u32',              '3ul'),
-    'u64':     ('u64',              '4ull'),
-    'f32':     ('f32',              '0.1f'),
-    'f64':     ('f64',              '0.2'),
-    'real':    ('real',             '0.3'),
-    'string':  ('std::string_view', '"stest"'),
-    'path':    ('std::string_view', '"ptest"'),
+    'boolean': ('bool',             'true',    'false',   'true'    ),
+    'i8':      ('i8',               '4',       '77',      '1'       ),
+    'i16':     ('i16',              '3',       '66',      '1000'    ),
+    'i32':     ('i32',              '8l',      '16l',     '1024l'  ),
+    'i64':     ('i64',              '1ll',     '111ll',   '11111ll' ),
+    'u8':      ('u8',               '1u',      '66u',     '121u'    ),
+    'u16':     ('u16',              '2u',      '44u',     '22u'     ),
+    'u32':     ('u32',              '3ul',     '42ul',    '33ul'    ),
+    'u64':     ('u64',              '4ull',    '444ull',  '4141ull' ),
+    'f32':     ('f32',              '8.1f',    '111.1f',  '11.0f'   ),
+    'f64':     ('f64',              '8.2',     '222.2',   '12.0'    ),
+    'real':    ('real',             '8.3',     '333.3',   '14.0'    ),
+    'string':  ('std::string_view', '"stest"', '"ttest"', '"utest"' ),
+    'path':    ('std::string_view', '"ptest"', '"qtest"', '"rtest"' ),
 }
 
 
@@ -265,15 +265,15 @@ def _add_getter_test(ls: list[str], i: int, class_name: str, name: str, p: dict[
     i = begin_test_case(ls, i, f'{class_name} - property: \\\"{name}\\\" - getter, default, has_set', 'settings')
 
     if property_type in BASE_TYPES:
-        val_str : str = f'{{ {BASE_TYPES[property_type][1]}, {BASE_TYPES[property_type][1]}, {BASE_TYPES[property_type][1]} }}' if is_array else BASE_TYPES[property_type][1]
+        val_str : str = f'{{ {BASE_TYPES[property_type][1]}, {BASE_TYPES[property_type][2]}, {BASE_TYPES[property_type][3]} }}' if is_array else BASE_TYPES[property_type][1]
         i = add_line(ls, i, 'nlohmann::json obj = { { "' + name + f'", {val_str}' + ' } };' )
     elif property_type == 'enum':
         val_str : str = f'{{ {", ".join(str(val) for val in p['enum']['values'])} }}' if is_array else p['enum']['values'][-1]
         i = add_line(ls, i, 'nlohmann::json obj = { { "' + name + f'", "{val_str}"' + ' } };' )
     elif property_type in ['module', 'settings']:
         # TODO - specific sets for specific setting classes (i.e. module)
-        init_str : str = '{ { "x", "y"} }'
-        full_init_str : str = ('{ ' + ', '.join([init_str, init_str, init_str]) + ' }') if is_array else init_str
+        init_str : str = '{ { "name", "x"} }'
+        full_init_str : str = ('{ ' + ', '.join([init_str, init_str.replace('x', 'y'), init_str.replace('x', 'z')]) + ' }') if is_array else init_str
         i = add_line(ls, i, 'nlohmann::json obj = { { "' + name + '", ' + full_init_str + ' } };' )
     else:
         raise RuntimeError(f'Unexpected property type: {property_type}.')
@@ -289,7 +289,7 @@ def _add_getter_test(ls: list[str], i: int, class_name: str, name: str, p: dict[
     if not is_array:
         if property_type in ['module', 'settings']:
             i = add_require(ls, i, '!value.is_empty()')
-            i = add_require(ls, i, 'value.data()->at( "x" ) == "y"')
+            i = add_require(ls, i, 'value.data()->at( "name" ) == "x"')
             i = add_require(ls, i, 'default_value.is_empty()')
         elif property_type == 'enum':
             i = add_require(ls, i, f'value == {'::'.join(namespace)}::{to_pascal_case(p['enum']['name'])}::{to_pascal_case(p['enum']['values'][-1])}')
@@ -315,11 +315,11 @@ def _add_getter_test(ls: list[str], i: int, class_name: str, name: str, p: dict[
             i = add_require(ls, i, '!value.empty()')
             i = add_require(ls, i, 'value.size() == 3ull')
             i = add_require(ls, i, '!value[ 0 ].is_empty()')
-            i = add_require(ls, i, 'value[ 0 ].data()->at( "x" ) == "y"')
+            i = add_require(ls, i, 'value[ 0 ].data()->at( "name" ) == "x"')
             i = add_require(ls, i, '!value[ 1 ].is_empty()')
-            i = add_require(ls, i, 'value[ 1 ].data()->at( "x" ) == "y"')
+            i = add_require(ls, i, 'value[ 1 ].data()->at( "name" ) == "y"')
             i = add_require(ls, i, '!value[ 2 ].is_empty()')
-            i = add_require(ls, i, 'value[ 2 ].data()->at( "x" ) == "y"')
+            i = add_require(ls, i, 'value[ 2 ].data()->at( "name" ) == "z"')
             i = add_require(ls, i, 'default_value.empty()')
         elif property_type == 'enum':
             for ii, ename in enumerate(p['enum']['values']):
@@ -332,9 +332,9 @@ def _add_getter_test(ls: list[str], i: int, class_name: str, name: str, p: dict[
             i = add_require(ls, i, 'value.size() == 3ull')
             for ii in [0, 1, 2]:
                 if is_fp:
-                    i = add_require(ls, i, f'{val_str.replace('XXXXX', str(ii))}, Catch::Matchers::WithinAbs( {BASE_TYPES[property_type][1]}, {FP_CMP_EPS} )', suffix='that')
+                    i = add_require(ls, i, f'{val_str.replace('XXXXX', str(ii))}, Catch::Matchers::WithinAbs( {BASE_TYPES[property_type][1 + ii]}, {FP_CMP_EPS} )', suffix='that')
                 else:
-                    i = add_require(ls, i, f'{val_str.replace('XXXXX', str(ii))} == {BASE_TYPES[property_type][1]}')
+                    i = add_require(ls, i, f'{val_str.replace('XXXXX', str(ii))} == {BASE_TYPES[property_type][1 + ii]}')
             i = add_require(ls, i, f'default_value.empty()')
         else:
             raise RuntimeError(f'Unexpected property type: {property_type}.')
@@ -800,7 +800,7 @@ def _add_array_specific_tests(ls: list[str], i: int, class_name: str, name: str,
     elif property_type in ['module', 'settings']:
         # TODO - specific sets for specific setting classes (i.e. module)
         i = add_line(ls, i, f'nlohmann::json vobj = nlohmann::json::object();')
-        i = add_line(ls, i, 'nlohmann::json xobj = { { "x", "y" } };')
+        i = add_line(ls, i, 'nlohmann::json xobj = { { "name", "x" } };')
         i = add_line(ls, i, f'const auto value = vortex::{value_arg_type}{{ &vobj }};')
         i = add_line(ls, i, f'const auto xvalue = vortex::{value_arg_type}{{ &xobj }};')
         i = add_line(ls, i, f'const auto nvalue = vortex::{value_arg_type}{{}};')
@@ -1020,6 +1020,9 @@ def _add_property_pre_validate_definition(ls: list[str], i: int, class_name: str
 
 def add_pre_validate_all_definition(ls: list[str], i: int, class_name: str, data: dict[str, Any], ctx: dict[str, Any]) -> int:
     body : list[(int, str)] = []
+
+    body.append((0, f'if ( is_empty() ) return;'))
+    body.append((0, ''))
 
     for name, prop in data.items():
         if not name.startswith('__'):

@@ -18,7 +18,7 @@ namespace vortex::runner::config
 TestFixture::TestFixture( nlohmann::json * data_p )
 :   m_data_p( data_p )
 {
-    // add initial validation
+    pre_validate_all();
 }
 
 TestFixture& TestFixture::update_with( nlohmann::json * other_data_p )
@@ -26,6 +26,7 @@ TestFixture& TestFixture::update_with( nlohmann::json * other_data_p )
     if (!is_empty() && other_data_p != nullptr)
     {
         as_any().update_with( other_data_p );
+        pre_validate_all();
     }
     return *this;
 }
@@ -127,6 +128,8 @@ void TestFixture::validate()
 
 void TestFixture::pre_validate_all()
 {
+    if ( is_empty() ) return;
+    
     if ( has_name_set() )
     {
         pre_validate_name( name() );

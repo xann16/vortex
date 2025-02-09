@@ -224,7 +224,7 @@ TEST_CASE( "TestFixture - property: \"root_path\" - setter, reset", "[settings]"
 
 TEST_CASE( "TestFixture - property: \"default_settings\" - getter, default, has_set", "[settings]" )
 {
-    nlohmann::json obj = { { "default_settings", { { "x", "y"} } } };
+    nlohmann::json obj = { { "default_settings", { { "name", "x"} } } };
     auto s = vortex::runner::config::TestFixture{ &obj };
     auto s_null = vortex::runner::config::TestFixture{};
 
@@ -232,7 +232,7 @@ TEST_CASE( "TestFixture - property: \"default_settings\" - getter, default, has_
     auto default_value = s_null.default_settings();
 
     REQUIRE( !value.is_empty() );
-    REQUIRE( value.data()->at( "x" ) == "y" );
+    REQUIRE( value.data()->at( "name" ) == "x" );
     REQUIRE( default_value.is_empty() );
 
     REQUIRE( s.has_default_settings_set() );
@@ -275,7 +275,7 @@ TEST_CASE( "TestFixture - property: \"default_settings\" - setter, reset", "[set
 
 TEST_CASE( "TestFixture - property: \"test_cases\" - getter, default, has_set", "[settings]" )
 {
-    nlohmann::json obj = { { "test_cases", { { { "x", "y"} }, { { "x", "y"} }, { { "x", "y"} } } } };
+    nlohmann::json obj = { { "test_cases", { { { "name", "x"} }, { { "name", "y"} }, { { "name", "z"} } } } };
     auto s = vortex::runner::config::TestFixture{ &obj };
     auto s_null = vortex::runner::config::TestFixture{};
 
@@ -285,11 +285,11 @@ TEST_CASE( "TestFixture - property: \"test_cases\" - getter, default, has_set", 
     REQUIRE( !value.empty() );
     REQUIRE( value.size() == 3ull );
     REQUIRE( !value[ 0 ].is_empty() );
-    REQUIRE( value[ 0 ].data()->at( "x" ) == "y" );
+    REQUIRE( value[ 0 ].data()->at( "name" ) == "x" );
     REQUIRE( !value[ 1 ].is_empty() );
-    REQUIRE( value[ 1 ].data()->at( "x" ) == "y" );
+    REQUIRE( value[ 1 ].data()->at( "name" ) == "y" );
     REQUIRE( !value[ 2 ].is_empty() );
-    REQUIRE( value[ 2 ].data()->at( "x" ) == "y" );
+    REQUIRE( value[ 2 ].data()->at( "name" ) == "z" );
     REQUIRE( default_value.empty() );
 
     REQUIRE( s.has_test_cases_set() );
@@ -347,7 +347,7 @@ TEST_CASE( "TestFixture - property: \"test_cases\" - array-specific", "[settings
     auto s = vortex::runner::config::TestFixture{ &obj };
 
     nlohmann::json vobj = nlohmann::json::object();
-    nlohmann::json xobj = { { "x", "y" } };
+    nlohmann::json xobj = { { "name", "x" } };
     const auto value = vortex::runner::config::TestCase{ &vobj };
     const auto xvalue = vortex::runner::config::TestCase{ &xobj };
     const auto nvalue = vortex::runner::config::TestCase{};
@@ -442,7 +442,7 @@ TEST_CASE( "TestFixture - property: \"test_cases\" - array-specific - empty obje
 
 TEST_CASE( "TestFixture - property: \"test_stages\" - getter, default, has_set", "[settings]" )
 {
-    nlohmann::json obj = { { "test_stages", { { { "x", "y"} }, { { "x", "y"} }, { { "x", "y"} } } } };
+    nlohmann::json obj = { { "test_stages", { { { "name", "x"} }, { { "name", "y"} }, { { "name", "z"} } } } };
     auto s = vortex::runner::config::TestFixture{ &obj };
     auto s_null = vortex::runner::config::TestFixture{};
 
@@ -452,11 +452,11 @@ TEST_CASE( "TestFixture - property: \"test_stages\" - getter, default, has_set",
     REQUIRE( !value.empty() );
     REQUIRE( value.size() == 3ull );
     REQUIRE( !value[ 0 ].is_empty() );
-    REQUIRE( value[ 0 ].data()->at( "x" ) == "y" );
+    REQUIRE( value[ 0 ].data()->at( "name" ) == "x" );
     REQUIRE( !value[ 1 ].is_empty() );
-    REQUIRE( value[ 1 ].data()->at( "x" ) == "y" );
+    REQUIRE( value[ 1 ].data()->at( "name" ) == "y" );
     REQUIRE( !value[ 2 ].is_empty() );
-    REQUIRE( value[ 2 ].data()->at( "x" ) == "y" );
+    REQUIRE( value[ 2 ].data()->at( "name" ) == "z" );
     REQUIRE( default_value.empty() );
 
     REQUIRE( s.has_test_stages_set() );
@@ -514,7 +514,7 @@ TEST_CASE( "TestFixture - property: \"test_stages\" - array-specific", "[setting
     auto s = vortex::runner::config::TestFixture{ &obj };
 
     nlohmann::json vobj = nlohmann::json::object();
-    nlohmann::json xobj = { { "x", "y" } };
+    nlohmann::json xobj = { { "name", "x" } };
     const auto value = vortex::runner::config::TestStage{ &vobj };
     const auto xvalue = vortex::runner::config::TestStage{ &xobj };
     const auto nvalue = vortex::runner::config::TestStage{};

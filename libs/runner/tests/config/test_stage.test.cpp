@@ -164,7 +164,7 @@ TEST_CASE( "TestStage - property: \"name\" - setter, reset", "[settings]" )
 
 TEST_CASE( "TestStage - property: \"settings\" - getter, default, has_set", "[settings]" )
 {
-    nlohmann::json obj = { { "settings", { { "x", "y"} } } };
+    nlohmann::json obj = { { "settings", { { "name", "x"} } } };
     auto s = vortex::runner::config::TestStage{ &obj };
     auto s_null = vortex::runner::config::TestStage{};
 
@@ -172,7 +172,7 @@ TEST_CASE( "TestStage - property: \"settings\" - getter, default, has_set", "[se
     auto default_value = s_null.settings();
 
     REQUIRE( !value.is_empty() );
-    REQUIRE( value.data()->at( "x" ) == "y" );
+    REQUIRE( value.data()->at( "name" ) == "x" );
     REQUIRE( default_value.is_empty() );
 
     REQUIRE( s.has_settings_set() );

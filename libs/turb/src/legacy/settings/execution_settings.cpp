@@ -18,7 +18,7 @@ namespace vortex::turb::legacy::settings
 ExecutionSettings::ExecutionSettings( nlohmann::json * data_p )
 :   m_data_p( data_p )
 {
-    // add initial validation
+    pre_validate_all();
 }
 
 ExecutionSettings& ExecutionSettings::update_with( nlohmann::json * other_data_p )
@@ -26,6 +26,7 @@ ExecutionSettings& ExecutionSettings::update_with( nlohmann::json * other_data_p
     if (!is_empty() && other_data_p != nullptr)
     {
         as_any().update_with( other_data_p );
+        pre_validate_all();
     }
     return *this;
 }
@@ -78,6 +79,8 @@ void ExecutionSettings::validate()
 
 void ExecutionSettings::pre_validate_all()
 {
+    if ( is_empty() ) return;
+    
     if ( has_job_name_set() )
     {
         pre_validate_job_name( job_name() );

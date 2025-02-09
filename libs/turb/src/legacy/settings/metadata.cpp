@@ -22,7 +22,7 @@ namespace vortex::turb::legacy::settings
 Metadata::Metadata( nlohmann::json * data_p )
 :   m_data_p( data_p )
 {
-    // add initial validation
+    pre_validate_all();
 }
 
 Metadata& Metadata::update_with( nlohmann::json * other_data_p )
@@ -30,6 +30,7 @@ Metadata& Metadata::update_with( nlohmann::json * other_data_p )
     if (!is_empty() && other_data_p != nullptr)
     {
         as_any().update_with( other_data_p );
+        pre_validate_all();
     }
     return *this;
 }
@@ -126,6 +127,8 @@ void Metadata::validate()
 
 void Metadata::pre_validate_all()
 {
+    if ( is_empty() ) return;
+    
     if ( has_sim_method_set() )
     {
         pre_validate_sim_method( sim_method() );

@@ -227,14 +227,14 @@ TEST_CASE( "ExecutionSettings - property: \"grant_no\" - setter, reset", "[setti
 
 TEST_CASE( "ExecutionSettings - property: \"cpu_node_count\" - getter, default, has_set", "[settings]" )
 {
-    nlohmann::json obj = { { "cpu_node_count", -2l } };
+    nlohmann::json obj = { { "cpu_node_count", 8l } };
     auto s = vortex::turb::legacy::settings::ExecutionSettings{ &obj };
     auto s_null = vortex::turb::legacy::settings::ExecutionSettings{};
 
     auto value = s.cpu_node_count();
     auto default_value = s_null.cpu_node_count();
 
-    REQUIRE( static_cast< vortex::i32 >( value ) == -2l );
+    REQUIRE( static_cast< vortex::i32 >( value ) == 8l );
     REQUIRE( static_cast< vortex::i32 >( default_value ) == 1 );
 
     REQUIRE( s.has_cpu_node_count_set() );
@@ -247,7 +247,7 @@ TEST_CASE( "ExecutionSettings - property: \"cpu_node_count\" - setter, reset", "
     auto s = vortex::turb::legacy::settings::ExecutionSettings{ &obj };
     auto s_null = vortex::turb::legacy::settings::ExecutionSettings{};
 
-    const auto value = -2l;
+    const auto value = 8l;
 
     REQUIRE( !s.has_cpu_node_count_set() );
     REQUIRE( !s_null.has_cpu_node_count_set() );
@@ -270,14 +270,14 @@ TEST_CASE( "ExecutionSettings - property: \"cpu_node_count\" - setter, reset", "
 
 TEST_CASE( "ExecutionSettings - property: \"wct_limit\" - getter, default, has_set", "[settings]" )
 {
-    nlohmann::json obj = { { "wct_limit", 0.2 } };
+    nlohmann::json obj = { { "wct_limit", 8.2 } };
     auto s = vortex::turb::legacy::settings::ExecutionSettings{ &obj };
     auto s_null = vortex::turb::legacy::settings::ExecutionSettings{};
 
     auto value = s.wct_limit();
     auto default_value = s_null.wct_limit();
 
-    REQUIRE_THAT( static_cast< vortex::f64 >( value ), Catch::Matchers::WithinAbs( 0.2, 1e-05 ) );
+    REQUIRE_THAT( static_cast< vortex::f64 >( value ), Catch::Matchers::WithinAbs( 8.2, 1e-05 ) );
     REQUIRE_THAT( static_cast< vortex::f64 >( default_value ), Catch::Matchers::WithinAbs( 60.0, 1e-05 ) );
 
     REQUIRE( s.has_wct_limit_set() );
@@ -290,7 +290,7 @@ TEST_CASE( "ExecutionSettings - property: \"wct_limit\" - setter, reset", "[sett
     auto s = vortex::turb::legacy::settings::ExecutionSettings{ &obj };
     auto s_null = vortex::turb::legacy::settings::ExecutionSettings{};
 
-    const auto value = 0.2;
+    const auto value = 8.2;
 
     REQUIRE( !s.has_wct_limit_set() );
     REQUIRE( !s_null.has_wct_limit_set() );
@@ -313,14 +313,14 @@ TEST_CASE( "ExecutionSettings - property: \"wct_limit\" - setter, reset", "[sett
 
 TEST_CASE( "ExecutionSettings - property: \"process_count\" - getter, default, has_set", "[settings]" )
 {
-    nlohmann::json obj = { { "process_count", -2l } };
+    nlohmann::json obj = { { "process_count", 8l } };
     auto s = vortex::turb::legacy::settings::ExecutionSettings{ &obj };
     auto s_null = vortex::turb::legacy::settings::ExecutionSettings{};
 
     auto value = s.process_count();
     auto default_value = s_null.process_count();
 
-    REQUIRE( static_cast< vortex::i32 >( value ) == -2l );
+    REQUIRE( static_cast< vortex::i32 >( value ) == 8l );
     REQUIRE( static_cast< vortex::i32 >( default_value ) == 1 );
 
     REQUIRE( s.has_process_count_set() );
@@ -333,7 +333,7 @@ TEST_CASE( "ExecutionSettings - property: \"process_count\" - setter, reset", "[
     auto s = vortex::turb::legacy::settings::ExecutionSettings{ &obj };
     auto s_null = vortex::turb::legacy::settings::ExecutionSettings{};
 
-    const auto value = -2l;
+    const auto value = 8l;
 
     REQUIRE( !s.has_process_count_set() );
     REQUIRE( !s_null.has_process_count_set() );

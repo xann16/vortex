@@ -279,14 +279,14 @@ TEST_CASE( "Metadata - property: \"particle_kernel_type\" - setter, reset", "[se
 
 TEST_CASE( "Metadata - property: \"k_filter\" - getter, default, has_set", "[settings]" )
 {
-    nlohmann::json obj = { { "k_filter", -2l } };
+    nlohmann::json obj = { { "k_filter", 8l } };
     auto s = vortex::turb::legacy::settings::Metadata{ &obj };
     auto s_null = vortex::turb::legacy::settings::Metadata{};
 
     auto value = s.k_filter();
     auto default_value = s_null.k_filter();
 
-    REQUIRE( static_cast< vortex::i32 >( value ) == -2l );
+    REQUIRE( static_cast< vortex::i32 >( value ) == 8l );
     REQUIRE( static_cast< vortex::i32 >( default_value ) == vortex::i32{} );
 
     REQUIRE( s.has_k_filter_set() );
@@ -299,7 +299,7 @@ TEST_CASE( "Metadata - property: \"k_filter\" - setter, reset", "[settings]" )
     auto s = vortex::turb::legacy::settings::Metadata{ &obj };
     auto s_null = vortex::turb::legacy::settings::Metadata{};
 
-    const auto value = -2l;
+    const auto value = 8l;
 
     REQUIRE( !s.has_k_filter_set() );
     REQUIRE( !s_null.has_k_filter_set() );
@@ -322,14 +322,14 @@ TEST_CASE( "Metadata - property: \"k_filter\" - setter, reset", "[settings]" )
 
 TEST_CASE( "Metadata - property: \"C_K\" - getter, default, has_set", "[settings]" )
 {
-    nlohmann::json obj = { { "C_K", 0.3 } };
+    nlohmann::json obj = { { "C_K", 8.3 } };
     auto s = vortex::turb::legacy::settings::Metadata{ &obj };
     auto s_null = vortex::turb::legacy::settings::Metadata{};
 
     auto value = s.C_K();
     auto default_value = s_null.C_K();
 
-    REQUIRE_THAT( static_cast< vortex::real >( value ), Catch::Matchers::WithinAbs( 0.3, 1e-05 ) );
+    REQUIRE_THAT( static_cast< vortex::real >( value ), Catch::Matchers::WithinAbs( 8.3, 1e-05 ) );
     REQUIRE_THAT( static_cast< vortex::real >( default_value ), Catch::Matchers::WithinAbs( 2.5, 1e-05 ) );
 
     REQUIRE( s.has_C_K_set() );
@@ -342,7 +342,7 @@ TEST_CASE( "Metadata - property: \"C_K\" - setter, reset", "[settings]" )
     auto s = vortex::turb::legacy::settings::Metadata{ &obj };
     auto s_null = vortex::turb::legacy::settings::Metadata{};
 
-    const auto value = 0.3;
+    const auto value = 8.3;
 
     REQUIRE( !s.has_C_K_set() );
     REQUIRE( !s_null.has_C_K_set() );
@@ -365,14 +365,14 @@ TEST_CASE( "Metadata - property: \"C_K\" - setter, reset", "[settings]" )
 
 TEST_CASE( "Metadata - property: \"target_Phi\" - getter, default, has_set", "[settings]" )
 {
-    nlohmann::json obj = { { "target_Phi", 0.3 } };
+    nlohmann::json obj = { { "target_Phi", 8.3 } };
     auto s = vortex::turb::legacy::settings::Metadata{ &obj };
     auto s_null = vortex::turb::legacy::settings::Metadata{};
 
     auto value = s.target_Phi();
     auto default_value = s_null.target_Phi();
 
-    REQUIRE_THAT( static_cast< vortex::real >( value ), Catch::Matchers::WithinAbs( 0.3, 1e-05 ) );
+    REQUIRE_THAT( static_cast< vortex::real >( value ), Catch::Matchers::WithinAbs( 8.3, 1e-05 ) );
     REQUIRE_THAT( static_cast< vortex::real >( default_value ), Catch::Matchers::WithinAbs( vortex::real{}, 1e-05 ) );
 
     REQUIRE( s.has_target_Phi_set() );
@@ -385,7 +385,7 @@ TEST_CASE( "Metadata - property: \"target_Phi\" - setter, reset", "[settings]" )
     auto s = vortex::turb::legacy::settings::Metadata{ &obj };
     auto s_null = vortex::turb::legacy::settings::Metadata{};
 
-    const auto value = 0.3;
+    const auto value = 8.3;
 
     REQUIRE( !s.has_target_Phi_set() );
     REQUIRE( !s_null.has_target_Phi_set() );
@@ -408,14 +408,14 @@ TEST_CASE( "Metadata - property: \"target_Phi\" - setter, reset", "[settings]" )
 
 TEST_CASE( "Metadata - property: \"superpart_factor\" - getter, default, has_set", "[settings]" )
 {
-    nlohmann::json obj = { { "superpart_factor", 0.3 } };
+    nlohmann::json obj = { { "superpart_factor", 8.3 } };
     auto s = vortex::turb::legacy::settings::Metadata{ &obj };
     auto s_null = vortex::turb::legacy::settings::Metadata{};
 
     auto value = s.superpart_factor();
     auto default_value = s_null.superpart_factor();
 
-    REQUIRE_THAT( static_cast< vortex::real >( value ), Catch::Matchers::WithinAbs( 0.3, 1e-05 ) );
+    REQUIRE_THAT( static_cast< vortex::real >( value ), Catch::Matchers::WithinAbs( 8.3, 1e-05 ) );
     REQUIRE_THAT( static_cast< vortex::real >( default_value ), Catch::Matchers::WithinAbs( 1.0, 1e-05 ) );
 
     REQUIRE( s.has_superpart_factor_set() );
@@ -428,7 +428,7 @@ TEST_CASE( "Metadata - property: \"superpart_factor\" - setter, reset", "[settin
     auto s = vortex::turb::legacy::settings::Metadata{ &obj };
     auto s_null = vortex::turb::legacy::settings::Metadata{};
 
-    const auto value = 0.3;
+    const auto value = 8.3;
 
     REQUIRE( !s.has_superpart_factor_set() );
     REQUIRE( !s_null.has_superpart_factor_set() );
@@ -571,14 +571,14 @@ TEST_CASE( "Metadata - property: \"src_part_path\" - setter, reset", "[settings]
 
 TEST_CASE( "Metadata - property: \"part_output_delay\" - getter, default, has_set", "[settings]" )
 {
-    nlohmann::json obj = { { "part_output_delay", -2l } };
+    nlohmann::json obj = { { "part_output_delay", 8l } };
     auto s = vortex::turb::legacy::settings::Metadata{ &obj };
     auto s_null = vortex::turb::legacy::settings::Metadata{};
 
     auto value = s.part_output_delay();
     auto default_value = s_null.part_output_delay();
 
-    REQUIRE( static_cast< vortex::i32 >( value ) == -2l );
+    REQUIRE( static_cast< vortex::i32 >( value ) == 8l );
     REQUIRE( static_cast< vortex::i32 >( default_value ) == vortex::i32{} );
 
     REQUIRE( s.has_part_output_delay_set() );
@@ -591,7 +591,7 @@ TEST_CASE( "Metadata - property: \"part_output_delay\" - setter, reset", "[setti
     auto s = vortex::turb::legacy::settings::Metadata{ &obj };
     auto s_null = vortex::turb::legacy::settings::Metadata{};
 
-    const auto value = -2l;
+    const auto value = 8l;
 
     REQUIRE( !s.has_part_output_delay_set() );
     REQUIRE( !s_null.has_part_output_delay_set() );
@@ -743,14 +743,14 @@ TEST_CASE( "Metadata - property: \"is_perf_part_dist_enabled\" - setter, reset",
 
 TEST_CASE( "Metadata - property: \"perf_full_start\" - getter, default, has_set", "[settings]" )
 {
-    nlohmann::json obj = { { "perf_full_start", -2l } };
+    nlohmann::json obj = { { "perf_full_start", 8l } };
     auto s = vortex::turb::legacy::settings::Metadata{ &obj };
     auto s_null = vortex::turb::legacy::settings::Metadata{};
 
     auto value = s.perf_full_start();
     auto default_value = s_null.perf_full_start();
 
-    REQUIRE( static_cast< vortex::i32 >( value ) == -2l );
+    REQUIRE( static_cast< vortex::i32 >( value ) == 8l );
     REQUIRE( static_cast< vortex::i32 >( default_value ) == vortex::i32{} );
 
     REQUIRE( s.has_perf_full_start_set() );
@@ -763,7 +763,7 @@ TEST_CASE( "Metadata - property: \"perf_full_start\" - setter, reset", "[setting
     auto s = vortex::turb::legacy::settings::Metadata{ &obj };
     auto s_null = vortex::turb::legacy::settings::Metadata{};
 
-    const auto value = -2l;
+    const auto value = 8l;
 
     REQUIRE( !s.has_perf_full_start_set() );
     REQUIRE( !s_null.has_perf_full_start_set() );
@@ -786,14 +786,14 @@ TEST_CASE( "Metadata - property: \"perf_full_start\" - setter, reset", "[setting
 
 TEST_CASE( "Metadata - property: \"perf_full_end\" - getter, default, has_set", "[settings]" )
 {
-    nlohmann::json obj = { { "perf_full_end", -2l } };
+    nlohmann::json obj = { { "perf_full_end", 8l } };
     auto s = vortex::turb::legacy::settings::Metadata{ &obj };
     auto s_null = vortex::turb::legacy::settings::Metadata{};
 
     auto value = s.perf_full_end();
     auto default_value = s_null.perf_full_end();
 
-    REQUIRE( static_cast< vortex::i32 >( value ) == -2l );
+    REQUIRE( static_cast< vortex::i32 >( value ) == 8l );
     REQUIRE( static_cast< vortex::i32 >( default_value ) == vortex::i32{} );
 
     REQUIRE( s.has_perf_full_end_set() );
@@ -806,7 +806,7 @@ TEST_CASE( "Metadata - property: \"perf_full_end\" - setter, reset", "[settings]
     auto s = vortex::turb::legacy::settings::Metadata{ &obj };
     auto s_null = vortex::turb::legacy::settings::Metadata{};
 
-    const auto value = -2l;
+    const auto value = 8l;
 
     REQUIRE( !s.has_perf_full_end_set() );
     REQUIRE( !s_null.has_perf_full_end_set() );
@@ -829,14 +829,14 @@ TEST_CASE( "Metadata - property: \"perf_full_end\" - setter, reset", "[settings]
 
 TEST_CASE( "Metadata - property: \"part_perf_interval\" - getter, default, has_set", "[settings]" )
 {
-    nlohmann::json obj = { { "part_perf_interval", -2l } };
+    nlohmann::json obj = { { "part_perf_interval", 8l } };
     auto s = vortex::turb::legacy::settings::Metadata{ &obj };
     auto s_null = vortex::turb::legacy::settings::Metadata{};
 
     auto value = s.part_perf_interval();
     auto default_value = s_null.part_perf_interval();
 
-    REQUIRE( static_cast< vortex::i32 >( value ) == -2l );
+    REQUIRE( static_cast< vortex::i32 >( value ) == 8l );
     REQUIRE( static_cast< vortex::i32 >( default_value ) == vortex::i32{} );
 
     REQUIRE( s.has_part_perf_interval_set() );
@@ -849,7 +849,7 @@ TEST_CASE( "Metadata - property: \"part_perf_interval\" - setter, reset", "[sett
     auto s = vortex::turb::legacy::settings::Metadata{ &obj };
     auto s_null = vortex::turb::legacy::settings::Metadata{};
 
-    const auto value = -2l;
+    const auto value = 8l;
 
     REQUIRE( !s.has_part_perf_interval_set() );
     REQUIRE( !s_null.has_part_perf_interval_set() );

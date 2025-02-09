@@ -205,13 +205,14 @@ def generate_dynamic_source_file(root_path: str, data: dict[str, Any], ctx: dict
 
     i = begin_namespace(ls, i, *namespace)
     add_blank(ls)
-    i = add_ctor_definition(ls, i, class_name, [('nlohmann::json *', 'data_p', None, None)], body=[(0, '// add initial validation')])
+    i = add_ctor_definition(ls, i, class_name, [('nlohmann::json *', 'data_p', None, None)], body=[(0, 'pre_validate_all();')])
     add_blank(ls)
 
     update_body : list[(int, str)] = [
         (0, 'if (!is_empty() && other_data_p != nullptr)'),
         (0, '{'),
         (1, 'as_any().update_with( other_data_p );'),
+        (1, 'pre_validate_all();'),
         (0, '}'),
         (0, 'return *this;'),
     ]

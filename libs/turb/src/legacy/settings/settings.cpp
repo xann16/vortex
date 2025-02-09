@@ -18,7 +18,7 @@ namespace vortex::turb::legacy::settings
 Settings::Settings( nlohmann::json * data_p )
 :   m_data_p( data_p )
 {
-    // add initial validation
+    pre_validate_all();
 }
 
 Settings& Settings::update_with( nlohmann::json * other_data_p )
@@ -26,6 +26,7 @@ Settings& Settings::update_with( nlohmann::json * other_data_p )
     if (!is_empty() && other_data_p != nullptr)
     {
         as_any().update_with( other_data_p );
+        pre_validate_all();
     }
     return *this;
 }
@@ -85,6 +86,8 @@ void Settings::validate()
 
 void Settings::pre_validate_all()
 {
+    if ( is_empty() ) return;
+    
     if ( has_metadata_set() )
     {
         pre_validate_metadata( metadata() );

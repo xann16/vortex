@@ -224,7 +224,7 @@ TEST_CASE( "TestCase - property: \"template_name\" - setter, reset", "[settings]
 
 TEST_CASE( "TestCase - property: \"settings\" - getter, default, has_set", "[settings]" )
 {
-    nlohmann::json obj = { { "settings", { { "x", "y"} } } };
+    nlohmann::json obj = { { "settings", { { "name", "x"} } } };
     auto s = vortex::runner::config::TestCase{ &obj };
     auto s_null = vortex::runner::config::TestCase{};
 
@@ -232,7 +232,7 @@ TEST_CASE( "TestCase - property: \"settings\" - getter, default, has_set", "[set
     auto default_value = s_null.settings();
 
     REQUIRE( !value.is_empty() );
-    REQUIRE( value.data()->at( "x" ) == "y" );
+    REQUIRE( value.data()->at( "name" ) == "x" );
     REQUIRE( default_value.is_empty() );
 
     REQUIRE( s.has_settings_set() );
@@ -318,7 +318,7 @@ TEST_CASE( "TestCase - property: \"parallel_strategy\" - setter, reset", "[setti
 
 TEST_CASE( "TestCase - property: \"stages\" - getter, default, has_set", "[settings]" )
 {
-    nlohmann::json obj = { { "stages", { "stest", "stest", "stest" } } };
+    nlohmann::json obj = { { "stages", { "stest", "ttest", "utest" } } };
     auto s = vortex::runner::config::TestCase{ &obj };
     auto s_null = vortex::runner::config::TestCase{};
 
@@ -327,8 +327,8 @@ TEST_CASE( "TestCase - property: \"stages\" - getter, default, has_set", "[setti
 
     REQUIRE( value.size() == 3ull );
     REQUIRE( value[ 0 ] == "stest" );
-    REQUIRE( value[ 1 ] == "stest" );
-    REQUIRE( value[ 2 ] == "stest" );
+    REQUIRE( value[ 1 ] == "ttest" );
+    REQUIRE( value[ 2 ] == "utest" );
     REQUIRE( default_value.empty() );
 
     REQUIRE( s.has_stages_set() );
@@ -516,14 +516,14 @@ TEST_CASE( "TestCase - property: \"stages\" - array-specific - empty object", "[
 
 TEST_CASE( "TestCase - property: \"process_count\" - getter, default, has_set", "[settings]" )
 {
-    nlohmann::json obj = { { "process_count", -2l } };
+    nlohmann::json obj = { { "process_count", 8l } };
     auto s = vortex::runner::config::TestCase{ &obj };
     auto s_null = vortex::runner::config::TestCase{};
 
     auto value = s.process_count();
     auto default_value = s_null.process_count();
 
-    REQUIRE( static_cast< vortex::i32 >( value ) == -2l );
+    REQUIRE( static_cast< vortex::i32 >( value ) == 8l );
     REQUIRE( static_cast< vortex::i32 >( default_value ) == 1 );
 
     REQUIRE( s.has_process_count_set() );
@@ -536,7 +536,7 @@ TEST_CASE( "TestCase - property: \"process_count\" - setter, reset", "[settings]
     auto s = vortex::runner::config::TestCase{ &obj };
     auto s_null = vortex::runner::config::TestCase{};
 
-    const auto value = -2l;
+    const auto value = 8l;
 
     REQUIRE( !s.has_process_count_set() );
     REQUIRE( !s_null.has_process_count_set() );
