@@ -18,6 +18,8 @@ namespace vortex
     using f32 = float;
     using f64 = double;
 
+    using byte = unsigned char;
+
 #if defined(FLOAT32_REALS)
     using real = f32;
 #elif defined(FLOAT64_REALS)
