@@ -57,6 +57,6 @@ TEST_CASE("Static Settings Data Storage - storing array test", "[settings]")
 
     for ( auto i = std::size_t{}; i < 10ull; ++i )
     {
-        REQUIRE( *(static_cast< int* >( data_p ) + i) == static_cast< int >( i ) );
+        REQUIRE( ( static_cast< int* >( data_p )[ i ] ) == static_cast< int >( i ) );
     }
 }
