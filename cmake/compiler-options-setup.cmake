@@ -11,7 +11,7 @@ endif( "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" )
 # TODO: add options for MSVC
 set( MY_CXX_WARNING_FLAGS -Wall -Wextra -Wconversion -Wshadow -Wnon-virtual-dtor -Wold-style-cast -Wcast-align -Wcast-qual -Wunused -Woverloaded-virtual -Wno-noexcept-type -Wno-unknown-pragmas -Wpedantic )
 if ( "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" )
-  set( MY_CXX_WARNING_FLAGS ${MY_CXX_WARNING_FLAGS} -Weverything -Wno-c++98-compat-pedantic  -Wno-c++98-compat -Wno-documentation -Wno-reserved-id-macro -Wno-switch-enum -Wno-weak-vtables -Wno-missing-prototypes -Wno-padded -Wno-missing-noreturn -Wno-exit-time-destructors -Wno-documentation-unknown-command -Wno-unused-template -Wno-undef -Wno-format-nonliteral -Wno-global-constructors)
+  set( MY_CXX_WARNING_FLAGS ${MY_CXX_WARNING_FLAGS} -Weverything -Wno-c++98-compat-pedantic  -Wno-c++98-compat -Wno-documentation -Wno-reserved-id-macro -Wno-switch-enum -Wno-weak-vtables -Wno-missing-prototypes -Wno-padded -Wno-missing-noreturn -Wno-exit-time-destructors -Wno-documentation-unknown-command -Wno-unused-template -Wno-undef -Wno-format-nonliteral -Wno-global-constructors -Wno-unsafe-buffer-usage)
 else( "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" )
   set( MY_CXX_WARNING_FLAGS ${MY_CXX_WARNING_FLAGS} -Wnoexcept )
 endif( "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" )
