@@ -47,22 +47,27 @@ def _get_singular_name(name: str, p: dict[str, Any]) -> str:
     return name[:-1] if name.endswith('s') else (name + '_item')
 
 
-def _get_module_type(name: str, data: dict[str, Any], ctx: dict[str, Any]) -> str:
+def _get_module_type(name: str, data: dict[str, Any], ctx: dict[str, Any], is_static: bool = False) -> str:
     from_path : str = [inc['from'] for inc in data['__includes__'] if name in inc['import']['modules']][0] if ('__includes__' in data) else ''
     import_metadata : dict[str, Any] = ctx['defs'][from_path]['__metadata__']
-    return '::'.join([import_metadata['package'].lstrip('*')] + import_metadata['namespace'] + [to_pascal_case(name)])
+    return '::'.join([import_metadata['package'].lstrip('*')] + import_metadata['namespace'] + (['stat'] if is_static else []) + [to_pascal_case(name)])
 
 
-def _get_return_type(p: dict[str, Any], data: dict[str, Any], ctx: dict[str, Any], skip_array: bool = False) -> str:
+def _get_return_type(p: dict[str, Any], data: dict[str, Any], ctx: dict[str, Any], skip_array: bool = False, is_static: bool = False) -> str:
     is_array : bool = _is_array(p)
     property_type : str = p['type']
 
     if not skip_array and is_array:
-        return f'std::vector< {_get_return_type(p, data, ctx, skip_array=True).replace('_view', '')} >'
+        if is_static:
+            return f'std::span< {_get_return_type(p, data, ctx, skip_array=True, is_static=is_static)} >'
+        else:
+            return f'std::vector< {_get_return_type(p, data, ctx, skip_array=True, is_static=is_static).replace('_view', '')} >'
 
     if property_type == 'module':
-        return _get_module_type(p['module']['name'], data, ctx)
+        return _get_module_type(p['module']['name'], data, ctx, is_static=is_static)
     elif property_type == 'settings':
+        if is_static:
+            raise RuntimeError( "Properties of type 'settings' cannot be used in static context." )
         return 'core::settings::json::AnySettings'
     elif property_type == 'enum':
         return to_pascal_case(p['enum']['name'])
@@ -89,13 +94,15 @@ def _get_arg_type(p: dict[str, Any], data: dict[str, Any], ctx: dict[str, Any], 
     else:
         raise RuntimeError(f'Unexpected property type: {property_type}.')
 
-
-def _get_default_value(name: str, p: dict[str, Any], data: dict[str, Any], ctx: dict[str, Any], skip_arrays: bool = False) -> str:
+def _get_default_value(name: str, p: dict[str, Any], data: dict[str, Any], ctx: dict[str, Any], skip_arrays: bool = False, is_static: bool = False) -> str:
     property_type : str = p['type']
     default_value : Any = p['default'] if 'default' in p else None
 
+    if is_static and property_type in ['string', 'path']:
+        default_value = None
+
     if property_type in ['module', 'settings']:
-        return _get_return_type(p, data, ctx) + '{}'
+        return _get_return_type(p, data, ctx, is_static=is_static) + '{}'
     elif property_type == 'enum':
         enum_values : list[str] = p['enum']['values']
         if default_value and default_value not in enum_values:
@@ -115,12 +122,14 @@ def _get_default_value(name: str, p: dict[str, Any], data: dict[str, Any], ctx: 
     else:
         raise RuntimeError(f'Unexpected property type: {property_type}.')
 
-def _get_value_stingification(name: str, property_type: str, is_array: bool, indent: int, is_in_array: bool = False) -> list[(int, str)]:
+def _get_value_stingification(name: str, property_type: str, is_array: bool, indent: int, is_in_array: bool = False, is_static=False) -> list[(int, str)]:
     result : list[(int, str)] = []
 
     line_start : str = f'os << std::setw( indent_size * {"( indent_level + 1 )" if is_in_array else "indent_level"} ) << "" << "{'- ' if is_in_array else f"{name}:"}'
     if not is_array:
-        getter : str = 'el' if is_in_array else f'{name}()'
+        getter : str = 'el' if is_in_array else name
+        if not is_in_array and not is_static:
+            getter += '()'
         if property_type in BASE_TYPES:
             if property_type != 'boolean':
                 result.append((indent, f'{line_start} " << {getter} << \'\\n\';'))
@@ -130,7 +139,7 @@ def _get_value_stingification(name: str, property_type: str, is_array: bool, ind
             result.append((indent, f'{line_start} " << to_c_str( {getter} ) << \'\\n\';'))
         elif property_type in ['settings', 'module']:
             result.append((indent, f'{line_start}\\n";'))
-            result.append((indent, f'{getter}.stringify( os, indent_size, indent_level + {'2' if is_in_array else '1'}, display_all );'))
+            result.append((indent, f'{getter}.stringify( os, indent_size, indent_level + {'2' if is_in_array else '1'}{"" if is_static else ", display_all"} );'))
     else:
         result.append((indent, f'{line_start}";'))
         result.append((indent, f'auto const& {name}_arr = {name}();'))
@@ -144,7 +153,7 @@ def _get_value_stingification(name: str, property_type: str, is_array: bool, ind
         result.append((indent + 1, 'os << \'\\n\';'))
         result.append((indent + 1, f'for (auto const& el : {name}_arr)'))
         result.append((indent + 1, '{'))
-        result.extend(_get_value_stingification(name, property_type, False, indent + 2, is_in_array=True))
+        result.extend(_get_value_stingification(name, property_type, False, indent + 2, is_in_array=True, is_static=is_static))
         result.append((indent + 1, '}'))
         result.append((indent, '}'))
 
@@ -167,6 +176,19 @@ def get_stringify_body(data: list[str]) -> list[(int, str)]:
             result.append((0, '{'))
             result.extend(_get_value_stingification(name, prop['type'], _is_array(prop), 1))
             result.append((0, '}'))
+
+    result.append((0, ''))
+    result.append((0, 'return os;'))
+
+    return result
+
+
+def get_static_stringify_body(data: list[str]) -> list[(int, str)]:
+    result : list[(int, str)] = []
+
+    for name, prop in data.items():
+        if not name.startswith('__'):
+            result.extend(_get_value_stingification(name, prop['type'], _is_array(prop), 1, is_static=True))
 
     result.append((0, ''))
     result.append((0, 'return os;'))
@@ -1037,6 +1059,110 @@ def add_pre_validate_all_definition(ls: list[str], i: int, class_name: str, data
 
     return add_method_definition(ls, i, 'pre_validate_all', 'void', class_name, [], body=body)
 
+# STATICs
+
+def _add_static_property_data_member(ls: list[str], i: int, name: str, p: dict[str, Any], data: dict[str, Any], ctx: dict[str, Any]) -> int:
+    return_type : str = _get_return_type(p, data, ctx, is_static=True)
+    default_value : str = _get_default_value(name, p, data, ctx, is_static=True)
+    return add_line(ls, i, f'{return_type} {name} = {default_value};')
+
+def _add_static_property_unit_test(ls: list[str], i: int, name: str, p: dict[str, Any], data: dict[str, Any], ctx: dict[str, Any]) -> int:
+    is_array : bool = _is_array(p)
+    return_type : str = _get_return_type(p, data, ctx, is_static=True)
+    property_type : str = p['type']
+    class_name : str = get_class_name(data)
+    namespace : list[str] = get_namespace(data)
+
+    i = begin_test_case(ls, i, f'{class_name} - property: \\\"{name}\\\" - static', 'settings')
+
+    i = add_block_comment(ls, i, "TODO - supply test implementation")
+    i = add_require(ls, i, "true")
+
+    """
+    if property_type in BASE_TYPES:
+        val_str : str = f'{{ {BASE_TYPES[property_type][1]}, {BASE_TYPES[property_type][2]}, {BASE_TYPES[property_type][3]} }}' if is_array else BASE_TYPES[property_type][1]
+        i = add_line(ls, i, 'nlohmann::json obj = { { "' + name + f'", {val_str}' + ' } };' )
+    elif property_type == 'enum':
+        val_str : str = f'{{ {", ".join(str(val) for val in p['enum']['values'])} }}' if is_array else p['enum']['values'][-1]
+        i = add_line(ls, i, 'nlohmann::json obj = { { "' + name + f'", "{val_str}"' + ' } };' )
+    elif property_type in ['module', 'settings']:
+        # TODO - specific sets for specific setting classes (i.e. module)
+        init_str : str = '{ { "name", "x"} }'
+        full_init_str : str = ('{ ' + ', '.join([init_str, init_str.replace('x', 'y'), init_str.replace('x', 'z')]) + ' }') if is_array else init_str
+        i = add_line(ls, i, 'nlohmann::json obj = { { "' + name + '", ' + full_init_str + ' } };' )
+    else:
+        raise RuntimeError(f'Unexpected property type: {property_type}.')
+
+    i = add_line(ls, i, 'auto s = ' + '::'.join(namespace) + '::' + class_name + '{ &obj };')
+    i = add_line(ls, i, 'auto s_null = ' + '::'.join(namespace) + '::' + class_name + '{};')
+    add_blank(ls)
+
+    i = add_line(ls, i, f'auto value = s.{name}();')
+    i = add_line(ls, i, f'auto default_value = s_null.{name}();')
+    add_blank(ls)
+
+    if not is_array:
+        if property_type in ['module', 'settings']:
+            i = add_require(ls, i, '!value.is_empty()')
+            i = add_require(ls, i, 'value.data()->at( "name" ) == "x"')
+            i = add_require(ls, i, 'default_value.is_empty()')
+        elif property_type == 'enum':
+            i = add_require(ls, i, f'value == {'::'.join(namespace)}::{to_pascal_case(p['enum']['name'])}::{to_pascal_case(p['enum']['values'][-1])}')
+            i = add_require(ls, i, f'default_value == {'::'.join(namespace)}::{_get_default_value(name, p, data, ctx)}')
+        elif property_type in BASE_TYPES:
+            is_fp : bool = property_type in ['f32', 'f64', 'real']
+            val_str : str = 'value' if property_type in ['boolean', 'string', 'path'] else f'static_cast< vortex::{BASE_TYPES[property_type][0]} >( value )'
+            def_val_str : str = 'default_value' if property_type in ['boolean', 'string', 'path'] else f'static_cast< vortex::{BASE_TYPES[property_type][0]} >( default_value )'
+            default_value : str = _get_default_value(name, p, data, ctx)
+            def_prefix = 's_null.' if ('default' in p and isinstance(p['default'], str) and p['default'].startswith('@')) else ('' if ('default' in p or property_type in ['string', 'path', 'boolean']) else 'vortex::')
+
+            if is_fp:
+                i = add_require(ls, i, f'{val_str}, Catch::Matchers::WithinAbs( {BASE_TYPES[property_type][1]}, {FP_CMP_EPS} )', suffix='that')
+                i = add_require(ls, i, f'{def_val_str}, Catch::Matchers::WithinAbs( {def_prefix}{default_value}, {FP_CMP_EPS} )', suffix='that')
+            else:
+                i = add_require(ls, i, f'{val_str} == {BASE_TYPES[property_type][1]}')
+                i = add_require(ls, i, f'{def_val_str} == {def_prefix}{default_value}')
+        else:
+            raise RuntimeError(f'Unexpected property type: {property_type}.')
+
+    else:
+        if property_type in ['module', 'settings']:
+            i = add_require(ls, i, '!value.empty()')
+            i = add_require(ls, i, 'value.size() == 3ull')
+            i = add_require(ls, i, '!value[ 0 ].is_empty()')
+            i = add_require(ls, i, 'value[ 0 ].data()->at( "name" ) == "x"')
+            i = add_require(ls, i, '!value[ 1 ].is_empty()')
+            i = add_require(ls, i, 'value[ 1 ].data()->at( "name" ) == "y"')
+            i = add_require(ls, i, '!value[ 2 ].is_empty()')
+            i = add_require(ls, i, 'value[ 2 ].data()->at( "name" ) == "z"')
+            i = add_require(ls, i, 'default_value.empty()')
+        elif property_type == 'enum':
+            for ii, ename in enumerate(p['enum']['values']):
+                i = add_require(ls, i, f'value.size() == {len(p['enum']['values'])}ull')
+                i = add_require(ls, i, f'value[ {ii} ] == {'::'.join(namespace)}::{to_pascal_case(p['enum']['name'])}::{to_pascal_case(ename)}')
+            i = add_require(ls, i, f'default_value.empty()')
+        elif property_type in BASE_TYPES:
+            is_fp : bool = property_type in ['f32', 'f64', 'real']
+            val_str : str = 'value[ XXXXX ]' if property_type in ['boolean', 'string', 'path'] else f'static_cast< vortex::{BASE_TYPES[property_type][0]} >( value[ XXXXX ] )'
+            i = add_require(ls, i, 'value.size() == 3ull')
+            for ii in [0, 1, 2]:
+                if is_fp:
+                    i = add_require(ls, i, f'{val_str.replace('XXXXX', str(ii))}, Catch::Matchers::WithinAbs( {BASE_TYPES[property_type][1 + ii]}, {FP_CMP_EPS} )', suffix='that')
+                else:
+                    i = add_require(ls, i, f'{val_str.replace('XXXXX', str(ii))} == {BASE_TYPES[property_type][1 + ii]}')
+            i = add_require(ls, i, f'default_value.empty()')
+        else:
+            raise RuntimeError(f'Unexpected property type: {property_type}.')
+
+    add_blank(ls)
+    add_require(ls, i, f's.has_{name}_set()')
+    add_require(ls, i, f'!s_null.has_{name}_set()')
+    """
+
+    i = end_test_case(ls, i)
+
+    return i
+
 ###########
 
 def add_property_public_declarations(ls: list[str], i: int, data: dict[str, Any], ctx: dict[str, Any]) -> int:
@@ -1112,4 +1238,24 @@ def add_property_unit_tests(ls: list[str], i: int, data: dict[str, Any], ctx: di
             if _is_array(prop):
                 i = _add_array_specific_tests(ls, i, class_name, name, prop, namespace, data, ctx)
                 add_blank(ls)
+    return i
+
+###########
+
+def has_any_heap_stored_properties(data: dict[str, Any], ctx: dict[str, Any]) -> bool:
+    for name, prop in data.items():
+        if not name.startswith('__') and (_is_array(prop) or prop['type'] in ['string', 'path']):
+            return True
+    return False
+
+def add_static_property_data_members(ls: list[str], i: int, data: dict[str, Any], ctx: dict[str, Any]) -> int:
+    for name, prop in data.items():
+        if not name.startswith('__'):
+            i = _add_static_property_data_member(ls, i, name, prop, data, ctx)
+    return i
+
+def add_static_property_unit_tests(ls: list[str], i: int, data: dict[str, Any], ctx: dict[str, Any]) -> int:
+    for name, prop in data.items():
+        if not name.startswith('__'):
+            i = _add_static_property_unit_test(ls, i, name, prop, data, ctx)
     return i

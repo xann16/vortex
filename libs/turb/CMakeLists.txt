@@ -9,11 +9,13 @@ set(HEADERS
 
     # files added automatically using vxsw
     include/turb/legacy/settings/settings.hpp
+    include/turb/legacy/settings/stat/settings.hpp
     include/turb/legacy/settings/enums/forcing_type.hpp
     include/turb/legacy/settings/enums/forcing_type_json_integration.hpp
     include/turb/legacy/settings/enums/drag_type.hpp
     include/turb/legacy/settings/enums/drag_type_json_integration.hpp
     include/turb/legacy/settings/parameters.hpp
+    include/turb/legacy/settings/stat/parameters.hpp
     include/turb/legacy/settings/enums/sim_method.hpp
     include/turb/legacy/settings/enums/sim_method_json_integration.hpp
     include/turb/legacy/settings/enums/particle_mode.hpp
@@ -23,7 +25,9 @@ set(HEADERS
     include/turb/legacy/settings/enums/particle_twc_kernel_type.hpp
     include/turb/legacy/settings/enums/particle_twc_kernel_type_json_integration.hpp
     include/turb/legacy/settings/metadata.hpp
+    include/turb/legacy/settings/stat/metadata.hpp
     include/turb/legacy/settings/execution_settings.hpp
+    include/turb/legacy/settings/stat/execution_settings.hpp
     include/turb/legacy/settings/providers/json_settings_provider.hpp
     # end of vxsw managed section
 )
@@ -33,15 +37,19 @@ set(SOURCES
 
     # files added automatically using vxsw
     src/legacy/settings/settings.cpp
+    src/legacy/settings/stat/settings.cpp
     src/legacy/settings/enums/forcing_type.cpp
     src/legacy/settings/enums/drag_type.cpp
     src/legacy/settings/parameters.cpp
+    src/legacy/settings/stat/parameters.cpp
     src/legacy/settings/enums/sim_method.cpp
     src/legacy/settings/enums/particle_mode.cpp
     src/legacy/settings/enums/gravity_mode.cpp
     src/legacy/settings/enums/particle_twc_kernel_type.cpp
     src/legacy/settings/metadata.cpp
+    src/legacy/settings/stat/metadata.cpp
     src/legacy/settings/execution_settings.cpp
+    src/legacy/settings/stat/execution_settings.cpp
     src/legacy/settings/providers/json_settings_provider.cpp
     # end of vxsw managed section
 )
@@ -51,15 +59,19 @@ set(TESTS
 
     # files added automatically using vxsw
     tests/legacy/settings/settings.test.cpp
+    tests/legacy/settings/stat/settings.test.cpp
     tests/legacy/settings/enums/forcing_type.test.cpp
     tests/legacy/settings/enums/drag_type.test.cpp
     tests/legacy/settings/parameters.test.cpp
+    tests/legacy/settings/stat/parameters.test.cpp
     tests/legacy/settings/enums/sim_method.test.cpp
     tests/legacy/settings/enums/particle_mode.test.cpp
     tests/legacy/settings/enums/gravity_mode.test.cpp
     tests/legacy/settings/enums/particle_twc_kernel_type.test.cpp
     tests/legacy/settings/metadata.test.cpp
+    tests/legacy/settings/stat/metadata.test.cpp
     tests/legacy/settings/execution_settings.test.cpp
+    tests/legacy/settings/stat/execution_settings.test.cpp
     tests/legacy/settings/providers/json_settings_provider.test.cpp
     # end of vxsw managed section
 )
