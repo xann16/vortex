@@ -22,11 +22,11 @@ namespace vortex::turb::legacy::settings::stat
 std::ostream& Settings::stringify( std::ostream& os, int indent_size, int indent_level ) const
 {
         os << std::setw( indent_size * indent_level ) << "" << "metadata:\n";
-        metadata.stringify( os, indent_size, indent_level + 1 );
+        metadata().stringify( os, indent_size, indent_level + 1 );
         os << std::setw( indent_size * indent_level ) << "" << "parameters:\n";
-        parameters.stringify( os, indent_size, indent_level + 1 );
+        parameters().stringify( os, indent_size, indent_level + 1 );
         os << std::setw( indent_size * indent_level ) << "" << "execution_settings:\n";
-        execution_settings.stringify( os, indent_size, indent_level + 1 );
+        execution_settings().stringify( os, indent_size, indent_level + 1 );
     
     return os;
 }

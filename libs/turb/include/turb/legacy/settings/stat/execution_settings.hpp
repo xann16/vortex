@@ -15,20 +15,47 @@
 namespace vortex::turb::legacy::settings::stat
 {
 
-struct ExecutionSettings
+class ExecutionSettings
 {
-    std::string_view job_name = std::string_view{};
-    std::string_view grant_no = std::string_view{};
-    i32 cpu_node_count = 1;
-    f64 wct_limit = 60.0;
-    i32 process_count = 1;
-    bool is_node_overcommit_enabled = bool{};
-    void * m_data_p = nullptr;
+public:
+    [[nodiscard]] constexpr std::string_view job_name() const noexcept
+    {
+        return m_job_name;
+    }
+    [[nodiscard]] constexpr std::string_view grant_no() const noexcept
+    {
+        return m_grant_no;
+    }
+    [[nodiscard]] constexpr i32 cpu_node_count() const noexcept
+    {
+        return m_cpu_node_count;
+    }
+    [[nodiscard]] constexpr f64 wct_limit() const noexcept
+    {
+        return m_wct_limit;
+    }
+    [[nodiscard]] constexpr i32 process_count() const noexcept
+    {
+        return m_process_count;
+    }
+    [[nodiscard]] constexpr bool is_node_overcommit_enabled() const noexcept
+    {
+        return m_is_node_overcommit_enabled;
+    }
 
     [[nodiscard]] std::string to_string() const;
     std::ostream& stringify( std::ostream& os, int indent_size, int indent_level ) const;
 
     friend std::ostream& operator<<( std::ostream& os, ExecutionSettings const& s );
+
+private:
+    std::string_view m_job_name = std::string_view{};
+    std::string_view m_grant_no = std::string_view{};
+    i32 m_cpu_node_count = 1;
+    f64 m_wct_limit = 60.0;
+    i32 m_process_count = 1;
+    bool m_is_node_overcommit_enabled = bool{};
+    void * m_data_p = nullptr;
 
 }; // end of class ExecutionSettings
 

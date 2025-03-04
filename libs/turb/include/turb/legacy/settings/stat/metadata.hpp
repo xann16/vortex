@@ -19,31 +19,102 @@
 namespace vortex::turb::legacy::settings::stat
 {
 
-struct Metadata
+class Metadata
 {
-    SimMethod sim_method = SimMethod::Dns;
-    ParticleMode particle_mode = ParticleMode::None;
-    GravityMode gravity_type = GravityMode::None;
-    ParticleTwcKernelType particle_kernel_type = ParticleTwcKernelType::Pnn;
-    i32 k_filter = i32{};
-    real C_K = 2.5;
-    real target_Phi = real{};
-    real superpart_factor = 1.0;
-    std::string_view src_flow_path = std::string_view{};
-    std::string_view src_part_path = std::string_view{};
-    i32 part_output_delay = i32{};
-    bool is_perf_full_profile_enabled = bool{};
-    bool is_perf_simple_enabled = bool{};
-    bool is_perf_part_dist_enabled = bool{};
-    i32 perf_full_start = i32{};
-    i32 perf_full_end = i32{};
-    i32 part_perf_interval = i32{};
-    void * m_data_p = nullptr;
+public:
+    [[nodiscard]] constexpr SimMethod sim_method() const noexcept
+    {
+        return m_sim_method;
+    }
+    [[nodiscard]] constexpr ParticleMode particle_mode() const noexcept
+    {
+        return m_particle_mode;
+    }
+    [[nodiscard]] constexpr GravityMode gravity_type() const noexcept
+    {
+        return m_gravity_type;
+    }
+    [[nodiscard]] constexpr ParticleTwcKernelType particle_kernel_type() const noexcept
+    {
+        return m_particle_kernel_type;
+    }
+    [[nodiscard]] constexpr i32 k_filter() const noexcept
+    {
+        return m_k_filter;
+    }
+    [[nodiscard]] constexpr real C_K() const noexcept
+    {
+        return m_C_K;
+    }
+    [[nodiscard]] constexpr real target_Phi() const noexcept
+    {
+        return m_target_Phi;
+    }
+    [[nodiscard]] constexpr real superpart_factor() const noexcept
+    {
+        return m_superpart_factor;
+    }
+    [[nodiscard]] constexpr std::string_view src_flow_path() const noexcept
+    {
+        return m_src_flow_path;
+    }
+    [[nodiscard]] constexpr std::string_view src_part_path() const noexcept
+    {
+        return m_src_part_path;
+    }
+    [[nodiscard]] constexpr i32 part_output_delay() const noexcept
+    {
+        return m_part_output_delay;
+    }
+    [[nodiscard]] constexpr bool is_perf_full_profile_enabled() const noexcept
+    {
+        return m_is_perf_full_profile_enabled;
+    }
+    [[nodiscard]] constexpr bool is_perf_simple_enabled() const noexcept
+    {
+        return m_is_perf_simple_enabled;
+    }
+    [[nodiscard]] constexpr bool is_perf_part_dist_enabled() const noexcept
+    {
+        return m_is_perf_part_dist_enabled;
+    }
+    [[nodiscard]] constexpr i32 perf_full_start() const noexcept
+    {
+        return m_perf_full_start;
+    }
+    [[nodiscard]] constexpr i32 perf_full_end() const noexcept
+    {
+        return m_perf_full_end;
+    }
+    [[nodiscard]] constexpr i32 part_perf_interval() const noexcept
+    {
+        return m_part_perf_interval;
+    }
 
     [[nodiscard]] std::string to_string() const;
     std::ostream& stringify( std::ostream& os, int indent_size, int indent_level ) const;
 
     friend std::ostream& operator<<( std::ostream& os, Metadata const& s );
+
+private:
+    SimMethod m_sim_method = SimMethod::Dns;
+    ParticleMode m_particle_mode = ParticleMode::None;
+    GravityMode m_gravity_type = GravityMode::None;
+    ParticleTwcKernelType m_particle_kernel_type = ParticleTwcKernelType::Pnn;
+    i32 m_k_filter = i32{};
+    real m_C_K = 2.5;
+    real m_target_Phi = real{};
+    real m_superpart_factor = 1.0;
+    std::string_view m_src_flow_path = std::string_view{};
+    std::string_view m_src_part_path = std::string_view{};
+    i32 m_part_output_delay = i32{};
+    bool m_is_perf_full_profile_enabled = bool{};
+    bool m_is_perf_simple_enabled = bool{};
+    bool m_is_perf_part_dist_enabled = bool{};
+    i32 m_perf_full_start = i32{};
+    i32 m_perf_full_end = i32{};
+    i32 m_part_perf_interval = i32{};
+    void * m_data_p = nullptr;
 
 }; // end of class Metadata
 

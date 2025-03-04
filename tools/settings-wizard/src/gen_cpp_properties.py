@@ -122,14 +122,12 @@ def _get_default_value(name: str, p: dict[str, Any], data: dict[str, Any], ctx: 
     else:
         raise RuntimeError(f'Unexpected property type: {property_type}.')
 
-def _get_value_stingification(name: str, property_type: str, is_array: bool, indent: int, is_in_array: bool = False, is_static=False) -> list[(int, str)]:
+def _get_value_stingification(name: str, property_type: str, is_array: bool, indent: int, is_in_array: bool = False, is_static: bool = False) -> list[(int, str)]:
     result : list[(int, str)] = []
 
     line_start : str = f'os << std::setw( indent_size * {"( indent_level + 1 )" if is_in_array else "indent_level"} ) << "" << "{'- ' if is_in_array else f"{name}:"}'
     if not is_array:
-        getter : str = 'el' if is_in_array else name
-        if not is_in_array and not is_static:
-            getter += '()'
+        getter : str = 'el' if is_in_array else f"{name}()"
         if property_type in BASE_TYPES:
             if property_type != 'boolean':
                 result.append((indent, f'{line_start} " << {getter} << \'\\n\';'))
@@ -1064,7 +1062,11 @@ def add_pre_validate_all_definition(ls: list[str], i: int, class_name: str, data
 def _add_static_property_data_member(ls: list[str], i: int, name: str, p: dict[str, Any], data: dict[str, Any], ctx: dict[str, Any]) -> int:
     return_type : str = _get_return_type(p, data, ctx, is_static=True)
     default_value : str = _get_default_value(name, p, data, ctx, is_static=True)
-    return add_line(ls, i, f'{return_type} {name} = {default_value};')
+    return add_line(ls, i, f'{return_type} m_{name} = {default_value};')
+
+def _add_static_property_getter(ls: list[str], i: int, name: str, p: dict[str, Any], data: dict[str, Any], ctx: dict[str, Any]) -> int:
+    return_type : str = _get_return_type(p, data, ctx, is_static=True)
+    return add_method_declaration(ls, i, name, return_type, [], body=[(0, f'return m_{name};')], is_const=True, is_nodiscard=True, is_noexcept=True, is_definition=True, pre_qualifiers='constexpr')
 
 def _add_static_property_unit_test(ls: list[str], i: int, name: str, p: dict[str, Any], data: dict[str, Any], ctx: dict[str, Any]) -> int:
     is_array : bool = _is_array(p)
@@ -1252,6 +1254,12 @@ def add_static_property_data_members(ls: list[str], i: int, data: dict[str, Any]
     for name, prop in data.items():
         if not name.startswith('__'):
             i = _add_static_property_data_member(ls, i, name, prop, data, ctx)
+    return i
+
+def add_static_property_getters(ls: list[str], i: int, data: dict[str, Any], ctx: dict[str, Any]) -> int:
+    for name, prop in data.items():
+        if not name.startswith('__'):
+            i = _add_static_property_getter(ls, i, name, prop, data, ctx)
     return i
 
 def add_static_property_unit_tests(ls: list[str], i: int, data: dict[str, Any], ctx: dict[str, Any]) -> int:

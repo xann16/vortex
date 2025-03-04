@@ -18,16 +18,31 @@
 namespace vortex::turb::legacy::settings::stat
 {
 
-struct Settings
+class Settings
 {
-    turb::legacy::settings::stat::Metadata metadata = turb::legacy::settings::stat::Metadata{};
-    turb::legacy::settings::stat::Parameters parameters = turb::legacy::settings::stat::Parameters{};
-    turb::legacy::settings::stat::ExecutionSettings execution_settings = turb::legacy::settings::stat::ExecutionSettings{};
+public:
+    [[nodiscard]] constexpr turb::legacy::settings::stat::Metadata metadata() const noexcept
+    {
+        return m_metadata;
+    }
+    [[nodiscard]] constexpr turb::legacy::settings::stat::Parameters parameters() const noexcept
+    {
+        return m_parameters;
+    }
+    [[nodiscard]] constexpr turb::legacy::settings::stat::ExecutionSettings execution_settings() const noexcept
+    {
+        return m_execution_settings;
+    }
 
     [[nodiscard]] std::string to_string() const;
     std::ostream& stringify( std::ostream& os, int indent_size, int indent_level ) const;
 
     friend std::ostream& operator<<( std::ostream& os, Settings const& s );
+
+private:
+    turb::legacy::settings::stat::Metadata m_metadata = turb::legacy::settings::stat::Metadata{};
+    turb::legacy::settings::stat::Parameters m_parameters = turb::legacy::settings::stat::Parameters{};
+    turb::legacy::settings::stat::ExecutionSettings m_execution_settings = turb::legacy::settings::stat::ExecutionSettings{};
 
 }; // end of class Settings
 

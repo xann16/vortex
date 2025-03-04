@@ -1,6 +1,6 @@
 from cpp_utils import get_class_name, get_namespace, add_include, add_blank, add_line, add_block_comment, begin_test_case, end_test_case, add_require, begin_namespace, end_namespace, begin_class, end_class, add_access_qualifier, add_ctor_declaration, add_ctor_definition, add_method_definition, add_method_declaration, add_function_declaration, add_function_definition, add_data_field
 import gen_cpp_enums
-from gen_cpp_properties import add_static_property_data_members, has_any_heap_stored_properties, add_static_property_unit_tests, get_static_stringify_body
+from gen_cpp_properties import add_static_property_data_members, add_static_property_getters, has_any_heap_stored_properties, add_static_property_unit_tests, get_static_stringify_body
 from gen_utils import create_file
 import os
 from typing import Any
@@ -111,17 +111,22 @@ def generate_static_header_file(root_path: str, data: dict[str, Any], ctx: dict[
 
     i = begin_namespace(ls, i, *namespace)
     add_blank(ls)
-    i = begin_class(ls, i, class_name, is_struct=True)
+    i = begin_class(ls, i, class_name)
 
-    i = add_static_property_data_members(ls, i, data, ctx)
-    if has_any_heap_stored_properties(data, ctx):
-        add_line(ls, i, "void * m_data_p = nullptr;")
+    i = add_access_qualifier(ls, i, 'public')
+    i = add_static_property_getters(ls, i, data, ctx)
     add_blank(ls)
 
     i = add_method_declaration(ls, i, 'to_string', 'std::string', [], is_const=True, is_nodiscard=True)
     i = add_method_declaration(ls, i, 'stringify', 'std::ostream&', [('std::ostream&', 'os'), ('int', 'indent_size'), ('int', 'indent_level')], is_const=True)
     add_blank(ls)
     i = add_method_declaration(ls, i, 'operator<<', 'std::ostream&', [('std::ostream&', 'os'), (f'{class_name} const&', 's')], pre_qualifiers='friend')
+    add_blank(ls)
+
+    i = add_access_qualifier(ls, i, 'private')
+    i = add_static_property_data_members(ls, i, data, ctx)
+    if has_any_heap_stored_properties(data, ctx):
+        add_line(ls, i, "void * m_data_p = nullptr;")
     add_blank(ls)
 
     i = end_class(ls, i, class_name)

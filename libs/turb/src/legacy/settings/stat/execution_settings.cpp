@@ -21,12 +21,12 @@ namespace vortex::turb::legacy::settings::stat
 
 std::ostream& ExecutionSettings::stringify( std::ostream& os, int indent_size, int indent_level ) const
 {
-        os << std::setw( indent_size * indent_level ) << "" << "job_name: " << job_name << '\n';
-        os << std::setw( indent_size * indent_level ) << "" << "grant_no: " << grant_no << '\n';
-        os << std::setw( indent_size * indent_level ) << "" << "cpu_node_count: " << cpu_node_count << '\n';
-        os << std::setw( indent_size * indent_level ) << "" << "wct_limit: " << wct_limit << '\n';
-        os << std::setw( indent_size * indent_level ) << "" << "process_count: " << process_count << '\n';
-        os << std::setw( indent_size * indent_level ) << "" << "is_node_overcommit_enabled: " << ( is_node_overcommit_enabled ? "true" : "false" ) << '\n';
+        os << std::setw( indent_size * indent_level ) << "" << "job_name: " << job_name() << '\n';
+        os << std::setw( indent_size * indent_level ) << "" << "grant_no: " << grant_no() << '\n';
+        os << std::setw( indent_size * indent_level ) << "" << "cpu_node_count: " << cpu_node_count() << '\n';
+        os << std::setw( indent_size * indent_level ) << "" << "wct_limit: " << wct_limit() << '\n';
+        os << std::setw( indent_size * indent_level ) << "" << "process_count: " << process_count() << '\n';
+        os << std::setw( indent_size * indent_level ) << "" << "is_node_overcommit_enabled: " << ( is_node_overcommit_enabled() ? "true" : "false" ) << '\n';
     
     return os;
 }
