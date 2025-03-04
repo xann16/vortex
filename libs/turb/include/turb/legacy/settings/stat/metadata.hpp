@@ -91,6 +91,15 @@ public:
         return m_part_perf_interval;
     }
 
+    [[nodiscard]] consteval bool has_data() const noexcept
+    {
+        return true;
+    }
+    [[nodiscard]] constexpr void * data() const noexcept
+    {
+        return m_data_p;
+    }
+
     [[nodiscard]] std::string to_string() const;
     std::ostream& stringify( std::ostream& os, int indent_size, int indent_level ) const;
 

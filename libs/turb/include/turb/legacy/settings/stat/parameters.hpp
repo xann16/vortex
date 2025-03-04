@@ -145,6 +145,15 @@ public:
         return m_a;
     }
 
+    [[nodiscard]] consteval bool has_data() const noexcept
+    {
+        return false;
+    }
+    [[nodiscard]] constexpr void * data() const noexcept
+    {
+        return nullptr;
+    }
+
     [[nodiscard]] std::string to_string() const;
     std::ostream& stringify( std::ostream& os, int indent_size, int indent_level ) const;
 

@@ -88,6 +88,7 @@ def generate_static_header_file(root_path: str, data: dict[str, Any], ctx: dict[
     path : str = get_header_path(data, root_path=root_path)
     class_name : str = get_class_name(data)
     namespace : list[str] = get_namespace(data) + ['stat']
+    has_heap_data : bool = has_any_heap_stored_properties(data, ctx)
 
     ls : list[str] = []
     i = 0
@@ -117,6 +118,10 @@ def generate_static_header_file(root_path: str, data: dict[str, Any], ctx: dict[
     i = add_static_property_getters(ls, i, data, ctx)
     add_blank(ls)
 
+    i = add_method_declaration(ls, i, 'has_data', 'bool', [], body=[(0, f'return {('true' if has_heap_data else 'false')};')], is_const=True, is_nodiscard=True, is_noexcept=True, is_definition=True, pre_qualifiers='consteval')
+    i = add_method_declaration(ls, i, 'data', 'void *', [], body=[(0, f'return {('m_data_p' if has_heap_data else 'nullptr')};')], is_const=True, is_nodiscard=True, is_noexcept=True, is_definition=True, pre_qualifiers='constexpr')
+    add_blank(ls)
+
     i = add_method_declaration(ls, i, 'to_string', 'std::string', [], is_const=True, is_nodiscard=True)
     i = add_method_declaration(ls, i, 'stringify', 'std::ostream&', [('std::ostream&', 'os'), ('int', 'indent_size'), ('int', 'indent_level')], is_const=True)
     add_blank(ls)
@@ -125,7 +130,7 @@ def generate_static_header_file(root_path: str, data: dict[str, Any], ctx: dict[
 
     i = add_access_qualifier(ls, i, 'private')
     i = add_static_property_data_members(ls, i, data, ctx)
-    if has_any_heap_stored_properties(data, ctx):
+    if has_heap_data:
         add_line(ls, i, "void * m_data_p = nullptr;")
     add_blank(ls)
 
