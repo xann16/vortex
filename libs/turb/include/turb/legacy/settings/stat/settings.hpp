@@ -34,13 +34,13 @@ public:
         return m_execution_settings;
     }
 
-    [[nodiscard]] consteval bool has_data() const noexcept
+    [[nodiscard]] consteval bool has_extra_data() const noexcept
     {
         return false;
     }
-    [[nodiscard]] constexpr void * data() const noexcept
+    [[nodiscard]] constexpr std::size_t extra_data_size() const noexcept
     {
-        return nullptr;
+        return metadata().extra_data_size() + parameters().extra_data_size() + execution_settings().extra_data_size();
     }
 
     [[nodiscard]] std::string to_string() const;
@@ -52,7 +52,6 @@ private:
     turb::legacy::settings::stat::Metadata m_metadata = turb::legacy::settings::stat::Metadata{};
     turb::legacy::settings::stat::Parameters m_parameters = turb::legacy::settings::stat::Parameters{};
     turb::legacy::settings::stat::ExecutionSettings m_execution_settings = turb::legacy::settings::stat::ExecutionSettings{};
-
 }; // end of class Settings
 
 } // end of namespace vortex::turb::legacy::settings::stat

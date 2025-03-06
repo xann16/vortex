@@ -145,13 +145,13 @@ public:
         return m_a;
     }
 
-    [[nodiscard]] consteval bool has_data() const noexcept
+    [[nodiscard]] consteval bool has_extra_data() const noexcept
     {
         return false;
     }
-    [[nodiscard]] constexpr void * data() const noexcept
+    [[nodiscard]] constexpr std::size_t extra_data_size() const noexcept
     {
-        return nullptr;
+        return 0ull;
     }
 
     [[nodiscard]] std::string to_string() const;
@@ -191,7 +191,6 @@ private:
     i32 m_N_part = i32{};
     DragType m_drag_type = DragType::Stokes;
     real m_a = real{};
-
 }; // end of class Parameters
 
 } // end of namespace vortex::turb::legacy::settings::stat

@@ -1,6 +1,6 @@
 from cpp_utils import get_class_name, get_namespace, add_include, add_blank, add_line, add_block_comment, begin_test_case, end_test_case, add_require, begin_namespace, end_namespace, begin_class, end_class, add_access_qualifier, add_ctor_declaration, add_ctor_definition, add_method_definition, add_method_declaration, add_function_declaration, add_function_definition, add_data_field
 import gen_cpp_enums
-from gen_cpp_properties import add_property_public_declarations, add_property_private_declarations, add_property_definitions, add_property_unit_tests, get_stringify_body, add_pre_validate_all_definition
+from gen_cpp_properties import add_property_public_declarations, add_property_private_declarations, add_property_definitions, add_property_unit_tests, get_stringify_body, add_pre_validate_all_definition, has_any_heap_stored_properties, get_extra_data_size_body
 from gen_cpp_static import generate_cpp_static
 from gen_cpp_validation import generate_post_validate_all_body
 from gen_utils import create_file
@@ -151,6 +151,9 @@ def generate_dynamic_header_file(root_path: str, data: dict[str, Any], ctx: dict
     i = add_method_declaration(ls, i, 'update_with', f'{class_name}&', [('nlohmann::json *', 'other_data_p')])
     i = add_method_declaration(ls, i, 'update_with', f'{class_name}&', [('core::settings::json::AnySettings const&', 'other')], body=[(0, 'return update_with( other.data() );')], is_definition=True)
     i = add_method_declaration(ls, i, 'update_with', f'{class_name}&', [(f'{class_name} const&', 'other')], body=[(0, 'return update_with( other.data() );')], is_definition=True)
+    add_blank(ls)
+    i = add_method_declaration(ls, i, 'has_extra_data', 'bool', [], body=[(0, f'return {('true' if has_any_heap_stored_properties(data, ctx) else 'false')};')], is_const=True, is_nodiscard=True, is_noexcept=True, is_definition=True, pre_qualifiers='consteval')
+    i = add_method_declaration(ls, i, 'extra_data_size', 'std::size_t', [], body=get_extra_data_size_body(data, ctx), is_const=True, is_nodiscard=True, is_definition=True)
     add_blank(ls)
     i = add_method_declaration(ls, i, 'to_string', 'std::string', [], is_const=True, is_nodiscard=True)
     i = add_method_declaration(ls, i, 'stringify', 'std::ostream&', [('std::ostream&', 'os'), ('int', 'indent_size'), ('int', 'indent_level'), ('bool', 'display_all')], is_const=True)

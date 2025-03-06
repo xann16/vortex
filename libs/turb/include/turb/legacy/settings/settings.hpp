@@ -53,6 +53,15 @@ public:
         return update_with( other.data() );
     }
 
+    [[nodiscard]] consteval bool has_extra_data() const noexcept
+    {
+        return false;
+    }
+    [[nodiscard]] std::size_t extra_data_size() const
+    {
+        return metadata().extra_data_size() + parameters().extra_data_size() + execution_settings().extra_data_size();
+    }
+
     [[nodiscard]] std::string to_string() const;
     std::ostream& stringify( std::ostream& os, int indent_size, int indent_level, bool display_all ) const;
 

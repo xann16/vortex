@@ -1,7 +1,7 @@
 from cpp_utils import get_class_name, get_namespace, begin_namespace, end_namespace, add_blank, add_line, add_block_comment, add_method_declaration, add_method_definition, begin_test_case, end_test_case, add_require
 from gen_cpp_validation import generate_pre_validate_property_body
 from gen_utils import to_pascal_case
-from typing import Any
+from typing import Any, Tuple
 
 FP_CMP_EPS = 0.00001
 BASE_TYPES = {
@@ -1165,6 +1165,23 @@ def _add_static_property_unit_test(ls: list[str], i: int, name: str, p: dict[str
 
     return i
 
+def get_heap_using_or_nested_properties(data: dict[str, Any], ctx: dict[str, Any]) -> Tuple[list[str], list[str]]:
+    nested : list[str] = []
+    heap_using : list[str] = []
+
+    for name, prop in data.items():
+        if not name.startswith('__'):
+            if _is_array(prop):
+                raise Exception( f"Property '{name}' is an array. Arrays are currently unsupported in static mode." )
+            elif prop['type'] in ['string', 'path']:
+                heap_using.append(name)
+            elif prop['type'] in ['module', 'settings']:
+                if prop['type'] == 'settings':
+                    raise Exception( f"Property '{name}' is an abstract settings module. Such type is currently unsupported in static mode." )
+                nested.append(name)
+
+    return heap_using, nested
+
 ###########
 
 def add_property_public_declarations(ls: list[str], i: int, data: dict[str, Any], ctx: dict[str, Any]) -> int:
@@ -1245,10 +1262,31 @@ def add_property_unit_tests(ls: list[str], i: int, data: dict[str, Any], ctx: di
 ###########
 
 def has_any_heap_stored_properties(data: dict[str, Any], ctx: dict[str, Any]) -> bool:
-    for name, prop in data.items():
-        if not name.startswith('__') and (_is_array(prop) or prop['type'] in ['string', 'path']):
-            return True
-    return False
+    try:
+        return any(get_heap_using_or_nested_properties(data, ctx)[0])
+    except Exception:
+        # currently returning false to cover problematic / unsupported cases
+        return False
+
+def get_extra_data_size_body(data: dict[str, Any], ctx: dict[str, Any], is_static: bool = False) -> list[(int, str)]:
+    try:
+        extra_data, nested = get_heap_using_or_nested_properties(data, ctx)
+    except Exception as ex:
+        if is_static:
+            raise ex
+        return [(0, f'throw std::runtime_error{{ "Unsupported operation for settings with abstract nested settings or arrays." }};')]
+
+    components : list[str] = []
+
+    components.extend(f'{p}().size() + 1ull' for p in extra_data)
+    components.extend(f'{p}().extra_data_size()' for p in nested)
+
+    if not components:
+        components.append('0ull')
+
+    sum_str : str = ' + '.join(components)
+
+    return [(0, f"return {sum_str};")]
 
 def add_static_property_data_members(ls: list[str], i: int, data: dict[str, Any], ctx: dict[str, Any]) -> int:
     for name, prop in data.items():

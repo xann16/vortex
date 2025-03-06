@@ -50,6 +50,15 @@ public:
         return update_with( other.data() );
     }
 
+    [[nodiscard]] consteval bool has_extra_data() const noexcept
+    {
+        return true;
+    }
+    [[nodiscard]] std::size_t extra_data_size() const
+    {
+        return job_name().size() + 1ull + grant_no().size() + 1ull;
+    }
+
     [[nodiscard]] std::string to_string() const;
     std::ostream& stringify( std::ostream& os, int indent_size, int indent_level, bool display_all ) const;
 

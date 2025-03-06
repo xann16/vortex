@@ -91,13 +91,13 @@ public:
         return m_part_perf_interval;
     }
 
-    [[nodiscard]] consteval bool has_data() const noexcept
+    [[nodiscard]] consteval bool has_extra_data() const noexcept
     {
         return true;
     }
-    [[nodiscard]] constexpr void * data() const noexcept
+    [[nodiscard]] constexpr std::size_t extra_data_size() const noexcept
     {
-        return m_data_p;
+        return src_flow_path().size() + 1ull + src_part_path().size() + 1ull;
     }
 
     [[nodiscard]] std::string to_string() const;
@@ -123,8 +123,6 @@ private:
     i32 m_perf_full_start = i32{};
     i32 m_perf_full_end = i32{};
     i32 m_part_perf_interval = i32{};
-    void * m_data_p = nullptr;
-
 }; // end of class Metadata
 
 } // end of namespace vortex::turb::legacy::settings::stat

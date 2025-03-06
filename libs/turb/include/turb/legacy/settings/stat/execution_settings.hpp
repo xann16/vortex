@@ -43,13 +43,13 @@ public:
         return m_is_node_overcommit_enabled;
     }
 
-    [[nodiscard]] consteval bool has_data() const noexcept
+    [[nodiscard]] consteval bool has_extra_data() const noexcept
     {
         return true;
     }
-    [[nodiscard]] constexpr void * data() const noexcept
+    [[nodiscard]] constexpr std::size_t extra_data_size() const noexcept
     {
-        return m_data_p;
+        return job_name().size() + 1ull + grant_no().size() + 1ull;
     }
 
     [[nodiscard]] std::string to_string() const;
@@ -64,8 +64,6 @@ private:
     f64 m_wct_limit = 60.0;
     i32 m_process_count = 1;
     bool m_is_node_overcommit_enabled = bool{};
-    void * m_data_p = nullptr;
-
 }; // end of class ExecutionSettings
 
 } // end of namespace vortex::turb::legacy::settings::stat
