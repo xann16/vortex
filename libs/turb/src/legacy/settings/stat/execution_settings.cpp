@@ -12,6 +12,14 @@
 namespace vortex::turb::legacy::settings::stat
 {
 
+ExecutionSettings::ExecutionSettings( std::string_view job_name, std::string_view grant_no, i32 cpu_node_count, f64 wct_limit, i32 process_count, bool is_node_overcommit_enabled ) noexcept
+:   m_job_name( job_name )
+,   m_grant_no( grant_no )
+,   m_cpu_node_count( cpu_node_count )
+,   m_wct_limit( wct_limit )
+,   m_process_count( process_count )
+,   m_is_node_overcommit_enabled( is_node_overcommit_enabled )
+{}
 [[nodiscard]] std::string ExecutionSettings::to_string() const
 {
     auto oss = std::ostringstream{};

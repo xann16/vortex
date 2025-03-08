@@ -12,6 +12,39 @@
 namespace vortex::turb::legacy::settings::stat
 {
 
+Parameters::Parameters( i32 N, i32 N_subdomain, i32 Nt_max, real dt, real rnu, real t_init, bool is_flow_generated, u64 deterministic_seed, i32 input_velo_index, ForcingType forcing_type, real deterministic_forcing_k_1, real deterministic_forcing_k_2, u64 stochastic_seed, i32 stats_output_interval, i32 spectrum_output_interval, bool is_stats_output_extended, real rho_part, real rho_fluid, real eta_k_init, real tau_k_init, real shell_thickness, real epsilon_env, real nu_fluid, real gravity, bool is_part_generated, bool is_part_overlapping, bool is_part_hdi_enabled, real part_hdi_trunc_enabled, i32 N_part, DragType drag_type, real a ) noexcept
+:   m_N( N )
+,   m_N_subdomain( N_subdomain )
+,   m_Nt_max( Nt_max )
+,   m_dt( dt )
+,   m_rnu( rnu )
+,   m_t_init( t_init )
+,   m_is_flow_generated( is_flow_generated )
+,   m_deterministic_seed( deterministic_seed )
+,   m_input_velo_index( input_velo_index )
+,   m_forcing_type( forcing_type )
+,   m_deterministic_forcing_k_1( deterministic_forcing_k_1 )
+,   m_deterministic_forcing_k_2( deterministic_forcing_k_2 )
+,   m_stochastic_seed( stochastic_seed )
+,   m_stats_output_interval( stats_output_interval )
+,   m_spectrum_output_interval( spectrum_output_interval )
+,   m_is_stats_output_extended( is_stats_output_extended )
+,   m_rho_part( rho_part )
+,   m_rho_fluid( rho_fluid )
+,   m_eta_k_init( eta_k_init )
+,   m_tau_k_init( tau_k_init )
+,   m_shell_thickness( shell_thickness )
+,   m_epsilon_env( epsilon_env )
+,   m_nu_fluid( nu_fluid )
+,   m_gravity( gravity )
+,   m_is_part_generated( is_part_generated )
+,   m_is_part_overlapping( is_part_overlapping )
+,   m_is_part_hdi_enabled( is_part_hdi_enabled )
+,   m_part_hdi_trunc_enabled( part_hdi_trunc_enabled )
+,   m_N_part( N_part )
+,   m_drag_type( drag_type )
+,   m_a( a )
+{}
 [[nodiscard]] std::string Parameters::to_string() const
 {
     auto oss = std::ostringstream{};

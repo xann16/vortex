@@ -22,6 +22,9 @@ namespace vortex::turb::legacy::settings::stat
 class Metadata
 {
 public:
+    Metadata() noexcept = default;
+    Metadata( SimMethod sim_method, ParticleMode particle_mode, GravityMode gravity_type, ParticleTwcKernelType particle_kernel_type, i32 k_filter, real C_K, real target_Phi, real superpart_factor, std::string_view src_flow_path, std::string_view src_part_path, i32 part_output_delay, bool is_perf_full_profile_enabled, bool is_perf_simple_enabled, bool is_perf_part_dist_enabled, i32 perf_full_start, i32 perf_full_end, i32 part_perf_interval ) noexcept;
+public:
     [[nodiscard]] constexpr SimMethod sim_method() const noexcept
     {
         return m_sim_method;

@@ -18,6 +18,9 @@ namespace vortex::turb::legacy::settings::stat
 class ExecutionSettings
 {
 public:
+    ExecutionSettings() noexcept = default;
+    ExecutionSettings( std::string_view job_name, std::string_view grant_no, i32 cpu_node_count, f64 wct_limit, i32 process_count, bool is_node_overcommit_enabled ) noexcept;
+public:
     [[nodiscard]] constexpr std::string_view job_name() const noexcept
     {
         return m_job_name;

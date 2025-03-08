@@ -21,6 +21,9 @@ namespace vortex::turb::legacy::settings::stat
 class Settings
 {
 public:
+    Settings() noexcept = default;
+    Settings( turb::legacy::settings::stat::Metadata metadata, turb::legacy::settings::stat::Parameters parameters, turb::legacy::settings::stat::ExecutionSettings execution_settings ) noexcept;
+public:
     [[nodiscard]] constexpr turb::legacy::settings::stat::Metadata metadata() const noexcept
     {
         return m_metadata;

@@ -20,6 +20,9 @@ namespace vortex::turb::legacy::settings::stat
 class Parameters
 {
 public:
+    Parameters() noexcept = default;
+    Parameters( i32 N, i32 N_subdomain, i32 Nt_max, real dt, real rnu, real t_init, bool is_flow_generated, u64 deterministic_seed, i32 input_velo_index, ForcingType forcing_type, real deterministic_forcing_k_1, real deterministic_forcing_k_2, u64 stochastic_seed, i32 stats_output_interval, i32 spectrum_output_interval, bool is_stats_output_extended, real rho_part, real rho_fluid, real eta_k_init, real tau_k_init, real shell_thickness, real epsilon_env, real nu_fluid, real gravity, bool is_part_generated, bool is_part_overlapping, bool is_part_hdi_enabled, real part_hdi_trunc_enabled, i32 N_part, DragType drag_type, real a ) noexcept;
+public:
     [[nodiscard]] constexpr i32 N() const noexcept
     {
         return m_N;

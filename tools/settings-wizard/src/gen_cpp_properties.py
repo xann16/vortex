@@ -1182,6 +1182,9 @@ def get_heap_using_or_nested_properties(data: dict[str, Any], ctx: dict[str, Any
 
     return heap_using, nested
 
+def _get_hacky_static_ctor_param(name: str, p: dict[str, Any], data: dict[str, Any], ctx: dict[str, Any]) -> Tuple[str, str, str | None, str | None]:
+    return _get_return_type(p, data, ctx, is_static=True), name, None, None
+
 ###########
 
 def add_property_public_declarations(ls: list[str], i: int, data: dict[str, Any], ctx: dict[str, Any]) -> int:
@@ -1305,3 +1308,6 @@ def add_static_property_unit_tests(ls: list[str], i: int, data: dict[str, Any], 
         if not name.startswith('__'):
             i = _add_static_property_unit_test(ls, i, name, prop, data, ctx)
     return i
+
+def get_hacky_static_ctor_params(data: dict[str, Any], ctx: dict[str, Any]) -> list[(str, str, str| None, str | None)]:
+    return [_get_hacky_static_ctor_param(name, prop, data, ctx) for name, prop in data.items() if not name.startswith('__')]

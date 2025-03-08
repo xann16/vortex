@@ -12,6 +12,25 @@
 namespace vortex::turb::legacy::settings::stat
 {
 
+Metadata::Metadata( SimMethod sim_method, ParticleMode particle_mode, GravityMode gravity_type, ParticleTwcKernelType particle_kernel_type, i32 k_filter, real C_K, real target_Phi, real superpart_factor, std::string_view src_flow_path, std::string_view src_part_path, i32 part_output_delay, bool is_perf_full_profile_enabled, bool is_perf_simple_enabled, bool is_perf_part_dist_enabled, i32 perf_full_start, i32 perf_full_end, i32 part_perf_interval ) noexcept
+:   m_sim_method( sim_method )
+,   m_particle_mode( particle_mode )
+,   m_gravity_type( gravity_type )
+,   m_particle_kernel_type( particle_kernel_type )
+,   m_k_filter( k_filter )
+,   m_C_K( C_K )
+,   m_target_Phi( target_Phi )
+,   m_superpart_factor( superpart_factor )
+,   m_src_flow_path( src_flow_path )
+,   m_src_part_path( src_part_path )
+,   m_part_output_delay( part_output_delay )
+,   m_is_perf_full_profile_enabled( is_perf_full_profile_enabled )
+,   m_is_perf_simple_enabled( is_perf_simple_enabled )
+,   m_is_perf_part_dist_enabled( is_perf_part_dist_enabled )
+,   m_perf_full_start( perf_full_start )
+,   m_perf_full_end( perf_full_end )
+,   m_part_perf_interval( part_perf_interval )
+{}
 [[nodiscard]] std::string Metadata::to_string() const
 {
     auto oss = std::ostringstream{};

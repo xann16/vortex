@@ -12,6 +12,11 @@
 namespace vortex::turb::legacy::settings::stat
 {
 
+Settings::Settings( turb::legacy::settings::stat::Metadata metadata, turb::legacy::settings::stat::Parameters parameters, turb::legacy::settings::stat::ExecutionSettings execution_settings ) noexcept
+:   m_metadata( metadata )
+,   m_parameters( parameters )
+,   m_execution_settings( execution_settings )
+{}
 [[nodiscard]] std::string Settings::to_string() const
 {
     auto oss = std::ostringstream{};

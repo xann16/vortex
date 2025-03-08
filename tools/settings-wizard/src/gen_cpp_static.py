@@ -1,6 +1,6 @@
 from cpp_utils import get_class_name, get_namespace, add_include, add_blank, add_line, add_block_comment, begin_test_case, end_test_case, add_require, begin_namespace, end_namespace, begin_class, end_class, add_access_qualifier, add_ctor_declaration, add_ctor_definition, add_method_definition, add_method_declaration, add_function_declaration, add_function_definition, add_data_field
 import gen_cpp_enums
-from gen_cpp_properties import add_static_property_data_members, add_static_property_getters, has_any_heap_stored_properties, add_static_property_unit_tests, get_static_stringify_body, get_extra_data_size_body
+from gen_cpp_properties import add_static_property_data_members, add_static_property_getters, has_any_heap_stored_properties, add_static_property_unit_tests, get_static_stringify_body, get_extra_data_size_body, get_hacky_static_ctor_params
 from gen_utils import create_file
 import os
 from typing import Any
@@ -117,6 +117,10 @@ def generate_static_header_file(root_path: str, data: dict[str, Any], ctx: dict[
     i = begin_class(ls, i, class_name)
 
     i = add_access_qualifier(ls, i, 'public')
+    i = add_line(ls, i, f'{class_name}() noexcept = default;')
+    i = add_ctor_declaration(ls, i, class_name, get_hacky_static_ctor_params(data, ctx), is_noexcept=True)
+
+    i = add_access_qualifier(ls, i, 'public')
     i = add_static_property_getters(ls, i, data, ctx)
     add_blank(ls)
 
@@ -160,6 +164,8 @@ def generate_static_source_file(root_path: str, data: dict[str, Any], ctx: dict[
 
     i = begin_namespace(ls, i, *namespace)
     add_blank(ls)
+
+    i = add_ctor_definition(ls, i, class_name, get_hacky_static_ctor_params(data, ctx), body=[], is_noexcept=True)
 
     to_string_body : list[(int, str)] = [
         (0, 'auto oss = std::ostringstream{};'),
