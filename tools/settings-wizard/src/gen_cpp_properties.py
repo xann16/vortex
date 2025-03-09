@@ -1311,3 +1311,37 @@ def add_static_property_unit_tests(ls: list[str], i: int, data: dict[str, Any], 
 
 def get_hacky_static_ctor_params(data: dict[str, Any], ctx: dict[str, Any]) -> list[(str, str, str| None, str | None)]:
     return [_get_hacky_static_ctor_param(name, prop, data, ctx) for name, prop in data.items() if not name.startswith('__')]
+
+def get_extra_data_prep_code(data: dict[str, Any], ctx: dict[str, Any]) -> list[(int, str)]:
+    ls : list[(int, str)] = []
+
+    for name, prop in data.items():
+        if not name.startswith('__'):
+            if prop['type'] in ['string', 'path']:
+                ls.append((0, f'auto {name} = s.{name}();'))
+                ls.append((0, f'auto {name}_data_p = static_cast< char * >( *data_offset_pp );'))
+                ls.append((0, f'auto {name}_size = {name}.size() + 1ull;'))
+                ls.append((0, f'std::memcpy( *data_offset_pp, {name}.data(), {name}_size );'))
+                ls.append((0, f'*data_offset_pp = static_cast< void * >( & ( static_cast< char * >( {name}_data_p )[ {name}_size ] ) );'))
+                ls.append((0, ''))
+
+    return ls
+
+def get_hacky_static_ctor_call(class_name: str, data: dict[str, Any], ctx: dict[str, Any]) -> str:
+    params : list[str] = []
+
+    for name, prop in data.items():
+        if not name.startswith('__'):
+            property_type : str = prop['type']
+            if 'is_array' in prop and prop['is_array']:
+                raise Exception( 'Arrays unsupported in static context.')
+            if property_type == 'settings':
+                raise Exception( 'Abstract settings unsupported in static context.')
+            elif property_type == 'module':
+                params.append(f'to_static( s.{name}(), data_storage, data_offset_pp )')
+            elif property_type in ['string', 'path']:
+                params.append(f'std::string_view{{ {name}_data_p, {name}_size }}')
+            else:
+                params.append(f's.{name}()')
+
+    return f'{class_name}{{ { ", ".join(params) } }}'

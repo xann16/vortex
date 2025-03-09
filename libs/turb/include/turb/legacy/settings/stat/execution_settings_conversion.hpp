@@ -17,6 +17,7 @@
 namespace vortex::turb::legacy::settings
 {
 
-[[nodiscard]] stat::ExecutionSettings to_static( [[maybe_unused]] ExecutionSettings const& s, [[maybe_unused]] core::settings::StaticSettingsDataStorage& data_storage );
+[[nodiscard]] stat::ExecutionSettings to_static( ExecutionSettings const& s, [[maybe_unused]] core::settings::StaticSettingsDataStorage& data_storage );
+[[nodiscard]] stat::ExecutionSettings to_static( ExecutionSettings const& s, [[maybe_unused]] core::settings::StaticSettingsDataStorage& data_storage, [[maybe_unused]] void ** data_offset_pp );
 
 } // end of namespace vortex::turb::legacy::settings

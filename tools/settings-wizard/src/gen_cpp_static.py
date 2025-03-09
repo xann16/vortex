@@ -1,6 +1,6 @@
 from cpp_utils import get_class_name, get_namespace, add_include, add_blank, add_line, add_block_comment, begin_test_case, end_test_case, add_require, begin_namespace, end_namespace, begin_class, end_class, add_access_qualifier, add_ctor_declaration, add_ctor_definition, add_method_definition, add_method_declaration, add_function_declaration, add_function_definition, add_data_field
 import gen_cpp_enums
-from gen_cpp_properties import add_static_property_data_members, add_static_property_getters, has_any_heap_stored_properties, add_static_property_unit_tests, get_static_stringify_body, get_extra_data_size_body, get_hacky_static_ctor_params
+from gen_cpp_properties import add_static_property_data_members, add_static_property_getters, has_any_heap_stored_properties, add_static_property_unit_tests, get_static_stringify_body, get_extra_data_size_body, get_hacky_static_ctor_params, get_extra_data_prep_code, get_hacky_static_ctor_call
 from gen_utils import create_file
 import os
 from typing import Any
@@ -72,9 +72,9 @@ def populate_cmake_data(data: dict[str, Any], ctx : dict[str, Any]) -> None:
     pkg_data['tests'].append(get_unit_test_path(data, ctx='cmake', suffix='_conversion'))
 
 
-def _add_settings_includes(ls: list[str], i: int, includes: list[dict[str, Any]], ctx: dict[str, Any]) -> int:
+def _add_settings_includes(ls: list[str], i: int, includes: list[dict[str, Any]], ctx: dict[str, Any], suffix : str = '') -> int:
     for include_from in (include['from'] for include in includes):
-        i = add_include(ls, i, get_header_path(ctx['defs'][include_from], ctx='include'))
+        i = add_include(ls, i, get_header_path(ctx['defs'][include_from], ctx='include', suffix=suffix))
     return i
 
 
@@ -275,7 +275,8 @@ def generate_conversion_header_file(root_path: str, data: dict[str, Any], ctx: d
 
     i = begin_namespace(ls, i, *namespace)
     add_blank(ls)
-    i = add_function_declaration(ls, i, 'to_static', 'stat::' + class_name, [('[[maybe_unused]] ' + class_name + ' const&', 's'), ('[[maybe_unused]] ' + 'core::settings::StaticSettingsDataStorage&', 'data_storage')], is_nodiscard=True)
+    i = add_function_declaration(ls, i, 'to_static', 'stat::' + class_name, [(class_name + ' const&', 's'), ('[[maybe_unused]] ' + 'core::settings::StaticSettingsDataStorage&', 'data_storage')], is_nodiscard=True)
+    i = add_function_declaration(ls, i, 'to_static', 'stat::' + class_name, [(class_name + ' const&', 's'), ('[[maybe_unused]] ' + 'core::settings::StaticSettingsDataStorage&', 'data_storage'), ('[[maybe_unused]] ' + 'void **', 'data_offset_pp')], is_nodiscard=True)
     add_blank(ls)
     i = end_namespace(ls, i, *namespace)
 
@@ -286,6 +287,7 @@ def generate_conversion_source_file(root_path: str, data: dict[str, Any], ctx: d
     path : str = get_source_path(data, root_path=root_path, suffix='_conversion')
     class_name : str = get_class_name(data)
     namespace : str = get_namespace(data)
+    has_heap_data : bool = has_any_heap_stored_properties(data, ctx)
 
     ls : list[str] = []
     i = 0
@@ -296,14 +298,30 @@ def generate_conversion_source_file(root_path: str, data: dict[str, Any], ctx: d
     i = add_include(ls, i, get_header_path(data, ctx='include', suffix='_conversion'))
     add_blank(ls)
 
+    i = add_include(ls, i, 'cstring', is_quoted=False)
+    add_blank(ls)
+
+    if '__includes__' in data:
+        i = _add_settings_includes(ls, i, data['__includes__'], ctx, suffix='_conversion')
+    add_blank(ls)
+
+
+    pre_conv_body : list[(int, str)] = []
+    if has_heap_data:
+        pre_conv_body.append((0, 'auto heap_data_p = data_storage.allocate( s.extra_data_size() );'))
+    pre_conv_body.append((0, f'return to_static( s, data_storage, {"&heap_data_p" if has_heap_data else "nullptr"} );' ))
+
     conv_body : list[(int, str)] = []
 
-    conv_body.append((0, '// TODO - add implementation'))
-    conv_body.append((0, f'return stat::{class_name}{{}};'))
+    if has_heap_data:
+        conv_body.extend(get_extra_data_prep_code(data, ctx))
+
+    conv_body.append((0, 'return ' + get_hacky_static_ctor_call(f'stat::{class_name}', data, ctx) + ';'))
 
     i = begin_namespace(ls, i, *namespace)
     add_blank(ls)
-    i = add_function_definition(ls, i, 'to_static', 'stat::' + class_name, [('[[maybe_unused]] ' + class_name + ' const&', 's'), ('[[maybe_unused]] ' + 'core::settings::StaticSettingsDataStorage&', 'data_storage')], body=conv_body, is_nodiscard=True)
+    i = add_function_definition(ls, i, 'to_static', 'stat::' + class_name, [(class_name + ' const&', 's'), ('[[maybe_unused]] ' + 'core::settings::StaticSettingsDataStorage&', 'data_storage')], body=pre_conv_body, is_nodiscard=True)
+    i = add_function_definition(ls, i, 'to_static', 'stat::' + class_name, [(class_name + ' const&', 's'), ('[[maybe_unused]] ' + 'core::settings::StaticSettingsDataStorage&', 'data_storage'), ('[[maybe_unused]] ' + 'void **', 'data_offset_pp')], body=conv_body, is_nodiscard=True)
     add_blank(ls)
     i = end_namespace(ls, i, *namespace)
 
