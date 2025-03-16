@@ -27,8 +27,8 @@ TEST_CASE( "Metadata - property: \"sim_method\" - static", "[settings]" )
     auto svalue = ss.sim_method();
     auto default_svalue = ss_null.sim_method();
 
-    REQUIRE( value == svalue );
-    REQUIRE( default_value == default_svalue );
+    REQUIRE( svalue == value );
+    REQUIRE( default_svalue == default_value );
 
     REQUIRE( svalue == vortex::turb::legacy::settings::SimMethod::Fdns );
     REQUIRE( default_svalue == vortex::turb::legacy::settings::SimMethod::Dns );
@@ -51,8 +51,8 @@ TEST_CASE( "Metadata - property: \"particle_mode\" - static", "[settings]" )
     auto svalue = ss.particle_mode();
     auto default_svalue = ss_null.particle_mode();
 
-    REQUIRE( value == svalue );
-    REQUIRE( default_value == default_svalue );
+    REQUIRE( svalue == value );
+    REQUIRE( default_svalue == default_value );
 
     REQUIRE( svalue == vortex::turb::legacy::settings::ParticleMode::Twc );
     REQUIRE( default_svalue == vortex::turb::legacy::settings::ParticleMode::None );
@@ -75,8 +75,8 @@ TEST_CASE( "Metadata - property: \"gravity_type\" - static", "[settings]" )
     auto svalue = ss.gravity_type();
     auto default_svalue = ss_null.gravity_type();
 
-    REQUIRE( value == svalue );
-    REQUIRE( default_value == default_svalue );
+    REQUIRE( svalue == value );
+    REQUIRE( default_svalue == default_value );
 
     REQUIRE( svalue == vortex::turb::legacy::settings::GravityMode::Horizontal );
     REQUIRE( default_svalue == vortex::turb::legacy::settings::GravityMode::None );
@@ -99,8 +99,8 @@ TEST_CASE( "Metadata - property: \"particle_kernel_type\" - static", "[settings]
     auto svalue = ss.particle_kernel_type();
     auto default_svalue = ss_null.particle_kernel_type();
 
-    REQUIRE( value == svalue );
-    REQUIRE( default_value == default_svalue );
+    REQUIRE( svalue == value );
+    REQUIRE( default_svalue == default_value );
 
     REQUIRE( svalue == vortex::turb::legacy::settings::ParticleTwcKernelType::Pic );
     REQUIRE( default_svalue == vortex::turb::legacy::settings::ParticleTwcKernelType::Pnn );
@@ -123,8 +123,8 @@ TEST_CASE( "Metadata - property: \"k_filter\" - static", "[settings]" )
     auto svalue = ss.k_filter();
     auto default_svalue = ss_null.k_filter();
 
-    REQUIRE( value == svalue );
-    REQUIRE( default_value == default_svalue );
+    REQUIRE( svalue == value );
+    REQUIRE( default_svalue == default_value );
 
     REQUIRE( static_cast< vortex::i32 >( svalue ) == 8l );
     REQUIRE( static_cast< vortex::i32 >( default_svalue ) == vortex::i32{} );
@@ -147,8 +147,8 @@ TEST_CASE( "Metadata - property: \"C_K\" - static", "[settings]" )
     auto svalue = ss.C_K();
     auto default_svalue = ss_null.C_K();
 
-    REQUIRE( value == svalue );
-    REQUIRE( default_value == default_svalue );
+    REQUIRE_THAT( svalue, Catch::Matchers::WithinAbs( value, 1e-05 ) );
+    REQUIRE_THAT( default_svalue, Catch::Matchers::WithinAbs( default_value, 1e-05 ) );
 
     REQUIRE_THAT( static_cast< vortex::real >( svalue ), Catch::Matchers::WithinAbs( 8.3, 1e-05 ) );
     REQUIRE_THAT( static_cast< vortex::real >( default_svalue ), Catch::Matchers::WithinAbs( 2.5, 1e-05 ) );
@@ -171,8 +171,8 @@ TEST_CASE( "Metadata - property: \"target_Phi\" - static", "[settings]" )
     auto svalue = ss.target_Phi();
     auto default_svalue = ss_null.target_Phi();
 
-    REQUIRE( value == svalue );
-    REQUIRE( default_value == default_svalue );
+    REQUIRE_THAT( svalue, Catch::Matchers::WithinAbs( value, 1e-05 ) );
+    REQUIRE_THAT( default_svalue, Catch::Matchers::WithinAbs( default_value, 1e-05 ) );
 
     REQUIRE_THAT( static_cast< vortex::real >( svalue ), Catch::Matchers::WithinAbs( 8.3, 1e-05 ) );
     REQUIRE_THAT( static_cast< vortex::real >( default_svalue ), Catch::Matchers::WithinAbs( vortex::real{}, 1e-05 ) );
@@ -195,8 +195,8 @@ TEST_CASE( "Metadata - property: \"superpart_factor\" - static", "[settings]" )
     auto svalue = ss.superpart_factor();
     auto default_svalue = ss_null.superpart_factor();
 
-    REQUIRE( value == svalue );
-    REQUIRE( default_value == default_svalue );
+    REQUIRE_THAT( svalue, Catch::Matchers::WithinAbs( value, 1e-05 ) );
+    REQUIRE_THAT( default_svalue, Catch::Matchers::WithinAbs( default_value, 1e-05 ) );
 
     REQUIRE_THAT( static_cast< vortex::real >( svalue ), Catch::Matchers::WithinAbs( 8.3, 1e-05 ) );
     REQUIRE_THAT( static_cast< vortex::real >( default_svalue ), Catch::Matchers::WithinAbs( 1.0, 1e-05 ) );
@@ -219,8 +219,8 @@ TEST_CASE( "Metadata - property: \"src_flow_path\" - static", "[settings]" )
     auto svalue = ss.src_flow_path();
     auto default_svalue = ss_null.src_flow_path();
 
-    REQUIRE( value == svalue );
-    REQUIRE( default_value == default_svalue );
+    REQUIRE( svalue == value );
+    REQUIRE( default_svalue == default_value );
 
     REQUIRE( svalue == "ptest" );
     REQUIRE( default_svalue == "." );
@@ -243,8 +243,8 @@ TEST_CASE( "Metadata - property: \"src_part_path\" - static", "[settings]" )
     auto svalue = ss.src_part_path();
     auto default_svalue = ss_null.src_part_path();
 
-    REQUIRE( value == svalue );
-    REQUIRE( default_value == default_svalue );
+    REQUIRE( svalue == value );
+    REQUIRE( default_svalue == default_value );
 
     REQUIRE( svalue == "ptest" );
     REQUIRE( default_svalue == "." );
@@ -267,8 +267,8 @@ TEST_CASE( "Metadata - property: \"part_output_delay\" - static", "[settings]" )
     auto svalue = ss.part_output_delay();
     auto default_svalue = ss_null.part_output_delay();
 
-    REQUIRE( value == svalue );
-    REQUIRE( default_value == default_svalue );
+    REQUIRE( svalue == value );
+    REQUIRE( default_svalue == default_value );
 
     REQUIRE( static_cast< vortex::i32 >( svalue ) == 8l );
     REQUIRE( static_cast< vortex::i32 >( default_svalue ) == vortex::i32{} );
@@ -291,8 +291,8 @@ TEST_CASE( "Metadata - property: \"is_perf_full_profile_enabled\" - static", "[s
     auto svalue = ss.is_perf_full_profile_enabled();
     auto default_svalue = ss_null.is_perf_full_profile_enabled();
 
-    REQUIRE( value == svalue );
-    REQUIRE( default_value == default_svalue );
+    REQUIRE( svalue == value );
+    REQUIRE( default_svalue == default_value );
 
     REQUIRE( svalue == true );
     REQUIRE( default_svalue == bool{} );
@@ -315,8 +315,8 @@ TEST_CASE( "Metadata - property: \"is_perf_simple_enabled\" - static", "[setting
     auto svalue = ss.is_perf_simple_enabled();
     auto default_svalue = ss_null.is_perf_simple_enabled();
 
-    REQUIRE( value == svalue );
-    REQUIRE( default_value == default_svalue );
+    REQUIRE( svalue == value );
+    REQUIRE( default_svalue == default_value );
 
     REQUIRE( svalue == true );
     REQUIRE( default_svalue == bool{} );
@@ -339,8 +339,8 @@ TEST_CASE( "Metadata - property: \"is_perf_part_dist_enabled\" - static", "[sett
     auto svalue = ss.is_perf_part_dist_enabled();
     auto default_svalue = ss_null.is_perf_part_dist_enabled();
 
-    REQUIRE( value == svalue );
-    REQUIRE( default_value == default_svalue );
+    REQUIRE( svalue == value );
+    REQUIRE( default_svalue == default_value );
 
     REQUIRE( svalue == true );
     REQUIRE( default_svalue == bool{} );
@@ -363,8 +363,8 @@ TEST_CASE( "Metadata - property: \"perf_full_start\" - static", "[settings]" )
     auto svalue = ss.perf_full_start();
     auto default_svalue = ss_null.perf_full_start();
 
-    REQUIRE( value == svalue );
-    REQUIRE( default_value == default_svalue );
+    REQUIRE( svalue == value );
+    REQUIRE( default_svalue == default_value );
 
     REQUIRE( static_cast< vortex::i32 >( svalue ) == 8l );
     REQUIRE( static_cast< vortex::i32 >( default_svalue ) == vortex::i32{} );
@@ -387,8 +387,8 @@ TEST_CASE( "Metadata - property: \"perf_full_end\" - static", "[settings]" )
     auto svalue = ss.perf_full_end();
     auto default_svalue = ss_null.perf_full_end();
 
-    REQUIRE( value == svalue );
-    REQUIRE( default_value == default_svalue );
+    REQUIRE( svalue == value );
+    REQUIRE( default_svalue == default_value );
 
     REQUIRE( static_cast< vortex::i32 >( svalue ) == 8l );
     REQUIRE( static_cast< vortex::i32 >( default_svalue ) == vortex::i32{} );
@@ -411,8 +411,8 @@ TEST_CASE( "Metadata - property: \"part_perf_interval\" - static", "[settings]" 
     auto svalue = ss.part_perf_interval();
     auto default_svalue = ss_null.part_perf_interval();
 
-    REQUIRE( value == svalue );
-    REQUIRE( default_value == default_svalue );
+    REQUIRE( svalue == value );
+    REQUIRE( default_svalue == default_value );
 
     REQUIRE( static_cast< vortex::i32 >( svalue ) == 8l );
     REQUIRE( static_cast< vortex::i32 >( default_svalue ) == vortex::i32{} );

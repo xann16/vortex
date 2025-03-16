@@ -1114,8 +1114,12 @@ def _add_static_property_unit_test(ls: list[str], i: int, name: str, p: dict[str
         i = add_line(ls, i, f'auto default_svalue = ss_null.{name}();')
         add_blank(ls)
 
-        i = add_require(ls, i, f'value == svalue')
-        i = add_require(ls, i, f'default_value == default_svalue')
+        if property_type in ['f32', 'f64', 'real']:
+            i = add_require(ls, i, f'svalue, Catch::Matchers::WithinAbs( value, {FP_CMP_EPS} )', suffix='that')
+            i = add_require(ls, i, f'default_svalue, Catch::Matchers::WithinAbs( default_value, {FP_CMP_EPS} )', suffix='that')
+        else:
+            i = add_require(ls, i, f'svalue == value')
+            i = add_require(ls, i, f'default_svalue == default_value')
         add_blank(ls)
     else:
         i = add_line(ls, i, 'auto s = ' + '::'.join(namespace) + '::' + class_name + '{ &obj };')

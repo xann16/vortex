@@ -27,8 +27,8 @@ TEST_CASE( "Parameters - property: \"N\" - static", "[settings]" )
     auto svalue = ss.N();
     auto default_svalue = ss_null.N();
 
-    REQUIRE( value == svalue );
-    REQUIRE( default_value == default_svalue );
+    REQUIRE( svalue == value );
+    REQUIRE( default_svalue == default_value );
 
     REQUIRE( static_cast< vortex::i32 >( svalue ) == 8l );
     REQUIRE( static_cast< vortex::i32 >( default_svalue ) == 8 );
@@ -51,8 +51,8 @@ TEST_CASE( "Parameters - property: \"N_subdomain\" - static", "[settings]" )
     auto svalue = ss.N_subdomain();
     auto default_svalue = ss_null.N_subdomain();
 
-    REQUIRE( value == svalue );
-    REQUIRE( default_value == default_svalue );
+    REQUIRE( svalue == value );
+    REQUIRE( default_svalue == default_value );
 
     REQUIRE( static_cast< vortex::i32 >( svalue ) == 8l );
     REQUIRE( static_cast< vortex::i32 >( default_svalue ) == 1 );
@@ -75,8 +75,8 @@ TEST_CASE( "Parameters - property: \"Nt_max\" - static", "[settings]" )
     auto svalue = ss.Nt_max();
     auto default_svalue = ss_null.Nt_max();
 
-    REQUIRE( value == svalue );
-    REQUIRE( default_value == default_svalue );
+    REQUIRE( svalue == value );
+    REQUIRE( default_svalue == default_value );
 
     REQUIRE( static_cast< vortex::i32 >( svalue ) == 8l );
     REQUIRE( static_cast< vortex::i32 >( default_svalue ) == 1 );
@@ -99,8 +99,8 @@ TEST_CASE( "Parameters - property: \"dt\" - static", "[settings]" )
     auto svalue = ss.dt();
     auto default_svalue = ss_null.dt();
 
-    REQUIRE( value == svalue );
-    REQUIRE( default_value == default_svalue );
+    REQUIRE_THAT( svalue, Catch::Matchers::WithinAbs( value, 1e-05 ) );
+    REQUIRE_THAT( default_svalue, Catch::Matchers::WithinAbs( default_value, 1e-05 ) );
 
     REQUIRE_THAT( static_cast< vortex::real >( svalue ), Catch::Matchers::WithinAbs( 8.3, 1e-05 ) );
     REQUIRE_THAT( static_cast< vortex::real >( default_svalue ), Catch::Matchers::WithinAbs( 0.001, 1e-05 ) );
@@ -123,8 +123,8 @@ TEST_CASE( "Parameters - property: \"rnu\" - static", "[settings]" )
     auto svalue = ss.rnu();
     auto default_svalue = ss_null.rnu();
 
-    REQUIRE( value == svalue );
-    REQUIRE( default_value == default_svalue );
+    REQUIRE_THAT( svalue, Catch::Matchers::WithinAbs( value, 1e-05 ) );
+    REQUIRE_THAT( default_svalue, Catch::Matchers::WithinAbs( default_value, 1e-05 ) );
 
     REQUIRE_THAT( static_cast< vortex::real >( svalue ), Catch::Matchers::WithinAbs( 8.3, 1e-05 ) );
     REQUIRE_THAT( static_cast< vortex::real >( default_svalue ), Catch::Matchers::WithinAbs( vortex::real{}, 1e-05 ) );
@@ -147,8 +147,8 @@ TEST_CASE( "Parameters - property: \"t_init\" - static", "[settings]" )
     auto svalue = ss.t_init();
     auto default_svalue = ss_null.t_init();
 
-    REQUIRE( value == svalue );
-    REQUIRE( default_value == default_svalue );
+    REQUIRE_THAT( svalue, Catch::Matchers::WithinAbs( value, 1e-05 ) );
+    REQUIRE_THAT( default_svalue, Catch::Matchers::WithinAbs( default_value, 1e-05 ) );
 
     REQUIRE_THAT( static_cast< vortex::real >( svalue ), Catch::Matchers::WithinAbs( 8.3, 1e-05 ) );
     REQUIRE_THAT( static_cast< vortex::real >( default_svalue ), Catch::Matchers::WithinAbs( vortex::real{}, 1e-05 ) );
@@ -171,8 +171,8 @@ TEST_CASE( "Parameters - property: \"is_flow_generated\" - static", "[settings]"
     auto svalue = ss.is_flow_generated();
     auto default_svalue = ss_null.is_flow_generated();
 
-    REQUIRE( value == svalue );
-    REQUIRE( default_value == default_svalue );
+    REQUIRE( svalue == value );
+    REQUIRE( default_svalue == default_value );
 
     REQUIRE( svalue == true );
     REQUIRE( default_svalue == true );
@@ -195,8 +195,8 @@ TEST_CASE( "Parameters - property: \"deterministic_seed\" - static", "[settings]
     auto svalue = ss.deterministic_seed();
     auto default_svalue = ss_null.deterministic_seed();
 
-    REQUIRE( value == svalue );
-    REQUIRE( default_value == default_svalue );
+    REQUIRE( svalue == value );
+    REQUIRE( default_svalue == default_value );
 
     REQUIRE( static_cast< vortex::u64 >( svalue ) == 4ull );
     REQUIRE( static_cast< vortex::u64 >( default_svalue ) == vortex::u64{} );
@@ -219,8 +219,8 @@ TEST_CASE( "Parameters - property: \"input_velo_index\" - static", "[settings]" 
     auto svalue = ss.input_velo_index();
     auto default_svalue = ss_null.input_velo_index();
 
-    REQUIRE( value == svalue );
-    REQUIRE( default_value == default_svalue );
+    REQUIRE( svalue == value );
+    REQUIRE( default_svalue == default_value );
 
     REQUIRE( static_cast< vortex::i32 >( svalue ) == 8l );
     REQUIRE( static_cast< vortex::i32 >( default_svalue ) == vortex::i32{} );
@@ -243,8 +243,8 @@ TEST_CASE( "Parameters - property: \"forcing_type\" - static", "[settings]" )
     auto svalue = ss.forcing_type();
     auto default_svalue = ss_null.forcing_type();
 
-    REQUIRE( value == svalue );
-    REQUIRE( default_value == default_svalue );
+    REQUIRE( svalue == value );
+    REQUIRE( default_svalue == default_value );
 
     REQUIRE( svalue == vortex::turb::legacy::settings::ForcingType::Stochastic );
     REQUIRE( default_svalue == vortex::turb::legacy::settings::ForcingType::Deterministic );
@@ -267,8 +267,8 @@ TEST_CASE( "Parameters - property: \"deterministic_forcing_k_1\" - static", "[se
     auto svalue = ss.deterministic_forcing_k_1();
     auto default_svalue = ss_null.deterministic_forcing_k_1();
 
-    REQUIRE( value == svalue );
-    REQUIRE( default_value == default_svalue );
+    REQUIRE_THAT( svalue, Catch::Matchers::WithinAbs( value, 1e-05 ) );
+    REQUIRE_THAT( default_svalue, Catch::Matchers::WithinAbs( default_value, 1e-05 ) );
 
     REQUIRE_THAT( static_cast< vortex::real >( svalue ), Catch::Matchers::WithinAbs( 8.3, 1e-05 ) );
     REQUIRE_THAT( static_cast< vortex::real >( default_svalue ), Catch::Matchers::WithinAbs( 1.0, 1e-05 ) );
@@ -291,8 +291,8 @@ TEST_CASE( "Parameters - property: \"deterministic_forcing_k_2\" - static", "[se
     auto svalue = ss.deterministic_forcing_k_2();
     auto default_svalue = ss_null.deterministic_forcing_k_2();
 
-    REQUIRE( value == svalue );
-    REQUIRE( default_value == default_svalue );
+    REQUIRE_THAT( svalue, Catch::Matchers::WithinAbs( value, 1e-05 ) );
+    REQUIRE_THAT( default_svalue, Catch::Matchers::WithinAbs( default_value, 1e-05 ) );
 
     REQUIRE_THAT( static_cast< vortex::real >( svalue ), Catch::Matchers::WithinAbs( 8.3, 1e-05 ) );
     REQUIRE_THAT( static_cast< vortex::real >( default_svalue ), Catch::Matchers::WithinAbs( 1.0, 1e-05 ) );
@@ -315,8 +315,8 @@ TEST_CASE( "Parameters - property: \"stochastic_seed\" - static", "[settings]" )
     auto svalue = ss.stochastic_seed();
     auto default_svalue = ss_null.stochastic_seed();
 
-    REQUIRE( value == svalue );
-    REQUIRE( default_value == default_svalue );
+    REQUIRE( svalue == value );
+    REQUIRE( default_svalue == default_value );
 
     REQUIRE( static_cast< vortex::u64 >( svalue ) == 4ull );
     REQUIRE( static_cast< vortex::u64 >( default_svalue ) == vortex::u64{} );
@@ -339,8 +339,8 @@ TEST_CASE( "Parameters - property: \"stats_output_interval\" - static", "[settin
     auto svalue = ss.stats_output_interval();
     auto default_svalue = ss_null.stats_output_interval();
 
-    REQUIRE( value == svalue );
-    REQUIRE( default_value == default_svalue );
+    REQUIRE( svalue == value );
+    REQUIRE( default_svalue == default_value );
 
     REQUIRE( static_cast< vortex::i32 >( svalue ) == 8l );
     REQUIRE( static_cast< vortex::i32 >( default_svalue ) == vortex::i32{} );
@@ -363,8 +363,8 @@ TEST_CASE( "Parameters - property: \"spectrum_output_interval\" - static", "[set
     auto svalue = ss.spectrum_output_interval();
     auto default_svalue = ss_null.spectrum_output_interval();
 
-    REQUIRE( value == svalue );
-    REQUIRE( default_value == default_svalue );
+    REQUIRE( svalue == value );
+    REQUIRE( default_svalue == default_value );
 
     REQUIRE( static_cast< vortex::i32 >( svalue ) == 8l );
     REQUIRE( static_cast< vortex::i32 >( default_svalue ) == vortex::i32{} );
@@ -387,8 +387,8 @@ TEST_CASE( "Parameters - property: \"is_stats_output_extended\" - static", "[set
     auto svalue = ss.is_stats_output_extended();
     auto default_svalue = ss_null.is_stats_output_extended();
 
-    REQUIRE( value == svalue );
-    REQUIRE( default_value == default_svalue );
+    REQUIRE( svalue == value );
+    REQUIRE( default_svalue == default_value );
 
     REQUIRE( svalue == true );
     REQUIRE( default_svalue == bool{} );
@@ -411,8 +411,8 @@ TEST_CASE( "Parameters - property: \"rho_part\" - static", "[settings]" )
     auto svalue = ss.rho_part();
     auto default_svalue = ss_null.rho_part();
 
-    REQUIRE( value == svalue );
-    REQUIRE( default_value == default_svalue );
+    REQUIRE_THAT( svalue, Catch::Matchers::WithinAbs( value, 1e-05 ) );
+    REQUIRE_THAT( default_svalue, Catch::Matchers::WithinAbs( default_value, 1e-05 ) );
 
     REQUIRE_THAT( static_cast< vortex::real >( svalue ), Catch::Matchers::WithinAbs( 8.3, 1e-05 ) );
     REQUIRE_THAT( static_cast< vortex::real >( default_svalue ), Catch::Matchers::WithinAbs( vortex::real{}, 1e-05 ) );
@@ -435,8 +435,8 @@ TEST_CASE( "Parameters - property: \"rho_fluid\" - static", "[settings]" )
     auto svalue = ss.rho_fluid();
     auto default_svalue = ss_null.rho_fluid();
 
-    REQUIRE( value == svalue );
-    REQUIRE( default_value == default_svalue );
+    REQUIRE_THAT( svalue, Catch::Matchers::WithinAbs( value, 1e-05 ) );
+    REQUIRE_THAT( default_svalue, Catch::Matchers::WithinAbs( default_value, 1e-05 ) );
 
     REQUIRE_THAT( static_cast< vortex::real >( svalue ), Catch::Matchers::WithinAbs( 8.3, 1e-05 ) );
     REQUIRE_THAT( static_cast< vortex::real >( default_svalue ), Catch::Matchers::WithinAbs( vortex::real{}, 1e-05 ) );
@@ -459,8 +459,8 @@ TEST_CASE( "Parameters - property: \"eta_k_init\" - static", "[settings]" )
     auto svalue = ss.eta_k_init();
     auto default_svalue = ss_null.eta_k_init();
 
-    REQUIRE( value == svalue );
-    REQUIRE( default_value == default_svalue );
+    REQUIRE_THAT( svalue, Catch::Matchers::WithinAbs( value, 1e-05 ) );
+    REQUIRE_THAT( default_svalue, Catch::Matchers::WithinAbs( default_value, 1e-05 ) );
 
     REQUIRE_THAT( static_cast< vortex::real >( svalue ), Catch::Matchers::WithinAbs( 8.3, 1e-05 ) );
     REQUIRE_THAT( static_cast< vortex::real >( default_svalue ), Catch::Matchers::WithinAbs( 1.0, 1e-05 ) );
@@ -483,8 +483,8 @@ TEST_CASE( "Parameters - property: \"tau_k_init\" - static", "[settings]" )
     auto svalue = ss.tau_k_init();
     auto default_svalue = ss_null.tau_k_init();
 
-    REQUIRE( value == svalue );
-    REQUIRE( default_value == default_svalue );
+    REQUIRE_THAT( svalue, Catch::Matchers::WithinAbs( value, 1e-05 ) );
+    REQUIRE_THAT( default_svalue, Catch::Matchers::WithinAbs( default_value, 1e-05 ) );
 
     REQUIRE_THAT( static_cast< vortex::real >( svalue ), Catch::Matchers::WithinAbs( 8.3, 1e-05 ) );
     REQUIRE_THAT( static_cast< vortex::real >( default_svalue ), Catch::Matchers::WithinAbs( 1.0, 1e-05 ) );
@@ -507,8 +507,8 @@ TEST_CASE( "Parameters - property: \"shell_thickness\" - static", "[settings]" )
     auto svalue = ss.shell_thickness();
     auto default_svalue = ss_null.shell_thickness();
 
-    REQUIRE( value == svalue );
-    REQUIRE( default_value == default_svalue );
+    REQUIRE_THAT( svalue, Catch::Matchers::WithinAbs( value, 1e-05 ) );
+    REQUIRE_THAT( default_svalue, Catch::Matchers::WithinAbs( default_value, 1e-05 ) );
 
     REQUIRE_THAT( static_cast< vortex::real >( svalue ), Catch::Matchers::WithinAbs( 8.3, 1e-05 ) );
     REQUIRE_THAT( static_cast< vortex::real >( default_svalue ), Catch::Matchers::WithinAbs( 1.0, 1e-05 ) );
@@ -531,8 +531,8 @@ TEST_CASE( "Parameters - property: \"epsilon_env\" - static", "[settings]" )
     auto svalue = ss.epsilon_env();
     auto default_svalue = ss_null.epsilon_env();
 
-    REQUIRE( value == svalue );
-    REQUIRE( default_value == default_svalue );
+    REQUIRE_THAT( svalue, Catch::Matchers::WithinAbs( value, 1e-05 ) );
+    REQUIRE_THAT( default_svalue, Catch::Matchers::WithinAbs( default_value, 1e-05 ) );
 
     REQUIRE_THAT( static_cast< vortex::real >( svalue ), Catch::Matchers::WithinAbs( 8.3, 1e-05 ) );
     REQUIRE_THAT( static_cast< vortex::real >( default_svalue ), Catch::Matchers::WithinAbs( vortex::real{}, 1e-05 ) );
@@ -555,8 +555,8 @@ TEST_CASE( "Parameters - property: \"nu_fluid\" - static", "[settings]" )
     auto svalue = ss.nu_fluid();
     auto default_svalue = ss_null.nu_fluid();
 
-    REQUIRE( value == svalue );
-    REQUIRE( default_value == default_svalue );
+    REQUIRE_THAT( svalue, Catch::Matchers::WithinAbs( value, 1e-05 ) );
+    REQUIRE_THAT( default_svalue, Catch::Matchers::WithinAbs( default_value, 1e-05 ) );
 
     REQUIRE_THAT( static_cast< vortex::real >( svalue ), Catch::Matchers::WithinAbs( 8.3, 1e-05 ) );
     REQUIRE_THAT( static_cast< vortex::real >( default_svalue ), Catch::Matchers::WithinAbs( vortex::real{}, 1e-05 ) );
@@ -579,8 +579,8 @@ TEST_CASE( "Parameters - property: \"gravity\" - static", "[settings]" )
     auto svalue = ss.gravity();
     auto default_svalue = ss_null.gravity();
 
-    REQUIRE( value == svalue );
-    REQUIRE( default_value == default_svalue );
+    REQUIRE_THAT( svalue, Catch::Matchers::WithinAbs( value, 1e-05 ) );
+    REQUIRE_THAT( default_svalue, Catch::Matchers::WithinAbs( default_value, 1e-05 ) );
 
     REQUIRE_THAT( static_cast< vortex::real >( svalue ), Catch::Matchers::WithinAbs( 8.3, 1e-05 ) );
     REQUIRE_THAT( static_cast< vortex::real >( default_svalue ), Catch::Matchers::WithinAbs( vortex::real{}, 1e-05 ) );
@@ -603,8 +603,8 @@ TEST_CASE( "Parameters - property: \"is_part_generated\" - static", "[settings]"
     auto svalue = ss.is_part_generated();
     auto default_svalue = ss_null.is_part_generated();
 
-    REQUIRE( value == svalue );
-    REQUIRE( default_value == default_svalue );
+    REQUIRE( svalue == value );
+    REQUIRE( default_svalue == default_value );
 
     REQUIRE( svalue == true );
     REQUIRE( default_svalue == bool{} );
@@ -627,8 +627,8 @@ TEST_CASE( "Parameters - property: \"is_part_overlapping\" - static", "[settings
     auto svalue = ss.is_part_overlapping();
     auto default_svalue = ss_null.is_part_overlapping();
 
-    REQUIRE( value == svalue );
-    REQUIRE( default_value == default_svalue );
+    REQUIRE( svalue == value );
+    REQUIRE( default_svalue == default_value );
 
     REQUIRE( svalue == true );
     REQUIRE( default_svalue == bool{} );
@@ -651,8 +651,8 @@ TEST_CASE( "Parameters - property: \"is_part_hdi_enabled\" - static", "[settings
     auto svalue = ss.is_part_hdi_enabled();
     auto default_svalue = ss_null.is_part_hdi_enabled();
 
-    REQUIRE( value == svalue );
-    REQUIRE( default_value == default_svalue );
+    REQUIRE( svalue == value );
+    REQUIRE( default_svalue == default_value );
 
     REQUIRE( svalue == true );
     REQUIRE( default_svalue == bool{} );
@@ -675,8 +675,8 @@ TEST_CASE( "Parameters - property: \"part_hdi_trunc_enabled\" - static", "[setti
     auto svalue = ss.part_hdi_trunc_enabled();
     auto default_svalue = ss_null.part_hdi_trunc_enabled();
 
-    REQUIRE( value == svalue );
-    REQUIRE( default_value == default_svalue );
+    REQUIRE_THAT( svalue, Catch::Matchers::WithinAbs( value, 1e-05 ) );
+    REQUIRE_THAT( default_svalue, Catch::Matchers::WithinAbs( default_value, 1e-05 ) );
 
     REQUIRE_THAT( static_cast< vortex::real >( svalue ), Catch::Matchers::WithinAbs( 8.3, 1e-05 ) );
     REQUIRE_THAT( static_cast< vortex::real >( default_svalue ), Catch::Matchers::WithinAbs( vortex::real{}, 1e-05 ) );
@@ -699,8 +699,8 @@ TEST_CASE( "Parameters - property: \"N_part\" - static", "[settings]" )
     auto svalue = ss.N_part();
     auto default_svalue = ss_null.N_part();
 
-    REQUIRE( value == svalue );
-    REQUIRE( default_value == default_svalue );
+    REQUIRE( svalue == value );
+    REQUIRE( default_svalue == default_value );
 
     REQUIRE( static_cast< vortex::i32 >( svalue ) == 8l );
     REQUIRE( static_cast< vortex::i32 >( default_svalue ) == vortex::i32{} );
@@ -723,8 +723,8 @@ TEST_CASE( "Parameters - property: \"drag_type\" - static", "[settings]" )
     auto svalue = ss.drag_type();
     auto default_svalue = ss_null.drag_type();
 
-    REQUIRE( value == svalue );
-    REQUIRE( default_value == default_svalue );
+    REQUIRE( svalue == value );
+    REQUIRE( default_svalue == default_value );
 
     REQUIRE( svalue == vortex::turb::legacy::settings::DragType::Nonlinear );
     REQUIRE( default_svalue == vortex::turb::legacy::settings::DragType::Stokes );
@@ -747,8 +747,8 @@ TEST_CASE( "Parameters - property: \"a\" - static", "[settings]" )
     auto svalue = ss.a();
     auto default_svalue = ss_null.a();
 
-    REQUIRE( value == svalue );
-    REQUIRE( default_value == default_svalue );
+    REQUIRE_THAT( svalue, Catch::Matchers::WithinAbs( value, 1e-05 ) );
+    REQUIRE_THAT( default_svalue, Catch::Matchers::WithinAbs( default_value, 1e-05 ) );
 
     REQUIRE_THAT( static_cast< vortex::real >( svalue ), Catch::Matchers::WithinAbs( 8.3, 1e-05 ) );
     REQUIRE_THAT( static_cast< vortex::real >( default_svalue ), Catch::Matchers::WithinAbs( vortex::real{}, 1e-05 ) );

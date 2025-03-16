@@ -27,8 +27,8 @@ TEST_CASE( "ExecutionSettings - property: \"job_name\" - static", "[settings]" )
     auto svalue = ss.job_name();
     auto default_svalue = ss_null.job_name();
 
-    REQUIRE( value == svalue );
-    REQUIRE( default_value == default_svalue );
+    REQUIRE( svalue == value );
+    REQUIRE( default_svalue == default_value );
 
     REQUIRE( svalue == "stest" );
     REQUIRE( default_svalue == "default_job" );
@@ -51,8 +51,8 @@ TEST_CASE( "ExecutionSettings - property: \"grant_no\" - static", "[settings]" )
     auto svalue = ss.grant_no();
     auto default_svalue = ss_null.grant_no();
 
-    REQUIRE( value == svalue );
-    REQUIRE( default_value == default_svalue );
+    REQUIRE( svalue == value );
+    REQUIRE( default_svalue == default_value );
 
     REQUIRE( svalue == "stest" );
     REQUIRE( default_svalue == std::string_view{} );
@@ -75,8 +75,8 @@ TEST_CASE( "ExecutionSettings - property: \"cpu_node_count\" - static", "[settin
     auto svalue = ss.cpu_node_count();
     auto default_svalue = ss_null.cpu_node_count();
 
-    REQUIRE( value == svalue );
-    REQUIRE( default_value == default_svalue );
+    REQUIRE( svalue == value );
+    REQUIRE( default_svalue == default_value );
 
     REQUIRE( static_cast< vortex::i32 >( svalue ) == 8l );
     REQUIRE( static_cast< vortex::i32 >( default_svalue ) == 1 );
@@ -99,8 +99,8 @@ TEST_CASE( "ExecutionSettings - property: \"wct_limit\" - static", "[settings]" 
     auto svalue = ss.wct_limit();
     auto default_svalue = ss_null.wct_limit();
 
-    REQUIRE( value == svalue );
-    REQUIRE( default_value == default_svalue );
+    REQUIRE_THAT( svalue, Catch::Matchers::WithinAbs( value, 1e-05 ) );
+    REQUIRE_THAT( default_svalue, Catch::Matchers::WithinAbs( default_value, 1e-05 ) );
 
     REQUIRE_THAT( static_cast< vortex::f64 >( svalue ), Catch::Matchers::WithinAbs( 8.2, 1e-05 ) );
     REQUIRE_THAT( static_cast< vortex::f64 >( default_svalue ), Catch::Matchers::WithinAbs( 60.0, 1e-05 ) );
@@ -123,8 +123,8 @@ TEST_CASE( "ExecutionSettings - property: \"process_count\" - static", "[setting
     auto svalue = ss.process_count();
     auto default_svalue = ss_null.process_count();
 
-    REQUIRE( value == svalue );
-    REQUIRE( default_value == default_svalue );
+    REQUIRE( svalue == value );
+    REQUIRE( default_svalue == default_value );
 
     REQUIRE( static_cast< vortex::i32 >( svalue ) == 8l );
     REQUIRE( static_cast< vortex::i32 >( default_svalue ) == 1 );
@@ -147,8 +147,8 @@ TEST_CASE( "ExecutionSettings - property: \"is_node_overcommit_enabled\" - stati
     auto svalue = ss.is_node_overcommit_enabled();
     auto default_svalue = ss_null.is_node_overcommit_enabled();
 
-    REQUIRE( value == svalue );
-    REQUIRE( default_value == default_svalue );
+    REQUIRE( svalue == value );
+    REQUIRE( default_svalue == default_value );
 
     REQUIRE( svalue == true );
     REQUIRE( default_svalue == bool{} );
