@@ -65,7 +65,7 @@ std::ostream& Settings::stringify( std::ostream& os, int indent_size, int indent
     return os;
 }
 
-void Settings::validate()
+void Settings::validate() const
 {
     if ( has_metadata_set() )
     {

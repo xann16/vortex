@@ -1069,97 +1069,83 @@ def _add_static_property_getter(ls: list[str], i: int, name: str, p: dict[str, A
     return add_method_declaration(ls, i, name, return_type, [], body=[(0, f'return m_{name};')], is_const=True, is_nodiscard=True, is_noexcept=True, is_definition=True, pre_qualifiers='constexpr')
 
 def _add_static_property_unit_test(ls: list[str], i: int, name: str, p: dict[str, Any], data: dict[str, Any], ctx: dict[str, Any]) -> int:
-    is_array : bool = _is_array(p)
     return_type : str = _get_return_type(p, data, ctx, is_static=True)
     property_type : str = p['type']
     class_name : str = get_class_name(data)
     namespace : list[str] = get_namespace(data)
 
+    if _is_array(p):
+        raise Exception( 'Array properties not supported in static context.' )
+    if property_type == 'settings':
+        raise Exception( "Abstract 'settings' properties not supported in static context." )
+
     i = begin_test_case(ls, i, f'{class_name} - property: \\\"{name}\\\" - static', 'settings')
 
-    i = add_block_comment(ls, i, "TODO - supply test implementation")
-    i = add_require(ls, i, "true")
-
-    """
     if property_type in BASE_TYPES:
-        val_str : str = f'{{ {BASE_TYPES[property_type][1]}, {BASE_TYPES[property_type][2]}, {BASE_TYPES[property_type][3]} }}' if is_array else BASE_TYPES[property_type][1]
+        val_str : str = BASE_TYPES[property_type][1]
         i = add_line(ls, i, 'nlohmann::json obj = { { "' + name + f'", {val_str}' + ' } };' )
     elif property_type == 'enum':
-        val_str : str = f'{{ {", ".join(str(val) for val in p['enum']['values'])} }}' if is_array else p['enum']['values'][-1]
+        val_str : str = p['enum']['values'][-1]
         i = add_line(ls, i, 'nlohmann::json obj = { { "' + name + f'", "{val_str}"' + ' } };' )
-    elif property_type in ['module', 'settings']:
+    elif property_type == 'module':
         # TODO - specific sets for specific setting classes (i.e. module)
         init_str : str = '{ { "name", "x"} }'
-        full_init_str : str = ('{ ' + ', '.join([init_str, init_str.replace('x', 'y'), init_str.replace('x', 'z')]) + ' }') if is_array else init_str
-        i = add_line(ls, i, 'nlohmann::json obj = { { "' + name + '", ' + full_init_str + ' } };' )
+        i = add_line(ls, i, 'nlohmann::json obj = { { "' + name + '", ' + init_str + ' } };' )
     else:
         raise RuntimeError(f'Unexpected property type: {property_type}.')
 
-    i = add_line(ls, i, 'auto s = ' + '::'.join(namespace) + '::' + class_name + '{ &obj };')
-    i = add_line(ls, i, 'auto s_null = ' + '::'.join(namespace) + '::' + class_name + '{};')
+    i = add_line(ls, i, 'auto ds = vortex::core::settings::StaticSettingsDataStorage{};')
     add_blank(ls)
 
-    i = add_line(ls, i, f'auto value = s.{name}();')
-    i = add_line(ls, i, f'auto default_value = s_null.{name}();')
-    add_blank(ls)
+    if property_type != 'module':
+        i = add_line(ls, i, 'auto s = ' + '::'.join(namespace) + '::' + class_name + '{ &obj };')
+        i = add_line(ls, i, 'auto s_null = ' + '::'.join(namespace) + '::' + class_name + '{};')
+        add_blank(ls)
 
-    if not is_array:
-        if property_type in ['module', 'settings']:
-            i = add_require(ls, i, '!value.is_empty()')
-            i = add_require(ls, i, 'value.data()->at( "name" ) == "x"')
-            i = add_require(ls, i, 'default_value.is_empty()')
-        elif property_type == 'enum':
-            i = add_require(ls, i, f'value == {'::'.join(namespace)}::{to_pascal_case(p['enum']['name'])}::{to_pascal_case(p['enum']['values'][-1])}')
-            i = add_require(ls, i, f'default_value == {'::'.join(namespace)}::{_get_default_value(name, p, data, ctx)}')
-        elif property_type in BASE_TYPES:
-            is_fp : bool = property_type in ['f32', 'f64', 'real']
-            val_str : str = 'value' if property_type in ['boolean', 'string', 'path'] else f'static_cast< vortex::{BASE_TYPES[property_type][0]} >( value )'
-            def_val_str : str = 'default_value' if property_type in ['boolean', 'string', 'path'] else f'static_cast< vortex::{BASE_TYPES[property_type][0]} >( default_value )'
-            default_value : str = _get_default_value(name, p, data, ctx)
-            def_prefix = 's_null.' if ('default' in p and isinstance(p['default'], str) and p['default'].startswith('@')) else ('' if ('default' in p or property_type in ['string', 'path', 'boolean']) else 'vortex::')
+        i = add_line(ls, i, f'auto value = s.{name}();')
+        i = add_line(ls, i, f'auto default_value = s_null.{name}();')
+        add_blank(ls)
 
-            if is_fp:
-                i = add_require(ls, i, f'{val_str}, Catch::Matchers::WithinAbs( {BASE_TYPES[property_type][1]}, {FP_CMP_EPS} )', suffix='that')
-                i = add_require(ls, i, f'{def_val_str}, Catch::Matchers::WithinAbs( {def_prefix}{default_value}, {FP_CMP_EPS} )', suffix='that')
-            else:
-                i = add_require(ls, i, f'{val_str} == {BASE_TYPES[property_type][1]}')
-                i = add_require(ls, i, f'{def_val_str} == {def_prefix}{default_value}')
-        else:
-            raise RuntimeError(f'Unexpected property type: {property_type}.')
+        i = add_line(ls, i, 'auto ss = ' + '::'.join(namespace) + '::to_static_unchecked( s, ds );')
+        i = add_line(ls, i, 'auto ss_null = ' + '::'.join(namespace) + '::to_static_unchecked( s_null, ds );')
+        add_blank(ls)
 
+        i = add_line(ls, i, f'auto svalue = ss.{name}();')
+        i = add_line(ls, i, f'auto default_svalue = ss_null.{name}();')
+        add_blank(ls)
+
+        i = add_require(ls, i, f'value == svalue')
+        i = add_require(ls, i, f'default_value == default_svalue')
+        add_blank(ls)
     else:
-        if property_type in ['module', 'settings']:
-            i = add_require(ls, i, '!value.empty()')
-            i = add_require(ls, i, 'value.size() == 3ull')
-            i = add_require(ls, i, '!value[ 0 ].is_empty()')
-            i = add_require(ls, i, 'value[ 0 ].data()->at( "name" ) == "x"')
-            i = add_require(ls, i, '!value[ 1 ].is_empty()')
-            i = add_require(ls, i, 'value[ 1 ].data()->at( "name" ) == "y"')
-            i = add_require(ls, i, '!value[ 2 ].is_empty()')
-            i = add_require(ls, i, 'value[ 2 ].data()->at( "name" ) == "z"')
-            i = add_require(ls, i, 'default_value.empty()')
-        elif property_type == 'enum':
-            for ii, ename in enumerate(p['enum']['values']):
-                i = add_require(ls, i, f'value.size() == {len(p['enum']['values'])}ull')
-                i = add_require(ls, i, f'value[ {ii} ] == {'::'.join(namespace)}::{to_pascal_case(p['enum']['name'])}::{to_pascal_case(ename)}')
-            i = add_require(ls, i, f'default_value.empty()')
-        elif property_type in BASE_TYPES:
-            is_fp : bool = property_type in ['f32', 'f64', 'real']
-            val_str : str = 'value[ XXXXX ]' if property_type in ['boolean', 'string', 'path'] else f'static_cast< vortex::{BASE_TYPES[property_type][0]} >( value[ XXXXX ] )'
-            i = add_require(ls, i, 'value.size() == 3ull')
-            for ii in [0, 1, 2]:
-                if is_fp:
-                    i = add_require(ls, i, f'{val_str.replace('XXXXX', str(ii))}, Catch::Matchers::WithinAbs( {BASE_TYPES[property_type][1 + ii]}, {FP_CMP_EPS} )', suffix='that')
-                else:
-                    i = add_require(ls, i, f'{val_str.replace('XXXXX', str(ii))} == {BASE_TYPES[property_type][1 + ii]}')
-            i = add_require(ls, i, f'default_value.empty()')
-        else:
-            raise RuntimeError(f'Unexpected property type: {property_type}.')
+        i = add_line(ls, i, 'auto s = ' + '::'.join(namespace) + '::' + class_name + '{ &obj };')
+        i = add_line(ls, i, 'auto s_null = ' + '::'.join(namespace) + '::' + class_name + '{};')
+        add_blank(ls)
 
-    add_blank(ls)
-    add_require(ls, i, f's.has_{name}_set()')
-    add_require(ls, i, f'!s_null.has_{name}_set()')
-    """
+        i = add_require(ls, i, '::'.join(namespace) + '::to_static_unchecked( s, ds )', suffix='nothrow')
+        i = add_require(ls, i, '::'.join(namespace) + '::to_static_unchecked( s_null, ds )', suffix='nothrow')
+        add_blank(ls)
+
+    if property_type == 'module':
+        i = add_block_comment(ls, i, "Value testing for 'module' properties currently unsupported. ")
+    elif property_type == 'enum':
+        i = add_require(ls, i, f'svalue == {'::'.join(namespace)}::{to_pascal_case(p['enum']['name'])}::{to_pascal_case(p['enum']['values'][-1])}')
+        i = add_require(ls, i, f'default_svalue == {'::'.join(namespace)}::{_get_default_value(name, p, data, ctx)}')
+    elif property_type in BASE_TYPES:
+        is_fp : bool = property_type in ['f32', 'f64', 'real']
+        val_str : str = 'svalue' if property_type in ['boolean', 'string', 'path'] else f'static_cast< vortex::{BASE_TYPES[property_type][0]} >( svalue )'
+        def_val_str : str = 'default_svalue' if property_type in ['boolean', 'string', 'path'] else f'static_cast< vortex::{BASE_TYPES[property_type][0]} >( default_svalue )'
+        default_value : str = _get_default_value(name, p, data, ctx)
+        def_prefix = 'ss_null.' if ('default' in p and isinstance(p['default'], str) and p['default'].startswith('@')) else ('' if ('default' in p or property_type in ['string', 'path', 'boolean']) else 'vortex::')
+
+        if is_fp:
+            i = add_require(ls, i, f'{val_str}, Catch::Matchers::WithinAbs( {BASE_TYPES[property_type][1]}, {FP_CMP_EPS} )', suffix='that')
+            i = add_require(ls, i, f'{def_val_str}, Catch::Matchers::WithinAbs( {def_prefix}{default_value}, {FP_CMP_EPS} )', suffix='that')
+        else:
+            i = add_require(ls, i, f'{val_str} == {BASE_TYPES[property_type][1]}')
+            i = add_require(ls, i, f'{def_val_str} == {def_prefix}{default_value}')
+    else:
+        raise RuntimeError(f'Unexpected property type: {property_type}.')
 
     i = end_test_case(ls, i)
 
@@ -1178,6 +1164,7 @@ def get_heap_using_or_nested_properties(data: dict[str, Any], ctx: dict[str, Any
             elif prop['type'] in ['module', 'settings']:
                 if prop['type'] == 'settings':
                     raise Exception( f"Property '{name}' is an abstract settings module. Such type is currently unsupported in static mode." )
+                # TODO : Should check whther nested module uses heap stored data
                 nested.append(name)
 
     return heap_using, nested
@@ -1266,7 +1253,8 @@ def add_property_unit_tests(ls: list[str], i: int, data: dict[str, Any], ctx: di
 
 def has_any_heap_stored_properties(data: dict[str, Any], ctx: dict[str, Any]) -> bool:
     try:
-        return any(get_heap_using_or_nested_properties(data, ctx)[0])
+        extra_data, nested = get_heap_using_or_nested_properties(data, ctx)
+        return any(extra_data) or any(nested)
     except Exception:
         # currently returning false to cover problematic / unsupported cases
         return False
@@ -1307,6 +1295,7 @@ def add_static_property_unit_tests(ls: list[str], i: int, data: dict[str, Any], 
     for name, prop in data.items():
         if not name.startswith('__'):
             i = _add_static_property_unit_test(ls, i, name, prop, data, ctx)
+            add_blank(ls)
     return i
 
 def get_hacky_static_ctor_params(data: dict[str, Any], ctx: dict[str, Any]) -> list[(str, str, str| None, str | None)]:
@@ -1320,9 +1309,12 @@ def get_extra_data_prep_code(data: dict[str, Any], ctx: dict[str, Any]) -> list[
             if prop['type'] in ['string', 'path']:
                 ls.append((0, f'auto {name} = s.{name}();'))
                 ls.append((0, f'auto {name}_data_p = static_cast< char * >( *data_offset_pp );'))
-                ls.append((0, f'auto {name}_size = {name}.size() + 1ull;'))
-                ls.append((0, f'std::memcpy( *data_offset_pp, {name}.data(), {name}_size );'))
-                ls.append((0, f'*data_offset_pp = static_cast< void * >( & ( static_cast< char * >( {name}_data_p )[ {name}_size ] ) );'))
+                ls.append((0, f'auto {name}_size = {name}.size();'))
+                ls.append((0, f'if ( {name}_size == 0ull )'))
+                ls.append((1, f"{name}_data_p[ 0 ] = '\\0';"))
+                ls.append((0, f'else'))
+                ls.append((1, f'std::memcpy( *data_offset_pp, {name}.data(), {name}_size + 1ull );'))
+                ls.append((0, f'*data_offset_pp = static_cast< void * >( & ( static_cast< char * >( {name}_data_p )[ {name}_size + 1ull ] ) );'))
                 ls.append((0, ''))
 
     return ls
@@ -1338,7 +1330,7 @@ def get_hacky_static_ctor_call(class_name: str, data: dict[str, Any], ctx: dict[
             if property_type == 'settings':
                 raise Exception( 'Abstract settings unsupported in static context.')
             elif property_type == 'module':
-                params.append(f'to_static( s.{name}(), data_storage, data_offset_pp )')
+                params.append(f'to_static_unchecked( s.{name}(), data_storage, data_offset_pp )')
             elif property_type in ['string', 'path']:
                 params.append(f'std::string_view{{ {name}_data_p, {name}_size }}')
             else:

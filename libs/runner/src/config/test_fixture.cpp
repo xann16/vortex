@@ -101,7 +101,7 @@ std::ostream& TestFixture::stringify( std::ostream& os, int indent_size, int ind
     return os;
 }
 
-void TestFixture::validate()
+void TestFixture::validate() const
 {
     if ( !has_name_set() )
     {

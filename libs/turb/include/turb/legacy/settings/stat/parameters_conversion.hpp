@@ -20,6 +20,7 @@ namespace vortex::turb::legacy::settings
 {
 
 [[nodiscard]] stat::Parameters to_static( Parameters const& s, [[maybe_unused]] core::settings::StaticSettingsDataStorage& data_storage );
-[[nodiscard]] stat::Parameters to_static( Parameters const& s, [[maybe_unused]] core::settings::StaticSettingsDataStorage& data_storage, [[maybe_unused]] void ** data_offset_pp );
+[[nodiscard]] stat::Parameters to_static_unchecked( Parameters const& s, [[maybe_unused]] core::settings::StaticSettingsDataStorage& data_storage );
+[[nodiscard]] stat::Parameters to_static_unchecked( Parameters const& s, [[maybe_unused]] core::settings::StaticSettingsDataStorage& data_storage, [[maybe_unused]] void ** data_offset_pp );
 
 } // end of namespace vortex::turb::legacy::settings

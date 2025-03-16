@@ -74,7 +74,7 @@ std::ostream& ExecutionSettings::stringify( std::ostream& os, int indent_size, i
     return os;
 }
 
-void ExecutionSettings::validate()
+void ExecutionSettings::validate() const
 {}
 
 void ExecutionSettings::pre_validate_all()

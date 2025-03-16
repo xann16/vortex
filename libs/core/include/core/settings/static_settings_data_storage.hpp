@@ -28,6 +28,7 @@ public:
 
 private:
     std::unordered_map< std::uintptr_t, std::vector< byte > > m_allocs;
+    std::unordered_map< std::uintptr_t, std::size_t > m_debug_sizes;
 };
 
 }

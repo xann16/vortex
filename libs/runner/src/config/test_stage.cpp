@@ -59,7 +59,7 @@ std::ostream& TestStage::stringify( std::ostream& os, int indent_size, int inden
     return os;
 }
 
-void TestStage::validate()
+void TestStage::validate() const
 {
     if ( !has_name_set() )
     {

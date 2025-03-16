@@ -14,9 +14,16 @@ namespace vortex::turb::legacy::settings
 
 [[nodiscard]] stat::Parameters to_static( Parameters const& s, [[maybe_unused]] core::settings::StaticSettingsDataStorage& data_storage )
 {
-    return to_static( s, data_storage, nullptr );
+    s.validate();
+    return to_static_unchecked( s, data_storage );
 }
-[[nodiscard]] stat::Parameters to_static( Parameters const& s, [[maybe_unused]] core::settings::StaticSettingsDataStorage& data_storage, [[maybe_unused]] void ** data_offset_pp )
+
+[[nodiscard]] stat::Parameters to_static_unchecked( Parameters const& s, [[maybe_unused]] core::settings::StaticSettingsDataStorage& data_storage )
+{
+    return to_static_unchecked( s, data_storage, nullptr );
+}
+
+[[nodiscard]] stat::Parameters to_static_unchecked( Parameters const& s, [[maybe_unused]] core::settings::StaticSettingsDataStorage& data_storage, [[maybe_unused]] void ** data_offset_pp )
 {
     return stat::Parameters{ s.N(), s.N_subdomain(), s.Nt_max(), s.dt(), s.rnu(), s.t_init(), s.is_flow_generated(), s.deterministic_seed(), s.input_velo_index(), s.forcing_type(), s.deterministic_forcing_k_1(), s.deterministic_forcing_k_2(), s.stochastic_seed(), s.stats_output_interval(), s.spectrum_output_interval(), s.is_stats_output_extended(), s.rho_part(), s.rho_fluid(), s.eta_k_init(), s.tau_k_init(), s.shell_thickness(), s.epsilon_env(), s.nu_fluid(), s.gravity(), s.is_part_generated(), s.is_part_overlapping(), s.is_part_hdi_enabled(), s.part_hdi_trunc_enabled(), s.N_part(), s.drag_type(), s.a() };
 }

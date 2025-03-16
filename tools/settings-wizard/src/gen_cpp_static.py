@@ -239,9 +239,6 @@ def generate_static_unit_test_file(root_path: str, data: dict[str, Any], ctx: di
 
     add_blank(ls)
 
-    i = add_static_property_unit_tests(ls, i, data, ctx)
-    add_blank(ls)
-
     create_file(path, ls)
 
 ### CONVERSION
@@ -276,7 +273,8 @@ def generate_conversion_header_file(root_path: str, data: dict[str, Any], ctx: d
     i = begin_namespace(ls, i, *namespace)
     add_blank(ls)
     i = add_function_declaration(ls, i, 'to_static', 'stat::' + class_name, [(class_name + ' const&', 's'), ('[[maybe_unused]] ' + 'core::settings::StaticSettingsDataStorage&', 'data_storage')], is_nodiscard=True)
-    i = add_function_declaration(ls, i, 'to_static', 'stat::' + class_name, [(class_name + ' const&', 's'), ('[[maybe_unused]] ' + 'core::settings::StaticSettingsDataStorage&', 'data_storage'), ('[[maybe_unused]] ' + 'void **', 'data_offset_pp')], is_nodiscard=True)
+    i = add_function_declaration(ls, i, 'to_static_unchecked', 'stat::' + class_name, [(class_name + ' const&', 's'), ('[[maybe_unused]] ' + 'core::settings::StaticSettingsDataStorage&', 'data_storage')], is_nodiscard=True)
+    i = add_function_declaration(ls, i, 'to_static_unchecked', 'stat::' + class_name, [(class_name + ' const&', 's'), ('[[maybe_unused]] ' + 'core::settings::StaticSettingsDataStorage&', 'data_storage'), ('[[maybe_unused]] ' + 'void **', 'data_offset_pp')], is_nodiscard=True)
     add_blank(ls)
     i = end_namespace(ls, i, *namespace)
 
@@ -305,23 +303,28 @@ def generate_conversion_source_file(root_path: str, data: dict[str, Any], ctx: d
         i = _add_settings_includes(ls, i, data['__includes__'], ctx, suffix='_conversion')
     add_blank(ls)
 
-
-    pre_conv_body : list[(int, str)] = []
-    if has_heap_data:
-        pre_conv_body.append((0, 'auto heap_data_p = data_storage.allocate( s.extra_data_size() );'))
-    pre_conv_body.append((0, f'return to_static( s, data_storage, {"&heap_data_p" if has_heap_data else "nullptr"} );' ))
-
     conv_body : list[(int, str)] = []
+    conv_body.append((0, 's.validate();'))
+    conv_body.append((0, f'return to_static_unchecked( s, data_storage );' ))
+
+    uconv_body : list[(int, str)] = []
+    if has_heap_data:
+        uconv_body.append((0, 'auto heap_data_p = data_storage.allocate( s.extra_data_size() );'))
+    uconv_body.append((0, f'return to_static_unchecked( s, data_storage, {"&heap_data_p" if has_heap_data else "nullptr"} );' ))
+
+    rconv_body : list[(int, str)] = []
 
     if has_heap_data:
-        conv_body.extend(get_extra_data_prep_code(data, ctx))
-
-    conv_body.append((0, 'return ' + get_hacky_static_ctor_call(f'stat::{class_name}', data, ctx) + ';'))
+        rconv_body.extend(get_extra_data_prep_code(data, ctx))
+    rconv_body.append((0, 'return ' + get_hacky_static_ctor_call(f'stat::{class_name}', data, ctx) + ';'))
 
     i = begin_namespace(ls, i, *namespace)
     add_blank(ls)
-    i = add_function_definition(ls, i, 'to_static', 'stat::' + class_name, [(class_name + ' const&', 's'), ('[[maybe_unused]] ' + 'core::settings::StaticSettingsDataStorage&', 'data_storage')], body=pre_conv_body, is_nodiscard=True)
-    i = add_function_definition(ls, i, 'to_static', 'stat::' + class_name, [(class_name + ' const&', 's'), ('[[maybe_unused]] ' + 'core::settings::StaticSettingsDataStorage&', 'data_storage'), ('[[maybe_unused]] ' + 'void **', 'data_offset_pp')], body=conv_body, is_nodiscard=True)
+    i = add_function_definition(ls, i, 'to_static', 'stat::' + class_name, [(class_name + ' const&', 's'), ('[[maybe_unused]] ' + 'core::settings::StaticSettingsDataStorage&', 'data_storage')], body=conv_body, is_nodiscard=True)
+    add_blank(ls)
+    i = add_function_definition(ls, i, 'to_static_unchecked', 'stat::' + class_name, [(class_name + ' const&', 's'), ('[[maybe_unused]] ' + 'core::settings::StaticSettingsDataStorage&', 'data_storage')], body=uconv_body, is_nodiscard=True)
+    add_blank(ls)
+    i = add_function_definition(ls, i, 'to_static_unchecked', 'stat::' + class_name, [(class_name + ' const&', 's'), ('[[maybe_unused]] ' + 'core::settings::StaticSettingsDataStorage&', 'data_storage'), ('[[maybe_unused]] ' + 'void **', 'data_offset_pp')], body=rconv_body, is_nodiscard=True)
     add_blank(ls)
     i = end_namespace(ls, i, *namespace)
 
@@ -341,14 +344,13 @@ def generate_conversion_unit_test_file(root_path: str, data: dict[str, Any], ctx
     i = add_include(ls, i, 'catch2/catch_test_macros.hpp', is_quoted=False)
     i = add_include(ls, i, 'catch2/matchers/catch_matchers_floating_point.hpp', is_quoted=False)
     add_blank(ls)
+    i = add_include(ls, i, 'nlohmann/json.hpp', is_quoted=False)
     i = add_include(ls, i, get_header_path(data, ctx='include', suffix='_conversion'))
 
     add_blank(ls)
 
-    i = begin_test_case(ls, i, f'{class_name} - conversion from dynamic to static', 'settings', '.', '!mayfail')
-    i = add_block_comment(ls, i, 'TODO')
-    i = add_require(ls, i, 'false')
-    i = end_test_case(ls, i)
+    i = add_static_property_unit_tests(ls, i, data, ctx)
+    add_blank(ls)
 
     create_file(path, ls)
 

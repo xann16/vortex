@@ -122,7 +122,7 @@ std::ostream& Metadata::stringify( std::ostream& os, int indent_size, int indent
     return os;
 }
 
-void Metadata::validate()
+void Metadata::validate() const
 {}
 
 void Metadata::pre_validate_all()

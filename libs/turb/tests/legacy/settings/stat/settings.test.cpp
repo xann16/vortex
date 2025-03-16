@@ -39,19 +39,3 @@ TEST_CASE( "Settings - conversion to string for empty - static", "[settings][.][
     REQUIRE( false );
 }
 
-TEST_CASE( "Settings - property: \"metadata\" - static", "[settings]" )
-{
-    // TODO - supply test implementation
-    REQUIRE( true );
-}
-TEST_CASE( "Settings - property: \"parameters\" - static", "[settings]" )
-{
-    // TODO - supply test implementation
-    REQUIRE( true );
-}
-TEST_CASE( "Settings - property: \"execution_settings\" - static", "[settings]" )
-{
-    // TODO - supply test implementation
-    REQUIRE( true );
-}
-

@@ -17,11 +17,19 @@ namespace vortex::turb::legacy::settings
 
 [[nodiscard]] stat::Settings to_static( Settings const& s, [[maybe_unused]] core::settings::StaticSettingsDataStorage& data_storage )
 {
-    return to_static( s, data_storage, nullptr );
+    s.validate();
+    return to_static_unchecked( s, data_storage );
 }
-[[nodiscard]] stat::Settings to_static( Settings const& s, [[maybe_unused]] core::settings::StaticSettingsDataStorage& data_storage, [[maybe_unused]] void ** data_offset_pp )
+
+[[nodiscard]] stat::Settings to_static_unchecked( Settings const& s, [[maybe_unused]] core::settings::StaticSettingsDataStorage& data_storage )
 {
-    return stat::Settings{ to_static( s.metadata(), data_storage, data_offset_pp ), to_static( s.parameters(), data_storage, data_offset_pp ), to_static( s.execution_settings(), data_storage, data_offset_pp ) };
+    auto heap_data_p = data_storage.allocate( s.extra_data_size() );
+    return to_static_unchecked( s, data_storage, &heap_data_p );
+}
+
+[[nodiscard]] stat::Settings to_static_unchecked( Settings const& s, [[maybe_unused]] core::settings::StaticSettingsDataStorage& data_storage, [[maybe_unused]] void ** data_offset_pp )
+{
+    return stat::Settings{ to_static_unchecked( s.metadata(), data_storage, data_offset_pp ), to_static_unchecked( s.parameters(), data_storage, data_offset_pp ), to_static_unchecked( s.execution_settings(), data_storage, data_offset_pp ) };
 }
 
 } // end of namespace vortex::turb::legacy::settings

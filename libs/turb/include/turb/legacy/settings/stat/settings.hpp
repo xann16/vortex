@@ -39,7 +39,7 @@ public:
 
     [[nodiscard]] consteval bool has_extra_data() const noexcept
     {
-        return false;
+        return true;
     }
     [[nodiscard]] constexpr std::size_t extra_data_size() const noexcept
     {

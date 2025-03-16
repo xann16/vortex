@@ -39,34 +39,3 @@ TEST_CASE( "ExecutionSettings - conversion to string for empty - static", "[sett
     REQUIRE( false );
 }
 
-TEST_CASE( "ExecutionSettings - property: \"job_name\" - static", "[settings]" )
-{
-    // TODO - supply test implementation
-    REQUIRE( true );
-}
-TEST_CASE( "ExecutionSettings - property: \"grant_no\" - static", "[settings]" )
-{
-    // TODO - supply test implementation
-    REQUIRE( true );
-}
-TEST_CASE( "ExecutionSettings - property: \"cpu_node_count\" - static", "[settings]" )
-{
-    // TODO - supply test implementation
-    REQUIRE( true );
-}
-TEST_CASE( "ExecutionSettings - property: \"wct_limit\" - static", "[settings]" )
-{
-    // TODO - supply test implementation
-    REQUIRE( true );
-}
-TEST_CASE( "ExecutionSettings - property: \"process_count\" - static", "[settings]" )
-{
-    // TODO - supply test implementation
-    REQUIRE( true );
-}
-TEST_CASE( "ExecutionSettings - property: \"is_node_overcommit_enabled\" - static", "[settings]" )
-{
-    // TODO - supply test implementation
-    REQUIRE( true );
-}
-

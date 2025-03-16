@@ -7,10 +7,751 @@
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/matchers/catch_matchers_floating_point.hpp>
 
+#include <nlohmann/json.hpp>
 #include "turb/legacy/settings/stat/parameters_conversion.hpp"
 
-TEST_CASE( "Parameters - conversion from dynamic to static", "[settings][.][!mayfail]" )
+TEST_CASE( "Parameters - property: \"N\" - static", "[settings]" )
 {
-    // TODO
-    REQUIRE( false );
+    nlohmann::json obj = { { "N", 8l } };
+    auto ds = vortex::core::settings::StaticSettingsDataStorage{};
+
+    auto s = vortex::turb::legacy::settings::Parameters{ &obj };
+    auto s_null = vortex::turb::legacy::settings::Parameters{};
+
+    auto value = s.N();
+    auto default_value = s_null.N();
+
+    auto ss = vortex::turb::legacy::settings::to_static_unchecked( s, ds );
+    auto ss_null = vortex::turb::legacy::settings::to_static_unchecked( s_null, ds );
+
+    auto svalue = ss.N();
+    auto default_svalue = ss_null.N();
+
+    REQUIRE( value == svalue );
+    REQUIRE( default_value == default_svalue );
+
+    REQUIRE( static_cast< vortex::i32 >( svalue ) == 8l );
+    REQUIRE( static_cast< vortex::i32 >( default_svalue ) == 8 );
 }
+
+TEST_CASE( "Parameters - property: \"N_subdomain\" - static", "[settings]" )
+{
+    nlohmann::json obj = { { "N_subdomain", 8l } };
+    auto ds = vortex::core::settings::StaticSettingsDataStorage{};
+
+    auto s = vortex::turb::legacy::settings::Parameters{ &obj };
+    auto s_null = vortex::turb::legacy::settings::Parameters{};
+
+    auto value = s.N_subdomain();
+    auto default_value = s_null.N_subdomain();
+
+    auto ss = vortex::turb::legacy::settings::to_static_unchecked( s, ds );
+    auto ss_null = vortex::turb::legacy::settings::to_static_unchecked( s_null, ds );
+
+    auto svalue = ss.N_subdomain();
+    auto default_svalue = ss_null.N_subdomain();
+
+    REQUIRE( value == svalue );
+    REQUIRE( default_value == default_svalue );
+
+    REQUIRE( static_cast< vortex::i32 >( svalue ) == 8l );
+    REQUIRE( static_cast< vortex::i32 >( default_svalue ) == 1 );
+}
+
+TEST_CASE( "Parameters - property: \"Nt_max\" - static", "[settings]" )
+{
+    nlohmann::json obj = { { "Nt_max", 8l } };
+    auto ds = vortex::core::settings::StaticSettingsDataStorage{};
+
+    auto s = vortex::turb::legacy::settings::Parameters{ &obj };
+    auto s_null = vortex::turb::legacy::settings::Parameters{};
+
+    auto value = s.Nt_max();
+    auto default_value = s_null.Nt_max();
+
+    auto ss = vortex::turb::legacy::settings::to_static_unchecked( s, ds );
+    auto ss_null = vortex::turb::legacy::settings::to_static_unchecked( s_null, ds );
+
+    auto svalue = ss.Nt_max();
+    auto default_svalue = ss_null.Nt_max();
+
+    REQUIRE( value == svalue );
+    REQUIRE( default_value == default_svalue );
+
+    REQUIRE( static_cast< vortex::i32 >( svalue ) == 8l );
+    REQUIRE( static_cast< vortex::i32 >( default_svalue ) == 1 );
+}
+
+TEST_CASE( "Parameters - property: \"dt\" - static", "[settings]" )
+{
+    nlohmann::json obj = { { "dt", 8.3 } };
+    auto ds = vortex::core::settings::StaticSettingsDataStorage{};
+
+    auto s = vortex::turb::legacy::settings::Parameters{ &obj };
+    auto s_null = vortex::turb::legacy::settings::Parameters{};
+
+    auto value = s.dt();
+    auto default_value = s_null.dt();
+
+    auto ss = vortex::turb::legacy::settings::to_static_unchecked( s, ds );
+    auto ss_null = vortex::turb::legacy::settings::to_static_unchecked( s_null, ds );
+
+    auto svalue = ss.dt();
+    auto default_svalue = ss_null.dt();
+
+    REQUIRE( value == svalue );
+    REQUIRE( default_value == default_svalue );
+
+    REQUIRE_THAT( static_cast< vortex::real >( svalue ), Catch::Matchers::WithinAbs( 8.3, 1e-05 ) );
+    REQUIRE_THAT( static_cast< vortex::real >( default_svalue ), Catch::Matchers::WithinAbs( 0.001, 1e-05 ) );
+}
+
+TEST_CASE( "Parameters - property: \"rnu\" - static", "[settings]" )
+{
+    nlohmann::json obj = { { "rnu", 8.3 } };
+    auto ds = vortex::core::settings::StaticSettingsDataStorage{};
+
+    auto s = vortex::turb::legacy::settings::Parameters{ &obj };
+    auto s_null = vortex::turb::legacy::settings::Parameters{};
+
+    auto value = s.rnu();
+    auto default_value = s_null.rnu();
+
+    auto ss = vortex::turb::legacy::settings::to_static_unchecked( s, ds );
+    auto ss_null = vortex::turb::legacy::settings::to_static_unchecked( s_null, ds );
+
+    auto svalue = ss.rnu();
+    auto default_svalue = ss_null.rnu();
+
+    REQUIRE( value == svalue );
+    REQUIRE( default_value == default_svalue );
+
+    REQUIRE_THAT( static_cast< vortex::real >( svalue ), Catch::Matchers::WithinAbs( 8.3, 1e-05 ) );
+    REQUIRE_THAT( static_cast< vortex::real >( default_svalue ), Catch::Matchers::WithinAbs( vortex::real{}, 1e-05 ) );
+}
+
+TEST_CASE( "Parameters - property: \"t_init\" - static", "[settings]" )
+{
+    nlohmann::json obj = { { "t_init", 8.3 } };
+    auto ds = vortex::core::settings::StaticSettingsDataStorage{};
+
+    auto s = vortex::turb::legacy::settings::Parameters{ &obj };
+    auto s_null = vortex::turb::legacy::settings::Parameters{};
+
+    auto value = s.t_init();
+    auto default_value = s_null.t_init();
+
+    auto ss = vortex::turb::legacy::settings::to_static_unchecked( s, ds );
+    auto ss_null = vortex::turb::legacy::settings::to_static_unchecked( s_null, ds );
+
+    auto svalue = ss.t_init();
+    auto default_svalue = ss_null.t_init();
+
+    REQUIRE( value == svalue );
+    REQUIRE( default_value == default_svalue );
+
+    REQUIRE_THAT( static_cast< vortex::real >( svalue ), Catch::Matchers::WithinAbs( 8.3, 1e-05 ) );
+    REQUIRE_THAT( static_cast< vortex::real >( default_svalue ), Catch::Matchers::WithinAbs( vortex::real{}, 1e-05 ) );
+}
+
+TEST_CASE( "Parameters - property: \"is_flow_generated\" - static", "[settings]" )
+{
+    nlohmann::json obj = { { "is_flow_generated", true } };
+    auto ds = vortex::core::settings::StaticSettingsDataStorage{};
+
+    auto s = vortex::turb::legacy::settings::Parameters{ &obj };
+    auto s_null = vortex::turb::legacy::settings::Parameters{};
+
+    auto value = s.is_flow_generated();
+    auto default_value = s_null.is_flow_generated();
+
+    auto ss = vortex::turb::legacy::settings::to_static_unchecked( s, ds );
+    auto ss_null = vortex::turb::legacy::settings::to_static_unchecked( s_null, ds );
+
+    auto svalue = ss.is_flow_generated();
+    auto default_svalue = ss_null.is_flow_generated();
+
+    REQUIRE( value == svalue );
+    REQUIRE( default_value == default_svalue );
+
+    REQUIRE( svalue == true );
+    REQUIRE( default_svalue == true );
+}
+
+TEST_CASE( "Parameters - property: \"deterministic_seed\" - static", "[settings]" )
+{
+    nlohmann::json obj = { { "deterministic_seed", 4ull } };
+    auto ds = vortex::core::settings::StaticSettingsDataStorage{};
+
+    auto s = vortex::turb::legacy::settings::Parameters{ &obj };
+    auto s_null = vortex::turb::legacy::settings::Parameters{};
+
+    auto value = s.deterministic_seed();
+    auto default_value = s_null.deterministic_seed();
+
+    auto ss = vortex::turb::legacy::settings::to_static_unchecked( s, ds );
+    auto ss_null = vortex::turb::legacy::settings::to_static_unchecked( s_null, ds );
+
+    auto svalue = ss.deterministic_seed();
+    auto default_svalue = ss_null.deterministic_seed();
+
+    REQUIRE( value == svalue );
+    REQUIRE( default_value == default_svalue );
+
+    REQUIRE( static_cast< vortex::u64 >( svalue ) == 4ull );
+    REQUIRE( static_cast< vortex::u64 >( default_svalue ) == vortex::u64{} );
+}
+
+TEST_CASE( "Parameters - property: \"input_velo_index\" - static", "[settings]" )
+{
+    nlohmann::json obj = { { "input_velo_index", 8l } };
+    auto ds = vortex::core::settings::StaticSettingsDataStorage{};
+
+    auto s = vortex::turb::legacy::settings::Parameters{ &obj };
+    auto s_null = vortex::turb::legacy::settings::Parameters{};
+
+    auto value = s.input_velo_index();
+    auto default_value = s_null.input_velo_index();
+
+    auto ss = vortex::turb::legacy::settings::to_static_unchecked( s, ds );
+    auto ss_null = vortex::turb::legacy::settings::to_static_unchecked( s_null, ds );
+
+    auto svalue = ss.input_velo_index();
+    auto default_svalue = ss_null.input_velo_index();
+
+    REQUIRE( value == svalue );
+    REQUIRE( default_value == default_svalue );
+
+    REQUIRE( static_cast< vortex::i32 >( svalue ) == 8l );
+    REQUIRE( static_cast< vortex::i32 >( default_svalue ) == vortex::i32{} );
+}
+
+TEST_CASE( "Parameters - property: \"forcing_type\" - static", "[settings]" )
+{
+    nlohmann::json obj = { { "forcing_type", "stochastic" } };
+    auto ds = vortex::core::settings::StaticSettingsDataStorage{};
+
+    auto s = vortex::turb::legacy::settings::Parameters{ &obj };
+    auto s_null = vortex::turb::legacy::settings::Parameters{};
+
+    auto value = s.forcing_type();
+    auto default_value = s_null.forcing_type();
+
+    auto ss = vortex::turb::legacy::settings::to_static_unchecked( s, ds );
+    auto ss_null = vortex::turb::legacy::settings::to_static_unchecked( s_null, ds );
+
+    auto svalue = ss.forcing_type();
+    auto default_svalue = ss_null.forcing_type();
+
+    REQUIRE( value == svalue );
+    REQUIRE( default_value == default_svalue );
+
+    REQUIRE( svalue == vortex::turb::legacy::settings::ForcingType::Stochastic );
+    REQUIRE( default_svalue == vortex::turb::legacy::settings::ForcingType::Deterministic );
+}
+
+TEST_CASE( "Parameters - property: \"deterministic_forcing_k_1\" - static", "[settings]" )
+{
+    nlohmann::json obj = { { "deterministic_forcing_k_1", 8.3 } };
+    auto ds = vortex::core::settings::StaticSettingsDataStorage{};
+
+    auto s = vortex::turb::legacy::settings::Parameters{ &obj };
+    auto s_null = vortex::turb::legacy::settings::Parameters{};
+
+    auto value = s.deterministic_forcing_k_1();
+    auto default_value = s_null.deterministic_forcing_k_1();
+
+    auto ss = vortex::turb::legacy::settings::to_static_unchecked( s, ds );
+    auto ss_null = vortex::turb::legacy::settings::to_static_unchecked( s_null, ds );
+
+    auto svalue = ss.deterministic_forcing_k_1();
+    auto default_svalue = ss_null.deterministic_forcing_k_1();
+
+    REQUIRE( value == svalue );
+    REQUIRE( default_value == default_svalue );
+
+    REQUIRE_THAT( static_cast< vortex::real >( svalue ), Catch::Matchers::WithinAbs( 8.3, 1e-05 ) );
+    REQUIRE_THAT( static_cast< vortex::real >( default_svalue ), Catch::Matchers::WithinAbs( 1.0, 1e-05 ) );
+}
+
+TEST_CASE( "Parameters - property: \"deterministic_forcing_k_2\" - static", "[settings]" )
+{
+    nlohmann::json obj = { { "deterministic_forcing_k_2", 8.3 } };
+    auto ds = vortex::core::settings::StaticSettingsDataStorage{};
+
+    auto s = vortex::turb::legacy::settings::Parameters{ &obj };
+    auto s_null = vortex::turb::legacy::settings::Parameters{};
+
+    auto value = s.deterministic_forcing_k_2();
+    auto default_value = s_null.deterministic_forcing_k_2();
+
+    auto ss = vortex::turb::legacy::settings::to_static_unchecked( s, ds );
+    auto ss_null = vortex::turb::legacy::settings::to_static_unchecked( s_null, ds );
+
+    auto svalue = ss.deterministic_forcing_k_2();
+    auto default_svalue = ss_null.deterministic_forcing_k_2();
+
+    REQUIRE( value == svalue );
+    REQUIRE( default_value == default_svalue );
+
+    REQUIRE_THAT( static_cast< vortex::real >( svalue ), Catch::Matchers::WithinAbs( 8.3, 1e-05 ) );
+    REQUIRE_THAT( static_cast< vortex::real >( default_svalue ), Catch::Matchers::WithinAbs( 1.0, 1e-05 ) );
+}
+
+TEST_CASE( "Parameters - property: \"stochastic_seed\" - static", "[settings]" )
+{
+    nlohmann::json obj = { { "stochastic_seed", 4ull } };
+    auto ds = vortex::core::settings::StaticSettingsDataStorage{};
+
+    auto s = vortex::turb::legacy::settings::Parameters{ &obj };
+    auto s_null = vortex::turb::legacy::settings::Parameters{};
+
+    auto value = s.stochastic_seed();
+    auto default_value = s_null.stochastic_seed();
+
+    auto ss = vortex::turb::legacy::settings::to_static_unchecked( s, ds );
+    auto ss_null = vortex::turb::legacy::settings::to_static_unchecked( s_null, ds );
+
+    auto svalue = ss.stochastic_seed();
+    auto default_svalue = ss_null.stochastic_seed();
+
+    REQUIRE( value == svalue );
+    REQUIRE( default_value == default_svalue );
+
+    REQUIRE( static_cast< vortex::u64 >( svalue ) == 4ull );
+    REQUIRE( static_cast< vortex::u64 >( default_svalue ) == vortex::u64{} );
+}
+
+TEST_CASE( "Parameters - property: \"stats_output_interval\" - static", "[settings]" )
+{
+    nlohmann::json obj = { { "stats_output_interval", 8l } };
+    auto ds = vortex::core::settings::StaticSettingsDataStorage{};
+
+    auto s = vortex::turb::legacy::settings::Parameters{ &obj };
+    auto s_null = vortex::turb::legacy::settings::Parameters{};
+
+    auto value = s.stats_output_interval();
+    auto default_value = s_null.stats_output_interval();
+
+    auto ss = vortex::turb::legacy::settings::to_static_unchecked( s, ds );
+    auto ss_null = vortex::turb::legacy::settings::to_static_unchecked( s_null, ds );
+
+    auto svalue = ss.stats_output_interval();
+    auto default_svalue = ss_null.stats_output_interval();
+
+    REQUIRE( value == svalue );
+    REQUIRE( default_value == default_svalue );
+
+    REQUIRE( static_cast< vortex::i32 >( svalue ) == 8l );
+    REQUIRE( static_cast< vortex::i32 >( default_svalue ) == vortex::i32{} );
+}
+
+TEST_CASE( "Parameters - property: \"spectrum_output_interval\" - static", "[settings]" )
+{
+    nlohmann::json obj = { { "spectrum_output_interval", 8l } };
+    auto ds = vortex::core::settings::StaticSettingsDataStorage{};
+
+    auto s = vortex::turb::legacy::settings::Parameters{ &obj };
+    auto s_null = vortex::turb::legacy::settings::Parameters{};
+
+    auto value = s.spectrum_output_interval();
+    auto default_value = s_null.spectrum_output_interval();
+
+    auto ss = vortex::turb::legacy::settings::to_static_unchecked( s, ds );
+    auto ss_null = vortex::turb::legacy::settings::to_static_unchecked( s_null, ds );
+
+    auto svalue = ss.spectrum_output_interval();
+    auto default_svalue = ss_null.spectrum_output_interval();
+
+    REQUIRE( value == svalue );
+    REQUIRE( default_value == default_svalue );
+
+    REQUIRE( static_cast< vortex::i32 >( svalue ) == 8l );
+    REQUIRE( static_cast< vortex::i32 >( default_svalue ) == vortex::i32{} );
+}
+
+TEST_CASE( "Parameters - property: \"is_stats_output_extended\" - static", "[settings]" )
+{
+    nlohmann::json obj = { { "is_stats_output_extended", true } };
+    auto ds = vortex::core::settings::StaticSettingsDataStorage{};
+
+    auto s = vortex::turb::legacy::settings::Parameters{ &obj };
+    auto s_null = vortex::turb::legacy::settings::Parameters{};
+
+    auto value = s.is_stats_output_extended();
+    auto default_value = s_null.is_stats_output_extended();
+
+    auto ss = vortex::turb::legacy::settings::to_static_unchecked( s, ds );
+    auto ss_null = vortex::turb::legacy::settings::to_static_unchecked( s_null, ds );
+
+    auto svalue = ss.is_stats_output_extended();
+    auto default_svalue = ss_null.is_stats_output_extended();
+
+    REQUIRE( value == svalue );
+    REQUIRE( default_value == default_svalue );
+
+    REQUIRE( svalue == true );
+    REQUIRE( default_svalue == bool{} );
+}
+
+TEST_CASE( "Parameters - property: \"rho_part\" - static", "[settings]" )
+{
+    nlohmann::json obj = { { "rho_part", 8.3 } };
+    auto ds = vortex::core::settings::StaticSettingsDataStorage{};
+
+    auto s = vortex::turb::legacy::settings::Parameters{ &obj };
+    auto s_null = vortex::turb::legacy::settings::Parameters{};
+
+    auto value = s.rho_part();
+    auto default_value = s_null.rho_part();
+
+    auto ss = vortex::turb::legacy::settings::to_static_unchecked( s, ds );
+    auto ss_null = vortex::turb::legacy::settings::to_static_unchecked( s_null, ds );
+
+    auto svalue = ss.rho_part();
+    auto default_svalue = ss_null.rho_part();
+
+    REQUIRE( value == svalue );
+    REQUIRE( default_value == default_svalue );
+
+    REQUIRE_THAT( static_cast< vortex::real >( svalue ), Catch::Matchers::WithinAbs( 8.3, 1e-05 ) );
+    REQUIRE_THAT( static_cast< vortex::real >( default_svalue ), Catch::Matchers::WithinAbs( vortex::real{}, 1e-05 ) );
+}
+
+TEST_CASE( "Parameters - property: \"rho_fluid\" - static", "[settings]" )
+{
+    nlohmann::json obj = { { "rho_fluid", 8.3 } };
+    auto ds = vortex::core::settings::StaticSettingsDataStorage{};
+
+    auto s = vortex::turb::legacy::settings::Parameters{ &obj };
+    auto s_null = vortex::turb::legacy::settings::Parameters{};
+
+    auto value = s.rho_fluid();
+    auto default_value = s_null.rho_fluid();
+
+    auto ss = vortex::turb::legacy::settings::to_static_unchecked( s, ds );
+    auto ss_null = vortex::turb::legacy::settings::to_static_unchecked( s_null, ds );
+
+    auto svalue = ss.rho_fluid();
+    auto default_svalue = ss_null.rho_fluid();
+
+    REQUIRE( value == svalue );
+    REQUIRE( default_value == default_svalue );
+
+    REQUIRE_THAT( static_cast< vortex::real >( svalue ), Catch::Matchers::WithinAbs( 8.3, 1e-05 ) );
+    REQUIRE_THAT( static_cast< vortex::real >( default_svalue ), Catch::Matchers::WithinAbs( vortex::real{}, 1e-05 ) );
+}
+
+TEST_CASE( "Parameters - property: \"eta_k_init\" - static", "[settings]" )
+{
+    nlohmann::json obj = { { "eta_k_init", 8.3 } };
+    auto ds = vortex::core::settings::StaticSettingsDataStorage{};
+
+    auto s = vortex::turb::legacy::settings::Parameters{ &obj };
+    auto s_null = vortex::turb::legacy::settings::Parameters{};
+
+    auto value = s.eta_k_init();
+    auto default_value = s_null.eta_k_init();
+
+    auto ss = vortex::turb::legacy::settings::to_static_unchecked( s, ds );
+    auto ss_null = vortex::turb::legacy::settings::to_static_unchecked( s_null, ds );
+
+    auto svalue = ss.eta_k_init();
+    auto default_svalue = ss_null.eta_k_init();
+
+    REQUIRE( value == svalue );
+    REQUIRE( default_value == default_svalue );
+
+    REQUIRE_THAT( static_cast< vortex::real >( svalue ), Catch::Matchers::WithinAbs( 8.3, 1e-05 ) );
+    REQUIRE_THAT( static_cast< vortex::real >( default_svalue ), Catch::Matchers::WithinAbs( 1.0, 1e-05 ) );
+}
+
+TEST_CASE( "Parameters - property: \"tau_k_init\" - static", "[settings]" )
+{
+    nlohmann::json obj = { { "tau_k_init", 8.3 } };
+    auto ds = vortex::core::settings::StaticSettingsDataStorage{};
+
+    auto s = vortex::turb::legacy::settings::Parameters{ &obj };
+    auto s_null = vortex::turb::legacy::settings::Parameters{};
+
+    auto value = s.tau_k_init();
+    auto default_value = s_null.tau_k_init();
+
+    auto ss = vortex::turb::legacy::settings::to_static_unchecked( s, ds );
+    auto ss_null = vortex::turb::legacy::settings::to_static_unchecked( s_null, ds );
+
+    auto svalue = ss.tau_k_init();
+    auto default_svalue = ss_null.tau_k_init();
+
+    REQUIRE( value == svalue );
+    REQUIRE( default_value == default_svalue );
+
+    REQUIRE_THAT( static_cast< vortex::real >( svalue ), Catch::Matchers::WithinAbs( 8.3, 1e-05 ) );
+    REQUIRE_THAT( static_cast< vortex::real >( default_svalue ), Catch::Matchers::WithinAbs( 1.0, 1e-05 ) );
+}
+
+TEST_CASE( "Parameters - property: \"shell_thickness\" - static", "[settings]" )
+{
+    nlohmann::json obj = { { "shell_thickness", 8.3 } };
+    auto ds = vortex::core::settings::StaticSettingsDataStorage{};
+
+    auto s = vortex::turb::legacy::settings::Parameters{ &obj };
+    auto s_null = vortex::turb::legacy::settings::Parameters{};
+
+    auto value = s.shell_thickness();
+    auto default_value = s_null.shell_thickness();
+
+    auto ss = vortex::turb::legacy::settings::to_static_unchecked( s, ds );
+    auto ss_null = vortex::turb::legacy::settings::to_static_unchecked( s_null, ds );
+
+    auto svalue = ss.shell_thickness();
+    auto default_svalue = ss_null.shell_thickness();
+
+    REQUIRE( value == svalue );
+    REQUIRE( default_value == default_svalue );
+
+    REQUIRE_THAT( static_cast< vortex::real >( svalue ), Catch::Matchers::WithinAbs( 8.3, 1e-05 ) );
+    REQUIRE_THAT( static_cast< vortex::real >( default_svalue ), Catch::Matchers::WithinAbs( 1.0, 1e-05 ) );
+}
+
+TEST_CASE( "Parameters - property: \"epsilon_env\" - static", "[settings]" )
+{
+    nlohmann::json obj = { { "epsilon_env", 8.3 } };
+    auto ds = vortex::core::settings::StaticSettingsDataStorage{};
+
+    auto s = vortex::turb::legacy::settings::Parameters{ &obj };
+    auto s_null = vortex::turb::legacy::settings::Parameters{};
+
+    auto value = s.epsilon_env();
+    auto default_value = s_null.epsilon_env();
+
+    auto ss = vortex::turb::legacy::settings::to_static_unchecked( s, ds );
+    auto ss_null = vortex::turb::legacy::settings::to_static_unchecked( s_null, ds );
+
+    auto svalue = ss.epsilon_env();
+    auto default_svalue = ss_null.epsilon_env();
+
+    REQUIRE( value == svalue );
+    REQUIRE( default_value == default_svalue );
+
+    REQUIRE_THAT( static_cast< vortex::real >( svalue ), Catch::Matchers::WithinAbs( 8.3, 1e-05 ) );
+    REQUIRE_THAT( static_cast< vortex::real >( default_svalue ), Catch::Matchers::WithinAbs( vortex::real{}, 1e-05 ) );
+}
+
+TEST_CASE( "Parameters - property: \"nu_fluid\" - static", "[settings]" )
+{
+    nlohmann::json obj = { { "nu_fluid", 8.3 } };
+    auto ds = vortex::core::settings::StaticSettingsDataStorage{};
+
+    auto s = vortex::turb::legacy::settings::Parameters{ &obj };
+    auto s_null = vortex::turb::legacy::settings::Parameters{};
+
+    auto value = s.nu_fluid();
+    auto default_value = s_null.nu_fluid();
+
+    auto ss = vortex::turb::legacy::settings::to_static_unchecked( s, ds );
+    auto ss_null = vortex::turb::legacy::settings::to_static_unchecked( s_null, ds );
+
+    auto svalue = ss.nu_fluid();
+    auto default_svalue = ss_null.nu_fluid();
+
+    REQUIRE( value == svalue );
+    REQUIRE( default_value == default_svalue );
+
+    REQUIRE_THAT( static_cast< vortex::real >( svalue ), Catch::Matchers::WithinAbs( 8.3, 1e-05 ) );
+    REQUIRE_THAT( static_cast< vortex::real >( default_svalue ), Catch::Matchers::WithinAbs( vortex::real{}, 1e-05 ) );
+}
+
+TEST_CASE( "Parameters - property: \"gravity\" - static", "[settings]" )
+{
+    nlohmann::json obj = { { "gravity", 8.3 } };
+    auto ds = vortex::core::settings::StaticSettingsDataStorage{};
+
+    auto s = vortex::turb::legacy::settings::Parameters{ &obj };
+    auto s_null = vortex::turb::legacy::settings::Parameters{};
+
+    auto value = s.gravity();
+    auto default_value = s_null.gravity();
+
+    auto ss = vortex::turb::legacy::settings::to_static_unchecked( s, ds );
+    auto ss_null = vortex::turb::legacy::settings::to_static_unchecked( s_null, ds );
+
+    auto svalue = ss.gravity();
+    auto default_svalue = ss_null.gravity();
+
+    REQUIRE( value == svalue );
+    REQUIRE( default_value == default_svalue );
+
+    REQUIRE_THAT( static_cast< vortex::real >( svalue ), Catch::Matchers::WithinAbs( 8.3, 1e-05 ) );
+    REQUIRE_THAT( static_cast< vortex::real >( default_svalue ), Catch::Matchers::WithinAbs( vortex::real{}, 1e-05 ) );
+}
+
+TEST_CASE( "Parameters - property: \"is_part_generated\" - static", "[settings]" )
+{
+    nlohmann::json obj = { { "is_part_generated", true } };
+    auto ds = vortex::core::settings::StaticSettingsDataStorage{};
+
+    auto s = vortex::turb::legacy::settings::Parameters{ &obj };
+    auto s_null = vortex::turb::legacy::settings::Parameters{};
+
+    auto value = s.is_part_generated();
+    auto default_value = s_null.is_part_generated();
+
+    auto ss = vortex::turb::legacy::settings::to_static_unchecked( s, ds );
+    auto ss_null = vortex::turb::legacy::settings::to_static_unchecked( s_null, ds );
+
+    auto svalue = ss.is_part_generated();
+    auto default_svalue = ss_null.is_part_generated();
+
+    REQUIRE( value == svalue );
+    REQUIRE( default_value == default_svalue );
+
+    REQUIRE( svalue == true );
+    REQUIRE( default_svalue == bool{} );
+}
+
+TEST_CASE( "Parameters - property: \"is_part_overlapping\" - static", "[settings]" )
+{
+    nlohmann::json obj = { { "is_part_overlapping", true } };
+    auto ds = vortex::core::settings::StaticSettingsDataStorage{};
+
+    auto s = vortex::turb::legacy::settings::Parameters{ &obj };
+    auto s_null = vortex::turb::legacy::settings::Parameters{};
+
+    auto value = s.is_part_overlapping();
+    auto default_value = s_null.is_part_overlapping();
+
+    auto ss = vortex::turb::legacy::settings::to_static_unchecked( s, ds );
+    auto ss_null = vortex::turb::legacy::settings::to_static_unchecked( s_null, ds );
+
+    auto svalue = ss.is_part_overlapping();
+    auto default_svalue = ss_null.is_part_overlapping();
+
+    REQUIRE( value == svalue );
+    REQUIRE( default_value == default_svalue );
+
+    REQUIRE( svalue == true );
+    REQUIRE( default_svalue == bool{} );
+}
+
+TEST_CASE( "Parameters - property: \"is_part_hdi_enabled\" - static", "[settings]" )
+{
+    nlohmann::json obj = { { "is_part_hdi_enabled", true } };
+    auto ds = vortex::core::settings::StaticSettingsDataStorage{};
+
+    auto s = vortex::turb::legacy::settings::Parameters{ &obj };
+    auto s_null = vortex::turb::legacy::settings::Parameters{};
+
+    auto value = s.is_part_hdi_enabled();
+    auto default_value = s_null.is_part_hdi_enabled();
+
+    auto ss = vortex::turb::legacy::settings::to_static_unchecked( s, ds );
+    auto ss_null = vortex::turb::legacy::settings::to_static_unchecked( s_null, ds );
+
+    auto svalue = ss.is_part_hdi_enabled();
+    auto default_svalue = ss_null.is_part_hdi_enabled();
+
+    REQUIRE( value == svalue );
+    REQUIRE( default_value == default_svalue );
+
+    REQUIRE( svalue == true );
+    REQUIRE( default_svalue == bool{} );
+}
+
+TEST_CASE( "Parameters - property: \"part_hdi_trunc_enabled\" - static", "[settings]" )
+{
+    nlohmann::json obj = { { "part_hdi_trunc_enabled", 8.3 } };
+    auto ds = vortex::core::settings::StaticSettingsDataStorage{};
+
+    auto s = vortex::turb::legacy::settings::Parameters{ &obj };
+    auto s_null = vortex::turb::legacy::settings::Parameters{};
+
+    auto value = s.part_hdi_trunc_enabled();
+    auto default_value = s_null.part_hdi_trunc_enabled();
+
+    auto ss = vortex::turb::legacy::settings::to_static_unchecked( s, ds );
+    auto ss_null = vortex::turb::legacy::settings::to_static_unchecked( s_null, ds );
+
+    auto svalue = ss.part_hdi_trunc_enabled();
+    auto default_svalue = ss_null.part_hdi_trunc_enabled();
+
+    REQUIRE( value == svalue );
+    REQUIRE( default_value == default_svalue );
+
+    REQUIRE_THAT( static_cast< vortex::real >( svalue ), Catch::Matchers::WithinAbs( 8.3, 1e-05 ) );
+    REQUIRE_THAT( static_cast< vortex::real >( default_svalue ), Catch::Matchers::WithinAbs( vortex::real{}, 1e-05 ) );
+}
+
+TEST_CASE( "Parameters - property: \"N_part\" - static", "[settings]" )
+{
+    nlohmann::json obj = { { "N_part", 8l } };
+    auto ds = vortex::core::settings::StaticSettingsDataStorage{};
+
+    auto s = vortex::turb::legacy::settings::Parameters{ &obj };
+    auto s_null = vortex::turb::legacy::settings::Parameters{};
+
+    auto value = s.N_part();
+    auto default_value = s_null.N_part();
+
+    auto ss = vortex::turb::legacy::settings::to_static_unchecked( s, ds );
+    auto ss_null = vortex::turb::legacy::settings::to_static_unchecked( s_null, ds );
+
+    auto svalue = ss.N_part();
+    auto default_svalue = ss_null.N_part();
+
+    REQUIRE( value == svalue );
+    REQUIRE( default_value == default_svalue );
+
+    REQUIRE( static_cast< vortex::i32 >( svalue ) == 8l );
+    REQUIRE( static_cast< vortex::i32 >( default_svalue ) == vortex::i32{} );
+}
+
+TEST_CASE( "Parameters - property: \"drag_type\" - static", "[settings]" )
+{
+    nlohmann::json obj = { { "drag_type", "nonlinear" } };
+    auto ds = vortex::core::settings::StaticSettingsDataStorage{};
+
+    auto s = vortex::turb::legacy::settings::Parameters{ &obj };
+    auto s_null = vortex::turb::legacy::settings::Parameters{};
+
+    auto value = s.drag_type();
+    auto default_value = s_null.drag_type();
+
+    auto ss = vortex::turb::legacy::settings::to_static_unchecked( s, ds );
+    auto ss_null = vortex::turb::legacy::settings::to_static_unchecked( s_null, ds );
+
+    auto svalue = ss.drag_type();
+    auto default_svalue = ss_null.drag_type();
+
+    REQUIRE( value == svalue );
+    REQUIRE( default_value == default_svalue );
+
+    REQUIRE( svalue == vortex::turb::legacy::settings::DragType::Nonlinear );
+    REQUIRE( default_svalue == vortex::turb::legacy::settings::DragType::Stokes );
+}
+
+TEST_CASE( "Parameters - property: \"a\" - static", "[settings]" )
+{
+    nlohmann::json obj = { { "a", 8.3 } };
+    auto ds = vortex::core::settings::StaticSettingsDataStorage{};
+
+    auto s = vortex::turb::legacy::settings::Parameters{ &obj };
+    auto s_null = vortex::turb::legacy::settings::Parameters{};
+
+    auto value = s.a();
+    auto default_value = s_null.a();
+
+    auto ss = vortex::turb::legacy::settings::to_static_unchecked( s, ds );
+    auto ss_null = vortex::turb::legacy::settings::to_static_unchecked( s_null, ds );
+
+    auto svalue = ss.a();
+    auto default_svalue = ss_null.a();
+
+    REQUIRE( value == svalue );
+    REQUIRE( default_value == default_svalue );
+
+    REQUIRE_THAT( static_cast< vortex::real >( svalue ), Catch::Matchers::WithinAbs( 8.3, 1e-05 ) );
+    REQUIRE_THAT( static_cast< vortex::real >( default_svalue ), Catch::Matchers::WithinAbs( vortex::real{}, 1e-05 ) );
+}
+
+

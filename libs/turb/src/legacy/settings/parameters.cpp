@@ -176,7 +176,7 @@ std::ostream& Parameters::stringify( std::ostream& os, int indent_size, int inde
     return os;
 }
 
-void Parameters::validate()
+void Parameters::validate() const
 {
     if ( has_N_subdomain_set() )
     {

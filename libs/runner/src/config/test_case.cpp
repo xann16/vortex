@@ -90,7 +90,7 @@ std::ostream& TestCase::stringify( std::ostream& os, int indent_size, int indent
     return os;
 }
 
-void TestCase::validate()
+void TestCase::validate() const
 {
     if ( !has_name_set() )
     {

@@ -158,7 +158,7 @@ def generate_dynamic_header_file(root_path: str, data: dict[str, Any], ctx: dict
     i = add_method_declaration(ls, i, 'to_string', 'std::string', [], is_const=True, is_nodiscard=True)
     i = add_method_declaration(ls, i, 'stringify', 'std::ostream&', [('std::ostream&', 'os'), ('int', 'indent_size'), ('int', 'indent_level'), ('bool', 'display_all')], is_const=True)
     add_blank(ls)
-    i = add_method_declaration(ls, i, 'validate', 'void', [])
+    i = add_method_declaration(ls, i, 'validate', 'void', [], is_const=True)
     add_blank(ls)
     i = add_method_declaration(ls, i, 'operator<<', 'std::ostream&', [('std::ostream&', 'os'), (f'{class_name} const&', 's')], pre_qualifiers='friend')
     add_blank(ls)
@@ -234,7 +234,7 @@ def generate_dynamic_source_file(root_path: str, data: dict[str, Any], ctx: dict
     i = add_method_definition(ls, i, 'stringify', 'std::ostream&', class_name, [('std::ostream&', 'os'), ('int', 'indent_size'), ('int', 'indent_level'), ('bool', 'display_all')], body=get_stringify_body(data), is_const=True)
     add_blank(ls)
 
-    i = add_method_definition(ls, i, 'validate', 'void', class_name, [], body=generate_post_validate_all_body(data, ctx))
+    i = add_method_definition(ls, i, 'validate', 'void', class_name, [], body=generate_post_validate_all_body(data, ctx), is_const=True)
     add_blank(ls)
 
     i = add_pre_validate_all_definition(ls, i, class_name, data, ctx)

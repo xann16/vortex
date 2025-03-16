@@ -1,5 +1,7 @@
 #include "core/settings/static_settings_data_storage.hpp"
 
+#include <cstdio>
+
 namespace vortex::core::settings
 {
     void * StaticSettingsDataStorage::allocate( std::size_t byte_count )
@@ -11,6 +13,7 @@ namespace vortex::core::settings
 
         // NOTE: key uniqueness guaranteed by underlying (system) allocator
         m_allocs.emplace( key, std::move( data_storage ) );
+        m_debug_sizes.emplace( key, byte_count );
 
         return static_cast< void * >( data_p );
     }

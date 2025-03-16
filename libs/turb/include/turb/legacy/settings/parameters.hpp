@@ -64,7 +64,7 @@ public:
     [[nodiscard]] std::string to_string() const;
     std::ostream& stringify( std::ostream& os, int indent_size, int indent_level, bool display_all ) const;
 
-    void validate();
+    void validate() const;
 
     friend std::ostream& operator<<( std::ostream& os, Parameters const& s );
 

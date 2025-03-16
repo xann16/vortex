@@ -7,10 +7,49 @@
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/matchers/catch_matchers_floating_point.hpp>
 
+#include <nlohmann/json.hpp>
 #include "turb/legacy/settings/stat/settings_conversion.hpp"
 
-TEST_CASE( "Settings - conversion from dynamic to static", "[settings][.][!mayfail]" )
+TEST_CASE( "Settings - property: \"metadata\" - static", "[settings]" )
 {
-    // TODO
-    REQUIRE( false );
+    nlohmann::json obj = { { "metadata", { { "name", "x"} } } };
+    auto ds = vortex::core::settings::StaticSettingsDataStorage{};
+
+    auto s = vortex::turb::legacy::settings::Settings{ &obj };
+    auto s_null = vortex::turb::legacy::settings::Settings{};
+
+    REQUIRE_NOTHROW( vortex::turb::legacy::settings::to_static_unchecked( s, ds ) );
+    REQUIRE_NOTHROW( vortex::turb::legacy::settings::to_static_unchecked( s_null, ds ) );
+
+    // Value testing for 'module' properties currently unsupported.
 }
+
+TEST_CASE( "Settings - property: \"parameters\" - static", "[settings]" )
+{
+    nlohmann::json obj = { { "parameters", { { "name", "x"} } } };
+    auto ds = vortex::core::settings::StaticSettingsDataStorage{};
+
+    auto s = vortex::turb::legacy::settings::Settings{ &obj };
+    auto s_null = vortex::turb::legacy::settings::Settings{};
+
+    REQUIRE_NOTHROW( vortex::turb::legacy::settings::to_static_unchecked( s, ds ) );
+    REQUIRE_NOTHROW( vortex::turb::legacy::settings::to_static_unchecked( s_null, ds ) );
+
+    // Value testing for 'module' properties currently unsupported.
+}
+
+TEST_CASE( "Settings - property: \"execution_settings\" - static", "[settings]" )
+{
+    nlohmann::json obj = { { "execution_settings", { { "name", "x"} } } };
+    auto ds = vortex::core::settings::StaticSettingsDataStorage{};
+
+    auto s = vortex::turb::legacy::settings::Settings{ &obj };
+    auto s_null = vortex::turb::legacy::settings::Settings{};
+
+    REQUIRE_NOTHROW( vortex::turb::legacy::settings::to_static_unchecked( s, ds ) );
+    REQUIRE_NOTHROW( vortex::turb::legacy::settings::to_static_unchecked( s_null, ds ) );
+
+    // Value testing for 'module' properties currently unsupported.
+}
+
+
